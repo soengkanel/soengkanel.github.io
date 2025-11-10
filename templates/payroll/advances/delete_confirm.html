@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Salary Advance{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Delete Salary Advance</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning!</strong> This action cannot be undone.
+                    </div>
+
+                    <p>Are you sure you want to delete the following salary advance?</p>
+
+                    <div class="card bg-light mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ advance.employee.get_full_name }}</h6>
+                            <p class="card-text mb-0">
+                                <small class="text-muted">
+                                    Amount: KHR {{ advance.amount|floatformat:0 }}<br>
+                                    Request Date: {{ advance.request_date|date:"M d, Y" }}<br>
+                                    Status: {{ advance.get_status_display }}<br>
+                                    Repayment Method: {{ advance.get_repayment_method_display }}
+                                    {% if advance.repayment_method == 'INSTALLMENTS' %}
+                                        ({{ advance.installment_months }} months)
+                                    {% endif %}
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'payroll:salary_advance_detail' advance.id %}" class="button-min-warn py-1">
+                                Cancel
+                            </a>
+                            <button type="submit" class="button-min-danger py-1">
+                                <div>
+                                     <i class="fas fa-trash me-2"></i>Delete
+                                </div>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,540 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ structure.name }} - Salary Structure{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact Variables */
+    .stat-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 1rem;
+        background: #fff;
+    }
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0.25rem 0;
+    }
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 6px;
+        margin-bottom: 12px;
+    }    
+    :root {
+        --primary: #3b82f6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #06b6d4;
+    }
+
+    /* Compact Header */
+    .page-header-compact {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 16px;
+    }
+
+    .page-header-compact h1 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+
+    .btn-compact {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 500;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.15s;
+        border: 1px solid;
+    }
+
+    .btn-primary-compact {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .btn-primary-compact:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-secondary-compact {
+        background: white;
+        color: #374151;
+        border-color: #d1d5db;
+    }
+
+    .btn-secondary-compact:hover {
+        background: #f9fafb;
+    }
+
+    /* Compact Stats */
+    .stats-compact {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .stat-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .stat-compact-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 4px 0;
+    }
+
+    .stat-compact-label {
+        font-size: 11px;
+        color: #6b7280;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-compact-sub {
+        font-size: 10px;
+        color: #9ca3af;
+        margin-top: 4px;
+    }
+
+    /* Compact Filters */
+    .filters-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+
+    .filters-compact input,
+    .filters-compact select {
+        font-size: 13px;
+        padding: 6px 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+    }
+
+    /* Compact Table */
+    .table-container-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .table-compact {
+        width: 100%;
+        margin: 0;
+        font-size: 13px;
+        border-collapse: collapse;
+    }
+
+    .table-compact thead th {
+        background: #f9fafb;
+        padding: 10px 12px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .table-compact tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #f3f4f6;
+        color: #111827;
+        vertical-align: middle;
+    }
+
+    .table-compact tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-compact tbody tr:hover {
+        background: #f9fafb;
+        cursor: pointer;
+    }
+
+    /* Status Badges */
+    .badge-compact {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .badge-active { background: #d1fae5; color: #065f46; }
+    .badge-inactive { background: #e5e7eb; color: #4b5563; }
+
+    /* Action Buttons */
+    .btn-icon-compact {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        background: white;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .btn-icon-compact:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+        color: #111827;
+    }
+
+    .btn-icon-compact.danger {
+        color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .btn-icon-compact.danger:hover {
+        background: #fee2e2;
+    }
+
+    /* Employee Avatar */
+    .employee-avatar-compact {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .employee-info-compact {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Empty State */
+    .empty-state-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .empty-state-compact i {
+        font-size: 48px;
+        color: #d1d5db;
+        margin-bottom: 12px;
+    }
+
+    .empty-state-compact h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0 0 8px 0;
+    }
+
+    .empty-state-compact p {
+        font-size: 13px;
+        color: #6b7280;
+        margin: 0 0 16px 0;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .table-compact {
+            font-size: 12px;
+        }
+
+        .table-compact thead th,
+        .table-compact tbody td {
+            padding: 8px 10px;
+        }
+
+        .stats-compact {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    .page-header { padding: 6px 0; margin-bottom: 12px; }
+    .page-header h2 { font-size: 16px; font-weight: 600; margin: 0; color: #1a1a1a; }
+    .form-control { font-size: 11px !important; padding: 4px 6px !important; height: auto !important; border-radius: 3px; border: 1px solid #d1d5db; }
+    .form-label { font-size: 10px !important; margin-bottom: 3px !important; font-weight: 500; color: #374151; }
+    .status-badge { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 500; text-transform: uppercase; }
+    .status-draft { background-color: #f3f4f6; color: #374151; }
+    .status-processing { background-color: #fef3c7; color: #92400e; }
+    .status-closed { background-color: #f73636; color: #f3f4f6;; }
+    .status-approved { background-color: #dbeafe; color: #1e40af; }
+    .status-paid { background-color: #dcfce7; color: #166534; }
+    .status-cancelled { background-color: #fee2e2; color: #991b1b; }
+    .table { font-size: 11px; }
+    .table th { font-weight: 600; color: #374151; text-transform: uppercase; font-size: 10px; padding: 8px; border-bottom: 2px solid #e2e8f0; }
+    .table td { padding: 8px; vertical-align: middle; }
+    .filter-pill { padding: 4px 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 10px; text-decoration: none; color: #6b7280; transition: all 0.2s; }
+    .filter-pill:hover, .filter-pill.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">{{ structure.name }}</h1>
+            <p class="text-muted mb-0">Salary Structure Details</p>
+        </div>
+        <div class="d-flex space-x-1">
+            <a href="{% url 'payroll:salary_structure_edit' structure.id %}" class="button-min-primary py-1">
+                <div>
+                    <i class="fas fa-edit me-2"></i>Edit
+                </div>
+            </a>
+            <a href="{% url 'payroll:salary_structure_list' %}" class="button-min-warn py-1">
+                <div>
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Basic Information -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm">
+                        <tr>
+                            <th>Name:</th>
+                            <td>{{ structure.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Company:</th>
+                            <td>{{ structure.company|default:"—" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Status:</th>
+                            <td>
+                                {% if structure.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Timesheet Based:</th>
+                            <td>
+                                {% if structure.salary_slip_based_on_timesheet %}
+                                    <i class="fas fa-check text-success"></i> Yes
+                                {% else %}
+                                    <i class="fas fa-times text-danger"></i> No
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% if structure.hour_rate %}
+                        <tr>
+                            <th>Hour Rate:</th>
+                            <td>{{ structure.hour_rate }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <th>Leave Encashment:</th>
+                            <td>
+                                {% if structure.leave_encashment %}
+                                    <i class="fas fa-check text-success"></i> Yes
+                                {% else %}
+                                    <i class="fas fa-times text-danger"></i> No
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% if structure.max_benefits %}
+                        <tr>
+                            <th>Max Benefits:</th>
+                            <td>{{ structure.max_benefits }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <th>Created:</th>
+                            <td>{{ structure.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Salary Components -->
+        <div class="col-md-8">
+            <!-- Earnings -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Earnings ({{ earnings.count }})</h5>
+                </div>
+                <div class="card-body">
+                    {% if earnings %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Component</th>
+                                        <th>Code</th>
+                                        <th>Amount</th>
+                                        <th>Formula</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for detail in earnings %}
+                                    <tr>
+                                        <td>{{ detail.salary_component.name }}</td>
+                                        <td><code>{{ detail.salary_component.code }}</code></td>
+                                        <td>{{ detail.amount }}</td>
+                                        <td>
+                                            {% if detail.formula %}
+                                                <code>{{ detail.formula }}</code>
+                                            {% elif detail.salary_component.formula %}
+                                                <code>{{ detail.salary_component.formula }}</code>
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No earning components</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Deductions -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Deductions ({{ deductions.count }})</h5>
+                </div>
+                <div class="card-body">
+                    {% if deductions %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Component</th>
+                                        <th>Code</th>
+                                        <th>Amount</th>
+                                        <th>Formula</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for detail in deductions %}
+                                    <tr>
+                                        <td>{{ detail.salary_component.name }}</td>
+                                        <td><code>{{ detail.salary_component.code }}</code></td>
+                                        <td>{{ detail.amount }}</td>
+                                        <td>
+                                            {% if detail.formula %}
+                                                <code>{{ detail.formula }}</code>
+                                            {% elif detail.salary_component.formula %}
+                                                <code>{{ detail.salary_component.formula }}</code>
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">No deduction components</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assigned Employees -->
+    {% if assignments %}
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Assigned Employees ({{ assignments.count }})</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Base Salary</th>
+                            <th>From Date</th>
+                            <th>To Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for assignment in assignments %}
+                        <tr>
+                            <td>{{ assignment.employee.get_full_name }}</td>
+                            <td>{{ assignment.base_salary }}</td>
+                            <td>{{ assignment.from_date|date:"M d, Y" }}</td>
+                            <td>{{ assignment.to_date|date:"M d, Y"|default:"—" }}</td>
+                            <td>
+                                {% if assignment.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

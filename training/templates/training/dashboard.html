@@ -1,0 +1,262 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Learning Dashboard - LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+<style>
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    .stats-row {
+        margin-bottom: 16px;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 16px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-number {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 4px;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    .section-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+    }
+
+    .course-item {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 8px;
+        transition: all 0.2s;
+    }
+
+    .course-item:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-color: #3b82f6;
+    }
+
+    .course-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 4px;
+    }
+
+    .course-meta {
+        font-size: 10px;
+        color: #6b7280;
+    }
+
+    .progress-bar {
+        height: 6px;
+        background-color: #e2e8f0;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        transition: width 0.3s;
+    }
+
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 9px;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .status-enrolled { background-color: #dbeafe; color: #1e40af; }
+    .status-in_progress { background-color: #fef3c7; color: #92400e; }
+    .status-completed { background-color: #dcfce7; color: #166534; }
+
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+    }
+
+    .available-course {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        text-align: center;
+        transition: all 0.2s;
+    }
+
+    .available-course:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .course-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 8px;
+        color: white;
+        font-size: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <!-- Page Header -->
+        <div class="page-header d-flex justify-content-between align-items-center pb-3">
+            <div>
+                <h2>My Learning Dashboard</h2>
+            </div>
+            <div>
+                <a href="{% url 'training:course_list' %}" class="button-min-primary px-4">
+                    Browse Courses
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row stats-row">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ total_enrolled }}</div>
+                    <div class="stat-label">Total Enrolled</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ in_progress }}</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ completed }}</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-number">{{ avg_progress }}%</div>
+                    <div class="stat-label">Avg Progress</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- My Courses -->
+            <div class="col-md-8">
+                <div class="section-title">My Courses</div>
+
+                {% if recent_enrollments %}
+                    {% for enrollment in recent_enrollments %}
+                    <div class="course-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="course-title">{{ enrollment.course.title }}</div>
+                                <div class="course-meta">
+                                    <i class="bi bi-person"></i> {{ enrollment.course.instructor.user.get_full_name }}
+                                    &nbsp;•&nbsp;
+                                    <i class="bi bi-clock"></i> {{ enrollment.course.duration_hours }}h
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: {{ enrollment.progress_percentage }}%"></div>
+                                </div>
+                                <small style="font-size: 10px; color: #6b7280; margin-top: 4px; display: block;">
+                                    {{ enrollment.progress_percentage }}% Complete
+                                </small>
+                            </div>
+                            <div class="ms-3">
+                                <span class="status-badge status-{{ enrollment.status }}">{{ enrollment.get_status_display }}</span>
+                                <div class="mt-2">
+                                    <a href="{% url 'training:learn_course' enrollment.course.pk %}" class="button-min-primary" style="font-size: 10px; padding: 4px 8px;">
+                                        Continue
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4" style="background: white; border: 1px solid #e2e8f0; border-radius: 6px;">
+                        <i class="bi bi-inbox" style="font-size: 32px; color: #d1d5db;"></i>
+                        <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">You haven't enrolled in any courses yet</p>
+                        <a href="{% url 'training:course_list' %}" class="button-min-primary px-4" style="font-size: 11px;">
+                            Browse Courses
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Available Courses -->
+            <div class="col-md-4">
+                <div class="section-title">Available Courses</div>
+
+                {% if available_courses %}
+                <div class="course-grid">
+                    {% for course in available_courses %}
+                    <div class="available-course">
+                        <div class="course-icon">
+                            <i class="bi bi-book"></i>
+                        </div>
+                        <div style="font-size: 11px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px;">
+                            {{ course.title|truncatewords:5 }}
+                        </div>
+                        <div style="font-size: 9px; color: #6b7280; margin-bottom: 8px;">
+                            {{ course.duration_hours }}h
+                        </div>
+                        <a href="{% url 'training:course_detail' course.pk %}" class="button-min-primary" style="font-size: 9px; padding: 3px 6px;">
+                            View
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4" style="background: white; border: 1px solid #e2e8f0; border-radius: 6px;">
+                    <p style="font-size: 11px; color: #6b7280;">No available courses at the moment</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

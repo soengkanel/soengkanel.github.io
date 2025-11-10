@@ -1,0 +1,710 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Document Submission{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Full Width Container */
+.submission-container {
+    width: 100%;
+    padding: 20px;
+    background: #fff;
+}
+
+/* Header Section */
+.submission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e5e5e5;
+}
+
+.submission-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+}
+
+.submission-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-action {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #45a049;
+}
+
+.btn-secondary {
+    background: #f1f1f1;
+    color: #333;
+    border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background: #e5e5e5;
+}
+
+/* Filter Section */
+.filter-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.filter-control {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background: white;
+}
+
+.filter-control:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+/* Table Section */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+}
+
+.submission-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.submission-table thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.submission-table th {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+    white-space: nowrap;
+}
+
+.submission-table tbody tr {
+    border-bottom: 1px solid #e9ecef;
+    transition: background 0.2s;
+}
+
+.submission-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.submission-table td {
+    padding: 12px 15px;
+    font-size: 14px;
+    color: #212529;
+}
+
+/* Checkbox styling */
+.select-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.select-all-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-passed {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* Date formatting */
+.date-cell {
+    white-space: nowrap;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+}
+
+.expiry-warning {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.expiry-soon {
+    color: #ffc107;
+    font-weight: 500;
+}
+
+/* Worker info */
+.worker-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.worker-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.worker-id {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Building info */
+.building-info {
+    font-size: 13px;
+    color: #495057;
+}
+
+/* Action buttons in table */
+.table-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-icon {
+    padding: 5px 8px;
+    border: none;
+    background: #f1f1f1;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s;
+}
+
+.btn-icon:hover {
+    background: #e5e5e5;
+}
+
+/* Bulk actions bar */
+.bulk-actions {
+    display: none;
+    background: #fff3cd;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bulk-actions.show {
+    display: flex;
+}
+
+.selected-count {
+    font-size: 14px;
+    color: #856404;
+    font-weight: 500;
+}
+
+.bulk-action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Pagination */
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-top: 1px solid #e5e5e5;
+    background: #f8f9fa;
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: #666;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.page-btn {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: #f1f1f1;
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-btn.active {
+    background: #4CAF50;
+    color: white;
+    border-color: #4CAF50;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.empty-icon {
+    font-size: 48px;
+    color: #ddd;
+    margin-bottom: 15px;
+}
+
+.empty-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.empty-description {
+    font-size: 14px;
+    color: #999;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .submission-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .table-wrapper {
+        overflow-x: scroll;
+    }
+    
+    .pagination-wrapper {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="submission-container">
+    <!-- Header -->
+    <div class="submission-header">
+        <h1 class="submission-title">Document Submission</h1>
+        <div class="submission-actions">
+            <button class="btn-action btn-secondary" onclick="window.location.reload()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="btn-action btn-primary" onclick="submitDocuments()">
+                <i class="fas fa-paper-plane"></i> Submit Selected
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label class="filter-label">Search</label>
+                <input type="text" class="filter-control" id="searchInput" placeholder="Name, ID, Passport...">
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Building</label>
+                <select class="filter-control" id="buildingFilter">
+                    <option value="">All Buildings</option>
+                    {% for building in buildings %}
+                        <option value="{{ building.id }}">{{ building.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <select class="filter-control" id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="passed">Passed</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Expiry Date</label>
+                <select class="filter-control" id="expiryFilter">
+                    <option value="">All</option>
+                    <option value="expired">Expired</option>
+                    <option value="30days">Expiring in 30 days</option>
+                    <option value="60days">Expiring in 60 days</option>
+                    <option value="90days">Expiring in 90 days</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Actions Bar -->
+    <div class="bulk-actions" id="bulkActions">
+        <div class="selected-count">
+            <span id="selectedCount">0</span> workers selected
+        </div>
+        <div class="bulk-action-buttons">
+            <button class="btn-action btn-secondary" onclick="clearSelection()">
+                Clear Selection
+            </button>
+            <button class="btn-action btn-primary" onclick="submitDocuments()">
+                Submit Documents
+            </button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+        <table class="submission-table">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" class="select-all-checkbox" id="selectAll">
+                    </th>
+                    <th>Worker</th>
+                    <th>Worker ID</th>
+                    <th>Building</th>
+                    <th>Status</th>
+                    <th>Join Date</th>
+                    <th>Passport</th>
+                    <th>Visa Expiry</th>
+                    <th>Work Permit Expiry</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="workersTableBody">
+                {% for worker in workers %}
+                <tr data-worker-id="{{ worker.id }}">
+                    <td>
+                        <input type="checkbox" class="select-checkbox" value="{{ worker.id }}">
+                    </td>
+                    <td>
+                        <div class="worker-info">
+                            <span class="worker-name">{{ worker.get_full_name }}</span>
+                            <span class="worker-id">{{ worker.nationality|default:"" }}</span>
+                        </div>
+                    </td>
+                    <td>{{ worker.worker_id|default:"N/A" }}</td>
+                    <td class="building-info">
+                        {{ worker.building.name|default:"Unassigned" }}
+                    </td>
+                    <td>
+                        <span class="status-badge status-{{ worker.status }}">
+                            {{ worker.status|default:"pending" }}
+                        </span>
+                    </td>
+                    <td class="date-cell">
+                        {{ worker.date_joined|date:"d/m/Y"|default:"N/A" }}
+                    </td>
+                    <td>{{ worker.passport_number|default:"N/A" }}</td>
+                    <td class="date-cell {% if worker.visa_expiry_warning %}expiry-warning{% elif worker.visa_expiry_soon %}expiry-soon{% endif %}">
+                        {{ worker.visa_expiry|date:"d/m/Y"|default:"N/A" }}
+                    </td>
+                    <td class="date-cell {% if worker.work_permit_expiry_warning %}expiry-warning{% elif worker.work_permit_expiry_soon %}expiry-soon{% endif %}">
+                        {{ worker.work_permit_expiry|date:"d/m/Y"|default:"N/A" }}
+                    </td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn-icon" onclick="viewWorker({{ worker.id }})" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-icon" onclick="editWorker({{ worker.id }})" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10">
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="empty-title">No Workers Found</div>
+                            <div class="empty-description">
+                                There are no workers matching your current filters.
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if workers.has_other_pages %}
+    <div class="pagination-wrapper">
+        <div class="pagination-info">
+            Showing {{ workers.start_index }} - {{ workers.end_index }} of {{ workers.paginator.count }} workers
+        </div>
+        <div class="pagination-controls">
+            {% if workers.has_previous %}
+                <button class="page-btn" onclick="changePage(1)">First</button>
+                <button class="page-btn" onclick="changePage({{ workers.previous_page_number }})">Previous</button>
+            {% endif %}
+            
+            {% for num in workers.paginator.page_range %}
+                {% if workers.number == num %}
+                    <button class="page-btn active">{{ num }}</button>
+                {% elif num > workers.number|add:'-3' and num < workers.number|add:'3' %}
+                    <button class="page-btn" onclick="changePage({{ num }})">{{ num }}</button>
+                {% endif %}
+            {% endfor %}
+            
+            {% if workers.has_next %}
+                <button class="page-btn" onclick="changePage({{ workers.next_page_number }})">Next</button>
+                <button class="page-btn" onclick="changePage({{ workers.paginator.num_pages }})">Last</button>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Selection management
+let selectedWorkers = new Set();
+
+// Select all checkbox
+document.getElementById('selectAll').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('.select-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = this.checked;
+        if (this.checked) {
+            selectedWorkers.add(checkbox.value);
+        } else {
+            selectedWorkers.clear();
+        }
+    });
+    updateBulkActions();
+});
+
+// Individual checkboxes
+document.querySelectorAll('.select-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            selectedWorkers.add(this.value);
+        } else {
+            selectedWorkers.delete(this.value);
+        }
+        updateBulkActions();
+        
+        // Update select all checkbox
+        const allCheckboxes = document.querySelectorAll('.select-checkbox');
+        const checkedCount = document.querySelectorAll('.select-checkbox:checked').length;
+        document.getElementById('selectAll').checked = checkedCount === allCheckboxes.length && checkedCount > 0;
+    });
+});
+
+// Update bulk actions bar
+function updateBulkActions() {
+    const bulkActions = document.getElementById('bulkActions');
+    const selectedCount = document.getElementById('selectedCount');
+    
+    if (selectedWorkers.size > 0) {
+        bulkActions.classList.add('show');
+        selectedCount.textContent = selectedWorkers.size;
+    } else {
+        bulkActions.classList.remove('show');
+    }
+}
+
+// Clear selection
+function clearSelection() {
+    selectedWorkers.clear();
+    document.querySelectorAll('.select-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    document.getElementById('selectAll').checked = false;
+    updateBulkActions();
+}
+
+// Submit documents
+function submitDocuments() {
+    if (selectedWorkers.size === 0) {
+        alert('Please select at least one worker');
+        return;
+    }
+    
+    // Create form and submit
+    const form = document.createElement('form');
+    form.method = 'GET';
+    form.action = '{% url "document_tracking:submission_create" %}';
+    
+    // Add selected worker IDs
+    selectedWorkers.forEach(workerId => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'workers[]';
+        input.value = workerId;
+        form.appendChild(input);
+    });
+    
+    document.body.appendChild(form);
+    form.submit();
+}
+
+// View worker
+function viewWorker(workerId) {
+    window.location.href = `/zone/workers/${workerId}/`;
+}
+
+// Edit worker
+function editWorker(workerId) {
+    window.location.href = `/zone/workers/${workerId}/edit/`;
+}
+
+// Change page
+function changePage(page) {
+    const url = new URL(window.location);
+    url.searchParams.set('page', page);
+    window.location.href = url;
+}
+
+// Filter functionality
+document.getElementById('searchInput').addEventListener('input', debounce(filterTable, 300));
+document.getElementById('buildingFilter').addEventListener('change', filterTable);
+document.getElementById('statusFilter').addEventListener('change', filterTable);
+document.getElementById('expiryFilter').addEventListener('change', filterTable);
+
+function filterTable() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const building = document.getElementById('buildingFilter').value;
+    const status = document.getElementById('statusFilter').value;
+    const expiry = document.getElementById('expiryFilter').value;
+    
+    const rows = document.querySelectorAll('#workersTableBody tr[data-worker-id]');
+    
+    rows.forEach(row => {
+        let show = true;
+        
+        // Search filter
+        if (search) {
+            const text = row.textContent.toLowerCase();
+            show = show && text.includes(search);
+        }
+        
+        // Building filter
+        if (building) {
+            const buildingCell = row.querySelector('.building-info');
+            show = show && buildingCell && buildingCell.dataset.buildingId === building;
+        }
+        
+        // Status filter
+        if (status) {
+            const statusBadge = row.querySelector('.status-badge');
+            show = show && statusBadge && statusBadge.classList.contains(`status-${status}`);
+        }
+        
+        // Expiry filter (would need additional data attributes for proper filtering)
+        // This is a simplified version
+        if (expiry) {
+            const expiryCell = row.querySelector('.expiry-warning, .expiry-soon');
+            if (expiry === 'expired') {
+                show = show && expiryCell && expiryCell.classList.contains('expiry-warning');
+            } else {
+                show = show && expiryCell;
+            }
+        }
+        
+        row.style.display = show ? '' : 'none';
+    });
+}
+
+// Debounce helper
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+</script>
+{% endblock %}

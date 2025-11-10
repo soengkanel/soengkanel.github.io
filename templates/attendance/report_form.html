@@ -1,0 +1,164 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Generate Attendance Report{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <!-- Page Header -->
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">Generate Attendance Report</h2>
+            <a href="{% url 'attendance:dashboard' %}"
+               class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                <i class="bi bi-arrow-left"></i>
+                Back to Dashboard
+            </a>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Report Type -->
+            <div class="mb-4">
+                <label for="{{ form.report_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Report Type <span class="text-red-500">*</span>
+                </label>
+                {{ form.report_type }}
+                {% if form.report_type.errors %}
+                    <p class="text-xs text-red-500 mt-1">{{ form.report_type.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Date Range -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        Start Date <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.start_date }}
+                    {% if form.start_date.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.start_date.errors.0 }}</p>
+                    {% else %}
+                        <p class="text-xs text-gray-500 mt-1">First day of the report period</p>
+                    {% endif %}
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        End Date <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.end_date }}
+                    {% if form.end_date.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.end_date.errors.0 }}</p>
+                    {% else %}
+                        <p class="text-xs text-gray-500 mt-1">Last day of the report period</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Employee and Department -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.employee.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        Employee
+                    </label>
+                    {{ form.employee }}
+                    {% if form.employee.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.employee.errors.0 }}</p>
+                    {% else %}
+                        <p class="text-xs text-gray-500 mt-1">{{ form.employee.help_text }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.department.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        Department
+                    </label>
+                    {{ form.department }}
+                    {% if form.department.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.department.errors.0 }}</p>
+                    {% else %}
+                        <p class="text-xs text-gray-500 mt-1">{{ form.department.help_text }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Additional Options -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Additional Options</label>
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        {{ form.include_overtime }}
+                        <label for="{{ form.include_overtime.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                            {{ form.include_overtime.label }}
+                        </label>
+                    </div>
+                    <div class="flex items-center">
+                        {{ form.include_breaks }}
+                        <label for="{{ form.include_breaks.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                            {{ form.include_breaks.label }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Format -->
+            <div class="mb-4">
+                <label for="{{ form.export_format.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Export Format <span class="text-red-500">*</span>
+                </label>
+                {{ form.export_format }}
+                {% if form.export_format.errors %}
+                    <p class="text-xs text-red-500 mt-1">{{ form.export_format.errors.0 }}</p>
+                {% else %}
+                    <p class="text-xs text-gray-500 mt-1">Choose the file format for your report</p>
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="mb-4 bg-red-50 border border-red-200 rounded-md p-4">
+                    <p class="text-sm text-red-700">{{ form.non_field_errors }}</p>
+                </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3 mt-6">
+                <a href="{% url 'attendance:dashboard' %}"
+                   class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                    <i class="bi bi-x"></i>
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                    <i class="bi bi-download"></i>
+                    Generate Report
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+// Set default dates if not set
+document.addEventListener('DOMContentLoaded', function() {
+    const startDate = document.querySelector('input[name="start_date"]');
+    const endDate = document.querySelector('input[name="end_date"]');
+
+    if (startDate && !startDate.value) {
+        // Set to first day of current month
+        const firstDay = new Date();
+        firstDay.setDate(1);
+        startDate.value = firstDay.toISOString().split('T')[0];
+    }
+
+    if (endDate && !endDate.value) {
+        // Set to today
+        const today = new Date();
+        endDate.value = today.toISOString().split('T')[0];
+    }
+});
+</script>
+{% endblock %}

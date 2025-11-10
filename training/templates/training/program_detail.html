@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+
+{% block title %}Training Program Details{% endblock %}
+
+{% block extra_css %}
+<style>
+    .detail-page {
+        padding: 12px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .detail-card {
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .detail-header {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .detail-header h4 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 6px;
+    }
+
+    .btn-header {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-header:hover {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+    }
+
+    .detail-body {
+        padding: 16px;
+    }
+
+    .detail-section {
+        margin-bottom: 16px;
+    }
+
+    .section-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .detail-label {
+        font-size: 10px;
+        color: #6b7280;
+        margin-bottom: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .detail-value {
+        font-size: 12px;
+        color: #1f2937;
+        font-weight: 500;
+    }
+
+    .detail-item-full {
+        grid-column: 1 / -1;
+    }
+
+    .badge-min {
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 10px;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .badge-planned { background: #e0e7ff; color: #3730a3; }
+    .badge-open { background: #dbeafe; color: #1e40af; }
+    .badge-in_progress { background: #fef3c7; color: #92400e; }
+    .badge-completed { background: #d1fae5; color: #065f46; }
+    .badge-cancelled { background: #fee2e2; color: #991b1b; }
+
+    .stat-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+    .stat-card {
+        background: #f9fafb;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .stat-label {
+        font-size: 10px;
+        color: #6b7280;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+    }
+
+    .stat-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .progress-bar {
+        background: #e5e7eb;
+        height: 6px;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 4px;
+    }
+
+    .progress-fill {
+        background: #3b82f6;
+        height: 100%;
+        transition: width 0.3s;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-page">
+    <div class="detail-card">
+        <div class="detail-header">
+            <h4><i class="bi bi-book"></i> Training Program Details</h4>
+            <div class="header-actions">
+                <a href="{% url 'training:program_list' %}" class="btn-header">
+                    <i class="bi bi-arrow-left"></i> Back
+                </a>
+                <a href="{% url 'training:program_edit' program.pk %}" class="btn-header">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'training:program_delete' program.pk %}" class="btn-header">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+
+        <div class="detail-body">
+            <!-- Statistics Row -->
+            <div class="stat-row">
+                <div class="stat-card">
+                    <div class="stat-label">Enrolled</div>
+                    <div class="stat-value">{{ program.enrolled_count }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Capacity</div>
+                    <div class="stat-value">{{ program.capacity|default:"No limit" }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Duration</div>
+                    <div class="stat-value">{{ program.duration_hours|default:"0" }} hrs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Availability</div>
+                    <div class="stat-value">
+                        {% if program.is_full %}
+                            <span style="color: #dc2626;">Full</span>
+                        {% else %}
+                            <span style="color: #059669;">Available</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Basic Information -->
+            <div class="detail-section">
+                <div class="section-title">Basic Information</div>
+                <div class="detail-grid">
+                    <div class="detail-item detail-item-full">
+                        <span class="detail-label">Program Name</span>
+                        <span class="detail-value">{{ program.name }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Category</span>
+                        <span class="detail-value">{{ program.get_category_display }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Status</span>
+                        <span class="badge-min badge-{{ program.status }}">{{ program.get_status_display }}</span>
+                    </div>
+                    <div class="detail-item detail-item-full">
+                        <span class="detail-label">Description</span>
+                        <span class="detail-value">{{ program.description|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule & Location -->
+            <div class="detail-section">
+                <div class="section-title">Schedule & Location</div>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Start Date</span>
+                        <span class="detail-value">{{ program.start_date|date:"F d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">End Date</span>
+                        <span class="detail-value">{{ program.end_date|date:"F d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Duration</span>
+                        <span class="detail-value">{{ program.duration_hours|default:"0" }} hours</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Location</span>
+                        <span class="detail-value">{{ program.location|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trainer Information -->
+            <div class="detail-section">
+                <div class="section-title">Trainer Information</div>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Trainer Name</span>
+                        <span class="detail-value">{{ program.trainer|default:"-" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrollment Progress -->
+            {% if program.capacity %}
+            <div class="detail-section">
+                <div class="section-title">Enrollment Progress</div>
+                <div class="detail-item">
+                    <span class="detail-label">{{ program.enrolled_count }} / {{ program.capacity }} enrolled</span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {% widthratio program.enrolled_count program.capacity 100 %}%"></div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Record Information -->
+            <div class="detail-section">
+                <div class="section-title">Record Information</div>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Created</span>
+                        <span class="detail-value">{{ program.created_at|date:"F d, Y g:i A" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Last Updated</span>
+                        <span class="detail-value">{{ program.updated_at|date:"F d, Y g:i A" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

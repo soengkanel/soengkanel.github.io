@@ -1,0 +1,1015 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ lesson.title }} - {{ course.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+
+    .lesson-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .breadcrumb {
+        font-size: 11px;
+        color: #6b7280;
+        margin-bottom: 16px;
+    }
+
+    .breadcrumb a {
+        color: #667eea;
+        text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .lesson-header {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .lesson-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+    }
+
+    .lesson-meta {
+        display: flex;
+        gap: 16px;
+        font-size: 11px;
+        color: #6b7280;
+    }
+
+    .lesson-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .lesson-content-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 20px;
+    }
+
+    /* Video Player Styles */
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+        background: #000;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Content Styles */
+    .lesson-content {
+        font-size: 13px;
+        line-height: 1.8;
+        color: #374151;
+    }
+
+    .lesson-content h1,
+    .lesson-content h2,
+    .lesson-content h3 {
+        color: #1a1a1a;
+        margin-top: 24px;
+        margin-bottom: 12px;
+    }
+
+    .lesson-content h2 {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .lesson-content h3 {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .lesson-content p {
+        margin-bottom: 12px;
+    }
+
+    .lesson-content ul,
+    .lesson-content ol {
+        margin-left: 20px;
+        margin-bottom: 12px;
+    }
+
+    .lesson-content li {
+        margin-bottom: 6px;
+    }
+
+    .lesson-content code {
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        font-size: 11px;
+    }
+
+    .lesson-content pre {
+        background: #1f2937;
+        color: #f9fafb;
+        padding: 16px;
+        border-radius: 6px;
+        overflow-x: auto;
+        margin-bottom: 16px;
+    }
+
+    .lesson-content pre code {
+        background: none;
+        color: inherit;
+        padding: 0;
+    }
+
+    /* Materials Section */
+    .materials-section {
+        background: #f8fafb;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .materials-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .material-item {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .material-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .material-icon {
+        width: 36px;
+        height: 36px;
+        background: #dbeafe;
+        color: #1e40af;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+    }
+
+    .material-details {
+        flex: 1;
+    }
+
+    .material-title {
+        font-size: 12px;
+        font-weight: 500;
+        color: #1a1a1a;
+    }
+
+    .material-meta {
+        font-size: 10px;
+        color: #6b7280;
+    }
+
+    .download-button {
+        background: #667eea;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 11px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: background 0.2s;
+        border: none;
+        cursor: pointer;
+    }
+
+    .download-button:hover {
+        background: #5a67d8;
+        color: white;
+    }
+
+    .button-min-primary,
+    .button-min-default {
+        font-size: 12px;
+        padding: 8px 16px;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+
+    .button-min-primary {
+        background: #667eea;
+        color: white;
+    }
+
+    .button-min-primary:hover {
+        background: #5a67d8;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .button-min-default {
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #d1d5db;
+    }
+
+    .button-min-default:hover {
+        background: #e5e7eb;
+        color: #1f2937;
+        transform: translateY(-1px);
+    }
+
+    /* Navigation and Actions */
+    .lesson-actions {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .complete-section {
+        text-align: center;
+        padding: 20px;
+        border: 2px dashed #d1d5db;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+
+    .complete-section.completed {
+        background: #f0fdf4;
+        border-color: #86efac;
+    }
+
+    .complete-button {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: transform 0.2s;
+    }
+
+    .complete-button:hover {
+        transform: translateY(-2px);
+    }
+
+    .complete-button:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .navigation-buttons {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .nav-button {
+        flex: 1;
+        padding: 12px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        background: white;
+        color: #374151;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 12px;
+        transition: all 0.2s;
+    }
+
+    .nav-button:hover {
+        border-color: #667eea;
+        background: #f8f9ff;
+        color: #667eea;
+    }
+
+    .nav-button.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .progress-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        color: #6b7280;
+        padding: 12px;
+        background: #f8fafb;
+        border-radius: 6px;
+        margin-bottom: 16px;
+    }
+
+    .progress-bar-mini {
+        flex: 1;
+        height: 4px;
+        background: #e2e8f0;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-bar-mini-fill {
+        height: 100%;
+        background: #10b981;
+        transition: width 0.3s;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="lesson-container">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="{% url 'training:course_list' %}">Courses</a> /
+        <a href="{% url 'training:course_detail' course.pk %}">{{ course.code }}</a> /
+        <a href="{% url 'training:learn_course' course.pk %}">Learning</a> /
+        <span>{{ lesson.title }}</span>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="progress-indicator">
+        <span>Course Progress:</span>
+        <div class="progress-bar-mini">
+            <div class="progress-bar-mini-fill" style="width: {{ enrollment.progress_percentage }}%"></div>
+        </div>
+        <span><strong>{{ enrollment.progress_percentage }}%</strong></span>
+    </div>
+
+    <!-- Lesson Header -->
+    <div class="lesson-header">
+        <div class="lesson-title">
+            {% if lesson.content_type == 'video' %}
+                <i class="bi bi-play-circle" style="color: #667eea;"></i>
+            {% elif lesson.content_type == 'document' %}
+                <i class="bi bi-file-earmark-text" style="color: #f59e0b;"></i>
+            {% elif lesson.content_type == 'quiz' %}
+                <i class="bi bi-question-circle" style="color: #ec4899;"></i>
+            {% else %}
+                <i class="bi bi-book" style="color: #8b5cf6;"></i>
+            {% endif %}
+            {{ lesson.title }}
+        </div>
+        <div class="lesson-meta">
+            <div class="lesson-meta-item">
+                <i class="bi bi-folder"></i>
+                <span>{{ lesson.module.title }}</span>
+            </div>
+            {% if lesson.duration_minutes %}
+            <div class="lesson-meta-item">
+                <i class="bi bi-clock"></i>
+                <span>{{ lesson.duration_minutes }} minutes</span>
+            </div>
+            {% endif %}
+            <div class="lesson-meta-item">
+                <i class="bi bi-tag"></i>
+                <span>{{ lesson.get_content_type_display }}</span>
+            </div>
+            {% if lesson_progress.completed %}
+            <div class="lesson-meta-item" style="color: #10b981;">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Completed</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Lesson Content -->
+    <div class="lesson-content-card">
+        {% if lesson.content_type == 'video' and video_embed_url %}
+            <!-- Video Player -->
+            <div class="video-container">
+                {% if 'youtube.com' in video_embed_url or 'vimeo.com' in video_embed_url %}
+                    <iframe src="{{ video_embed_url }}"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                            allowfullscreen>
+                    </iframe>
+                {% else %}
+                    <video controls style="width: 100%; height: 100%;">
+                        <source src="{{ video_embed_url }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <!-- Description -->
+        {% if lesson.description %}
+        <div style="background: #f8fafb; border-left: 4px solid #667eea; padding: 16px; border-radius: 4px; margin-bottom: 20px;">
+            <div style="font-size: 11px; font-weight: 600; color: #667eea; text-transform: uppercase; margin-bottom: 8px;">
+                Lesson Description
+            </div>
+            <div style="font-size: 12px; color: #374151;">
+                {{ lesson.description }}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Text Content -->
+        {% if lesson.content %}
+        <div class="lesson-content">
+            {{ lesson.content|safe }}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Training Materials -->
+    {% if materials %}
+    <div class="materials-section">
+        <div class="materials-title">
+            <i class="bi bi-paperclip"></i>
+            Training Materials
+        </div>
+        {% for material in materials %}
+        <div class="material-item">
+            <div class="material-info">
+                <div class="material-icon">
+                    {% if '.pdf' in material.file.name|lower %}
+                        <i class="bi bi-file-pdf"></i>
+                    {% elif '.doc' in material.file.name|lower or '.docx' in material.file.name|lower %}
+                        <i class="bi bi-file-word"></i>
+                    {% elif '.xls' in material.file.name|lower or '.xlsx' in material.file.name|lower %}
+                        <i class="bi bi-file-excel"></i>
+                    {% elif '.ppt' in material.file.name|lower or '.pptx' in material.file.name|lower %}
+                        <i class="bi bi-file-ppt"></i>
+                    {% else %}
+                        <i class="bi bi-file-earmark"></i>
+                    {% endif %}
+                </div>
+                <div class="material-details">
+                    <div class="material-title">{{ material.title }}</div>
+                    <div class="material-meta">
+                        Uploaded {{ material.created_at|date:"M d, Y" }}
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                {% if '.pdf' in material.file.name|lower or '.doc' in material.file.name|lower or '.docx' in material.file.name|lower %}
+                <button class="download-button" onclick="viewMaterial('{% url 'training:serve_material' material.id %}', '{{ material.title }}', '{{ material.file.name|lower }}', {{ material.id }})">
+                    <i class="bi bi-eye"></i>
+                    View
+                </button>
+                {% endif %}
+                <a href="{% url 'training:serve_material' material.id %}" target="_blank" class="download-button">
+                    <i class="bi bi-download"></i>
+                    Download
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Material Viewer Modal -->
+    <div id="materialViewerModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+        <div style="position: relative; width: 90%; max-width: 1200px; height: 90%; background: white; border-radius: 8px; display: flex; flex-direction: column;">
+            <!-- Modal Header -->
+            <div style="padding: 16px 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                <div style="flex: 1;">
+                    <h3 id="materialViewerTitle" style="margin: 0; font-size: 16px; font-weight: 600;">Document Viewer</h3>
+                </div>
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <!-- Page Navigation -->
+                    <div id="pageControls" style="display: none; gap: 8px; align-items: center; background: #f3f4f6; padding: 4px 8px; border-radius: 6px;">
+                        <button id="firstPageBtn" onclick="goToFirstPage()" style="background: white; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 11px;" title="First page">
+                            <i class="bi bi-chevron-bar-left"></i>
+                        </button>
+                        <button id="prevPageBtn" onclick="changePage(-1)" style="background: white; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 11px;" title="Previous page">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <input id="pageInput" type="number" min="1" value="1" onchange="goToPage()" style="width: 50px; text-align: center; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px; font-size: 11px;" />
+                        <span style="font-size: 11px; color: #6b7280;">of</span>
+                        <span id="totalPagesSpan" style="font-size: 11px; color: #374151; font-weight: 500;">1</span>
+                        <button id="nextPageBtn" onclick="changePage(1)" style="background: white; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 11px;" title="Next page">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                        <button id="lastPageBtn" onclick="goToLastPage()" style="background: white; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 11px;" title="Last page">
+                            <i class="bi bi-chevron-bar-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Zoom Controls -->
+                    <div id="zoomControls" style="display: none; gap: 8px; align-items: center; background: #f3f4f6; padding: 4px 8px; border-radius: 6px;">
+                        <button id="zoomOutBtn" onclick="changeZoom(-0.25)" style="background: white; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 11px;" title="Zoom out">
+                            <i class="bi bi-zoom-out"></i>
+                        </button>
+                        <select id="zoomSelect" onchange="setZoom()" style="border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px; font-size: 11px; background: white; cursor: pointer;">
+                            <option value="auto">Auto</option>
+                            <option value="0.5">50%</option>
+                            <option value="0.75">75%</option>
+                            <option value="1">100%</option>
+                            <option value="1.25">125%</option>
+                            <option value="1.5">150%</option>
+                            <option value="2">200%</option>
+                        </select>
+                        <button id="zoomInBtn" onclick="changeZoom(0.25)" style="background: white; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 11px;" title="Zoom in">
+                            <i class="bi bi-zoom-in"></i>
+                        </button>
+                        <button id="fitWidthBtn" onclick="fitToWidth()" style="background: white; border: 1px solid #d1d5db; border-radius: 4px; padding: 4px 8px; cursor: pointer; font-size: 11px;" title="Fit to width">
+                            <i class="bi bi-arrows-angle-contract"></i>
+                        </button>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 8px; align-items: center; margin-left: auto;">
+                        <a id="downloadPdfBtn" href="#" target="_blank" style="background: #667eea; color: white; border-radius: 4px; padding: 6px 12px; text-decoration: none; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                            <i class="bi bi-download"></i> Download
+                        </a>
+                        <button onclick="closeMaterialViewer()" style="background: #ef4444; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                            <i class="bi bi-x-lg"></i> Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Body with PDF.js Viewer -->
+            <div id="pdf-viewer-container" style="flex: 1; overflow-y: auto; overflow-x: hidden; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 20px;">
+                <div id="pdf-loading" style="color: white; text-align: center;">
+                    <i class="bi bi-hourglass-split" style="font-size: 48px;"></i>
+                    <div style="margin-top: 12px; font-size: 14px;">Loading PDF...</div>
+                </div>
+                <div id="pdf-pages-container" style="display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%;">
+                    <!-- PDF pages will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lesson Actions -->
+    <div class="lesson-actions">
+        <!-- Complete Section -->
+        <div class="complete-section {% if lesson_progress.completed %}completed{% endif %}">
+            {% if lesson_progress.completed %}
+                <div style="font-size: 14px; font-weight: 600; color: #10b981; margin-bottom: 8px;">
+                    <i class="bi bi-check-circle-fill" style="font-size: 24px;"></i>
+                </div>
+                <div style="font-size: 13px; font-weight: 600; color: #059669;">
+                    Lesson Completed!
+                </div>
+                <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">
+                    Completed on {{ lesson_progress.completed_at|date:"M d, Y at h:i A" }}
+                </div>
+            {% else %}
+                <div style="font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 12px;">
+                    Mark this lesson as complete when you're done
+                </div>
+                <button id="completeButton" class="complete-button">
+                    <i class="bi bi-check-circle"></i>
+                    Mark as Complete
+                </button>
+            {% endif %}
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation-buttons">
+            {% if prev_lesson %}
+            <a href="{% url 'training:lesson_view' course.pk prev_lesson.pk %}" class="nav-button">
+                <i class="bi bi-arrow-left"></i>
+                Previous Lesson
+            </a>
+            {% else %}
+            <div class="nav-button disabled">
+                <i class="bi bi-arrow-left"></i>
+                Previous Lesson
+            </div>
+            {% endif %}
+
+            <a href="{% url 'training:learn_course' course.pk %}" class="nav-button" style="flex: 0.5; border-color: #667eea; color: #667eea;">
+                <i class="bi bi-grid-3x3-gap"></i>
+                All Lessons
+            </a>
+
+            {% if next_lesson %}
+            <a href="{% url 'training:lesson_view' course.pk next_lesson.pk %}" class="nav-button">
+                Next Lesson
+                <i class="bi bi-arrow-right"></i>
+            </a>
+            {% else %}
+            <div class="nav-button disabled">
+                Next Lesson
+                <i class="bi bi-arrow-right"></i>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// PDF.js variables
+let pdfDoc = null;
+let currentPage = 1;
+let totalPages = 0;
+let scale = 1.5;
+let autoFit = true;
+let renderAllPages = true; // Render all pages for continuous scrolling
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// Material Viewer Functions
+async function viewMaterial(fileUrl, title, fileName, materialId) {
+    console.log('Opening material:', title, 'URL:', fileUrl);
+
+    const modal = document.getElementById('materialViewerModal');
+    const modalTitle = document.getElementById('materialViewerTitle');
+
+    modalTitle.textContent = title;
+    document.getElementById('downloadPdfBtn').href = fileUrl;
+
+    if (fileName.includes('.pdf')) {
+        // Scroll main page to top
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+
+        // Show modal immediately (keep main page scrollbar visible)
+        modal.style.display = 'flex';
+
+        // Scroll PDF container to top
+        const container = document.getElementById('pdf-viewer-container');
+        container.scrollTop = 0;
+
+        // Load PDF
+        await loadPDF(fileUrl);
+    } else if (fileName.includes('.doc') || fileName.includes('.docx')) {
+        // For Word docs, open in new tab
+        window.open(fileUrl, '_blank');
+        return;
+    }
+}
+
+async function loadPDF(url) {
+    const loadingDiv = document.getElementById('pdf-loading');
+    const pagesContainer = document.getElementById('pdf-pages-container');
+    const container = document.getElementById('pdf-viewer-container');
+
+    // Show loading, hide controls
+    loadingDiv.style.display = 'block';
+    pagesContainer.innerHTML = '';
+    document.getElementById('pageControls').style.display = 'none';
+    document.getElementById('zoomControls').style.display = 'none';
+
+    try {
+        // Fetch PDF with authentication
+        const response = await fetch(url, {
+            method: 'GET',
+            credentials: 'same-origin'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to load PDF: ${response.status}`);
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        const typedArray = new Uint8Array(arrayBuffer);
+
+        // Load PDF document
+        pdfDoc = await pdfjsLib.getDocument({data: typedArray}).promise;
+        totalPages = pdfDoc.numPages;
+        currentPage = 1;
+
+        console.log(`PDF loaded: ${totalPages} pages`);
+
+        // Hide loading, show controls
+        loadingDiv.style.display = 'none';
+        document.getElementById('pageControls').style.display = 'flex';
+        document.getElementById('zoomControls').style.display = 'flex';
+
+        // Update page input
+        document.getElementById('pageInput').max = totalPages;
+        document.getElementById('totalPagesSpan').textContent = totalPages;
+
+        // Scroll to top
+        container.scrollTop = 0;
+
+        // Render all pages for continuous scrolling
+        await renderAllPagesSequentially();
+
+    } catch (error) {
+        console.error('Error loading PDF:', error);
+        loadingDiv.innerHTML = `
+            <i class="bi bi-exclamation-circle" style="font-size: 48px; color: #ef4444;"></i>
+            <div style="margin-top: 12px; font-size: 14px; color: white;">Error loading PDF</div>
+            <div style="margin-top: 8px; font-size: 12px; color: #d1d5db;">${error.message}</div>
+            <a href="${url}" target="_blank" style="color: #667eea; margin-top: 12px; display: inline-block; text-decoration: underline; font-size: 14px;">Open in new tab</a>
+        `;
+    }
+}
+
+async function renderAllPagesSequentially() {
+    const pagesContainer = document.getElementById('pdf-pages-container');
+    const container = document.getElementById('pdf-viewer-container');
+
+    // Clear existing pages
+    pagesContainer.innerHTML = '';
+
+    // Calculate scale once
+    let renderScale = scale;
+    if (autoFit) {
+        const containerWidth = container.clientWidth - 40;
+        const firstPage = await pdfDoc.getPage(1);
+        const viewport = firstPage.getViewport({scale: 1});
+        renderScale = containerWidth / viewport.width;
+
+        // Limit scale for better quality
+        if (renderScale > 2.5) renderScale = 2.5;
+        if (renderScale < 0.5) renderScale = 0.5;
+
+        scale = renderScale;
+    }
+
+    // Render all pages
+    for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+        const page = await pdfDoc.getPage(pageNum);
+        const viewport = page.getViewport({scale: renderScale});
+
+        // Create canvas for this page
+        const canvas = document.createElement('canvas');
+        canvas.id = `page-${pageNum}`;
+        canvas.className = 'pdf-page';
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.style.background = 'white';
+        canvas.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+        canvas.style.borderRadius = '4px';
+        canvas.style.maxWidth = '100%';
+        canvas.style.height = 'auto';
+
+        // Add to container
+        pagesContainer.appendChild(canvas);
+
+        // Render page on canvas
+        const ctx = canvas.getContext('2d');
+        await page.render({
+            canvasContext: ctx,
+            viewport: viewport
+        }).promise;
+
+        console.log(`Rendered page ${pageNum}/${totalPages}`);
+    }
+
+    // Update controls
+    updateControls();
+
+    console.log(`All ${totalPages} pages rendered at ${Math.round(renderScale * 100)}%`);
+}
+
+function updateControls() {
+    // Update page input
+    document.getElementById('pageInput').value = currentPage;
+
+    // Update navigation buttons
+    document.getElementById('firstPageBtn').disabled = (currentPage <= 1);
+    document.getElementById('prevPageBtn').disabled = (currentPage <= 1);
+    document.getElementById('nextPageBtn').disabled = (currentPage >= totalPages);
+    document.getElementById('lastPageBtn').disabled = (currentPage >= totalPages);
+
+    // Update zoom select
+    const zoomSelect = document.getElementById('zoomSelect');
+    if (autoFit) {
+        zoomSelect.value = 'auto';
+    } else {
+        // Find closest zoom level
+        const zoomPercent = scale;
+        const options = [0.5, 0.75, 1, 1.25, 1.5, 2];
+        const closest = options.reduce((prev, curr) =>
+            Math.abs(curr - zoomPercent) < Math.abs(prev - zoomPercent) ? curr : prev
+        );
+        zoomSelect.value = closest;
+    }
+}
+
+function changePage(delta) {
+    const newPage = currentPage + delta;
+    if (newPage < 1 || newPage > totalPages) return;
+
+    currentPage = newPage;
+    scrollToPage(currentPage);
+}
+
+function scrollToPage(pageNum) {
+    const pageCanvas = document.getElementById(`page-${pageNum}`);
+    if (pageCanvas) {
+        pageCanvas.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        currentPage = pageNum;
+        updateControls();
+    }
+}
+
+function goToPage() {
+    const pageInput = document.getElementById('pageInput');
+    let pageNum = parseInt(pageInput.value);
+
+    if (isNaN(pageNum) || pageNum < 1) pageNum = 1;
+    if (pageNum > totalPages) pageNum = totalPages;
+
+    scrollToPage(pageNum);
+}
+
+function goToFirstPage() {
+    scrollToPage(1);
+}
+
+function goToLastPage() {
+    scrollToPage(totalPages);
+}
+
+function changeZoom(delta) {
+    autoFit = false;
+    scale += delta;
+
+    if (scale < 0.5) scale = 0.5;
+    if (scale > 3) scale = 3;
+
+    renderAllPagesSequentially();
+}
+
+function setZoom() {
+    const zoomSelect = document.getElementById('zoomSelect');
+    const value = zoomSelect.value;
+
+    if (value === 'auto') {
+        autoFit = true;
+    } else {
+        autoFit = false;
+        scale = parseFloat(value);
+    }
+
+    renderAllPagesSequentially();
+}
+
+function fitToWidth() {
+    autoFit = true;
+    renderAllPagesSequentially();
+}
+
+function closeMaterialViewer() {
+    const modal = document.getElementById('materialViewerModal');
+    const pagesContainer = document.getElementById('pdf-pages-container');
+    const loadingDiv = document.getElementById('pdf-loading');
+
+    modal.style.display = 'none';
+
+    // Reset PDF viewer
+    pdfDoc = null;
+    currentPage = 1;
+    totalPages = 0;
+    scale = 1.5;
+    autoFit = true;
+
+    // Clear pages
+    pagesContainer.innerHTML = '';
+
+    // Reset loading
+    loadingDiv.style.display = 'block';
+    loadingDiv.innerHTML = '<i class="bi bi-hourglass-split" style="font-size: 48px;"></i><div style="margin-top: 12px; font-size: 14px;">Loading PDF...</div>';
+
+    // Hide controls
+    document.getElementById('pageControls').style.display = 'none';
+    document.getElementById('zoomControls').style.display = 'none';
+}
+
+// Set up all event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Complete lesson button
+    const completeButton = document.getElementById('completeButton');
+    if (completeButton) {
+        completeButton.addEventListener('click', function() {
+            // Disable button
+            completeButton.disabled = true;
+            completeButton.innerHTML = '<i class="bi bi-hourglass-split"></i> Marking as complete...';
+
+            // Send AJAX request
+            fetch("{% url 'training:lesson_complete' course.pk lesson.pk %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI
+                    const completeSection = document.querySelector('.complete-section');
+                    completeSection.classList.add('completed');
+                    completeSection.innerHTML = `
+                        <div style="font-size: 14px; font-weight: 600; color: #10b981; margin-bottom: 8px;">
+                            <i class="bi bi-check-circle-fill" style="font-size: 24px;"></i>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 600; color: #059669;">
+                            Lesson Completed!
+                        </div>
+                        <div style="font-size: 11px; color: #6b7280; margin-top: 4px;">
+                            Just now
+                        </div>
+                    `;
+
+                    // Update progress indicator
+                    if (data.progress) {
+                        const progressFill = document.querySelector('.progress-bar-mini-fill');
+                        const progressText = document.querySelector('.progress-indicator strong');
+                        if (progressFill) progressFill.style.width = data.progress + '%';
+                        if (progressText) progressText.textContent = data.progress + '%';
+                    }
+
+                    // Show success message
+                    console.log('Lesson marked as complete!');
+                } else {
+                    alert('Error: ' + (data.error || 'Could not mark lesson as complete'));
+                    completeButton.disabled = false;
+                    completeButton.innerHTML = '<i class="bi bi-check-circle"></i> Mark as Complete';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                completeButton.disabled = false;
+                completeButton.innerHTML = '<i class="bi bi-check-circle"></i> Mark as Complete';
+            });
+        });
+    }
+});
+
+// Close modal on ESC key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeMaterialViewer();
+    }
+});
+
+// Close modal when clicking outside the content
+document.getElementById('materialViewerModal')?.addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeMaterialViewer();
+    }
+});
+</script>
+{% endblock %}

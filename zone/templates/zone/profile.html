@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Zone Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Zone Profile</h1>
+    
+    {% if zone %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Profile Information</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                            <p><strong>Zone Name:</strong> {{ zone.name }}</p>
+    <p><strong>Created By:</strong> 
+        {% if zone.created_by %}
+            {{ zone.created_by.get_full_name|default:zone.created_by.username }}
+        {% else %}
+            System
+        {% endif %}
+    </p>
+    <p><strong>Creator Email:</strong> 
+        {% if zone.created_by %}
+            {{ zone.created_by.email|default:"Not provided" }}
+        {% else %}
+            Not provided
+        {% endif %}
+    </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Phone Number:</strong> {{ zone.phone_number|default:"Not provided" }}</p>
+                        <p><strong>Address:</strong> {{ zone.address|default:"Not provided" }}</p>
+                        <p><strong>Status:</strong> {% if zone.is_active %}Active{% else %}Inactive{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Zone profile not found. Please contact the administrator.
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

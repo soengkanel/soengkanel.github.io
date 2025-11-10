@@ -1,0 +1,35 @@
+{% load employee_tags %}
+{% if employee %}
+<div class="employee-card card">
+    <div class="card-body">
+        <div class="d-flex align-items-center">
+            {% employee_avatar employee size='md' %}
+            <div class="ms-3 flex-grow-1">
+                <h6 class="mb-1">{{ employee.get_full_name }}</h6>
+                <small class="text-muted">{{ employee.employee_id }}</small>
+                {% if show_details %}
+                <br>
+                {% if employee.position %}
+                    <small class="text-muted">{{ employee.position.name }}</small>
+                {% endif %}
+                {% if employee.department %}
+                    <br><small class="text-muted">{{ employee.department.name }}</small>
+                {% endif %}
+                {% endif %}
+            </div>
+            {% if show_details %}
+            <div class="text-end">
+                <span class="badge bg-{% if employee.is_active %}success{% else %}secondary{% endif %}">
+                    {% if employee.is_active %}Active{% else %}Inactive{% endif %}
+                </span>
+                {% if employee.has_user_account %}
+                    <br><small class="text-success"><i class="fas fa-user-check"></i> Has Account</small>
+                {% else %}
+                    <br><small class="text-muted"><i class="fas fa-user-times"></i> No Account</small>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}

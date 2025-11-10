@@ -1,0 +1,93 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Expense Policies - {{ system_title }}{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header { padding: 12px 0; margin-bottom: 16px; }
+    .page-header h2 { font-size: 18px; font-weight: 600; margin: 0; }
+    .breadcrumb { font-size: 12px; margin-bottom: 8px; }
+    .table-container { background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+    .table { margin: 0; font-size: 13px; }
+    .table th { background: #f9fafb; font-weight: 600; font-size: 12px; padding: 12px; border: none; }
+    .table td { padding: 12px; border: none; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+    .table tbody tr:hover { background: #f8fafc; }
+    .badge { font-size: 11px; padding: 4px 8px; font-weight: 500; }
+</style>
+{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard:settings' %}">Settings</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'policies:dashboard' %}">Policies</a></li>
+        <li class="breadcrumb-item active">Expense Policies</li>
+    </ol>
+</nav>
+
+<div class="page-header">
+    <div>
+        <h2><i class="bi-wallet-fill me-2"></i>Expense Policies</h2>
+    </div>
+    <div>
+        <a href="{% url 'policies:expense_policy_create' %}" class="btn btn-primary btn-sm">
+            <i class="bi-plus-circle me-1"></i>Add Expense Policy
+        </a>
+    </div>
+</div>
+
+<div class="table-container">
+    {% if policies %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Policy Name</th>
+                <th>Max/Claim</th>
+                <th>Max/Month</th>
+                <th>Max/Year</th>
+                <th>Receipt Required</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for policy in policies %}
+            <tr>
+                <td><strong>{{ policy.name }}</strong></td>
+                <td>{{ policy.max_amount_per_claim }}</td>
+                <td>{{ policy.max_amount_per_month }}</td>
+                <td>{{ policy.max_amount_per_year }}</td>
+                <td>
+                    {% if policy.receipt_required %}
+                        <span class="badge bg-warning">Required</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Optional</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if policy.is_active %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'policies:expense_policy_edit' policy.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi-pencil"></i> Edit
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="p-4 text-center text-muted">
+        <i class="bi-inbox fs-1 d-block mb-2"></i>
+        <p>No expense policies configured yet.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

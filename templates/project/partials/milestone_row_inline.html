@@ -1,0 +1,124 @@
+<!-- Inline Editable Milestone Row -->
+<tr id="milestone-{{ milestone.id }}" class="milestone-row"
+    data-status="{{ milestone.status }}"
+    data-type="{{ milestone.milestone_type }}">
+    <td>
+        <div class="milestone-name-cell">
+            <input type="text"
+                   class="form-control form-control-sm milestone-name-input"
+                   value="{{ milestone.milestone_name }}"
+                   data-milestone-id="{{ milestone.id }}"
+                   data-field="milestone_name"
+                   placeholder="Milestone name..."
+                   style="font-weight: 500; border: 1px solid transparent;">
+            <textarea class="form-control form-control-sm milestone-desc-input mt-1"
+                      data-milestone-id="{{ milestone.id }}"
+                      data-field="description"
+                      placeholder="Description (optional)..."
+                      rows="1"
+                      style="font-size: 0.75rem; border: 1px solid transparent;">{{ milestone.description }}</textarea>
+        </div>
+    </td>
+    <td>
+        <select class="form-select form-select-sm milestone-type-select"
+                data-milestone-id="{{ milestone.id }}"
+                data-field="milestone_type"
+                style="border: 1px solid transparent;">
+            <option value="deliverable" {% if milestone.milestone_type == 'deliverable' %}selected{% endif %}>Deliverable</option>
+            <option value="payment" {% if milestone.milestone_type == 'payment' %}selected{% endif %}>Payment</option>
+            <option value="review" {% if milestone.milestone_type == 'review' %}selected{% endif %}>Review</option>
+            <option value="approval" {% if milestone.milestone_type == 'approval' %}selected{% endif %}>Approval</option>
+            <option value="launch" {% if milestone.milestone_type == 'launch' %}selected{% endif %}>Launch</option>
+            <option value="testing" {% if milestone.milestone_type == 'testing' %}selected{% endif %}>Testing</option>
+            <option value="other" {% if milestone.milestone_type == 'other' %}selected{% endif %}>Other</option>
+        </select>
+    </td>
+    <td>
+        <input type="date"
+               class="form-control form-control-sm milestone-date-input"
+               value="{{ milestone.milestone_date|date:'Y-m-d' }}"
+               data-milestone-id="{{ milestone.id }}"
+               data-field="milestone_date"
+               style="border: 1px solid transparent;">
+        {% if milestone.is_overdue %}
+            <small class="text-danger d-block">Overdue</small>
+        {% elif milestone.is_critical %}
+            <small class="text-warning d-block">Critical</small>
+        {% endif %}
+    </td>
+    <td>
+        <select class="form-select form-select-sm milestone-status-select"
+                data-milestone-id="{{ milestone.id }}"
+                data-field="status"
+                style="border: 1px solid transparent;">
+            <option value="pending" {% if milestone.status == 'pending' %}selected{% endif %}>Pending</option>
+            <option value="in_progress" {% if milestone.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+            <option value="completed" {% if milestone.status == 'completed' %}selected{% endif %}>Completed</option>
+            <option value="overdue" {% if milestone.status == 'overdue' %}selected{% endif %}>Overdue</option>
+            <option value="cancelled" {% if milestone.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+        </select>
+    </td>
+    <td>
+        <div class="d-flex align-items-center gap-2">
+            <div class="progress flex-grow-1" style="height: 20px;">
+                <div class="progress-bar {% if milestone.completion_percentage == 100 %}bg-success{% elif milestone.completion_percentage >= 50 %}bg-info{% else %}bg-warning{% endif %}"
+                     role="progressbar"
+                     style="width: {{ milestone.completion_percentage }}%"
+                     aria-valuenow="{{ milestone.completion_percentage }}"
+                     aria-valuemin="0"
+                     aria-valuemax="100">
+                    {{ milestone.completion_percentage|floatformat:0 }}%
+                </div>
+            </div>
+            <input type="number"
+                   class="form-control form-control-sm milestone-progress-input"
+                   value="{{ milestone.completion_percentage|floatformat:0 }}"
+                   data-milestone-id="{{ milestone.id }}"
+                   data-field="completion_percentage"
+                   min="0"
+                   max="100"
+                   step="5"
+                   style="width: 60px; border: 1px solid transparent;">
+        </div>
+    </td>
+    <td>
+        <div class="input-group input-group-sm">
+            <span class="input-group-text" style="font-size: 0.75rem;">$</span>
+            <input type="number"
+                   class="form-control form-control-sm milestone-amount-input"
+                   value="{{ milestone.amount|default:'' }}"
+                   data-milestone-id="{{ milestone.id }}"
+                   data-field="amount"
+                   placeholder="0.00"
+                   step="0.01"
+                   min="0"
+                   style="border: 1px solid transparent;">
+        </div>
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm" role="group">
+            <a href="{% url 'project:milestone_detail' milestone.id %}"
+               class="btn btn-outline-primary btn-sm"
+               title="View milestone">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+            </a>
+            <a href="{% url 'project:milestone_edit' milestone.id %}"
+               class="btn btn-outline-secondary btn-sm"
+               title="Edit full milestone">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+            </a>
+            <button type="button" class="btn btn-outline-danger btn-sm delete-milestone-btn"
+                    data-milestone-id="{{ milestone.id }}"
+                    title="Delete milestone">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </td>
+</tr>

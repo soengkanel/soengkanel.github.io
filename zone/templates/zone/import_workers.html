@@ -1,0 +1,211 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Import Workers - Zone Management{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-flex align-items-center justify-content-between">
+                <h4 class="mb-0">Import Workers from Excel</h4>
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item"><a href="{% url 'zone:worker_list' %}">Workers</a></li>
+                        <li class="breadcrumb-item active">Import</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Upload Excel File</h5>
+                    
+                    <form method="post" enctype="multipart/form-data" id="importForm" action="">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_excel_file" class="form-label">
+                                Excel File <span class="text-danger">*</span>
+                            </label>
+                            <input type="file" 
+                                   name="excel_file" 
+                                   id="id_excel_file" 
+                                   class="form-control" 
+                                   accept=".xlsx,.xls" 
+                                   required>
+                            {% if form.excel_file.help_text %}
+                                <small class="form-text text-muted">{{ form.excel_file.help_text }}</small>
+                            {% endif %}
+                            {% for error in form.excel_file.errors %}
+                                <div class="text-danger small">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                {{ form.update_existing }}
+                                <label class="form-check-label" for="{{ form.update_existing.id_for_label }}">
+                                    {{ form.update_existing.label }}
+                                </label>
+                                {% if form.update_existing.help_text %}
+                                    <small class="form-text text-muted d-block">{{ form.update_existing.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                {{ form.skip_duplicates }}
+                                <label class="form-check-label" for="{{ form.skip_duplicates.id_for_label }}">
+                                    {{ form.skip_duplicates.label }}
+                                </label>
+                                {% if form.skip_duplicates.help_text %}
+                                    <small class="form-text text-muted d-block">{{ form.skip_duplicates.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload me-2"></i>Upload & Preview
+                            </button>
+                            <a href="{% url 'zone:worker_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Progress indicator (hidden by default) -->
+            <div class="card d-none" id="progressCard">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Processing...</h5>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" 
+                             style="width: 100%">
+                            Processing Excel file...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">
+                        <i class="fas fa-info-circle text-info me-2"></i>Instructions
+                    </h5>
+                    
+                    <div class="mb-3">
+                        <h6 class="text-muted">Excel File Format</h6>
+                        <p class="small">Your Excel file should contain the following columns:</p>
+                        <ul class="small">
+                            <li><strong>Column A:</strong> NO (Worker Number)</li>
+                            <li><strong>Column B:</strong> PHOTO (Worker Photo)</li>
+                            <li><strong>Column C:</strong> NAME (Full Name)</li>
+                            <li><strong>Column D:</strong> SEX (M/F)</li>
+                            <li><strong>Column E:</strong> DOB (Date of Birth)</li>
+                            <li><strong>Column F:</strong> NATIONALITY</li>
+                            <li><strong>Column G:</strong> BUILDING</li>
+                            <li><strong>Column H:</strong> POSITION</li>
+                            <li><strong>Column I:</strong> JOINEDDATE</li>
+                            <li><strong>Column J:</strong> RESIGNEDDATE</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted">Document Images</h6>
+                        <p class="small">Insert document images directly into cells:</p>
+                        <ul class="small">
+                            <li><strong>Column K:</strong> Passport/ID Image</li>
+                            <li><strong>Column N:</strong> Work Permit Image</li>
+                            <li><strong>Column Q:</strong> Visa Image</li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-warning small">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Important:</strong> Images must be embedded in cells, not as floating objects.
+                    </div>
+
+                    <div class="d-grid">
+                        <a href="#" class="btn btn-outline-primary btn-sm" onclick="downloadTemplate()">
+                            <i class="fas fa-download me-2"></i>Download Template
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('importForm');
+    const progressCard = document.getElementById('progressCard');
+    const fileInput = document.getElementById('id_excel_file');
+    
+    // Log when file is selected
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            console.log('File selected:', this.files[0]?.name);
+            console.log('File size:', this.files[0]?.size);
+        });
+    }
+    
+    form.addEventListener('submit', function(e) {
+        console.log('Form submitting...');
+        console.log('File input value:', fileInput.value);
+        console.log('Files attached:', fileInput.files.length);
+        
+        // Ensure we have a file selected
+        if (!fileInput.files.length) {
+            e.preventDefault();
+            alert('Please select an Excel file first');
+            return false;
+        }
+        
+        // Show progress indicator
+        if (progressCard) {
+            progressCard.classList.remove('d-none');
+        }
+        
+        // Don't disable the file input!
+        // Only disable buttons to prevent double submission
+        form.querySelectorAll('button').forEach(el => {
+            el.disabled = true;
+        });
+        
+        // Log form data being sent
+        const formData = new FormData(form);
+        console.log('Form data keys:', Array.from(formData.keys()));
+        
+        // Allow form to submit normally
+        return true;
+    });
+});
+
+function downloadTemplate() {
+    // Implement template download
+    alert('Template download will be implemented');
+}
+</script>
+{% endblock %}

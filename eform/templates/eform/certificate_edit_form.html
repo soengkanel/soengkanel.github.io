@@ -1,0 +1,747 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load eform_tags %}
+
+{% block title %}
+    {% if is_batch %}
+        Certificate Request Form - Batch ({{ workers|length }} workers)
+    {% else %}
+        Certificate Request Form - {{ worker.get_full_name }}
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Ultra-Compact Certificate Edit Form */
+:root {
+    --primary: #3b82f6;
+    --primary-light: #eff6ff;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --white: #ffffff;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--gray-800);
+    background: var(--gray-50);
+}
+
+.compact-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 8px;
+}
+
+/* Compact Header */
+.compact-header {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 12px 0px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0;
+}
+
+.header-subtitle {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin: 2px 0 0 0;
+}
+
+.btn-compact {
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    color: var(--gray-700);
+    text-decoration: none;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s;
+}
+
+.btn-compact:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-400);
+}
+
+.btn-compact.primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
+}
+
+.btn-compact.success {
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--white);
+}
+
+.btn-compact.danger {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: var(--white);
+}
+
+/* Worker Info Strip */
+.worker-strip {
+    background: var(--primary-light);
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+}
+
+.worker-strip .info-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.worker-strip .label {
+    font-weight: 500;
+    color: var(--gray-600);
+}
+
+.worker-strip .value {
+    color: var(--gray-900);
+}
+
+/* Ultra-Compact Form Sections */
+.form-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.section-header {
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-700);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.section-content {
+    padding: 12px;
+}
+
+/* Minimal Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+.form-grid.two-col {
+    grid-template-columns: 1fr 1fr;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.form-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 2px;
+}
+
+.form-input {
+    padding: 6px 8px;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    font-size: 12px;
+    background: var(--white);
+    color: var(--gray-900);
+    transition: all 0.15s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.form-textarea {
+    padding: 6px 8px;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    font-size: 12px;
+    min-height: 60px;
+    resize: vertical;
+}
+
+.form-select {
+    padding: 6px 8px;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    font-size: 12px;
+    background: var(--white);
+    color: var(--gray-900);
+}
+
+/* Checkbox Groups */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin: 0;
+}
+
+.checkbox-item label {
+    font-size: 11px;
+    color: var(--gray-700);
+    margin: 0;
+}
+
+/* Form Actions */
+.form-actions {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 12px 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+/* Icons */
+.icon {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+}
+
+/* Modern Table for Workers */
+.modern-table-container {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.table {
+    margin: 0;
+    font-size: 12px;
+}
+
+.table th {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-700);
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 8px 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background: var(--gray-50);
+}
+
+/* Worker Avatar */
+.worker-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.worker-photo {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.worker-details h6 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin: 0;
+}
+
+.worker-details p {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin: 2px 0 0 0;
+}
+
+/* Status badges */
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-leave {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-suspended {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-inactive {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.status-probation {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .compact-container {
+        padding: 4px;
+    }
+    
+    .compact-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-grid.two-col {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="compact-container">
+    <!-- Compact Header -->
+    <div class="compact-header">
+        <div>
+            <h1 class="header-title">Employment Certificate Request</h1>
+            <p class="header-subtitle">
+                {% if is_batch %}
+                    Complete certificate request for {{ workers|length }} worker{{ workers|length|pluralize }}
+                {% else %}
+                    Complete certificate request for {{ worker.get_full_name }}
+                {% endif %}
+            </p>
+        </div>
+
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+    <!-- Workers Information Table -->
+    <div class="form-card">
+        <div class="section-header">
+            {% if is_batch %}
+                Workers Included ({{ workers|length }})
+            {% else %}
+                Worker Information
+            {% endif %}
+
+            {% if is_edit and worker_service_details %}
+                {% with service_count=0 total_cost=0 %}
+                    {% for worker_id, service in worker_service_details.items %}
+                        {% if service %}
+                            {% with service_count=service_count|add:1 total_cost=total_cost|add:service.default_price %}
+                            {% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if service_count > 0 %}
+                        <span style="float: right; font-size: 11px; color: var(--gray-600); font-weight: normal;">
+                            Services assigned to {{ service_count }} worker{{ service_count|pluralize }}
+                        </span>
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+        </div>
+        <div class="section-content" style="padding: 0;">
+            <div class="modern-table-container" style="border: none; box-shadow: none;">
+                <table class="table" style="margin: 0;">
+                    <thead>
+                        <tr>
+                            <th width="50">Photo</th>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>Status</th>
+                            <th>Position</th>
+                            <th>Building</th>
+                            <th>Zone</th>
+                            <th>Nationality</th>
+                            <th width="120">VISA Extension</th>
+                            <th width="150">Visa Service Charge</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for worker_item in workers %}
+                        <tr>
+                            <td>
+                                {% if worker_item.photo %}
+                                    <img src="{% url "zone:serve_worker_photo" worker_item.id %}" class="worker-photo" alt="Worker Photo">
+                                {% else %}
+                                    <div class="worker-avatar">
+                                        {{ worker_item.first_name|first }}{{ worker_item.last_name|first }}
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="worker-details">
+                                    <h6>{{ worker_item.get_full_name }}</h6>
+                                    {% if worker_item.is_vip %}
+                                        <span class="px-2 py-0.5 rounded-lg bg-yellow-600 text-white ml-1" style="font-size:10px">VIP</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge status-active">{{ worker_item.worker_id|default:"Not set" }}</span>
+                            </td>
+                            <td>
+                                {% if worker_item.status == 'active' %}
+                                    <span class="status-badge status-active">Active</span>
+                                {% elif worker_item.status == 'inactive' %}
+                                    <span class="status-badge status-inactive">Inactive</span>
+                                {% elif worker_item.status == 'suspended' %}
+                                    <span class="status-badge status-suspended">Suspended</span>
+                                {% elif worker_item.status == 'on_leave' %}
+                                    <span class="status-badge status-leave">On Leave</span>
+                                {% elif worker_item.status == 'probation' %}
+                                    <span class="status-badge status-probation">Probation</span>
+                                {% else %}
+                                    <span class="status-badge status-inactive">{{ worker_item.status|default:"Unknown" }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span>{{ worker_item.position.name|default:"-" }}</span>
+                            </td>
+                            <td>
+                                <span>{{ worker_item.building.name|default:"-" }}</span>
+                                {% if worker_item.floor %}<br><small style="color: #6b7280; font-size: 10px;">Floor {{ worker_item.floor.floor_number }}</small>{% endif %}
+                            </td>
+                            <td>
+                                <span>{{ worker_item.zone.name|default:"-" }}</span>
+                            </td>
+                            <td>
+                                <span>{{ worker_item.get_nationality_display|default:"-" }}</span>
+                            </td>
+                            <td>
+                                {% with current_service=worker_service_details|get_item:worker_item.id %}
+                                    {% if current_service %}
+                                        <span class="status-badge status-active" style="font-size: 10px; padding: 2px 6px;">
+                                            {{ current_service.name|extract_duration }}
+                                        </span>
+                                    {% else %}
+                                        <span class="status-badge status-inactive" style="font-size: 10px;">No Extension</span>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                <select name="visa_service_charge_{{ worker_item.id }}" class="form-select" style="font-size: 11px; padding: 4px 6px;">
+                                    {% if visa_services %}
+                                        <option value="">Select service (optional)</option>
+                                        {% for service in visa_services %}
+                                            <option value="{{ service.id }}"
+                                                {% if worker_services|get_item:worker_item.id == service.id %}selected{% endif %}>
+                                                {{ service.name }} - ${{ service.default_price }}
+                                            </option>
+                                        {% endfor %}
+                                    {% else %}
+                                        <option value="">No visa services available</option>
+                                    {% endif %}
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+        <!-- Certificate Type & Purpose -->
+        <div class="form-card">
+            <div class="section-header">
+                Certificate Request
+            </div>
+            <div class="section-content">
+                {% if is_edit %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="certificate_type">Ref No:</label>
+                        <input type="text" class="form-input" name="request_ref" id="request_ref" value="{{ form_data.request_ref}}"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="status">Request Status</label>
+                        <select name="status" id="status" class="form-select" required>
+                            {% for value, label in status_choices %}
+                                <option value="{{ value }}" {% if form_data.status == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="form-grid two-col">
+                    <div class="form-group">
+                        <label class="form-label" for="certificate_type">Certificate Type</label>
+                        <select name="certificate_type" id="certificate_type" class="form-select" required>
+                            {% for value, label in certificate_types %}
+                                <option value="{{ value }}" {% if form_data.certificate_type == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="purpose">Purpose</label>
+                        <select name="purpose" id="purpose" class="form-select" required>
+                            {% for value, label in purposes %}
+                                <option value="{{ value }}" {% if form_data.purpose == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="urgency">Urgency Level</label>
+                        <select name="urgency" id="urgency" class="form-select" required>
+                            {% for value, label in urgency_choices %}
+                                <option value="{{ value }}" {% if form_data.urgency == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Certificate Content Options -->
+        <div class="form-card">
+            <div class="section-header">
+                Certificate Content
+            </div>
+            <div class="section-content">
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="include_position" name="include_position" {% if form_data.include_position %}checked{% endif %}>
+                        <label for="include_position">Include current position/job title</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="include_start_date" name="include_start_date" {% if form_data.include_start_date %}checked{% endif %}>
+                        <label for="include_start_date">Include employment start date</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="include_department" name="include_department" {% if form_data.include_department %}checked{% endif %}>
+                        <label for="include_department">Include department/division information</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="include_salary" name="include_salary" {% if form_data.include_salary %}checked{% endif %}>
+                        <label for="include_salary">Include salary information (confidential)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Details -->
+        <div class="form-card">
+            <div class="section-header">
+                Additional Information
+            </div>
+            <div class="section-content">
+                <div class="form-group">
+                    <label class="form-label" for="specific_details">Specific Requirements/Details</label>
+                    <textarea name="specific_details" id="specific_details" class="form-textarea" placeholder="Enter any specific requirements or additional details for the certificate">{{ form_data.specific_details }}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="custom_text">Custom Text to Include</label>
+                    <textarea name="custom_text" id="custom_text" class="form-textarea" placeholder="Any custom text you want included in the certificate">{{ form_data.custom_text }}</textarea>
+                </div>
+                
+                {% if is_edit %}
+                <div class="form-group">
+                    <label class="form-label" for="review_notes">Review Notes</label>
+                    <textarea name="review_notes" id="review_notes" class="form-textarea" placeholder="Administrative notes about the request review and processing">{{ form_data.review_notes }}</textarea>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Delivery Information -->
+        <div class="form-card">
+            <div class="section-header">
+                Delivery Options
+            </div>
+            <div class="section-content">
+                <div class="form-grid two-col">
+                    <div class="form-group">
+                        <label class="form-label" for="delivery_method">Delivery Method</label>
+                        <select name="delivery_method" id="delivery_method" class="form-select" required>
+                            <option value="pickup" {% if form_data.delivery_method == 'pickup' %}selected{% endif %}>Pickup from Office</option>
+                            <option value="email" {% if form_data.delivery_method == 'email' %}selected{% endif %}>Email Copy</option>
+                            <option value="mail" {% if form_data.delivery_method == 'mail' %}selected{% endif %}>Mail to Address</option>
+                            <option value="courier" {% if form_data.delivery_method == 'courier' %}selected{% endif %}>Courier Service</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="delivery_contact">Contact Person</label>
+                        <input type="text" name="delivery_contact" id="delivery_contact" class="form-input" value="{{ form_data.delivery_contact }}" placeholder="Contact person for delivery">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="delivery_address">Delivery Address</label>
+                    <textarea name="delivery_address" id="delivery_address" class="form-textarea" placeholder="Required for mail or courier delivery">{{ form_data.delivery_address }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions shadow-none border-none">
+            <div>
+                <span style="font-size: 11px; color: var(--gray-500);">
+                    Request Date: {{ form_date|date:"d/m/Y" }}
+                </span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <a href="{% url 'eform:certificate_form' %}" class="button-min-danger">Cancel</a>
+                <button type="submit" class="button-min-primary">
+                    Submit Request
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+// Toggle delivery address requirement based on delivery method
+document.getElementById('delivery_method').addEventListener('change', function() {
+    const addressField = document.getElementById('delivery_address');
+    const method = this.value;
+    
+    if (method === 'mail' || method === 'courier') {
+        addressField.required = true;
+        addressField.parentElement.style.display = 'block';
+    } else if (method === 'pickup' || method === 'email') {
+        addressField.required = false;
+        if (method === 'pickup') {
+            addressField.parentElement.style.display = 'none';
+        }
+    }
+});
+
+// Trigger the change event on page load
+document.getElementById('delivery_method').dispatchEvent(new Event('change'));
+</script>
+{% endblock %} 

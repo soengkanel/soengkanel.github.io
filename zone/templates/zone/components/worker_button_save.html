@@ -1,0 +1,58 @@
+  <div>
+     <!-- Display Form Errors -->
+     {% if form.non_field_errors %}
+     <div class="alert alert-danger">
+         {% for error in form.non_field_errors %}
+             <div>{{ error }}</div>
+         {% endfor %}
+     </div>
+     {% endif %}
+
+     {% if formset.non_form_errors %}
+         <div class="alert alert-danger">
+             {% for error in formset.non_form_errors %}
+                 <div>{{ error }}</div>
+             {% endfor %}
+         </div>
+     {% endif %}
+  <!---button save and cancel -->
+  <div class="flex justify-between gap-2 mt-4">
+   <div>
+        {% if worker %}
+        <!-- Simple change indicator -->
+        <div id="changeIndicator" class="text-sm text-gray-500 mt-2 ml-auto" style="display: none;">
+            <i class="fa fa-info-circle me-1"></i>
+            <span>Changes detected - ready to save</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="flex justify-between gap-2">
+        <button type="reset" onclick="onResetForm()" class="button-min-danger">
+        <div>
+            
+            <span>Reset</span>
+        </div>
+        </button>
+        
+        <button type="submit" class="button-min-primary" id="mainSaveBtn">
+        <div class="flex items-center">
+            {{ submit_text }}
+        </div>
+        </button>
+    </div>
+    
+    
+</div>
+
+<!---button save and cancel end -->
+</div>
+<script>
+    const form = document.getElementById('workerForm');
+
+    function onResetForm(){
+        form.reset();
+        toast.success("Your was reseted");
+    }
+
+</script>

@@ -1,0 +1,53 @@
+<div class="entry-form">
+    <h6 style="font-size: 14px; margin-bottom: 12px;">Add Time Entry</h6>
+    <form hx-post="{% url 'project:timesheet_entry_create' timesheet.id %}"
+          hx-target="#entries-table tbody"
+          hx-swap="beforeend"
+          hx-on::after-request="this.reset()">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div>
+                <label class="form-label">Date</label>
+                <input type="date" name="activity_date" class="form-control" required
+                       value="{{ timesheet.start_date|date:'Y-m-d' }}"
+                       min="{{ timesheet.start_date|date:'Y-m-d' }}"
+                       max="{{ timesheet.end_date|date:'Y-m-d' }}">
+            </div>
+            <div>
+                <label class="form-label">Project</label>
+                <select name="project" class="form-select" id="id_project">
+                    <option value="">Select Project</option>
+                    {% for project in assigned_projects %}
+                    <option value="{{ project.id }}">{{ project.project_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Hours</label>
+                <input type="number" step="0.25" min="0" max="24" name="hours" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">From Time</label>
+                <input type="time" name="from_time" class="form-control">
+            </div>
+            <div>
+                <label class="form-label">To Time</label>
+                <input type="time" name="to_time" class="form-control">
+            </div>
+            <div>
+                <label class="form-label">Billable</label>
+                <select name="is_billable" class="form-select">
+                    <option value="True">Yes</option>
+                    <option value="False">No</option>
+                </select>
+            </div>
+        </div>
+        <div style="margin-bottom: 8px;">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" rows="2" placeholder="Describe the work performed..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary-modern">
+            <i class="bi bi-plus"></i> Add Entry
+        </button>
+    </form>
+</div>

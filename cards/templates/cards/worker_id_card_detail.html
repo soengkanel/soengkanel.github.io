@@ -1,0 +1,1199 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Worker ID Card - {{ card.worker.get_full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Ultra-Minimal Design System - Worker ID Card Detail - Enhanced Alignment */
+:root {
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --secondary: #374151;
+    --secondary-dark: #1f2937;
+    --light-gray: #6b7280;
+    --lighter-gray: #9ca3af;
+    --bg-light: #f8fafb;
+    --border-color: #e2e8f0;
+    --white: #ffffff;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --worker-blue: #2563eb;
+    --worker-blue-dark: #1d4ed8;
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+}
+
+/* Global Reset */
+*, *:focus, *:active, *:hover {
+    outline: none !important;
+    box-sizing: border-box;
+}
+
+/* Ultra-Minimal Container */
+.page-container {
+    padding: var(--spacing-md);
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Ultra-Minimal Page Header - Enhanced Alignment */
+.page-header {
+    background: var(--white);
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 56px;
+}
+
+.page-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.page-subtitle {
+    color: var(--light-gray);
+    font-size: 10px;
+    margin: 2px 0 0 0;
+    line-height: 1.2;
+}
+
+.page-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Ultra-Minimal Content Grid - Enhanced */
+.content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--spacing-md);
+    align-items: start;
+}
+
+/* Ultra-Minimal Card Container - Enhanced */
+.card-compact {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: var(--spacing-sm);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.card-header-compact {
+    background: var(--bg-light);
+    border-bottom: 1px solid var(--border-color);
+    padding: 6px var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+}
+
+.card-title-compact {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    line-height: 1.2;
+}
+
+.card-body-compact {
+    padding: var(--spacing-sm);
+}
+
+/* Ultra-Minimal Info Grid - Enhanced Alignment */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--spacing-sm);
+    align-items: start;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 36px;
+    justify-content: flex-start;
+}
+
+.info-item-full {
+    grid-column: 1 / -1;
+}
+
+.info-label {
+    font-size: 9px;
+    color: var(--light-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    margin: 0;
+    line-height: 1.2;
+    flex-shrink: 0;
+}
+
+.info-value {
+    font-size: 11px;
+    color: #1a1a1a;
+    font-weight: 500;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+/* Ultra-Minimal Worker Display - Enhanced */
+.worker-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.worker-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--worker-blue) 0%, var(--worker-blue-dark) 100%);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    border: 2px solid var(--worker-blue);
+    flex-shrink: 0;
+}
+
+.worker-photo {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--worker-blue);
+    flex-shrink: 0;
+}
+
+.worker-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.worker-details h6 {
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.worker-details p {
+    font-size: 9px;
+    color: var(--light-gray);
+    margin: 1px 0 0 0;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Ultra-Minimal Badges - Enhanced */
+.badge-compact {
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.badge-pending { background: #fef3c7; color: #92400e; }
+.badge-approved { background: #d1fae5; color: #065f46; }
+.badge-printed { background: #e0e7ff; color: #3730a3; }
+.badge-delivered { background: #dcfce7; color: #166534; }
+.badge-active { background: #dcfce7; color: #166534; }
+.badge-expired { background: #fecaca; color: #991b1b; }
+.badge-lost { background: #fed7d7; color: #c53030; }
+.badge-damaged { background: #fbb6ce; color: #97266d; }
+.badge-success { background: #dcfce7; color: #166534; }
+.badge-warning { background: #fef3c7; color: #92400e; }
+
+.code-compact {
+    background: var(--bg-light);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 10px;
+    color: var(--secondary);
+    border: 1px solid var(--border-color);
+}
+
+.notes-display {
+    background: var(--bg-light);
+    padding: var(--spacing-xs);
+    border-radius: 3px;
+    font-size: 10px;
+    color: var(--secondary);
+    line-height: 1.4;
+    border: 1px solid var(--border-color);
+}
+
+/* Ultra-Minimal Table - Enhanced */
+.table-compact {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+}
+
+.table-compact th {
+    background: var(--bg-light);
+    padding: 4px 6px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--secondary);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.table-compact td {
+    padding: 4px 6px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+    font-size: 10px;
+}
+
+.table-compact tr:hover {
+    background: var(--bg-light);
+}
+
+/* Ultra-Minimal Buttons - Enhanced */
+.btn-compact {
+    padding: 4px 8px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    background: none;
+    white-space: nowrap;
+    min-height: 24px;
+}
+
+.btn-primary-compact {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+.btn-primary-compact:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: var(--white);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.btn-warning-compact {
+    background: var(--warning);
+    color: var(--white);
+    border-color: var(--warning);
+}
+
+.btn-warning-compact:hover {
+    background: #c2410c;
+    border-color: #c2410c;
+    color: var(--white);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.btn-success-compact {
+    background: var(--success);
+    color: var(--white);
+    border-color: var(--success);
+}
+
+.btn-success-compact:hover {
+    background: #047857;
+    border-color: #047857;
+    color: var(--white);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.btn-danger-compact {
+    background: var(--danger);
+    color: var(--white);
+    border-color: var(--danger);
+}
+
+.btn-danger-compact:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+    color: var(--white);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.btn-group-compact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+/* Responsive Design - Enhanced */
+@media (max-width: 768px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .worker-display {
+        flex-wrap: nowrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-container {
+        padding: 6px;
+    }
+    
+    .page-header {
+        padding: 6px var(--spacing-sm);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .page-title {
+        font-size: 14px;
+    }
+    
+    .worker-avatar, .worker-photo {
+        width: 28px;
+        height: 28px;
+        font-size: 9px;
+    }
+    
+    .btn-compact {
+        font-size: 9px;
+        padding: 3px 5px;
+        min-height: 24px;
+    }
+}
+
+/* Focus states for accessibility - Enhanced */
+.btn-compact:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    z-index: 1;
+    position: relative;
+}
+
+/* Loading states */
+.loading-placeholder {
+    background: var(--bg-light);
+    border-radius: 3px;
+    height: 12px;
+    width: 60%;
+    opacity: 0.6;
+}
+
+/* ID Card Preview Styles */
+.id-card-preview {
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 1.586 / 1; /* Standard ID card ratio (85.6mm x 53.98mm) */
+    margin: 0 auto;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.15),
+        0 2px 6px rgba(0, 0, 0, 0.1),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 1px solid #cbd5e1;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+}
+
+.id-card-preview:hover {
+    transform: rotateY(2deg) rotateX(2deg);
+}
+
+.card-header-section {
+    background: skyblue;
+    padding: 8px 12px;
+    color: #134994;
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.company-logo {
+    font-size: 8px;
+    opacity: 0.9;
+    margin-bottom: 2px;
+    letter-spacing: 0.5px;
+}
+
+.card-title {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.card-body-section {
+    padding: 8px 12px;
+    background: white;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.card-photo-section {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    align-items: flex-start;
+}
+
+.card-photo {
+    width: 45px;
+    height: 45px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--worker-blue) 0%, var(--worker-blue-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+    border: 2px solid #e2e8f0;
+    object-fit: cover;
+}
+
+.card-photo img {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 2px 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.card-position {
+    font-size: 8px;
+    color: var(--light-gray);
+    margin: 0 0 3px 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.card-id {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--worker-blue);
+    font-family: 'Courier New', monospace;
+    background: #f1f5f9;
+    padding: 1px 4px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.card-details {
+    margin-top: 6px;
+    font-size: 7px;
+    line-height: 1.3;
+    color: #4b5563;
+}
+
+.card-details-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 1px 0;
+}
+
+.card-footer-section {
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    padding: 4px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 6px;
+    color: var(--light-gray);
+}
+
+.card-number {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #374151;
+}
+
+.card-status {
+    padding: 1px 4px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.card-status.status-active { background: #dcfce7; color: #166534; }
+.card-status.status-pending { background: #fef3c7; color: #92400e; }
+.card-status.status-printed { background: #e0e7ff; color: #3730a3; }
+.card-status.status-sample { background: #f3f4f6; color: #6b7280; }
+
+.sample-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+    padding: 4px 12px;
+    border: 2px solid #dc2626;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* Photo placeholder styles */
+.photo-placeholder {
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: 2px solid #e2e8f0;
+}
+
+.worker-photo-placeholder {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--worker-blue) 0%, var(--worker-blue-dark) 100%);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    border: 2px solid var(--worker-blue);
+    flex-shrink: 0;
+}
+
+.card-photo-placeholder {
+    width: 45px;
+    height: 45px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--worker-blue) 0%, var(--worker-blue-dark) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+    border: 2px solid #e2e8f0;
+}
+
+.photo-compact {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+}
+
+.photo-compact-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 24px;
+    border: 1px solid var(--border-color);
+    flex-direction: column;
+    gap: 8px;
+}
+
+.photo-compact-placeholder i {
+    font-size: 32px;
+    opacity: 0.5;
+}
+
+.photo-compact-placeholder span {
+    font-size: 10px;
+    font-weight: 500;
+    text-align: center;
+    opacity: 0.7;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .id-card-preview {
+        max-width: 280px;
+    }
+    
+    .card-photo {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+    
+    .card-name {
+        font-size: 10px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Ultra-Minimal Page Header -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Worker ID Card Details</h1>
+            <p class="page-subtitle">{{ card.worker.get_full_name }} - {{ card.worker.worker_id|default:"No ID" }}</p>
+        </div>
+        <div class="page-actions">
+            <a href="{% url 'cards:worker_id_card_update' card.pk %}" class="button-min-primary py-1">
+               <div>
+                <i class="fas fa-edit"></i> Edit
+               </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Ultra-Minimal Content Grid -->
+    <div class="content-grid">
+        <!-- Main Card Details -->
+        <div>
+            <!-- Worker Card Information -->
+            <div class="card-compact">
+                <div class="card-header-compact">
+                    <h3 class="card-title-compact">
+                        <i class="fas fa-id-card"></i>
+                        Worker Card Information
+                    </h3>
+                </div>
+                <div class="card-body-compact">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label class="info-label">Worker</label>
+                            <div class="info-value">
+                                <div class="worker-display">
+                                    {% if card.worker.photo %}
+                                        <img src="{% url 'zone:serve_worker_photo' card.worker.id %}" alt="Photo" class="worker-photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="worker-photo-placeholder" style="display: none;">
+                                            {{ card.worker.first_name|first|upper }}{{ card.worker.last_name|first|upper }}
+                                        </div>
+                                    {% else %}
+                                        <div class="worker-avatar">
+                                            {{ card.worker.first_name|first|upper }}{{ card.worker.last_name|first|upper }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="worker-details">
+                                        <h6>{{ card.worker.get_full_name }}</h6>
+                                        <p>{{ card.worker.worker_id|default:"No ID" }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label class="info-label">Card Number</label>
+                            <div class="info-value">
+                                {% if card.card_number %}
+                                    <span class="code-compact">{{ card.card_number }}</span>
+                                {% else %}
+                                    <span style="color: var(--light-gray);">Not assigned yet</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label class="info-label">Position</label>
+                            <div class="info-value">{{ card.worker.position.name|default:"—" }}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <label class="info-label">Status</label>
+                            <div class="info-value">
+                                <span class="badge-compact badge-{{ card.status }}">
+                                    {{ card.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label class="info-label">Zone</label>
+                            <div class="info-value">{{ card.worker.zone.name|default:"—" }}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <label class="info-label">Building</label>
+                            <div class="info-value">{{ card.worker.building.name|default:"—" }}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <label class="info-label">Floor</label>
+                            <div class="info-value">
+                                {% if card.worker.floor %}
+                                    Floor {{ card.worker.floor.floor_number }} - {{ card.worker.floor.name }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label class="info-label">Request Date</label>
+                            <div class="info-value">{{ card.request_date|date:"d/m/Y g:i A" }}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <label class="info-label">Issue Date</label>
+                            <div class="info-value">
+                                {% if card.issue_date %}
+                                    {{ card.issue_date|date:"d/m/Y" }}
+                                {% else %}
+                                    <span style="color: var(--light-gray);">Not set</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <label class="info-label">Expiry Date</label>
+                            <div class="info-value">
+                                {% if card.expiry_date %}
+                                    {{ card.expiry_date|date:"d/m/Y" }}
+                                    {% if card.is_expired %}
+                                        <span class="badge-compact badge-expired">Expired</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span style="color: var(--light-gray);">Not set</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if card.photo %}
+                        <div class="info-item info-item-full hidden" style="display:none;">
+                            <label class="info-label">Worker Card Photo</label>
+                            <div class="info-value">
+                                {% if card.worker.has_photo %}
+                                <img src="{{ card.worker.photo_url }}" alt="Worker Card Photo" class="photo-compact" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                {% elif card.photo %}
+                                <img src="{{ card.photo.url }}" alt="Worker Card Photo" class="photo-compact" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                {% else %}
+                                <div class="photo-compact-placeholder" style="display: flex;">
+                                    <i class="fas fa-image"></i>
+                                    <span>Photo not available</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if card.notes %}
+                        <div class="info-item info-item-full">
+                            <label class="info-label">Notes</label>
+                            <div class="notes-display">{{ card.notes }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Printing History -->
+            <div class="card-compact">
+                <div class="card-header-compact">
+                    <h3 class="card-title-compact">
+                        <i class="fas fa-print"></i>
+                        Printing History
+                    </h3>
+                </div>
+                <div class="card-body-compact">
+                    {% if print_stats.total_prints > 0 %}
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label class="info-label">Total Prints</label>
+                            <div class="info-value">{{ print_stats.total_prints }}</div>
+                        </div>
+                        <div class="info-item">
+                            <label class="info-label">First Print Date</label>
+                            <div class="info-value">{{ card.first_print_date|date:"d/m/Y H:i"|default:"—" }}</div>
+                        </div>
+                        <div class="info-item">
+                            <label class="info-label">Last Print Date</label>
+                            <div class="info-value">{{ card.last_print_date|date:"d/m/Y H:i"|default:"—" }}</div>
+                        </div>
+                        <div class="info-item">
+                            <label class="info-label">Next Print Charge</label>
+                            <div class="info-value">
+                                {% if card.is_first_print_free %}
+                                    <span class="badge-compact badge-success">FREE</span>
+                                {% else %}
+                                    <span class="badge-compact badge-warning">${{ card.next_print_charge }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if printing_history %}
+                    <div style="margin-top: var(--spacing-sm);">
+                        <label class="info-label">Print Records</label>
+                        <table class="table-compact" style="margin-top: 4px;">
+                            <thead>
+                                <tr>
+                                    <th>Print #</th>
+                                    <th>Date & Time</th>
+                                    <th>Printed By</th>
+                                    <th>Charge</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for print_record in printing_history %}
+                                <tr>
+                                    <td>
+                                        <span class="code-compact">#{{ print_record.print_number }}</span>
+                                    </td>
+                                    <td>{{ print_record.print_date|date:"d/m/Y H:i" }}</td>
+                                    <td>{{ print_record.printed_by.get_full_name|default:"System" }}</td>
+                                    <td>
+                                        {% if print_record.is_free_print %}
+                                            <span class="badge-compact badge-success">FREE</span>
+                                        {% else %}
+                                            <span class="badge-compact badge-warning">${{ print_record.charge_amount }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge-compact badge-{{ print_record.charge_status }}">
+                                            {{ print_record.charge_status|title }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label class="info-label">Print Status</label>
+                            <div class="info-value">
+                                <span style="color: var(--light-gray);">Card has not been printed yet</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <label class="info-label">Next Print Charge</label>
+                            <div class="info-value">
+                                <span class="badge-compact badge-success">FREE</span>
+                                <span style="color: var(--light-gray); font-size: 9px;">(First print is free)</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div>
+            <!-- Worker Details -->
+            <div class="card-compact">
+                <div class="card-header-compact">
+                    <h3 class="card-title-compact">
+                        <i class="fas fa-user"></i>
+                        Worker Details
+                    </h3>
+                </div>
+                <div class="card-body-compact">
+                    <div class="info-item">
+                        <label class="info-label">Worker ID</label>
+                        <div class="info-value">{{ card.worker.worker_id|default:"Not assigned" }}</div>
+                    </div>
+
+                    <div class="info-item">
+                        <label class="info-label">Position</label>
+                        <div class="info-value">{{ card.worker.position.name|default:"Not assigned" }}</div>
+                    </div>
+
+                    <div class="info-item">
+                        <label class="info-label">Zone</label>
+                        <div class="info-value">{{ card.worker.zone.name|default:"Not assigned" }}</div>
+                    </div>
+
+                    <div class="info-item">
+                        <label class="info-label">Building</label>
+                        <div class="info-value">{{ card.worker.building.name|default:"Not assigned" }}</div>
+                    </div>
+
+                    <div class="info-item">
+                        <label class="info-label">Floor</label>
+                        <div class="info-value">
+                            {% if card.worker.floor %}
+                                Floor {{ card.worker.floor.floor_number }}
+                            {% else %}
+                                Not assigned
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <label class="info-label">Card Created</label>
+                        <div class="info-value">{{ card.created_at|date:"d/m/Y g:i A" }}</div>
+                    </div>
+
+                    <div class="info-item">
+                        <label class="info-label">Last Updated</label>
+                        <div class="info-value">{{ card.updated_at|date:"d/m/Y g:i A" }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Preview -->
+            <div class="card-compact">
+                <div class="card-header-compact">
+                    <h3 class="card-title-compact">
+                        <i class="fas fa-eye"></i>
+                        Card Preview
+                    </h3>
+                </div>
+                <div class="card-body-compact">
+                    <div class="id-card-preview">
+                        <!-- Card Header -->
+                        <div class="card-header-section">
+                            {% comment %} <div class="company-logo">{{ card.worker.zone.name|default:"GUANYU SYSTEM" }}</div> {% endcomment %}
+                            <div class="card-title">WORKER ID CARD</div>
+                        </div>
+                        
+                        <!-- Card Body -->
+                        <div class="card-body-section">
+                            <div class="card-photo-section">
+                                <div class="card-photo">
+                                    {% if card.worker.photo %}
+                                        <img src="{% url 'zone:serve_worker_photo' card.worker.id %}" alt="Photo" onerror="this.style.display='none'; this.parentElement.innerHTML='{{ card.worker.first_name|first|upper }}{{ card.worker.last_name|first|upper }}';">
+                                    {% else %}
+                                        {{ card.worker.first_name|first|upper }}{{ card.worker.last_name|first|upper }}
+                                    {% endif %}
+                                </div>
+                                <div class="card-info">
+                                    <div class="card-name">{{ card.worker.get_full_name }}</div>
+                                    <div class="card-position">{{ card.worker.position.name|default:"WORKER" }}</div>
+                                    <div class="card-id">{{ card.worker.worker_id|default:"WKR-000" }}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="card-details">
+                                <div class="card-details-row">
+                                    <span>Zone:</span>
+                                    <span>{{ card.worker.zone.name|default:"Not Assigned"|truncatechars:15 }}</span>
+                                </div>
+                                <div class="card-details-row">
+                                    <span>Building:</span>
+                                    <span>{{ card.worker.building.name|default:"Not Assigned"|truncatechars:15 }}</span>
+                                </div>
+                                <div class="card-details-row">
+                                    <span>Floor:</span>
+                                    <span>
+                                        {% if card.worker.floor %}
+                                            Floor {{ card.worker.floor.floor_number }}
+                                        {% else %}
+                                            Not Assigned
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="card-details-row">
+                                    <span>Valid Until:</span>
+                                    <span>{{ card.expiry_date|date:"m/d/Y"|default:"Not Set" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Card Footer -->
+                        <div class="card-footer-section">
+                            <div class="card-number">{{ card.card_number|default:"Not Assigned" }}</div>
+                            <div class="card-status status-{{ card.status }}">{{ card.get_status_display }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QR Code & Profile Link -->
+            <div class="card-compact">
+                <div class="card-header-compact">
+                    <h3 class="card-title-compact">
+                        <i class="fas fa-qrcode"></i>
+                        QR Code & Profile
+                    </h3>
+                </div>
+                <div class="card-body-compact">
+                    <div class="flex flex-col justify-center items-center gap-2">
+                        {% load card_codes %}
+                        {% worker_qr_code_simple_format card 120 %}
+                        <div style="margin-top: var(--spacing-xs); font-size: 9px; color: var(--light-gray);">
+                            Scan to verify worker information
+                        </div>
+                    </div>
+                    
+                    <!-- QR Code Data Preview - Hidden -->
+                    <!-- 
+                    <div style="background: var(--bg-light); border-radius: 3px; padding: var(--spacing-xs); margin-bottom: var(--spacing-sm); display: none;">
+                        <div style="font-size: 9px; font-weight: 600; color: var(--secondary); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.3px;">QR Code Contains (Enhanced v2.0):</div>
+                        <div style="font-size: 7px; color: var(--light-gray); line-height: 1.4;">
+                            Core Information, Work Details, Documents, Additional Info...
+                        </div>
+                    </div>
+                    -->
+                    
+                    <!-- Profile Link -->
+                    <div class="flex justify-center w-full mt-2">
+                        <a href="{% url 'zone:worker_detail' card.worker.id %}" class="button-min-primary py-1">
+                            <div>
+                                <i class="fas fa-user"></i> View Worker Profile
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card-compact">
+                <div class="card-header-compact">
+                    <h3 class="card-title-compact">
+                        <i class="fas fa-tools"></i>
+                        Quick Actions
+                    </h3>
+                </div>
+                <div class="card-body-compact">
+                    <div class="btn-group-compact">
+                        <a href="{% url 'cards:worker_id_card_update' card.pk %}" class="button-min-primary py-1">
+                            <div>
+                                <i class="fas fa-edit"></i> Edit Card
+                            </div>
+                        </a>
+                        {% if card.status == 'approved' or card.status == 'printed' or card.status == 'active' %}
+                        <a href="{% url 'cards:worker_id_card_print_preview' %}?cards={{ card.id }}" class="button-min-primary" target="_blank">
+                            <div>
+                                <i class="fas fa-print"></i> Print Card
+                            </div>
+                        </a>
+                        {% endif %}
+                        <a href="{% url 'cards:card_replacement_create' %}" class="button-min-warn py-1">
+                            <div>
+                                <i class="fas fa-exchange-alt"></i> Request Replacement
+                            </div>
+                        </a>
+                        <button type="button" class="button-min-danger delete-btn py-1"
+                            data-delete-url="{% url 'cards:worker_id_card_delete' card.pk %}"
+                            data-delete-title="Delete Worker ID Card?"
+                            data-delete-name="{{ card.worker.get_full_name }}">
+                            <div>
+                                <i class="fas fa-trash"></i> Delete Card
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle image load errors with better fallbacks
+    document.querySelectorAll('img').forEach(function(img) {
+        img.addEventListener('error', function() {
+            console.log('Image failed to load:', this.src);
+            
+            // For worker photos in the worker display section
+            if (this.classList.contains('worker-photo')) {
+                this.style.display = 'none';
+                let placeholder = this.nextElementSibling;
+                if (placeholder && placeholder.classList.contains('worker-photo-placeholder')) {
+                    placeholder.style.display = 'flex';
+                }
+            }
+            
+            // For card photos in preview
+            if (this.classList.contains('photo-compact')) {
+                this.style.display = 'none';
+                let placeholder = this.nextElementSibling;
+                if (placeholder && placeholder.classList.contains('photo-compact-placeholder')) {
+                    placeholder.style.display = 'flex';
+                }
+            }
+        });
+    });
+});
+
+// Minimal JavaScript for basic functionality only
+</script>
+{% endblock %} 
+{% block modals %}
+    {% include 'components/delete_modal.html' %}
+{% endblock %}

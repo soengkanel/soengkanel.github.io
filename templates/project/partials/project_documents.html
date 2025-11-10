@@ -1,0 +1,177 @@
+<!-- Project Documents Tab -->
+<style>
+/* Documents content styles */
+.documents-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+}
+
+.card-body {
+    padding: 0.75rem;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+}
+
+.table thead th {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: #666;
+    padding: 0.5rem 0.625rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e5e5;
+    background: #f9f9f9;
+}
+
+.table tbody td {
+    font-size: 0.75rem;
+    color: #1a1a1a;
+    padding: 0.625rem;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.table tbody tr:hover {
+    background: #f9f9f9;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.doc-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.doc-icon svg {
+    width: 14px;
+    height: 14px;
+    color: #2563eb;
+}
+
+.btn-group {
+    display: inline-flex;
+    gap: 0.25rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2.5rem 1rem;
+}
+
+.empty-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 0.75rem;
+    color: #999;
+}
+
+.empty-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 0.25rem 0;
+}
+
+.empty-description {
+    font-size: 0.75rem;
+    color: #999;
+    margin: 0 0 1rem 0;
+}
+</style>
+
+<div class="documents-content">
+    <div class="action-bar justify-content-end">
+        <a href="{% url 'project:document_create' project.id %}" class="button-min-primary py-1">
+            <div>
+                <svg style="width: 14px; height: 14px; display: inline-block;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                Upload
+            </div>
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {% if documents %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Document Name</th>
+                                <th>Type</th>
+                                <th>Size</th>
+                                <th>Uploaded By</th>
+                                <th>Date</th>
+                                <th style="width: 100px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doc in documents %}
+                            <tr>
+                                <td>
+                                    <div class="doc-icon">
+                                        <svg fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ doc.document_name }}
+                                    </div>
+                                </td>
+                                <td>{{ doc.document_type|default:'-' }}</td>
+                                <td>{{ doc.file_size|filesizeformat|default:'-' }}</td>
+                                <td>{{ doc.uploaded_by.user.get_full_name|default:'-' }}</td>
+                                <td>{{ doc.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{{ doc.file_url }}" class="btn btn-outline-primary btn-sm" target="_blank" title="Download">
+                                            <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                            </svg>
+                                        </a>
+                                        <button class="btn btn-outline-danger btn-sm" title="Delete">
+                                            <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <svg class="empty-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3 class="empty-title">No documents yet</h3>
+                    <p class="empty-description">Upload documents related to this project.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

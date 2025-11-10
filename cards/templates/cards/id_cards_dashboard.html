@@ -1,0 +1,609 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}ID Cards Management{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Override base template transition to prevent left-to-right animation */
+#main-content {
+    transition: none !important;
+}
+
+/* Minimal Design System - ID Cards Dashboard */
+:root {
+    --primary: #00bcff;
+    --primary-dark: #00bcff;
+    --secondary: #374151;
+    --secondary-dark: #1f2937;
+    --light-gray: #6b7280;
+    --lighter-gray: #9ca3af;
+    --bg-light: #f8fafb;
+    --border-color: #e2e8f0;
+    --white: #ffffff;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+}
+
+/* Global Reset */
+*, *:focus, *:active, *:hover {
+    outline: none !important;
+}
+
+/* Ultra-Minimal Container */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px;
+    background: var(--bg-light);
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Ultra-Minimal Page Header */
+.page-header {
+    padding: 6px 0;
+    margin-bottom: 12px;
+}
+
+.page-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.page-header p {
+    font-size: 10px;
+    color: var(--light-gray);
+    margin: 2px 0 0 0;
+    display: none; /* Ultra-minimal: hide subtitle */
+}
+
+/* Ultra-Compact Statistics */
+.stats-section {
+    margin-bottom: 12px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 6px;
+}
+
+.stat-card {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 8px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.15s ease;
+}
+
+.stat-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.stat-number {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 2px 0;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: var(--light-gray);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Ultra-Minimal Card Options */
+.card-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.card-option {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.15s ease;
+}
+
+.card-option:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.option-header {
+    display: flex;
+    align-items: start;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.option-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: var(--white);
+    flex-shrink: 0;
+}
+
+.option-icon.worker { 
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); 
+}
+.option-icon.vip { 
+    background: linear-gradient(135deg, var(--warning) 0%, #b45309 100%); 
+}
+.option-icon.employee { 
+    background: linear-gradient(135deg, var(--success) 0%, #047857 100%); 
+}
+
+.option-info h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.option-info p {
+    font-size: 10px;
+    color: var(--light-gray);
+    margin: 0;
+    line-height: 1.3;
+    display: none; /* Ultra-minimal: hide descriptions */
+}
+
+.option-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 8px 0;
+    padding: 6px 0;
+    background: var(--bg-light);
+    border-radius: 3px;
+}
+
+.option-stat {
+    text-align: center;
+}
+
+.option-stat-number {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1a1a;
+    display: block;
+    line-height: 1;
+}
+
+.option-stat-label {
+    font-size: 9px;
+    color: var(--light-gray);
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.option-actions {
+    display: flex;
+    gap: 4px;
+}
+
+/* Ultra-Minimal Button System */
+.btn-modern {
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 3px;
+    padding: 4px 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    line-height: 1;
+}
+
+.btn-modern:focus {
+    outline: none;
+}
+
+.btn-primary-modern {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.btn-primary-modern:hover {
+    background: var(--primary-dark);
+    color: var(--white);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.btn-outline-modern {
+    background: var(--white);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+}
+
+.btn-outline-modern:hover {
+    background: var(--primary);
+    color: var(--white);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.btn-sm-modern {
+    font-size: 11px;
+    padding: 4px 8px;
+}
+
+/* Ultra-Minimal Quick Actions */
+.quick-actions {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 6px;
+}
+
+.action-item {
+    padding: 8px;
+    border: 1px solid rgba(27, 31, 35, 0.10);
+    box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-light);
+    transition: all 0.15s ease;
+    background: linear-gradient(180deg, #f5f5f5 0%, #f2f0f0 100%);
+}
+
+.action-item:hover {
+    background: linear-gradient(180deg, #f2f0f0 0%, #f5f5f5 100%);
+    text-decoration: none;
+    color: inherit;
+    transform: translateY(-1px);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+}
+
+.action-item:focus {
+    outline: none;
+}
+
+.action-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+.action-content h6 {
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.action-content p {
+    font-size: 9px;
+    color: var(--light-gray);
+    margin: 0;
+    line-height: 1.2;
+    display: none; /* Ultra-minimal: hide descriptions */
+}
+
+/* Ultra-Minimal Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 8px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+    }
+    
+    .card-options {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+    
+    .action-grid {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+    
+    .option-actions {
+        flex-direction: column;
+        gap: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-container {
+        padding: 6px;
+    }
+    
+    .page-header {
+        padding: 4px 0;
+        margin-bottom: 8px;
+    }
+    
+    .page-header h2 {
+        font-size: 14px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 3px;
+    }
+    
+    .stat-card {
+        padding: 6px;
+    }
+    
+    .option-header {
+        gap: 6px;
+    }
+    
+    .option-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 10px;
+    }
+    
+    .action-icon {
+        width: 20px;
+        height: 20px;
+        font-size: 9px;
+    }
+    
+    .action-item {
+        padding: 6px;
+        gap: 6px;
+    }
+}
+
+/* Focus states for accessibility */
+.btn-modern:focus,
+.action-item:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container bg-white">
+  
+    <!-- Compact Page Header -->
+    <div class="d-flex justify-content-between align-items-center pb-3 border-b">
+        <div>
+            <h2 class="text-lg font-bold">ID Cards Management</h2>
+        </div>
+        
+    </div>
+
+    <!-- Compact Statistics -->
+    <div class="stats-section mt-4">
+        <div class="stats-grid">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ worker_card_stats.total|add:vip_card_stats.total|add:employee_card_stats.total|default:0 }}</div>
+                <div class="stat-label">Total Cards</div>
+            </div>
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ worker_card_stats.active|add:vip_card_stats.active|add:employee_card_stats.active|default:0 }}</div>
+                <div class="stat-label">Active</div>
+            </div>
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ worker_card_stats.pending|add:vip_card_stats.pending|add:employee_card_stats.pending|default:0 }}</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ worker_card_stats.approved|add:vip_card_stats.approved|add:employee_card_stats.approved|default:0 }}</div>
+                <div class="stat-label">Approved</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Minimal Card Options -->
+    <div class="card-options mt-4">
+        <!-- Worker Cards -->
+        <!-- <div class="rounded-xl bg-white border px-3 py-2 shadow-sm">
+            <div class="option-header">
+                <div class="option-icon vip">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="">
+                    <h3 class="text-sm font-semibold">VIP Cards</h3>
+                    <p class="text-xs text-gray-500">Professional ID cards for vips and contractors</p>
+                </div>
+            </div>
+            
+            <div class="px-3 py-2 bg-gray-50 rounded-lg flex w-full justify-between items-center">
+                <div class="option-stat">
+                    <span class="option-stat-number">{{ vip_card_stats.total|default:0 }}</span>
+                    <div class="option-stat-label">Total</div>
+                </div>
+                <div class="option-stat ">
+                    <span class="option-stat-number">{{ vip_card_stats.active|default:0 }}</span>
+                    <div class="option-stat-label">Active</div>
+                </div>
+                <div class="option-stat">
+                    <span class="option-stat-number">{{ vip_card_stats.pending|default:0 }}</span>
+                    <div class="option-stat-label">Pending</div>
+                </div>
+            </div>
+            
+            <div class="option-actions mt-2">
+                <a href="{% url 'cards:worker_id_card_list' option='vip' %}" class="btn-sm-modern button-min-primary">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-eye"></i>
+                    <span> View Cards</span>
+                    </div>
+                </a>
+                <a href="{% url 'cards:worker_id_card_create' filter='vip' %}" class="btn-sm-modern button-min-default">
+                    <i class="fas fa-plus"></i>
+                    <span>New Card</span>
+                </a>
+            </div>
+        </div> -->
+
+        <!-- <div class="rounded-xl bg-white border px-3 py-2 shadow-sm">
+            <div class="option-header">
+                <div class="option-icon worker">
+                    <i class="fas fa-id-badge"></i>
+                </div>
+                <div class="">
+                    <h3 class="text-sm font-semibold">Worker Cards</h3>
+                    <p class="text-xs text-gray-500">Professional ID cards for workers and contractors</p>
+                </div>
+            </div>
+            
+            <div class="px-3 py-2 bg-gray-50 rounded-lg flex w-full justify-between items-center">
+                <div class="option-stat">
+                    <span class="option-stat-number">{{ worker_card_stats.total|default:0 }}</span>
+                    <div class="option-stat-label">Total</div>
+                </div>
+                <div class="option-stat ">
+                    <span class="option-stat-number">{{ worker_card_stats.active|default:0 }}</span>
+                    <div class="option-stat-label">Active</div>
+                </div>
+                <div class="option-stat">
+                    <span class="option-stat-number">{{ worker_card_stats.pending|default:0 }}</span>
+                    <div class="option-stat-label">Pending</div>
+                </div>
+            </div>
+            
+            <div class="option-actions mt-2">
+                <a href="{% url 'cards:worker_id_card_list' option='worker' %}" class="btn-sm-modern button-min-primary">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-eye"></i>
+                    <span> View Cards</span>
+                    </div>
+                </a>
+                <a href="{% url 'cards:worker_id_card_create' filter='worker' %}" class="btn-sm-modern button-min-default">
+                    <i class="fas fa-plus"></i>
+                    <span>New Card</span>
+                </a>
+                <a href="{% url 'cards:worker_id_card_batch_create' %}" class="btn-sm-modern button-min-warn">
+                   <div>
+                    <i class="fas fa-list-ul"></i>
+                    <span>Batch Card</span>
+                   </div>
+                </a>
+            </div>
+        </div> -->
+
+
+
+        <!-- Employee Cards -->
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm">
+            <div class="option-header">
+                <div class="option-icon employee">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div >
+                    
+                    <h3 class="text-sm font-semibold">Employee Cards</h3>
+                    <p class="text-xs text-gray-500">Corporate employee identification cards</p>
+                </div>
+            </div>
+            
+            <div class="px-3 py-2 bg-gray-50 rounded-lg flex w-full justify-between items-center">
+                <div class="option-stat">
+                    <span class="option-stat-number">{{ employee_card_stats.total|default:0 }}</span>
+                    <div class="option-stat-label">Total</div>
+                </div>
+                <div class="option-stat">
+                    <span class="option-stat-number">{{ employee_card_stats.active|default:0 }}</span>
+                    <div class="option-stat-label">Active</div>
+                </div>
+                <div class="option-stat">
+                    <span class="option-stat-number">{{ employee_card_stats.pending|default:0 }}</span>
+                    <div class="option-stat-label">Pending</div>
+                </div>
+            </div>
+            
+            
+            <div class="option-actions mt-2">
+              
+                <a href="{% url 'cards:employee_id_card_list' %}" class="btn-sm-modern button-min-primary">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-eye"></i>
+                    <span> View Cards</span>
+                    </div>
+                </a>
+                <a  href="{% url 'cards:employee_id_card_create' %}" class="btn-sm-modern button-min-default">
+                    <i class="fas fa-plus"></i>
+                    <span>New Card</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Minimal Quick Actions -->
+    <div class=" rounded-xl bg-white border px-3 py-3 shadow-sm">
+        <h3 class="section-title">
+            <i class="fas fa-bolt"></i>
+            Quick Actions
+        </h3>
+        
+        <div class="action-grid">
+            <a href="{% url 'cards:card_replacement_list' %}" class="action-item">
+                <div class="action-icon" style="background: var(--primary);">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <div class="action-content">
+                    <h6>Card Replacements</h6>
+                    <p>Manage lost or damaged cards</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

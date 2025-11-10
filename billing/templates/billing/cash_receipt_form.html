@@ -1,0 +1,431 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Billing{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Minimal compact form design - matching payment voucher style */
+.cr-form-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0.5rem;
+}
+
+.cr-header {
+    background: #fff;
+    border-bottom: 2px solid #e5e7eb;
+    padding: 0.75rem 0;
+    margin-bottom: 1rem;
+}
+
+.cr-header h1 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.cr-section {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.cr-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.form-label {
+    font-size: 0.6875rem !important;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 0.125rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.form-control, .form-select {
+    font-size: 0.8125rem !important;
+    padding: 0.375rem 0.5rem !important;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: border-color 0.15s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+textarea.form-control {
+    min-height: 50px;
+    resize: vertical;
+}
+
+.required {
+    color: #ef4444;
+    font-weight: normal;
+}
+
+.input-group-text {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.5rem;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    color: #6b7280;
+}
+
+/* Invoice link section */
+.cr-invoice-link {
+    background: #eff6ff;
+    border: 1px solid #3b82f6;
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cr-invoice-info {
+    font-size: 0.75rem;
+}
+
+.cr-invoice-info strong {
+    color: #1e40af;
+    font-size: 0.8125rem;
+}
+
+.cr-invoice-info small {
+    color: #6b7280;
+}
+
+.btn-cr {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 3px;
+    border: none;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.btn-cr-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-cr-primary:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-cr-secondary {
+    background: #fff;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+.btn-cr-secondary:hover {
+    background: #f9fafb;
+    color: #374151;
+}
+
+.btn-cr-sm {
+    font-size: 0.625rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.cr-actions {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.invalid-feedback {
+    font-size: 0.6875rem;
+    color: #ef4444;
+    margin-top: 0.125rem;
+}
+
+.form-text {
+    font-size: 0.625rem;
+    color: #9ca3af;
+    margin-top: 0.125rem;
+}
+
+/* Optional fields section */
+.cr-optional {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.cr-optional-header {
+    font-size: 0.6875rem;
+    color: #9ca3af;
+    margin-bottom: 0.375rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.cr-optional-header:hover {
+    color: #6b7280;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .cr-form-container {
+        padding: 0.25rem;
+    }
+    
+    .cr-section {
+        padding: 0.5rem;
+    }
+    
+    .cr-actions {
+        flex-direction: column;
+    }
+    
+    .btn-cr {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .cr-invoice-link {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cr-form-container">
+    <div class="cr-header">
+        <h1>{{ title|default:"Create Cash Receipt" }}</h1>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        
+        <!-- Related Invoice (if any) -->
+        {% if selected_invoice %}
+        <div class="cr-invoice-link">
+            <div class="cr-invoice-info">
+                <strong>Invoice #{{ selected_invoice.invoice_number }}</strong><br>
+                <small>{{ selected_invoice.get_client_name }} - ${{ selected_invoice.total_amount|floatformat:2 }}</small>
+            </div>
+            <a href="{% url 'billing:invoice_detail' selected_invoice.id %}" class="btn-cr btn-cr-secondary btn-cr-sm" target="_blank">
+                <i class="bi bi-box-arrow-up-right"></i> View
+            </a>
+            <input type="hidden" name="invoice_id" value="{{ selected_invoice.id }}">
+        </div>
+        {% endif %}
+        
+        <!-- Essential Information -->
+        <div class="cr-section">
+            <div class="cr-section-title">Receipt Information</div>
+            <div class="row g-2">
+                <div class="col-md-5">
+                    <label class="form-label">Received From <span class="required">*</span></label>
+                    {{ form.received_from }}
+                    {% if form.received_from.errors %}
+                        <div class="invalid-feedback d-block">{{ form.received_from.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Amount <span class="required">*</span></label>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text">$</span>
+                        {{ form.amount_usd }}
+                    </div>
+                    {% if form.amount_usd.errors %}
+                        <div class="invalid-feedback d-block">{{ form.amount_usd.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Date <span class="required">*</span></label>
+                    {{ form.date }}
+                    {% if form.date.errors %}
+                        <div class="invalid-feedback d-block">{{ form.date.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Method <span class="required">*</span></label>
+                    {{ form.payment_method }}
+                    {% if form.payment_method.errors %}
+                        <div class="invalid-feedback d-block">{{ form.payment_method.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row g-2 mt-2">
+                <div class="col-md-12">
+                    <label class="form-label">Purpose <span class="required">*</span></label>
+                    {{ form.payment_purpose }}
+                    {% if form.payment_purpose.errors %}
+                        <div class="invalid-feedback d-block">{{ form.payment_purpose.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Optional Fields (Collapsed by default) -->
+        <div class="cr-section">
+            <div class="cr-section-title d-flex justify-content-between align-items-center">
+                <span>Additional Details</span>
+                <small class="text-muted" style="font-size: 0.625rem; font-weight: normal;">(Optional)</small>
+            </div>
+            <div class="cr-optional collapse" id="optional-fields">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label class="form-label">Amount in Words</label>
+                        {{ form.amount_in_words }}
+                        <div class="form-text">e.g., "ONE HUNDRED DOLLARS"</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Reference Number</label>
+                        {{ form.reference_number }}
+                        <div class="form-text">Check/transaction reference</div>
+                    </div>
+                </div>
+                
+                {% if form.invoice %}
+                <div class="row g-2 mt-2">
+                    <div class="col-md-12">
+                        <label class="form-label">Link to Invoice</label>
+                        {{ form.invoice }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="cr-optional-header" data-bs-toggle="collapse" data-bs-target="#optional-fields">
+                <i class="bi bi-chevron-down"></i> Show optional fields
+            </div>
+        </div>
+
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger alert-sm" style="font-size: 0.75rem; padding: 0.5rem;">
+            {% for error in form.non_field_errors %}
+                <div>{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="cr-actions">
+            <a href="{% if selected_invoice %}{% url 'billing:invoice_detail' selected_invoice.id %}{% else %}{% url 'billing:cash_receipt_list' %}{% endif %}" class="button-min-danger">
+                Cancel
+            </a>
+            <button type="submit" class="button-min-primary">
+                Save Receipt
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle optional fields text
+    const optionalToggle = document.querySelector('.cr-optional-header');
+    const optionalSection = document.getElementById('optional-fields');
+    
+    if (optionalToggle && optionalSection) {
+        optionalSection.addEventListener('shown.bs.collapse', function () {
+            optionalToggle.innerHTML = '<i class="bi bi-chevron-up"></i> Hide optional fields';
+        });
+        
+        optionalSection.addEventListener('hidden.bs.collapse', function () {
+            optionalToggle.innerHTML = '<i class="bi bi-chevron-down"></i> Show optional fields';
+        });
+    }
+    
+    // Auto-populate amount in words
+    const amountField = document.getElementById('id_amount_usd');
+    const wordsField = document.getElementById('id_amount_in_words');
+    
+    if (amountField && wordsField) {
+        amountField.addEventListener('blur', function() {
+            const amount = parseFloat(this.value);
+            if (amount && !wordsField.value.trim()) {
+                wordsField.value = convertToWords(amount);
+            }
+        });
+    }
+    
+    function convertToWords(amount) {
+        const ones = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE'];
+        const tens = ['', '', 'TWENTY', 'THIRTY', 'FORTY', 'FIFTY', 'SIXTY', 'SEVENTY', 'EIGHTY', 'NINETY'];
+        const teens = ['TEN', 'ELEVEN', 'TWELVE', 'THIRTEEN', 'FOURTEEN', 'FIFTEEN', 'SIXTEEN', 'SEVENTEEN', 'EIGHTEEN', 'NINETEEN'];
+        
+        if (amount === 0) return 'ZERO DOLLARS';
+        if (amount < 0) return 'NEGATIVE ' + convertToWords(-amount);
+        
+        let result = '';
+        const dollars = Math.floor(amount);
+        const cents = Math.round((amount - dollars) * 100);
+        
+        if (dollars >= 1000) {
+            const thousands = Math.floor(dollars / 1000);
+            result += convertSimpleNumber(thousands) + ' THOUSAND ';
+        }
+        
+        const remainder = dollars % 1000;
+        if (remainder > 0) {
+            result += convertSimpleNumber(remainder) + ' ';
+        }
+        
+        result += 'DOLLAR' + (dollars !== 1 ? 'S' : '');
+        
+        if (cents > 0) {
+            result += ' AND ' + convertSimpleNumber(cents) + ' CENT' + (cents !== 1 ? 'S' : '');
+        }
+        
+        return result.trim();
+        
+        function convertSimpleNumber(num) {
+            if (num === 0) return '';
+            if (num < 10) return ones[num];
+            if (num < 20) return teens[num - 10];
+            if (num < 100) {
+                const ten = Math.floor(num / 10);
+                const one = num % 10;
+                return tens[ten] + (one > 0 ? ' ' + ones[one] : '');
+            }
+            if (num < 1000) {
+                const hundred = Math.floor(num / 100);
+                const rest = num % 100;
+                return ones[hundred] + ' HUNDRED' + (rest > 0 ? ' ' + convertSimpleNumber(rest) : '');
+            }
+            return num.toString();
+        }
+    }
+});
+</script>
+{% endblock %}

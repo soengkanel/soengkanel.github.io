@@ -1,0 +1,366 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Request Forms{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact, Clean, Minimal Design */
+    .forms-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    /* Page Header */
+    .page-header {
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .page-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+
+    .page-subtitle {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 2px;
+    }
+
+    /* Stats Row */
+    .stats-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .stat-card {
+        flex: 1;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        padding: 10px 12px;
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 20px;
+        font-weight: 700;
+        color: #3b82f6;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 9px;
+        color: #6b7280;
+        text-transform: uppercase;
+        margin-top: 4px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    /* Form Cards */
+    .form-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        padding: 12px 14px;
+        margin-bottom: 8px;
+        transition: all 0.12s ease;
+        cursor: pointer;
+    }
+
+    .form-card:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 1px 4px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 12px;
+    }
+
+    .form-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0 0 4px 0;
+        line-height: 1.3;
+    }
+
+    .form-description {
+        font-size: 11px;
+        color: #6b7280;
+        margin: 0 0 8px 0;
+        line-height: 1.4;
+    }
+
+    .form-meta {
+        display: flex;
+        gap: 12px;
+        font-size: 10px;
+        color: #9ca3af;
+    }
+
+    .btn-fill {
+        font-size: 11px;
+        padding: 5px 12px;
+        background: #3b82f6;
+        border: none;
+        color: white;
+        border-radius: 3px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.12s;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-fill:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    /* Recent Submissions */
+    .submission-item {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .submission-form-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 2px;
+    }
+
+    .submission-date {
+        font-size: 10px;
+        color: #6b7280;
+    }
+
+    .btn-view {
+        font-size: 10px;
+        padding: 4px 10px;
+        border: 1px solid #d1d5db;
+        background: white;
+        color: #6b7280;
+        border-radius: 3px;
+        text-decoration: none;
+        transition: all 0.12s;
+        white-space: nowrap;
+    }
+
+    .btn-view:hover {
+        border-color: #3b82f6;
+        color: #3b82f6;
+        background: #f8faff;
+    }
+
+    .btn-view-all {
+        font-size: 11px;
+        padding: 6px 12px;
+        border: 1px solid #d1d5db;
+        background: white;
+        color: #6b7280;
+        border-radius: 3px;
+        text-decoration: none;
+        transition: all 0.12s;
+        display: block;
+        text-align: center;
+        margin-top: 8px;
+    }
+
+    .btn-view-all:hover {
+        border-color: #3b82f6;
+        color: #3b82f6;
+        background: #f8faff;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 30px 15px;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+    }
+
+    .empty-state i {
+        font-size: 36px;
+        color: #d1d5db;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        font-size: 12px;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    /* Back Button */
+    .btn-back {
+        font-size: 11px;
+        padding: 5px 12px;
+        border: 1px solid #d1d5db;
+        background: white;
+        color: #6b7280;
+        border-radius: 3px;
+        text-decoration: none;
+        transition: all 0.12s;
+    }
+
+    .btn-back:hover {
+        border-color: #9ca3af;
+        color: #374151;
+    }
+
+    /* Section Title */
+    .section-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .stats-row {
+            flex-direction: column;
+        }
+
+        .form-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-fill {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3 py-3">
+    <div class="forms-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">
+                        <i class="bi bi-file-earmark-plus me-2"></i>Request Forms
+                    </h1>
+                    <p class="page-subtitle">Submit requests and view your submissions</p>
+                </div>
+                <a href="{% url 'employee_portal:dashboard' %}" class="btn-back">
+                    <i class="bi bi-arrow-left me-1"></i>Back
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-number">{{ available_forms.count }}</div>
+                <div class="stat-label">Available</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_submissions }}</div>
+                <div class="stat-label">Submitted</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Available Forms -->
+            <div class="col-lg-7 mb-3">
+                <div class="section-title">Available Forms</div>
+
+                {% if available_forms %}
+                    {% for form in available_forms %}
+                    <div class="form-card" onclick="window.location.href='{% url 'employee_portal:fill_request_form' form.id %}'">
+                        <div class="form-header">
+                            <div style="flex: 1;">
+                                <h3 class="form-title">{{ form.title }}</h3>
+                                {% if form.description %}
+                                <p class="form-description">{{ form.description|truncatewords:15 }}</p>
+                                {% endif %}
+                                <div class="form-meta">
+                                    <span>
+                                        <i class="bi bi-ui-checks me-1"></i>{{ form.fields.count }} field{{ form.fields.count|pluralize }}
+                                    </span>
+                                    <span>
+                                        <i class="bi bi-people me-1"></i>{{ form.get_submission_count }} submission{{ form.get_submission_count|pluralize }}
+                                    </span>
+                                </div>
+                            </div>
+                            <a href="{% url 'employee_portal:fill_request_form' form.id %}"
+                               class="btn-fill"
+                               onclick="event.stopPropagation();">
+                                <i class="bi bi-pencil-square"></i>Fill
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>No forms available</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Submissions -->
+            <div class="col-lg-5">
+                <div class="section-title">Recent Submissions</div>
+
+                {% if my_recent_submissions %}
+                    {% for submission in my_recent_submissions %}
+                    <div class="submission-item">
+                        <div style="flex: 1; min-width: 0;">
+                            <div class="submission-form-name">{{ submission.form.title }}</div>
+                            <div class="submission-date">
+                                <i class="bi bi-calendar3 me-1"></i>{{ submission.submitted_at|date:"M d, Y H:i" }}
+                            </div>
+                        </div>
+                        <a href="{% url 'employee_portal:view_form_submission' submission.id %}"
+                           class="btn-view">
+                            View
+                        </a>
+                    </div>
+                    {% endfor %}
+
+                    <a href="{% url 'employee_portal:my_form_submissions' %}" class="btn-view-all">
+                        <i class="bi bi-list-ul me-1"></i>View All
+                    </a>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>No submissions yet</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

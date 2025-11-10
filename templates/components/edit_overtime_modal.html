@@ -1,0 +1,492 @@
+{% load i18n %}
+<!-- Global Edit Overtime Modal Component -->
+<div class="modal fade" id="editOvertimeModal" tabindex="-1" aria-labelledby="editOvertimeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editOvertimeModalLabel">
+                    <i class="bi bi-pencil-square me-1"></i>
+                    <span id="editOvertimeModalTitle">{% trans "Edit Overtime" %}</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2" id="editOvertimeModalName" style="font-size: 12px; font-weight: 500; color: #1f2937;"></p>
+
+                <!-- Form fields -->
+                <form id="editOvertimeForm">
+                    <input type="hidden" id="edit-overtime-id" value="">
+
+                    <div class="mb-2">
+                        <label for="edit-overtime-date" class="form-label">{% trans "Date" %}</label>
+                        <input type="date" id="edit-overtime-date" class="form-control" required>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="mb-2">
+                                <label for="edit-overtime-start-time" class="form-label">{% trans "Start Time" %}</label>
+                                <input type="time" id="edit-overtime-start-time" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-2">
+                                <label for="edit-overtime-end-time" class="form-label">{% trans "End Time" %}</label>
+                                <input type="time" id="edit-overtime-end-time" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="mb-2">
+                                <label for="edit-overtime-hours" class="form-label">{% trans "Hours" %}</label>
+                                <input type="number" id="edit-overtime-hours" class="form-control" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-2">
+                                <label for="edit-overtime-rate" class="form-label">{% trans "Rate" %}</label>
+                                <input type="number" id="edit-overtime-rate" class="form-control" step="0.1" min="1" value="1.5">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">{% trans "Calculated Amount" %}</label>
+                        <div class="form-control" style="background-color: #f3f4f6; font-weight: 600;" id="edit-calculated-amount">
+                            $0.00
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="edit-overtime-reason" class="form-label">{% trans "Reason" %}</label>
+                        <textarea id="edit-overtime-reason" class="form-control" rows="3" placeholder="{% trans 'Provide detailed justification for overtime work' %}" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex gap-1">
+                    <button type="button" class="button-min-warn py-1" data-bs-dismiss="modal">
+                        {% trans "Cancel" %}
+                    </button>
+                    <button type="button" class="button-min-primary py-1" id="confirmEditOvertimeBtn">
+                        {% trans "Save" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Modal Styles - Following Design Guideline */
+#editOvertimeModal {
+    z-index: 1070 !important;
+}
+
+#editOvertimeModal .modal-dialog {
+    margin: 4rem auto;
+    position: relative;
+    z-index: 1071;
+}
+
+#editOvertimeModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    position: relative;
+    z-index: 1071;
+}
+
+#editOvertimeModal.modal.show .modal-content {
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+#editOvertimeModal .modal-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+    position: relative;
+    z-index: 1072;
+}
+
+#editOvertimeModal .modal-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #1f2937;
+}
+
+#editOvertimeModal .modal-title i {
+    font-size: 0.875rem;
+}
+
+#editOvertimeModal .modal-body {
+    padding: 1rem;
+    color: #4b5563;
+    position: relative;
+    z-index: 1072;
+    overflow: visible !important;
+}
+
+#editOvertimeModal .modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1072;
+}
+
+#editOvertimeModal .modal-footer .btn {
+    font-size: 11px;
+    padding: 6px 12px;
+    position: relative;
+    z-index: 1073;
+    pointer-events: auto;
+}
+
+#editOvertimeModal .modal-footer .btn i {
+    font-size: 10px;
+}
+
+#editOvertimeModal .form-label {
+    font-size: 11px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #374151;
+}
+
+#editOvertimeModal .form-control,
+#editOvertimeModal .form-select {
+    font-size: 11px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    position: relative;
+    z-index: 1073;
+    background: white;
+    pointer-events: auto;
+}
+
+#editOvertimeModal .form-control:focus,
+#editOvertimeModal .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+#editOvertimeModal textarea.form-control {
+    position: relative;
+    z-index: 1073;
+    pointer-events: auto;
+    resize: none;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+#editOvertimeModal .modal-header .btn-close {
+    position: relative;
+    z-index: 1074;
+    pointer-events: auto;
+    font-size: 0.75rem;
+    padding: 0.25rem;
+}
+
+/* Ensure backdrop covers entire viewport */
+.modal-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+}
+</style>
+
+<script>
+// Global edit overtime modal functionality
+let currentEditOvertimeData = null;
+
+function initializeEditOvertimeModal() {
+    console.log('🔧 EDIT OVERTIME MODAL: Initializing edit overtime modal...');
+    const editOvertimeModalElement = document.getElementById('editOvertimeModal');
+    if (!editOvertimeModalElement) {
+        console.error('❌ EDIT OVERTIME MODAL: editOvertimeModal element not found!');
+        return;
+    }
+    console.log('✅ EDIT OVERTIME MODAL: Modal element found');
+
+    const editOvertimeModal = new bootstrap.Modal(editOvertimeModalElement);
+    const confirmEditOvertimeBtn = document.getElementById('confirmEditOvertimeBtn');
+
+    console.log('✅ EDIT OVERTIME MODAL: Modal initialized successfully');
+
+    // Watch for backdrop creation and immediately fix it
+    let backdropFixed = false;
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.classList && node.classList.contains('modal-backdrop') && !backdropFixed) {
+                    console.log('🎭 BACKDROP DETECTED: Fixing once');
+
+                    // Mark as fixed to prevent infinite loop
+                    backdropFixed = true;
+
+                    // Disconnect observer temporarily to prevent loop
+                    observer.disconnect();
+
+                    // Set z-index lower than modal (no need to move in DOM)
+                    node.style.setProperty('z-index', '1065', 'important');
+                    console.log('✅ Backdrop fixed on creation');
+                }
+            });
+        });
+    });
+
+    // Start observing when modal is about to show
+    editOvertimeModalElement.addEventListener('show.bs.modal', function() {
+        backdropFixed = false;
+        observer.observe(document.body, { childList: true });
+        console.log('👀 OBSERVER: Started watching for backdrop');
+        editOvertimeModalElement.style.setProperty('z-index', '1070', 'important');
+    });
+
+    // Stop observing after modal is shown
+    editOvertimeModalElement.addEventListener('shown.bs.modal', function() {
+        setTimeout(() => {
+            observer.disconnect();
+            console.log('👀 OBSERVER: Stopped watching');
+        }, 100);
+
+        // Ensure all interactive elements have pointer-events enabled
+        const allInteractive = editOvertimeModalElement.querySelectorAll('input, select, textarea, button');
+        allInteractive.forEach(element => {
+            element.style.setProperty('pointer-events', 'auto', 'important');
+        });
+
+        // Focus first element
+        const focusableElement = editOvertimeModalElement.querySelector('input, textarea, button');
+        if (focusableElement) {
+            focusableElement.focus();
+        }
+
+        console.log('✅ EDIT OVERTIME MODAL: Setup complete');
+    });
+
+    // Calculate amount based on hours and rate
+    function calculateOvertimeAmount() {
+        const hours = parseFloat(document.getElementById('edit-overtime-hours').value) || 0;
+        const rate = parseFloat(document.getElementById('edit-overtime-rate').value) || 1.5;
+        const amount = hours * rate;
+        document.getElementById('edit-calculated-amount').textContent = '$' + amount.toFixed(2);
+    }
+
+    // Calculate hours based on start and end time
+    function calculateOvertimeHours() {
+        const startTime = document.getElementById('edit-overtime-start-time').value;
+        const endTime = document.getElementById('edit-overtime-end-time').value;
+
+        if (startTime && endTime) {
+            const start = new Date('2000-01-01T' + startTime);
+            const end = new Date('2000-01-01T' + endTime);
+
+            if (end > start) {
+                const diffMs = end - start;
+                const diffHours = diffMs / (1000 * 60 * 60);
+                document.getElementById('edit-overtime-hours').value = diffHours.toFixed(2);
+                calculateOvertimeAmount();
+            }
+        }
+    }
+
+    // Add event listeners for calculation
+    document.getElementById('edit-overtime-hours').addEventListener('input', calculateOvertimeAmount);
+    document.getElementById('edit-overtime-rate').addEventListener('input', calculateOvertimeAmount);
+    document.getElementById('edit-overtime-start-time').addEventListener('change', calculateOvertimeHours);
+    document.getElementById('edit-overtime-end-time').addEventListener('change', calculateOvertimeHours);
+
+    // Keyboard navigation
+    editOvertimeModalElement.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modalInstance = bootstrap.Modal.getInstance(editOvertimeModalElement);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        }
+    });
+
+    // Handle edit button clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-overtime-btn')) {
+            console.log('✏️ EDIT OVERTIME MODAL: Edit button detected!');
+            e.preventDefault();
+            const button = e.target.closest('.edit-overtime-btn');
+
+            const overtimeId = button.dataset.overtimeId;
+            const employeeName = button.dataset.employeeName;
+            const date = button.dataset.date;
+            const startTime = button.dataset.startTime;
+            const endTime = button.dataset.endTime;
+            const hours = button.dataset.hours;
+            const rate = button.dataset.rate;
+            const reason = button.dataset.reason;
+
+            console.log('✏️ EDIT OVERTIME MODAL: Edit button clicked');
+            console.log('👤 Employee:', employeeName);
+            console.log('📅 Date:', date);
+            console.log('⏰ Time:', startTime, '-', endTime);
+
+            // Store edit data
+            currentEditOvertimeData = {
+                overtimeId: overtimeId,
+                employeeName: employeeName
+            };
+
+            // Update modal content
+            const dateLabel = date ? ` - ${date}` : '';
+            document.querySelector('#editOvertimeModalTitle').textContent = '{% trans "Edit Overtime" %}' + dateLabel;
+            document.getElementById('editOvertimeModalName').textContent = employeeName;
+
+            // Pre-fill form fields
+            document.getElementById('edit-overtime-id').value = overtimeId || '';
+            document.getElementById('edit-overtime-date').value = date || '';
+            document.getElementById('edit-overtime-start-time').value = startTime || '';
+            document.getElementById('edit-overtime-end-time').value = endTime || '';
+            document.getElementById('edit-overtime-hours').value = hours || '';
+            document.getElementById('edit-overtime-rate').value = rate || '1.5';
+            document.getElementById('edit-overtime-reason').value = reason || '';
+
+            // Calculate initial amount
+            calculateOvertimeAmount();
+
+            // Show modal
+            editOvertimeModal.show();
+        }
+    });
+
+    // Handle edit confirmation
+    confirmEditOvertimeBtn.addEventListener('click', function() {
+        console.log('✅ EDIT OVERTIME MODAL: Confirm edit button clicked');
+
+        if (currentEditOvertimeData) {
+            // Get form data
+            const overtimeId = document.getElementById('edit-overtime-id').value;
+            const date = document.getElementById('edit-overtime-date').value;
+            const startTime = document.getElementById('edit-overtime-start-time').value;
+            const endTime = document.getElementById('edit-overtime-end-time').value;
+            const hours = document.getElementById('edit-overtime-hours').value;
+            const rate = document.getElementById('edit-overtime-rate').value;
+            const reason = document.getElementById('edit-overtime-reason').value;
+
+            // Validate required fields
+            if (!date || !startTime || !endTime || !hours || !reason) {
+                if (typeof showToast === 'function') {
+                    showToast('{% trans "Please fill in all required fields" %}', false);
+                } else {
+                    alert('{% trans "Please fill in all required fields" %}');
+                }
+                return;
+            }
+
+            // Show loading state
+            const originalContent = confirmEditOvertimeBtn.innerHTML;
+            confirmEditOvertimeBtn.disabled = true;
+            confirmEditOvertimeBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>{% trans "Saving..." %}';
+
+            // Get CSRF token
+            function getCSRFToken() {
+                const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfInput) return csrfInput.value;
+
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                if (csrfMeta) return csrfMeta.getAttribute('content');
+
+                const csrfCookie = document.cookie.match(/csrftoken=([^;]+)/);
+                if (csrfCookie) return csrfCookie[1];
+
+                return null;
+            }
+
+            const csrfToken = getCSRFToken();
+
+            if (!csrfToken) {
+                alert('Security token not found. Please refresh the page and try again.');
+                confirmEditOvertimeBtn.disabled = false;
+                confirmEditOvertimeBtn.innerHTML = originalContent;
+                return;
+            }
+
+            // Send AJAX request to update overtime
+            const updateUrl = `/attendance/overtime/update/${overtimeId}/`;
+
+            const formData = new FormData();
+            formData.append('date', date);
+            formData.append('start_time', startTime);
+            formData.append('end_time', endTime);
+            formData.append('hours', hours);
+            formData.append('overtime_rate', rate);
+            formData.append('reason', reason);
+            formData.append('csrfmiddlewaretoken', csrfToken);
+
+            fetch(updateUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData,
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.json().catch(() => ({ success: true }));
+            })
+            .then(data => {
+                editOvertimeModal.hide();
+
+                if (typeof showToast === 'function') {
+                    showToast(data.message || '{% trans "Overtime updated successfully" %}', true);
+                }
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            })
+            .catch(error => {
+                console.error('❌ EDIT OVERTIME MODAL: Error:', error);
+
+                const errorMsg = '{% trans "Error updating overtime" %}: ' + error.message;
+                if (typeof showToast === 'function') {
+                    showToast(errorMsg, false);
+                } else {
+                    alert(errorMsg);
+                }
+
+                confirmEditOvertimeBtn.disabled = false;
+                confirmEditOvertimeBtn.innerHTML = originalContent;
+            });
+        }
+    });
+
+    // Reset modal when hidden
+    editOvertimeModalElement.addEventListener('hidden.bs.modal', function() {
+        currentEditOvertimeData = null;
+        confirmEditOvertimeBtn.disabled = false;
+        confirmEditOvertimeBtn.innerHTML = '{% trans "Save" %}';
+        document.getElementById('editOvertimeForm').reset();
+        document.getElementById('edit-overtime-id').value = '';
+        document.getElementById('edit-calculated-amount').textContent = '$0.00';
+    });
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeEditOvertimeModal);
+</script>

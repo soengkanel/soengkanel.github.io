@@ -1,0 +1,357 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Form Builder - {{ form.title }}{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+
+
+{% block page_title %}Form Builder: {{ form.title }}{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group">
+    <button type="button" class="btn btn-success" id="publishForm">
+        <i class="fas fa-rocket me-1"></i>
+        {% if form.status == 'published' %}Update{% else %}Publish{% endif %}
+    </button>
+    <button type="button" class="btn btn-info" id="previewForm">
+        <i class="fas fa-eye me-1"></i>
+        Preview
+    </button>
+    <a href="{% url 'eform:form_list' %}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i>
+        Back to Forms
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .field-toolbox {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    
+    .field-type-item {
+        cursor: grab;
+        transition: all 0.2s;
+    }
+    
+    .field-type-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+    
+    .form-canvas {
+        background: white;
+        border: 2px dashed #dee2e6;
+        border-radius: 0.375rem;
+        min-height: 400px;
+    }
+    
+    .form-field-item {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+        margin-bottom: 10px;
+        position: relative;
+        cursor: pointer;
+    }
+    
+    .form-field-item:hover {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .form-field-item.selected {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .field-controls {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        display: none;
+    }
+    
+    .form-field-item:hover .field-controls {
+        display: block;
+    }
+    
+    .canvas-empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 400px;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Field Types</h6>
+            </div>
+            <div class="card-body">
+                {% for field_type, field_label in field_types %}
+                    <div class="mb-2">
+                        <button class="btn btn-outline-primary btn-sm w-100 add-field-btn" 
+                                data-field-type="{{ field_type }}">
+                            {{ field_label }}
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-9">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h6 class="mb-0">{{ form.title }}</h6>
+                <div>
+                    <button class="btn btn-success btn-sm" id="publishForm">
+                        {% if form.status == 'published' %}Update{% else %}Publish{% endif %}
+                    </button>
+                    <a href="{% url 'eform:view_form' form.id %}" target="_blank" class="btn btn-info btn-sm">
+                        Preview
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if form.description %}
+                    <p class="text-muted">{{ form.description }}</p>
+                {% endif %}
+                
+                <div id="formFields">
+                    {% for field in fields %}
+                        <div class="mb-3 p-3 border rounded field-item" data-field-id="{{ field.id }}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <label class="form-label fw-bold">
+                                    {{ field.label }}
+                                    {% if field.is_required %}<span class="text-danger">*</span>{% endif %}
+                                </label>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary edit-field">Edit</button>
+                                    <button class="btn btn-sm btn-outline-danger delete-field">Delete</button>
+                                </div>
+                            </div>
+                            
+                            {% if field.field_type == 'text' %}
+                                <input type="text" class="form-control" placeholder="{{ field.placeholder }}" disabled>
+                            {% elif field.field_type == 'textarea' %}
+                                <textarea class="form-control" placeholder="{{ field.placeholder }}" disabled></textarea>
+                            {% elif field.field_type == 'email' %}
+                                <input type="email" class="form-control" placeholder="{{ field.placeholder }}" disabled>
+                            {% elif field.field_type == 'number' %}
+                                <input type="number" class="form-control" placeholder="{{ field.placeholder }}" disabled>
+                            {% elif field.field_type == 'date' %}
+                                <input type="date" class="form-control" disabled>
+                            {% elif field.field_type == 'select' %}
+                                <select class="form-select" disabled>
+                                    <option>Select an option...</option>
+                                    {% for option in field.options %}
+                                        <option>{{ option }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                            
+                            {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <div class="text-center py-5 text-muted" id="emptyMessage">
+                            <i class="fas fa-plus fa-3x mb-3"></i>
+                            <h6>No fields added yet</h6>
+                            <p>Click on field types to add them to your form</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Field Edit Modal -->
+<div class="modal fade" id="fieldModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Field</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="fieldForm">
+                    <div class="mb-3">
+                        <label class="form-label">Field Label</label>
+                        <input type="text" class="form-control" id="fieldLabel">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Help Text</label>
+                        <textarea class="form-control" id="fieldHelpText"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Placeholder</label>
+                        <input type="text" class="form-control" id="fieldPlaceholder">
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="fieldRequired">
+                        <label class="form-check-label" for="fieldRequired">
+                            Required field
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveField">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentFieldId = null;
+
+$(document).ready(function() {
+    // Add field buttons
+    $('.add-field-btn').click(function() {
+        const fieldType = $(this).data('field-type');
+        addField(fieldType);
+    });
+    
+    // Edit field
+    $(document).on('click', '.edit-field', function() {
+        const fieldItem = $(this).closest('.field-item');
+        currentFieldId = fieldItem.data('field-id');
+        
+        // Load field data into modal
+        const label = fieldItem.find('label').text().replace('*', '').trim();
+        $('#fieldLabel').val(label);
+        
+        $('#fieldModal').modal('show');
+    });
+    
+    // Delete field
+    $(document).on('click', '.delete-field', function() {
+        if (confirm('Are you sure you want to delete this field?')) {
+            $(this).closest('.field-item').remove();
+            checkEmptyState();
+        }
+    });
+    
+    // Save field changes
+    $('#saveField').click(function() {
+        if (currentFieldId) {
+            const label = $('#fieldLabel').val();
+            const helpText = $('#fieldHelpText').val();
+            const placeholder = $('#fieldPlaceholder').val();
+            const required = $('#fieldRequired').is(':checked');
+            
+            // Update field in DOM
+            const fieldItem = $(`.field-item[data-field-id="${currentFieldId}"]`);
+            const labelElement = fieldItem.find('label');
+            labelElement.html(label + (required ? ' <span class="text-danger">*</span>' : ''));
+            
+            // Update help text
+            fieldItem.find('.form-text').remove();
+            if (helpText) {
+                fieldItem.find('input, textarea, select').after(`<div class="form-text">${helpText}</div>`);
+            }
+            
+            // Update placeholder
+            fieldItem.find('input, textarea').attr('placeholder', placeholder);
+            
+            $('#fieldModal').modal('hide');
+        }
+    });
+    
+    // Publish form
+    $('#publishForm').click(function() {
+        $.post('', {
+            'action': 'publish_form',
+            'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()
+        }, function(response) {
+            if (response.success) {
+                location.reload();
+            }
+        });
+    });
+});
+
+function addField(fieldType) {
+    const fieldId = 'field_' + Date.now();
+    const fieldLabel = getFieldLabel(fieldType);
+    
+    const fieldHtml = `
+        <div class="mb-3 p-3 border rounded field-item" data-field-id="${fieldId}" data-field-type="${fieldType}">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <label class="form-label fw-bold">${fieldLabel}</label>
+                <div>
+                    <button class="btn btn-sm btn-outline-primary edit-field">Edit</button>
+                    <button class="btn btn-sm btn-outline-danger delete-field">Delete</button>
+                </div>
+            </div>
+            ${getFieldInput(fieldType)}
+        </div>
+    `;
+    
+    $('#emptyMessage').remove();
+    $('#formFields').append(fieldHtml);
+}
+
+function getFieldLabel(fieldType) {
+    const labels = {
+        'text': 'Text Input',
+        'textarea': 'Textarea',
+        'email': 'Email',
+        'number': 'Number',
+        'date': 'Date',
+        'select': 'Select Dropdown'
+    };
+    return labels[fieldType] || 'Field';
+}
+
+function getFieldInput(fieldType) {
+    switch(fieldType) {
+        case 'text':
+            return '<input type="text" class="form-control" disabled>';
+        case 'textarea':
+            return '<textarea class="form-control" disabled></textarea>';
+        case 'email':
+            return '<input type="email" class="form-control" disabled>';
+        case 'number':
+            return '<input type="number" class="form-control" disabled>';
+        case 'date':
+            return '<input type="date" class="form-control" disabled>';
+        case 'select':
+            return '<select class="form-select" disabled><option>Select an option...</option></select>';
+        default:
+            return '<input type="text" class="form-control" disabled>';
+    }
+}
+
+function checkEmptyState() {
+    if ($('.field-item').length === 0) {
+        const emptyHtml = `
+            <div class="text-center py-5 text-muted" id="emptyMessage">
+                <i class="fas fa-plus fa-3x mb-3"></i>
+                <h6>No fields added yet</h6>
+                <p>Click on field types to add them to your form</p>
+            </div>
+        `;
+        $('#formFields').append(emptyHtml);
+    }
+}
+</script>
+{% endblock %} 

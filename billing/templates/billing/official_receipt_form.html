@@ -1,0 +1,316 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --primary-blue: #2563eb;
+    --success-green: #059669;
+    --border-color: #e5e7eb;
+    --light-gray: #f8fafc;
+    --shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --radius: 6px;
+}
+
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-section {
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #292929 !important;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-grid.single {
+    grid-template-columns: 1fr;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn-container {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn {
+    padding: 0.5rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: var(--primary-blue);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    color: white;
+    text-decoration: none;
+}
+
+.help-text {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn-container {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+           <!-- Page Header -->
+        <div class="page-header">
+            <h2 class="text-lg font-semibold">{{ title }}</h2>
+        </div>
+           
+    
+    <div class="form-container p-0">
+    
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Related Invoice (if any) -->
+            {% if selected_invoice %}
+            <div class="form-section" style="background: #f0f9ff; border: 1px solid #0369a1; border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem;">
+                <div class="section-title" style="color: #0369a1; border-bottom: 1px solid #0369a1;">
+                    <i class="bi bi-link-45deg"></i> Recording Payment for Invoice
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0;">
+                    <div>
+                        <strong>Invoice #{{ selected_invoice.invoice_number }}</strong><br>
+                        <small style="color: #0369a1;">{{ selected_invoice.get_client_name }} - ${{ selected_invoice.total_amount|floatformat:2 }}</small>
+                    </div>
+                    <a href="{% url 'billing:invoice_detail' selected_invoice.id %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> View Invoice
+                    </a>
+                </div>
+                <!-- Hidden field to connect receipt to invoice -->
+                <input type="hidden" name="invoice_id" value="{{ selected_invoice.id }}">
+            </div>
+            {% endif %}
+            
+            <!-- Receipt Information -->
+            <div class="form-section">
+                <h1 class="text-gray-700 font-semibold border-b uppercase px-3 py-2 bg-gray-100">Receipt Information</h1>
+                <div class="form-grid p-3">
+                    <div class="form-group">
+                        <label for="receipt_type" class="form-label">Receipt Type</label>
+                        <select name="receipt_type" id="receipt_type" class="form-control" required>
+                            <option value="tax_payment" {% if receipt.receipt_type == 'tax_payment' %}selected{% endif %}>Tax Payment to Department of Labour and Vocational Training</option>
+                            <option value="service_fee" {% if receipt.receipt_type == 'service_fee' %}selected{% endif %}>Service Fee Receipt</option>
+                            <option value="quota_payment" {% if receipt.receipt_type == 'quota_payment' %}selected{% endif %}>Quota Payment Receipt</option>
+                            <option value="general" {% if receipt.receipt_type == 'general' %}selected{% endif %}>General Official Receipt</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="year" class="form-label">Tax Year</label>
+                        <input type="number" name="year" id="year" class="form-control" 
+                               value="{{ receipt.year|default:current_year }}" 
+                               min="2020" max="2030" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Information -->
+            <div class="form-section">
+                <h1 class="text-gray-700 font-semibold border-b uppercase px-3 py-2 bg-gray-100">Employee Information</h1>
+                <div class="form-grid p-3">
+                    <div class="form-group">
+                        <label for="employee_number" class="form-label">Employee Number</label>
+                        <input type="text" name="employee_number" id="employee_number" class="form-control" 
+                               value="{{ receipt.employee_number|default:'' }}" 
+                               placeholder="e.g., NO.065" required>
+                        <div class="help-text text-left">Employee identification number</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="employee_name" class="form-label">Employee Name</label>
+                        <input type="text" name="employee_name" id="employee_name" class="form-control" 
+                               value="{% if selected_invoice %}{{ selected_invoice.get_client_name }}{% else %}{{ receipt.employee_name|default:'' }}{% endif %}" 
+                               placeholder="e.g., KHEANG" required>
+                        <div class="help-text text-left">Full name of the employee</div>
+                    </div>
+                </div>
+                
+                <div class="form-grid px-3">
+                    <div class="form-group">
+                        <label for="total_pass" class="form-label">Total Passes</label>
+                        <input type="number" name="total_pass" id="total_pass" class="form-control" 
+                               value="{{ receipt.total_pass|default:0 }}" 
+                               min="0" required>
+                        <div class="help-text text-left">Number of passes/permits</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="total_amount" class="form-label">Total Amount (USD)</label>
+                        <input type="number" name="total_amount" id="total_amount" class="form-control" 
+                               value="{% if selected_invoice %}{{ selected_invoice.total_amount }}{% else %}{{ receipt.total_amount|default:0 }}{% endif %}" 
+                               min="0" step="0.01" required>
+                        <div class="help-text text-left">Total amount in USD</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Breakdown -->
+            <div class="form-section">
+                <h1 class="text-gray-700 font-semibold border-b uppercase px-3 py-2 bg-gray-100">Payment Breakdown</h1>
+                <div class="form-grid p-3">
+                    <div class="form-group">
+                        <label for="service_fee_5" class="form-label">Service Fee (5$/person)</label>
+                        <input type="number" name="service_fee_5" id="service_fee_5" class="form-control" 
+                               value="{{ receipt.service_fee_5|default:0 }}" 
+                               min="0" step="0.01">
+                        <div class="help-text text-left">Income Service from Service ($5/person)</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="quota_fee_25" class="form-label">Quota Fee (25$/person)</label>
+                        <input type="number" name="quota_fee_25" id="quota_fee_25" class="form-control" 
+                               value="{{ receipt.quota_fee_25|default:0 }}" 
+                               min="0" step="0.01">
+                        <div class="help-text text-left">Income Service from Quota ($25/person)</div>
+                    </div>
+                </div>
+                
+                <div class="form-grid single px-3">
+                    <div class="form-group">
+                        <label for="support_document_amount" class="form-label">Support Document Amount</label>
+                        <input type="number" name="support_document_amount" id="support_document_amount" class="form-control" 
+                               value="{{ receipt.support_document_amount|default:0 }}" 
+                               step="0.01">
+                        <div class="help-text text-left">Available for used to support document outside (can be negative)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Notes -->
+            <div class="form-section">
+                <h1 class="text-gray-700 font-semibold border-b uppercase px-3 py-2 bg-gray-100">Additional Information</h1>
+         
+                <div class="form-group p-3">
+                    <label for="notes" class="form-label">Notes (Optional)</label>
+                    <textarea name="notes" id="notes" class="form-control" rows="3" 
+                              placeholder="Additional notes or comments">{{ receipt.notes|default:'' }}</textarea>
+                    <div class="help-text text-left">Any additional information or special notes</div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="pb-3 flex justify-end space-x-3 px-3">
+                <a href="{% url 'billing:official_receipt_list' %}" class="button-min-danger">Cancel</a>
+                <button type="submit" class="button-min-primary">{% if receipt %}Update Receipt{% else %}Create Receipt{% endif %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Auto-calculate total amount when breakdown changes
+document.addEventListener('DOMContentLoaded', function() {
+    const serviceFeeInput = document.getElementById('service_fee_5');
+    const quotaFeeInput = document.getElementById('quota_fee_25');
+    const supportDocInput = document.getElementById('support_document_amount');
+    const totalAmountInput = document.getElementById('total_amount');
+    
+    function calculateTotal() {
+        const serviceFee = parseFloat(serviceFeeInput.value) || 0;
+        const quotaFee = parseFloat(quotaFeeInput.value) || 0;
+        const supportDoc = parseFloat(supportDocInput.value) || 0;
+        const total = serviceFee + quotaFee - Math.abs(supportDoc);
+        totalAmountInput.value = Math.max(0, total).toFixed(2);
+    }
+    
+    serviceFeeInput.addEventListener('input', calculateTotal);
+    quotaFeeInput.addEventListener('input', calculateTotal);
+    supportDocInput.addEventListener('input', calculateTotal);
+});
+</script>
+{% endblock %} 

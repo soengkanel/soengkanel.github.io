@@ -1,0 +1,337 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}My Payslips{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Clean Payslip Design */
+    .payslip-container {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .clean-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    /* Summary Cards */
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .summary-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .summary-amount {
+        font-size: 20px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 4px;
+    }
+
+    .summary-label {
+        font-size: 11px;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    /* Clean Table */
+    .payslip-table {
+        font-size: 13px;
+        width: 100%;
+    }
+
+    .payslip-table thead {
+        background: #f9fafb;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .payslip-table th {
+        font-size: 11px;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        padding: 10px 12px;
+        border: none;
+    }
+
+    .payslip-table td {
+        padding: 12px;
+        color: #374151;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+    }
+
+    .payslip-table tbody tr:hover {
+        background: #f9fafb;
+    }
+
+    .payslip-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* Amount Styling */
+    .amount {
+        font-weight: 500;
+        font-family: 'Courier New', monospace;
+    }
+
+    .amount-positive {
+        color: #16a34a;
+    }
+
+    .amount-negative {
+        color: #dc2626;
+    }
+
+    .net-amount {
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .status-paid {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .status-draft {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    /* Period Badge */
+    .period-badge {
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 11px;
+        color: #6b7280;
+        display: inline-block;
+    }
+
+    /* Action Button */
+    .btn-view {
+        background: white;
+        border: 1px solid #d1d5db;
+        color: #374151;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s;
+    }
+
+    .btn-view:hover {
+        border-color: #3b82f6;
+        color: #3b82f6;
+        text-decoration: none;
+    }
+
+    /* Empty State */
+    .empty-state {
+        background: #f9fafb;
+        border: 1px dashed #d1d5db;
+        border-radius: 6px;
+        padding: 48px;
+        text-align: center;
+        color: #9ca3af;
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        opacity: 0.3;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    /* Pagination */
+    .pagination-clean {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        margin-top: 16px;
+    }
+
+    .pagination-clean .page-link {
+        padding: 6px 12px;
+        font-size: 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        color: #6b7280;
+        text-decoration: none;
+        background: white;
+    }
+
+    .pagination-clean .page-link:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+    }
+
+    .pagination-clean .page-link.active {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .payslip-table {
+            font-size: 12px;
+        }
+
+        .payslip-table th,
+        .payslip-table td {
+            padding: 8px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <div class="payslip-container">
+        <!-- Header -->
+        <div class="mb-3">
+            <h5 class="mb-0" style="font-weight: 600; color: #111827;">My Payslips</h5>
+            <small class="text-muted">View and download your salary statements</small>
+        </div>
+
+        <!-- Summary Cards -->
+        {% if page_obj %}
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="summary-amount" style="color: #16a34a;">${{ total_gross|default:"0"|floatformat:0 }}</div>
+                <div class="summary-label">Total Earned</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-amount" style="color: #dc2626;">${{ total_deductions|default:"0"|floatformat:0 }}</div>
+                <div class="summary-label">Total Deductions</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-amount" style="color: #3b82f6;">${{ total_net|default:"0"|floatformat:0 }}</div>
+                <div class="summary-label">Total Net Pay</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Payslip Table -->
+        <div class="clean-card">
+            <h6 class="mb-3" style="font-size: 13px; font-weight: 600; color: #374151;">Payslip History</h6>
+
+            <div class="table-responsive">
+                <table class="payslip-table">
+                    <thead>
+                        <tr>
+                            <th>Payment Date</th>
+                            <th>Period</th>
+                            <th style="text-align: right;">Gross Pay</th>
+                            <th style="text-align: right;">Deductions</th>
+                            <th style="text-align: right;">Net Pay</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payslip in page_obj %}
+                        <tr>
+                            <td>
+                                <div style="font-weight: 500; color: #111827;">{{ payslip.payment_date|date:"M d, Y" }}</div>
+                            </td>
+                            <td>
+                                <span class="period-badge">
+                                    {{ payslip.start_date|date:"M d" }} - {{ payslip.end_date|date:"M d, Y" }}
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <span class="amount">${{ payslip.gross_pay|floatformat:2 }}</span>
+                            </td>
+                            <td style="text-align: right;">
+                                <span class="amount amount-negative">${{ payslip.total_deduction|floatformat:2 }}</span>
+                            </td>
+                            <td style="text-align: right;">
+                                <span class="amount net-amount amount-positive">${{ payslip.net_pay|floatformat:2 }}</span>
+                            </td>
+                            <td>
+                                {% if payslip.status == 'paid' %}
+                                <span class="status-badge status-paid">Paid</span>
+                                {% elif payslip.status == 'pending' %}
+                                <span class="status-badge status-pending">Pending</span>
+                                {% else %}
+                                <span class="status-badge status-draft">Draft</span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: right;">
+                                <a href="{% url 'employee_portal:payslip_detail' payslip.id %}" class="btn-view">
+                                    <i class="bi bi-eye me-1"></i>View
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" style="padding: 0; border: none;">
+                                <div class="empty-state">
+                                    <i class="bi bi-receipt"></i>
+                                    <div style="font-size: 12px;">No payslips available</div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="pagination-clean">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="page-link">‹ Previous</a>
+                {% endif %}
+
+                <span class="page-link active">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="page-link">Next ›</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

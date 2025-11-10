@@ -1,0 +1,141 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Leave Types{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header { padding: 6px 0; margin-bottom: 12px; }
+    .page-header h2 { font-size: 16px; font-weight: 600; margin: 0; color: #1a1a1a; }
+    .form-control { font-size: 11px !important; padding: 4px 6px !important; height: auto !important; }
+    .table { font-size: 11px; }
+    .table th { font-weight: 600; color: #374151; text-transform: uppercase; font-size: 10px; padding: 8px; border-bottom: 2px solid #e2e8f0; }
+    .table td { padding: 8px; vertical-align: middle; }
+    .badge { font-size: 10px; padding: 3px 8px; }
+    .color-box { width: 20px; height: 20px; border-radius: 4px; display: inline-block; border: 1px solid #d1d5db; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center mb-3">
+        <h2 class="text-xl font-bold">Leave Types</h2>
+        <a href="{% url 'leave:type_create' %}" class="button-min-primary" style="flex-direction: row; gap: 6px;">
+            <i class="bi bi-plus-circle"></i>
+            <span>Add Type</span>
+        </a>
+    </div>
+
+    <!-- Search -->
+    <div class="rounded-xl bg-white border px-3 py-2 mb-3">
+        <form method="get" class="flex gap-2 align-items-center">
+            <input type="text" name="search" class="form-control flex-grow-1" placeholder="Search leave types..." value="{{ search_query }}">
+            <button type="submit" class="button-min-primary" style="flex-direction: row; gap: 6px;">
+                <i class="bi bi-search"></i>
+                <span>Search</span>
+            </button>
+            {% if search_query %}
+            <a href="{% url 'leave:type_list' %}" class="button-min-default" style="flex-direction: row; gap: 6px;">
+                <i class="bi bi-arrow-clockwise"></i>
+                <span>Reset</span>
+            </a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Leave Types Table -->
+    {% if page_obj %}
+    <div class="bg-white border rounded-xl overflow-hidden">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Color</th>
+                    <th>Name</th>
+                    <th>Code</th>
+                    <th>Max Days/Year</th>
+                    <th>Carry Forward</th>
+                    <th>Paid</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for type in page_obj %}
+                <tr>
+                    <td><span class="color-box" style="background-color: {{ type.color }};"></span></td>
+                    <td><strong>{{ type.name }}</strong></td>
+                    <td><span class="badge bg-secondary">{{ type.code }}</span></td>
+                    <td>{{ type.max_days_per_year }} days</td>
+                    <td>
+                        {% if type.carry_forward_allowed %}
+                        <i class="bi bi-check-circle text-success"></i> {{ type.max_carry_forward_days }} days
+                        {% else %}
+                        <i class="bi bi-x-circle text-muted"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if type.is_paid %}
+                        <i class="bi bi-check-circle text-success"></i>
+                        {% else %}
+                        <i class="bi bi-x-circle text-danger"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if type.is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <a href="{% url 'leave:type_edit' type.id %}" class="button-min-default" style="flex-direction: row; padding: 6px 10px; gap: 4px;" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                                <span style="font-size: 11px;">Edit</span>
+                            </a>
+                            <form method="post" action="{% url 'leave:type_delete' type.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="button-min-danger" style="flex-direction: row; padding: 6px 10px; gap: 4px;" onclick="return confirm('Delete this leave type?')" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                    <span style="font-size: 11px;">Delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-3">
+        <ul class="pagination pagination-sm justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Prev</a></li>
+            {% endif %}
+            <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="text-center py-5 bg-white border rounded-xl">
+        <i class="bi bi-folder-x text-muted" style="font-size: 3rem;"></i>
+        <h4 class="text-muted mt-3" style="font-size: 14px;">No leave types found</h4>
+        <a href="{% url 'leave:type_create' %}" class="button-min-primary mt-2" style="flex-direction: row; gap: 6px; display: inline-flex;">
+            <i class="bi bi-plus-circle"></i>
+            <span>Add Leave Type</span>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

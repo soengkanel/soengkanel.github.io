@@ -1,0 +1,348 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}{{ action }} Review - Performance Management{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Ultra Compact Design System - Review Form */
+.page-header {
+    background: #3b82f6;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.page-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: white;
+}
+
+.page-header p {
+    font-size: 11px;
+    color: #ffffff;
+    margin: 2px 0 0 0;
+}
+
+/* Compact Form Section */
+.form-section {
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 12px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Form Labels */
+.form-label {
+    font-size: 12px !important;
+    margin-bottom: 4px !important;
+    font-weight: 500;
+    color: #374151;
+    text-transform: capitalize;
+    display: block;
+}
+
+.required-field {
+    color: #ef4444;
+    font-weight: normal;
+}
+
+/* Form Controls */
+.form-control, .form-select {
+    font-size: 12px !important;
+    padding: 2px 3px !important;
+    height: auto !important;
+    min-height: 28px;
+    border-radius: 6px !important;
+    border: 1px solid #d1d5db !important;
+    line-height: 1.4;
+    background: #ffffff;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none !important;
+    background: #ffffff;
+}
+
+/* Textarea */
+textarea.form-control {
+    resize: vertical;
+    min-height: 60px;
+}
+
+/* Buttons */
+.btn-modern {
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-primary-modern {
+    background: #3b82f6;
+    color: #ffffff;
+}
+
+.btn-primary-modern:hover {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.btn-light-modern {
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #cccccc;
+}
+
+.btn-light-modern:hover {
+    background: #f3f4f6;
+    color: #000000;
+}
+
+/* Submit Area */
+.submit-buttons {
+    margin-top: 12px;
+    padding: 8px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* Grid spacing */
+.row.g-1 {
+    --bs-gutter-x: 0.5rem;
+    --bs-gutter-y: 0.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+/* Error messages */
+.text-danger {
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+/* Help text */
+.form-help-text {
+    font-size: 11px;
+    color: #6b7280;
+    display: block;
+    margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+    .form-section {
+        padding: 12px;
+    }
+
+    .submit-buttons {
+        flex-direction: column;
+    }
+
+    .submit-buttons .btn-modern {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>{{ action }} Performance Review</h2>
+        <p>Evaluate employee performance and provide feedback</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- Basic Information Section -->
+                <div class="form-section">
+                    <h6 class="section-title">Basic Information</h6>
+
+                    <div class="row g-1">
+                        <div class="col-md-6">
+                            <!-- Employee Autocomplete -->
+                            {% include 'components/employee_autocomplete.html' with field_name='employee' label='Employee' required=True %}
+                            {% if form.employee.errors %}
+                            <div class="text-danger" style="font-size: 11px; margin-top: -12px; margin-bottom: 12px;">
+                                {{ form.employee.errors.0 }}
+                            </div>
+                            {% endif %}
+                            {% if selected_employee %}
+                            <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                document.getElementById('employee-search').value = '{{ selected_employee.get_full_name|escapejs }}';
+                                document.getElementById('employee').value = '{{ selected_employee.id }}';
+                            });
+                            </script>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.review_period.id_for_label }}" class="form-label">
+                                    Review Period <span class="required-field">*</span>
+                                </label>
+                                {% render_field form.review_period class="form-select" %}
+                                {% if form.review_period.errors %}
+                                <div class="text-danger">{{ form.review_period.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-1">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="{{ form.review_date.id_for_label }}" class="form-label">
+                                    Review Date <span class="required-field">*</span>
+                                </label>
+                                {% render_field form.review_date class="form-control" %}
+                                {% if form.review_date.errors %}
+                                <div class="text-danger">{{ form.review_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="{{ form.period_start.id_for_label }}" class="form-label">
+                                    Period Start <span class="required-field">*</span>
+                                </label>
+                                {% render_field form.period_start class="form-control" %}
+                                {% if form.period_start.errors %}
+                                <div class="text-danger">{{ form.period_start.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="{{ form.period_end.id_for_label }}" class="form-label">
+                                    Period End <span class="required-field">*</span>
+                                </label>
+                                {% render_field form.period_end class="form-control" %}
+                                {% if form.period_end.errors %}
+                                <div class="text-danger">{{ form.period_end.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-1">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.overall_rating.id_for_label }}" class="form-label">
+                                    Overall Rating
+                                </label>
+                                {% render_field form.overall_rating class="form-select" %}
+                                <small class="form-help-text">1 = Needs Improvement, 5 = Outstanding</small>
+                                {% if form.overall_rating.errors %}
+                                <div class="text-danger">{{ form.overall_rating.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="{{ form.status.id_for_label }}" class="form-label">
+                                    Status <span class="required-field">*</span>
+                                </label>
+                                {% render_field form.status class="form-select" %}
+                                {% if form.status.errors %}
+                                <div class="text-danger">{{ form.status.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Feedback Section -->
+                <div class="form-section">
+                    <h6 class="section-title">Performance Feedback</h6>
+
+                    <div class="form-group">
+                        <label for="{{ form.strengths.id_for_label }}" class="form-label">
+                            Strengths
+                        </label>
+                        {% render_field form.strengths class="form-control" rows="3" placeholder="List employee key strengths and positive contributions..." %}
+                        {% if form.strengths.errors %}
+                        <div class="text-danger">{{ form.strengths.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.areas_for_improvement.id_for_label }}" class="form-label">
+                            Areas for Improvement
+                        </label>
+                        {% render_field form.areas_for_improvement class="form-control" rows="3" placeholder="List areas where improvement is needed..." %}
+                        {% if form.areas_for_improvement.errors %}
+                        <div class="text-danger">{{ form.areas_for_improvement.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.goals_achieved.id_for_label }}" class="form-label">
+                            Goals Achieved
+                        </label>
+                        {% render_field form.goals_achieved class="form-control" rows="3" placeholder="List goals achieved during this review period..." %}
+                        {% if form.goals_achieved.errors %}
+                        <div class="text-danger">{{ form.goals_achieved.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.comments.id_for_label }}" class="form-label">
+                            Additional Comments
+                        </label>
+                        {% render_field form.comments class="form-control" rows="4" placeholder="Any additional feedback or recommendations..." %}
+                        {% if form.comments.errors %}
+                        <div class="text-danger">{{ form.comments.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="submit-buttons">
+                    <a href="{% url 'performance:review_list' %}" class="btn-modern btn-light-modern">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn-modern btn-primary-modern">
+                        <i class="bi bi-check-circle"></i> Save Review
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+<!-- Choices.js for searchable dropdowns -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<style>
+    /* Choices.js customization to match form style */
+    .choices__inner {
+        min-height: 38px;
+        padding: 6px 8px;
+        font-size: 14px;
+        border-radius: 0.375rem;
+        border: 1px solid #d1d5db;
+    }
+    .choices__inner:focus,
+    .choices.is-focused .choices__inner {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .choices__list--dropdown .choices__item--selectable {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    .choices__list--dropdown {
+        border-color: #d1d5db;
+        border-radius: 0.375rem;
+    }
+    .choices__item--selectable.is-highlighted {
+        background-color: #3b82f6;
+    }
+    .choices[data-type*=select-one] .choices__input {
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Employee and Leave Type -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.employee.label }}</label>
+                    {{ form.employee }}
+                    {% if form.employee.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.employee.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.leave_type.label }}</label>
+                    {{ form.leave_type }}
+                    {% if form.leave_type.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.leave_type.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Year, Allocated Days, Carried Forward -->
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="col-span-3 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.year.label }}</label>
+                    {{ form.year }}
+                    {% if form.year.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.year.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-3 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.allocated_days.label }}</label>
+                    {{ form.allocated_days }}
+                    {% if form.allocated_days.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.allocated_days.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-3 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.carried_forward.label }}</label>
+                    {{ form.carried_forward }}
+                    {% if form.carried_forward.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.carried_forward.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-xs text-gray-500 mt-1">Days carried from previous period</p>
+                </div>
+            </div>
+
+            <!-- Date Range -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.from_date.label }}</label>
+                    {{ form.from_date }}
+                    {% if form.from_date.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.from_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.to_date.label }}</label>
+                    {{ form.to_date }}
+                    {% if form.to_date.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.to_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3">
+                <a href="{% url 'leave:allocation_list' %}"
+                   class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                    <i class="bi bi-check-circle mr-1"></i>Save Allocation
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<!-- Choices.js for searchable dropdowns -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Choices.js for employee and leave type dropdowns
+    const employeeSelect = document.getElementById('{{ form.employee.id_for_label }}');
+    const leaveTypeSelect = document.getElementById('{{ form.leave_type.id_for_label }}');
+
+    if (employeeSelect) {
+        new Choices(employeeSelect, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search employee...',
+            itemSelectText: 'Click to select',
+            shouldSort: false,
+            removeItemButton: false,
+            noResultsText: 'No employee found',
+            noChoicesText: 'No employees available',
+        });
+    }
+
+    if (leaveTypeSelect) {
+        new Choices(leaveTypeSelect, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search leave type...',
+            itemSelectText: 'Click to select',
+            shouldSort: false,
+            removeItemButton: false,
+            noResultsText: 'No leave type found',
+            noChoicesText: 'No leave types available',
+        });
+    }
+
+    // Date validation
+    const fromDate = document.getElementById('{{ form.from_date.id_for_label }}');
+    const toDate = document.getElementById('{{ form.to_date.id_for_label }}');
+
+    if (fromDate && toDate) {
+        fromDate.addEventListener('change', function() {
+            toDate.min = this.value;
+        });
+    }
+});
+</script>
+{% endblock %}

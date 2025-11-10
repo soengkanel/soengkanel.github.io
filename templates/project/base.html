@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'css/project.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/htmx.org@1.9.6"></script>
+<script src="{% static 'js/project.js' %}"></script>
+{% endblock %}
+
+{% block title %}Project Management{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard:dashboard' %}">Dashboard</a></li>
+        {% block project_breadcrumb %}
+        <li class="breadcrumb-item active">Projects</li>
+        {% endblock %}
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+{% block project_content %}
+{% endblock %}
+{% endblock %}

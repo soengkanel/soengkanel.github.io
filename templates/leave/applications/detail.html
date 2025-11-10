@@ -1,0 +1,251 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Leave Application Details{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header { padding: 6px 0; margin-bottom: 12px; }
+    .page-header h2 { font-size: 16px; font-weight: 600; margin: 0; color: #1a1a1a; }
+    .detail-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .detail-title { font-size: 12px; font-weight: 600; color: #1a1a1a; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; }
+    .detail-row { display: flex; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { font-size: 10px; color: #6b7280; font-weight: 500; text-transform: uppercase; flex: 0 0 140px; }
+    .detail-value { font-size: 11px; color: #1a1a1a; flex: 1; }
+    .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 500; text-transform: uppercase; display: inline-block; }
+    .status-draft { background-color: #f3f4f6; color: #374151; }
+    .status-pending { background-color: #fef3c7; color: #92400e; }
+    .status-approved { background-color: #dcfce7; color: #166534; }
+    .status-rejected { background-color: #fee2e2; color: #991b1b; }
+    .status-cancelled { background-color: #e5e7eb; color: #4b5563; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-xl font-bold">Leave Application Details</h2>
+        <div class="flex items-center space-x-3">
+            {% if application.status == 'pending' and can_approve %}
+            <form method="post" action="{% url 'leave:application_approve' application.id %}" class="d-inline" onsubmit="return confirm('Approve this leave application for {{ application.employee.get_full_name }}?\n\nLeave Type: {{ application.leave_type.name }}\nDays: {{ application.total_leave_days }}\n\nThis will deduct from the employee\'s leave balance.');">
+                {% csrf_token %}
+                <button type="submit" class="button-min-success">
+                    Approve
+                </button>
+            </form>
+            <button type="button" class="button-min-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                Reject
+            </button>
+            {% endif %}
+            <a href="{% url 'leave:application_list' %}" class="button-min-default">
+                Back
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Details -->
+        <div class="col-lg-8">
+            <!-- Application Info -->
+            <div class="detail-card">
+                <div class="detail-title">Application Information</div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Employee</div>
+                    <div class="detail-value"><strong>{{ application.employee.get_full_name }}</strong></div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Leave Type</div>
+                    <div class="detail-value">{{ application.leave_type.name }} ({{ application.leave_type.code }})</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">From Date</div>
+                    <div class="detail-value">{{ application.from_date|date:"F d, Y" }}</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">To Date</div>
+                    <div class="detail-value">{{ application.to_date|date:"F d, Y" }}</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Total Days</div>
+                    <div class="detail-value"><strong>{{ application.total_leave_days }}</strong> day(s)</div>
+                </div>
+
+                {% if application.half_day %}
+                <div class="detail-row">
+                    <div class="detail-label">Half Day</div>
+                    <div class="detail-value">Yes ({{ application.get_leave_session_display }})</div>
+                </div>
+                {% endif %}
+
+                <div class="detail-row">
+                    <div class="detail-label">Reason</div>
+                    <div class="detail-value">{{ application.reason }}</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value">
+                        <span class="status-badge status-{{ application.status }}">{{ application.get_status_display }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supporting Documents -->
+            {% if application.supporting_document or application.medical_certificate %}
+            <div class="detail-card">
+                <div class="detail-title">Supporting Documents</div>
+
+                {% if application.supporting_document %}
+                <div class="detail-row">
+                    <div class="detail-label">Document</div>
+                    <div class="detail-value">
+                        <a href="{{ application.supporting_document.url }}" target="_blank" class="text-decoration-none">
+                            <i class="bi bi-file-earmark-arrow-down me-1"></i>Download
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if application.medical_certificate %}
+                <div class="detail-row">
+                    <div class="detail-label">Medical Certificate</div>
+                    <div class="detail-value">
+                        <a href="{{ application.medical_certificate.url }}" target="_blank" class="text-decoration-none">
+                            <i class="bi bi-file-earmark-arrow-down me-1"></i>Download
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Approval Info -->
+            {% if application.approved_by %}
+            <div class="detail-card">
+                <div class="detail-title">Approval Information</div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Approved/Rejected By</div>
+                    <div class="detail-value">{{ application.approved_by.get_full_name|default:application.approved_by.username }}</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Date</div>
+                    <div class="detail-value">{{ application.approved_at|date:"F d, Y H:i" }}</div>
+                </div>
+
+                {% if application.rejection_reason %}
+                <div class="detail-row">
+                    <div class="detail-label">Rejection Reason</div>
+                    <div class="detail-value">{{ application.rejection_reason }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Leave Balance -->
+            {% if allocation %}
+            <div class="detail-card">
+                <div class="detail-title">Leave Balance</div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Allocated</div>
+                    <div class="detail-value">{{ allocation.allocated_days }} days</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Used</div>
+                    <div class="detail-value">{{ allocation.used_days }} days</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Remaining</div>
+                    <div class="detail-value"><strong>{{ allocation.remaining_days }} days</strong></div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Actions -->
+            <div class="detail-card">
+                <div class="detail-title">Actions</div>
+
+                {% if application.status == 'pending' and can_approve %}
+                <div class="d-grid gap-2">
+                    <form method="post" action="{% url 'leave:application_approve' application.id %}" onsubmit="return confirm('Approve this leave application?\n\nThis will deduct {{ application.total_leave_days }} day(s) from {{ application.employee.get_full_name }}\'s leave balance.');">
+                        {% csrf_token %}
+                        <button type="submit" class="button-min-success w-100">
+                            Approve
+                        </button>
+                    </form>
+
+                    <button type="button" class="button-min-danger w-100" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                        Reject
+                    </button>
+                </div>
+                {% endif %}
+
+                {% if application.status in 'draft,pending,approved' %}
+                <form method="post" action="{% url 'leave:application_cancel' application.id %}" class="mt-2">
+                    {% csrf_token %}
+                    <button type="submit" class="button-min-default w-100" onclick="return confirm('Are you sure you want to cancel this application?')">
+                        Cancel Application
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+
+            <!-- Timeline -->
+            <div class="detail-card">
+                <div class="detail-title">Timeline</div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Created</div>
+                    <div class="detail-value">{{ application.created_at|date:"M d, Y H:i" }}</div>
+                </div>
+
+                <div class="detail-row">
+                    <div class="detail-label">Created By</div>
+                    <div class="detail-value">{{ application.created_by.get_full_name|default:application.created_by.username }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-2xl">
+            <div class="modal-header">
+                <h6 class="modal-title" style="font-size: 14px; font-weight: 600;">Reject Leave Application</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'leave:application_reject' application.id %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <label class="form-label" style="font-size: 11px;">Rejection Reason</label>
+                    <textarea name="rejection_reason" class="form-control" rows="4" required style="font-size: 11px;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="button-min-default" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="button-min-danger">
+                        Reject
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

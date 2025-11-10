@@ -1,0 +1,297 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Billing{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Compact Billing Reports Design */
+:root {
+    --primary-blue: #2563eb;
+    --success-green: #059669;
+    --warning-orange: #d97706;
+    --danger-red: #dc2626;
+    --neutral-gray: #6b7280;
+    --light-gray: #f8fafc;
+    --border-color: #e5e7eb;
+    --shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    --radius: 6px;
+}
+
+/* Compact buttons */
+.btn-modern {
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 4px;
+    padding: 0.375rem 0.75rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    line-height: 1.2;
+}
+
+.btn-primary-modern {
+    background: var(--primary-blue);
+    color: white;
+}
+.btn-primary-modern:hover {
+    background: #1d4ed8;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+}
+
+.btn-success-modern {
+    background: var(--success-green);
+    color: white;
+}
+.btn-success-modern:hover {
+    background: #047857;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-warning-modern {
+    background: var(--warning-orange);
+    color: white;
+}
+.btn-warning-modern:hover {
+    background: #b45309;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-danger-modern {
+    background: var(--danger-red);
+    color: white;
+}
+.btn-danger-modern:hover {
+    background: #b91c1c;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-outline-modern {
+    background: white;
+    color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+}
+.btn-outline-modern:hover {
+    background: var(--primary-blue);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-light-modern {
+    background: var(--light-gray);
+    color: #374151;
+    border: 1px solid var(--border-color);
+}
+.btn-light-modern:hover {
+    background: #e5e7eb;
+    color: #1f2937;
+    transform: translateY(-1px);
+}
+
+.btn-sm-modern {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    gap: 0.25rem;
+}
+
+.page-header {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: var(--shadow);
+}
+
+.page-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1f2937;
+}
+
+.report-section {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    box-shadow: var(--shadow);
+}
+
+.report-section h4 {
+    color: #1f2937;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.375rem;
+    border-bottom: 1px solid var(--primary-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.report-table {
+    font-size: 0.75rem;
+    margin-bottom: 0;
+}
+
+.report-table th {
+    font-weight: 600;
+    color: #374151;
+    background: var(--light-gray);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-size: 0.7rem;
+}
+
+.report-table td {
+    padding: 0.5rem;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+}
+
+.chart-placeholder {
+    height: 200px;
+    background: var(--light-gray);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--neutral-gray);
+    font-size: 0.8rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2><i class="bi bi-bar-chart me-2"></i>{{ title }}</h2>
+        <p>Billing analytics and reports</p>
+    </div>
+
+    <div class="row g-2">
+        <!-- Monthly Revenue Chart -->
+        <div class="col-md-8">
+            <div class="report-section">
+                <h4><i class="bi bi-graph-up me-1"></i>Monthly Revenue Trend</h4>
+                <div class="chart-placeholder">
+                    <div class="text-center">
+                        <i class="bi bi-bar-chart fs-3 d-block mb-2"></i>
+                        <p class="mb-0">Chart visualization placeholder</p>
+                        <small class="text-muted">Monthly revenue data for last 12 months</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Services -->
+        <div class="col-md-4">
+            <div class="report-section">
+                <h4><i class="bi bi-trophy me-1"></i>Top Services</h4>
+                {% if top_services %}
+                    <table class="table report-table">
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th class="text-end">Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in top_services %}
+                                <tr>
+                                    <td>{{ service.name|truncatechars:20 }}</td>
+                                    <td class="text-end">${{ service.total_revenue|floatformat:0 }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="text-center py-3 text-muted">
+                        <i class="bi bi-inbox"></i>
+                        <p class="mb-0">No service data available</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Overdue Invoices -->
+    {% if overdue_invoices %}
+        <div class="report-section">
+            <h4><i class="bi bi-exclamation-triangle me-1"></i>Overdue Invoices</h4>
+            <div class="table-responsive">
+                <table class="table report-table">
+                    <thead>
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Client</th>
+                            <th>Due Date</th>
+                            <th>Days Overdue</th>
+                            <th class="text-end">Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for invoice in overdue_invoices %}
+                            <tr>
+                                <td>{{ invoice.invoice_number }}</td>
+                                <td>{{ invoice.get_client_name|truncatechars:25 }}</td>
+                                <td>{{ invoice.due_date|date:"d/m/Y" }}</td>
+                                <td class="text-danger">{{ invoice.days_overdue }}</td>
+                                <td class="text-end">${{ invoice.total_amount|floatformat:2 }}</td>
+                                <td class="text-end">
+                                    <a href="{% url 'billing:invoice_detail' invoice.id %}" class="btn-modern btn-outline-modern btn-sm-modern">
+                                        <i class="bi bi-eye"></i>View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Monthly Revenue Data -->
+    {% if monthly_data %}
+        <div class="report-section">
+            <h4><i class="bi bi-calendar-month me-1"></i>Monthly Revenue Breakdown</h4>
+            <div class="table-responsive">
+                <table class="table report-table">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th class="text-end">Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in monthly_data %}
+                            <tr>
+                                <td>{{ data.month }}</td>
+                                <td class="text-end">${{ data.revenue|floatformat:2 }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

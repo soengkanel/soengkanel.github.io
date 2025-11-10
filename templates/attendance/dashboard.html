@@ -1,0 +1,474 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Attendance Dashboard" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Page Header */
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    /* Statistics Cards */
+    .stats-row {
+        margin-bottom: 12px;
+    }
+
+    .stat-number {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .stat-label {
+        font-size: 10px;
+        color: #6b7280;
+        margin: 2px 0 0 0;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    /* Quick Actions Section */
+    .quick-actions-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    .quick-actions-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 8px;
+    }
+
+    /* Modern Table */
+    .modern-table-container {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .table {
+        margin: 0;
+        font-size: 12px;
+    }
+
+    .table th {
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        background: #f8fafb;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 8px 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table tbody tr:hover {
+        background: #f8fafb;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-present {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .status-late {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-absent {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-on-leave {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+
+    /* Button Styles */
+    .button-min-primary {
+        background: #3b82f6;
+        color: white;
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 3px;
+        padding: 4px 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .button-min-primary:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    .button-min-secondary {
+        background: #6b7280;
+        color: white;
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 3px;
+        padding: 4px 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .button-min-secondary:hover {
+        background: #4b5563;
+        color: white;
+    }
+
+    .button-min-info {
+        background: #0ea5e9;
+        color: white;
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 3px;
+        padding: 4px 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .button-min-info:hover {
+        background: #0284c7;
+        color: white;
+    }
+
+    .button-min-warning {
+        background: #f59e0b;
+        color: white;
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 3px;
+        padding: 4px 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .button-min-warning:hover {
+        background: #d97706;
+        color: white;
+    }
+
+    .button-min-success {
+        background: #10b981;
+        color: white;
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 3px;
+        padding: 4px 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .button-min-success:hover {
+        background: #059669;
+        color: white;
+    }
+
+    /* Utility classes */
+    .space-x-1 > * + * {
+        margin-left: 4px;
+    }
+
+    .space-x-2 > * + * {
+        margin-left: 8px;
+    }
+
+    .space-x-3 > * + * {
+        margin-left: 12px;
+    }
+
+    .text-xs {
+        font-size: 10px;
+    }
+
+    .font-medium {
+        font-weight: 500;
+    }
+
+    /* Pending Requests Card */
+    .pending-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        text-align: center;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        transition: all 0.2s;
+    }
+
+    .pending-card:hover {
+        background: #f8fafb;
+        border-color: #3b82f6;
+        color: inherit;
+    }
+
+    .pending-number {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 4px;
+    }
+
+    .pending-label {
+        font-size: 10px;
+        color: #6b7280;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        .stats-row .col-3 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center pb-3">
+        <div>
+            <h2>{% trans "Attendance Dashboard" %}</h2>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row stats-row my-3">
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ total_employees }}</div>
+                <div class="stat-label">{% trans "Total Employees" %}</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number text-success">{{ present_today }}</div>
+                <div class="stat-label">{% trans "Present Today" %}</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number text-danger">{{ absent_today }}</div>
+                <div class="stat-label">{% trans "Absent Today" %}</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number text-warning">{{ on_leave_today }}</div>
+                <div class="stat-label">{% trans "On Leave" %}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-card mb-3">
+        <div class="quick-actions-title">{% trans "Quick Actions" %}</div>
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'attendance:manual_attendance' %}" class="button-min-secondary">
+                <i class="fas fa-edit text-xs"></i>
+                <span class="font-medium">{% trans "Manual Entry" %}</span>
+            </a>
+            <a href="{% url 'attendance:overtime_create' %}" class="button-min-info">
+                <i class="fas fa-business-time text-xs"></i>
+                <span class="font-medium">{% trans "Request Overtime" %}</span>
+            </a>
+            <a href="{% url 'attendance:correction_create' %}" class="button-min-warning">
+                <i class="fas fa-exclamation-triangle text-xs"></i>
+                <span class="font-medium">{% trans "Request Correction" %}</span>
+            </a>
+            <a href="{% url 'attendance:report' %}" class="button-min-success">
+                <i class="fas fa-file-export text-xs"></i>
+                <span class="font-medium">{% trans "Generate Report" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Employee's Status & Pending Approvals -->
+    {% if employee %}
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <div class="quick-actions-card">
+                <div class="quick-actions-title">{% trans "Your Attendance Today" %}</div>
+                {% if employee_attendance %}
+                <div class="row g-2">
+                    <div class="col-6">
+                        <div style="font-size: 10px; color: #6b7280; margin-bottom: 2px;">{% trans "Clock In" %}</div>
+                        <div style="font-size: 12px; font-weight: 600;">{{ employee_attendance.clock_in|time:"H:i:s"|default:"-" }}</div>
+                    </div>
+                    <div class="col-6">
+                        <div style="font-size: 10px; color: #6b7280; margin-bottom: 2px;">{% trans "Clock Out" %}</div>
+                        <div style="font-size: 12px; font-weight: 600;">{{ employee_attendance.clock_out|time:"H:i:s"|default:"-" }}</div>
+                    </div>
+                    <div class="col-6">
+                        <div style="font-size: 10px; color: #6b7280; margin-bottom: 2px;">{% trans "Status" %}</div>
+                        <span class="status-badge status-{{ employee_attendance.status }}">
+                            {{ employee_attendance.get_status_display }}
+                        </span>
+                    </div>
+                    <div class="col-6">
+                        <div style="font-size: 10px; color: #6b7280; margin-bottom: 2px;">{% trans "Total Hours" %}</div>
+                        <div style="font-size: 12px; font-weight: 600;">{{ employee_attendance.total_hours|floatformat:2 }}</div>
+                    </div>
+                </div>
+                {% else %}
+                <p style="font-size: 12px; color: #6b7280; margin: 0;">{% trans "No attendance record for today" %}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Pending Requests -->
+        <div class="col-md-6">
+            <div class="quick-actions-card">
+                <div class="quick-actions-title">{% trans "Pending Approvals" %}</div>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <a href="{% url 'attendance:overtime_list' %}?status=pending" class="pending-card">
+                            <div class="pending-number">{{ pending_overtime }}</div>
+                            <div class="pending-label">{% trans "Overtime Requests" %}</div>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'attendance:correction_list' %}?status=pending" class="pending-card">
+                            <div class="pending-number">{{ pending_corrections }}</div>
+                            <div class="pending-label">{% trans "Correction Requests" %}</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recent Attendance Records -->
+    <div class="modern-table-container mb-5">
+        <div class="px-3 py-2 border-bottom" style="background: #f8fafb;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="quick-actions-title" style="margin: 0;">{% trans "Recent Attendance Records" %}</div>
+                <a href="{% url 'attendance:attendance_list' %}" class="button-min-primary">
+                    <span class="font-medium">{% trans "View All Records" %}</span>
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>{% trans "Date" %}</th>
+                        <th>{% trans "Employee" %}</th>
+                        <th>{% trans "Clock In" %}</th>
+                        <th>{% trans "Clock Out" %}</th>
+                        <th>{% trans "Total Hours" %}</th>
+                        <th>{% trans "Status" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in recent_records %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 600;">{{ record.date|date:"Y-m-d" }}</div>
+                            <div style="font-size: 10px; color: #6b7280;">{{ record.date|date:"l" }}</div>
+                        </td>
+                        <td>
+                            <div style="font-size: 12px; font-weight: 600;">{{ record.employee.full_name }}</div>
+                            <div style="font-size: 10px; color: #6b7280;">{{ record.employee.employee_id }}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">{{ record.clock_in|time:"H:i:s"|default:"-" }}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">{{ record.clock_out|time:"H:i:s"|default:"-" }}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">{{ record.total_hours|floatformat:2 }}</div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-{{ record.status }}">
+                                {{ record.get_status_display }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center" style="padding: 40px 20px;">
+                            <i class="fas fa-search" style="font-size: 32px; color: #d1d5db; margin-bottom: 12px;"></i>
+                            <div style="font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 6px;">
+                                {% trans "No Records Found" %}
+                            </div>
+                            <p style="font-size: 12px; color: #6b7280; margin: 0;">
+                                {% trans "No attendance records found" %}
+                            </p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,494 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Employee Probation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    .stats-row {
+        margin-bottom: 12px;
+    }
+
+    .stat-number {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .stat-label {
+        font-size: 10px;
+        color: #6b7280;
+        margin: 2px 0 0 0;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    .form-label {
+        font-size: 10px !important;
+        margin-bottom: 3px !important;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+        height: auto !important;
+        border-radius: 3px;
+        border: 1px solid #d1d5db;
+        line-height: 1.4;
+        background: white;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    .modern-table-container {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .table {
+        margin: 0;
+        font-size: 12px;
+    }
+
+    .table th {
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        background: #f8fafb;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 8px 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table tbody tr:hover {
+        background: #f8fafb;
+    }
+
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-active {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-completed {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .status-extended {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+
+    .status-failed {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-on_leave {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-suspended {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-terminated {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+
+    .employee-info {
+        font-size: 12px;
+    }
+
+    .employee-name {
+        font-weight: 500;
+        color: #1a1a1a;
+    }
+
+    .employee-id {
+        font-size: 11px;
+        color: #6b7280;
+        display: block;
+        margin-top: 2px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6b7280;
+    }
+
+    .empty-state i {
+        font-size: 32px;
+        color: #d1d5db;
+        margin-bottom: 12px;
+    }
+
+    .empty-state h6 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    .empty-state p {
+        font-size: 12px;
+        margin-bottom: 0;
+    }
+
+    .pagination-compact {
+        margin: 12px 0 0 0;
+        justify-content: center;
+    }
+
+    .pagination-compact .page-item {
+        margin: 0 1px;
+    }
+
+    .pagination-compact .page-link {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 8px;
+        min-width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #3b82f6;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .pagination-compact .page-link:hover {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+
+    .pagination-compact .page-item.active .page-link {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+        font-weight: 600;
+    }
+
+    .pagination-compact .page-item.disabled .page-link {
+        color: #9ca3af;
+        background: #f9fafb;
+        border-color: #e5e7eb;
+        cursor: not-allowed;
+    }
+
+    .page-text {
+        margin-left: 4px;
+    }
+
+    @media (max-width: 768px) {
+        .page-text {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center pb-3">
+        <div>
+            <h2>Employee Probation Management</h2>
+        </div>
+        {% if perms.hr.add_probationperiod %}
+        <div class="d-flex align-items-center space-x-3">
+            <a href="{% url 'hr:probation_create' %}" class="button-min-primary px-4">
+                Start Probation
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row stats-row my-3">
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ total_count }}</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ active_count }}</div>
+                <div class="stat-label">Active</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ completed_count }}</div>
+                <div class="stat-label">Completed</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ extended_count|default:0 }}</div>
+                <div class="stat-label">Extended</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search/Filter Section -->
+    <div class="rounded-xl bg-white border px-3 py-2">
+        <form method="get" class="flex justify-between items-end space-x-4 pb-2">
+            <div class="w-full">
+                <label for="search" class="form-label">Search</label>
+                <input type="text" name="search" id="search" class="form-control" placeholder="Search employee..." value="{{ search_query }}">
+            </div>
+            <div class="w-full">
+                <label for="department" class="form-label">Department</label>
+                <select name="department" id="department" class="form-select">
+                    <option value="">All Departments</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.id }}" {% if department_filter == dept.id|stringformat:"s" %}selected{% endif %}>
+                        {{ dept.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="w-full">
+                <label for="status" class="form-label">Status</label>
+                <select name="status" id="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                    <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                    <option value="extended" {% if status_filter == 'extended' %}selected{% endif %}>Extended</option>
+                    <option value="failed" {% if status_filter == 'failed' %}selected{% endif %}>Failed</option>
+                </select>
+            </div>
+            <div class="flex space-x-2 items-end">
+                <button type="submit" class="button-min-primary">
+                    Filter
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="mt-4">
+        {% if probation_periods %}
+        <div class="modern-table-container">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Department</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Probation Status</th>
+                            <th>Employment Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for probation in probation_periods %}
+                        <tr>
+                            <td>
+                                <div class="employee-info">
+                                    <div class="employee-name">{{ probation.employee.full_name }}</div>
+                                    <span class="employee-id">{{ probation.employee.employee_id }}</span>
+                                </div>
+                            </td>
+                            <td>{{ probation.employee.department|default:"N/A" }}</td>
+                            <td>{{ probation.start_date|date:"Y-m-d" }}</td>
+                            <td>{{ probation.actual_end_date|default:probation.original_end_date|date:"Y-m-d" }}</td>
+                            <td>
+                                <span class="status-badge status-{{ probation.status }}">
+                                    {{ probation.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ probation.employee.employment_status }}">
+                                    {{ probation.employee.get_employment_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{% url 'hr:probation_detail' probation.pk %}" class="btn-sm-modern button-min-default" style="border-radius:9px;" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    {% if perms.hr.change_probationperiod and probation.status == 'active' %}
+                                    <a href="{% url 'hr:probation_update' probation.pk %}" class="button-min-default btn-sm-modern" style="border-radius:9px;" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'hr:probation_extend' probation.pk %}" class="button-min-default btn-sm-modern" style="border-radius:9px;" title="Extend">
+                                        <i class="bi bi-clock-history"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        {% if probation_periods.has_other_pages %}
+        <div class="d-flex justify-content-between align-items-center mt-3 mb-5">
+            <!-- Per-Page Selector -->
+            <div class="d-flex align-items-center">
+                <span style="font-size: 11px; color: #6b7280; margin-right: 8px;">Show:</span>
+                <select class="form-select form-select-sm rounded"
+                        style="width: auto; font-size: 11px; padding: 4px 8px;"
+                        onchange="changePerPage(this.value)">
+                    <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                    <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                    <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                    <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                </select>
+                <span style="font-size: 11px; color: #6b7280; margin-left: 8px;">per page</span>
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Pagination">
+                <ul class="pagination pagination-compact">
+                    {% if probation_periods.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link page-nav rounded" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if department_filter %}&department={{ department_filter }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}">
+                            <i class="bi bi-chevron-double-left"></i>
+                            <span class="page-text">First</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link rounded" href="?page={{ probation_periods.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if department_filter %}&department={{ department_filter }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}">
+                            <i class="bi bi-chevron-left"></i>
+                            <span class="page-text">Prev</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link rounded">
+                            <i class="bi bi-chevron-double-left"></i>
+                            <span class="page-text">First</span>
+                        </span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link rounded">
+                            <i class="bi bi-chevron-left"></i>
+                            <span class="page-text">Prev</span>
+                        </span>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link rounded">{{ probation_periods.number }}</span>
+                    </li>
+
+                    {% if probation_periods.has_next %}
+                    <li class="page-item">
+                        <a class="page-link rounded" href="?page={{ probation_periods.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if department_filter %}&department={{ department_filter }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}">
+                            <span class="page-text">Next</span>
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link page-nav rounded" href="?page={{ probation_periods.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if department_filter %}&department={{ department_filter }}{% endif %}{% if per_page %}&per_page={{ per_page }}{% endif %}">
+                            <span class="page-text">Last</span>
+                            <i class="bi bi-chevron-double-right"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link rounded">
+                            <span class="page-text">Next</span>
+                            <i class="bi bi-chevron-right"></i>
+                        </span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link rounded">
+                            <span class="page-text">Last</span>
+                            <i class="bi bi-chevron-double-right"></i>
+                        </span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="modern-table-container">
+            <div class="empty-state">
+                <i class="bi bi-hourglass-split"></i>
+                <h6>No Probation Periods Found</h6>
+                <p>
+                    {% if request.GET %}
+                    No probation periods match your search criteria.
+                    {% else %}
+                    Get started by adding your first probation period.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function changePerPage(perPage) {
+    const url = new URL(window.location);
+    url.searchParams.set('per_page', perPage);
+    url.searchParams.set('page', '1'); // Reset to first page
+    window.location.href = url.toString();
+}
+</script>
+{% endblock %}

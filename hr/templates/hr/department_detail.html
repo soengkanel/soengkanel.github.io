@@ -1,0 +1,487 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ department.name }} - Department Details{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Compact Department Detail Page */
+.application-container {
+    background: white;
+    margin: 0;
+    padding: 12px !important;
+    width: 100%;
+}
+
+/* Minimal Page Header */
+.detail-page-header {
+    background: #87CEEB;
+    color: white;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+}
+
+.detail-page-header h1 {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.detail-page-header p {
+    font-size: 12px;
+    margin: 2px 0 0 0;
+    opacity: 0.9;
+}
+
+/* Compact Form Sections */
+.form-section {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.form-section h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 12px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.form-section h4 i {
+    color: #87CEEB;
+    margin-right: 4px;
+    font-size: 12px;
+}
+
+/* Compact Form Labels */
+.form-label {
+    font-size: 10px !important;
+    margin-bottom: 4px !important;
+    font-weight: 500;
+    color: #6b7280 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    display: block;
+}
+
+/* Minimal Field Display */
+.field-display {
+    font-size: 13px !important;
+    padding: 6px 8px !important;
+    height: auto !important;
+    border-radius: 3px;
+    border: 1px solid #e5e7eb;
+    font-family: inherit;
+    background: #ffffff;
+    color: #374151;
+    display: block;
+    width: 100%;
+    min-height: 28px;
+    line-height: 1.4;
+}
+
+/* Special styling for code fields */
+.field-display.code {
+    background: #f0f9ff;
+    color: #0369a1;
+    font-weight: 500;
+    font-family: 'Courier New', monospace;
+}
+
+/* Parent department badge */
+.parent-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+.row.g-1 {
+    --bs-gutter-x: 0.5rem;
+    --bs-gutter-y: 0.5rem;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 8px;
+}
+
+/* Minimal Action Buttons */
+.action-buttons-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: white;
+    color: #6b7280;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.back-button:hover {
+    color: #374151;
+    text-decoration: none;
+}
+
+.back-button i {
+    margin-right: 4px;
+    font-size: 11px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 400;
+    text-decoration: none;
+    border: 1px solid transparent;
+}
+
+.action-btn i {
+    margin-right: 4px;
+    font-size: 11px;
+}
+
+.action-btn.edit {
+    background: #87CEEB;
+    color: white;
+}
+
+.action-btn.edit:hover {
+    background: #5DADE2;
+    color: white;
+    text-decoration: none;
+}
+
+.action-btn.delete {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.action-btn.delete:hover {
+    background: #fee2e2;
+    text-decoration: none;
+}
+
+/* Positions/Sub-departments list */
+.related-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.related-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 12px;
+}
+
+.related-item:last-child {
+    border-bottom: none;
+}
+
+.related-name {
+    font-weight: 500;
+    color: #374151;
+}
+
+.related-code {
+    font-size: 10px;
+    color: #6b7280;
+    font-family: 'Courier New', monospace;
+}
+
+/* Compact Mobile Design */
+@media (max-width: 768px) {
+    .application-container {
+        padding: 8px !important;
+        margin: 4px;
+    }
+    
+    .detail-page-header {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+    }
+    
+    .detail-page-header h1 {
+        font-size: 16px;
+    }
+    
+    .detail-page-header p {
+        font-size: 11px;
+    }
+    
+    .form-section {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .form-section h4 {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+    
+    .action-buttons-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 6px 0;
+        margin-bottom: 8px;
+    }
+    
+    .action-buttons {
+        justify-content: center;
+        gap: 6px;
+    }
+    
+    .field-display {
+        font-size: 14px !important;
+        padding: 8px 10px !important;
+        min-height: 32px;
+    }
+    
+    .form-label {
+        font-size: 9px !important;
+    }
+    
+    .row.g-1 {
+        --bs-gutter-x: 0.25rem;
+        --bs-gutter-y: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .action-buttons {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .action-btn {
+        justify-content: center;
+        width: 100%;
+        padding: 8px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-3 w-full">
+    <div class="w-full">
+        <div class="flex items-center justify-between px-2">
+            <div>
+                <h1 class="text-xl font-medium">{{ department.name }}</h1>
+                <p>Department Details - Code: {{ department.code }}{% if department.parent %} | Parent: {{ department.parent.name }}{% endif %}</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{% url 'hr:department_edit' department.pk %}" class="button-min-primary">
+                   <div>
+                    <i class="bi bi-pencil-square me-1"></i>
+                    Edit
+                   </div>
+                </a>
+                <a href="{% url 'hr:department_delete' department.pk %}" class="button-min-danger" 
+                  >
+                    <div>
+                        <i class="bi bi-trash me-1"></i>
+                        Delete
+                    </div>
+                </a>
+            </div>
+        </div>
+       
+        
+
+        
+        <div class="application-container shadow-none px-0">
+            <!-- Department Information -->
+            <div class="rounded-lg border">
+              <div class="px-3 py-2 flex bg-gray-100 border-b rounded-t-lg">
+                <h4><i class="bi bi-info-circle me-2"></i>Department Information</h4>
+              </div>
+                <div class="row g-1 p-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                               
+                                Department Name
+                            </label>
+                            <div class="field-display">{{ department.name }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                               
+                                Department Code
+                            </label>
+                            <div class="field-display code">{{ department.code }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-1 px-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                
+                                Parent Department
+                            </label>
+                            <div class="field-display">
+                                {% if department.parent %}
+                                    <span class="parent-badge">{{ department.parent.name }}</span>
+                                {% else %}
+                                    <span class="text-muted">Root Department</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                
+                                Sub-Departments
+                            </label>
+                            <div class="field-display">
+                                <span class="badge bg-secondary">{{ department.children.count }} sub-departments</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if department.description %}
+                <div class="row g-1 px-3 pb-3">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label">
+                              
+                                Description
+                            </label>
+                            <div class="field-display">{{ department.description|linebreaks }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Positions Section -->
+            <div class="rounded-lg border mt-3">
+                <div class="px-3 py-2 flex bg-gray-100 border-b rounded-t-lg">
+                    <h4><i class="bi bi-person-badge me-2"></i>Positions in this Department</h4>
+                </div>
+                
+                <div class="row g-1 p-3">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label">
+                              
+                                Positions ({{ positions|length }})
+                            </label>
+                            <div class="field-display">
+                                {% if positions %}
+                                    <div class="related-list">
+                                        {% for position in positions %}
+                                            <div class="related-item">
+                                                <span class="related-name">{{ position.name }}</span>
+                                                <span class="related-code">{{ position.code }} | Level {{ position.level }}</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <small class="text-muted">No positions assigned to this department</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-Departments Section -->
+            {% if department.children.exists %}
+            <div class="rounded-lg border mt-3">
+                <div class="px-3 py-2 flex bg-gray-100 border-b rounded-t-lg">
+                    <h4><i class="bi bi-diagram-3 me-2"></i>Sub-Departments</h4>
+                </div>
+                
+                <div class="row g-1 p-3">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label">
+                                
+                                Sub-Departments ({{ department.children.count }})
+                            </label>
+                            <div class="field-display">
+                                <div class="related-list">
+                                    {% for child in department.children.all %}
+                                        <div class="related-item">
+                                            <span class="related-name">{{ child.name }}</span>
+                                            <span class="related-code">{{ child.code }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- System Information -->
+            <div class="rounded-lg border mt-3">
+                <div class="px-3 py-2 flex bg-gray-100 border-b rounded-t-lg">
+                    <h4><i class="bi bi-clock-history me-2"></i>System Information</h4>
+                </div>
+                
+                <div class="row g-1 p-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                               
+                                Created At
+                            </label>
+                            <div class="field-display">{{ department.created_at|date:"d/m/Y g:i A" }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                               
+                                Last Updated
+                            </label>
+                            <div class="field-display">{{ department.updated_at|date:"d/m/Y g:i A" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

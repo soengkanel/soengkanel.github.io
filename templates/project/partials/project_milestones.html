@@ -1,0 +1,649 @@
+<!-- Project Milestones Tab - Excel-like Inline Editing -->
+<style>
+    /* Inline editing styles */
+    .milestone-name-input:hover, .milestone-desc-input:hover,
+    .milestone-type-select:hover, .milestone-status-select:hover,
+    .milestone-date-input:hover, .milestone-progress-input:hover,
+    .milestone-amount-input:hover {
+        border: 1px solid #ddd !important;
+        background-color: #f8f9fa;
+    }
+
+    .milestone-name-input:focus, .milestone-desc-input:focus,
+    .milestone-type-select:focus, .milestone-status-select:focus,
+    .milestone-date-input:focus, .milestone-progress-input:focus,
+    .milestone-amount-input:focus {
+        border: 1px solid #2563eb !important;
+        background-color: #fff;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+
+    .new-milestone-row {
+        background-color: #f0fdf4;
+    }
+
+    .new-milestone-row input,
+    .new-milestone-row select,
+    .new-milestone-row textarea {
+        border: 1px solid #d1d5db !important;
+    }
+
+    .saving-indicator {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #1a1a1a;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    .saving-indicator.show {
+        display: block;
+        animation: fadeIn 0.2s;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .stat-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 1rem;
+        background: #fff;
+    }
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0.25rem 0;
+    }
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 6px;
+        margin-bottom: 12px;
+    }
+    /* Action Buttons */
+    .btn-icon-compact {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 25px;
+        height: 25px;
+        padding: 0;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: white;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .btn-icon-compact:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+        color: #111827;
+    }
+
+    .btn-icon-compact.success {
+        color: var(--success);
+        border-color: var(--success);
+    }
+
+    .btn-icon-compact.success:hover {
+        background: #d1fae5;
+    }
+
+    .btn-icon-compact.danger {
+        color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .btn-icon-compact.danger:hover {
+        background: #fee2e2;
+    }
+
+    .btn-icon-compact.warning {
+        color: var(--warning);
+        border-color: var(--warning);
+    }
+
+    .btn-icon-compact.warning:hover {
+        background: #f7e2be;
+    }
+    .btn-icon-compact.primary {
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .btn-icon-compact.primary:hover {
+        background: #c8daf7;
+    }
+    .form-control { font-size: 11px !important; padding: 4px 6px !important; height: auto !important; border-radius: 3px; border: 1px solid #d1d5db; }
+    .form-select { font-size: 11px !important; padding: 4px 6px !important; height: auto !important; border-radius: 3px; border: 1px solid #d1d5db; }
+    .form-label { font-size: 10px !important; margin-bottom: 3px !important; font-weight: 500; color: #374151; }
+</style>
+
+<div class="milestones-content">
+    <!-- Milestone Statistics (keep as-is) -->
+    {% if milestone_stats.total > 0 %}
+    <div class="stats-grid mt-2">
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value text-primary">{{ milestone_stats.total }}</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value text-success">{{ milestone_stats.completed }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value text-warning">{{ milestone_stats.pending }}</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value text-danger">{{ milestone_stats.overdue }}</div>
+            <div class="stat-label">Overdue</div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="action-bar">
+        <button type="button" id="add-milestone-btn" class="button-min-primary py-1">
+           <div>
+                <i class="fas fa-plus" style="font-size: 9px;"></i> 
+                <span>Add</span>
+           </div>
+        </button>
+
+        <div class="flex items-center gap-1">
+            <select class="form-select text-center" id="milestone-status-filter">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="overdue">Overdue</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+
+            <select class="form-select" id="milestone-type-filter">
+                <option value="">All Types</option>
+                <option value="deliverable">Deliverable</option>
+                <option value="payment">Payment</option>
+                <option value="review">Review</option>
+                <option value="approval">Approval</option>
+                <option value="launch">Launch</option>
+                <option value="testing">Testing</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 30%;">Milestone Name</th>
+                            <th style="width: 12%;">Type</th>
+                            <th style="width: 12%;">Due Date</th>
+                            <th style="width: 12%;">Status</th>
+                            <th style="width: 15%;">Progress</th>
+                            <th style="width: 10%;">Amount</th>
+                            <th style="width: 9%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="milestones-table-body">
+                        <!-- New milestone rows will be inserted here dynamically -->
+
+                        <!-- Existing Milestones -->
+                        {% if milestones %}
+                            {% for milestone in milestones %}
+                                {% include 'project/partials/milestone_row_inline.html' with milestone=milestone project=project %}
+                            {% endfor %}
+                        {% else %}
+                            <tr id="no-milestones-row">
+                                <td colspan="7" class="text-center py-5">
+                                    <svg class="mx-auto text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="48" height="48">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
+                                    </svg>
+                                    <h3 class="mt-2 text-sm font-medium" style="font-size: 0.875rem; font-weight: 600;">No milestones yet</h3>
+                                    <p class="mt-1 text-sm text-muted" style="font-size: 0.8125rem;">Click "Add Milestone" to create your first milestone.</p>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Saving Indicator -->
+<div id="milestone-saving-indicator" class="saving-indicator">
+    <svg class="spinner" width="14" height="14" viewBox="0 0 50 50" style="display: inline-block; margin-right: 8px; animation: rotate 1s linear infinite;">
+        <circle cx="25" cy="25" r="20" fill="none" stroke="white" stroke-width="5" stroke-dasharray="80" stroke-dashoffset="60"></circle>
+    </svg>
+    Saving...
+</div>
+
+{% load static %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addMilestoneBtn = document.getElementById('add-milestone-btn');
+    const savingIndicator = document.getElementById('milestone-saving-indicator');
+    const noMilestonesRow = document.getElementById('no-milestones-row');
+    const tbody = document.getElementById('milestones-table-body');
+
+    let newRowCounter = 0;
+
+    // Get CSRF token
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
+
+    // Show saving indicator
+    function showSaving() {
+        savingIndicator.classList.add('show');
+    }
+
+    function hideSaving() {
+        setTimeout(() => {
+            savingIndicator.classList.remove('show');
+        }, 500);
+    }
+
+    // Create new milestone row HTML
+    function createNewMilestoneRow() {
+        const rowId = `new-milestone-row-${++newRowCounter}`;
+
+        return `
+            <tr id="${rowId}" class="new-milestone-row" data-new-row="true">
+                <td>
+                    <input type="text"
+                           class="form-control form-control-sm new-milestone-name"
+                           placeholder="Milestone name (required)..."
+                           style="font-weight: 500;"
+                           data-row-id="${rowId}">
+                    <textarea class="form-control form-control-sm mt-1 new-milestone-description"
+                              placeholder="Description (optional)..."
+                              rows="1"
+                              style="font-size: 0.75rem;"
+                              data-row-id="${rowId}"></textarea>
+                </td>
+                <td>
+                    <select class="form-select form-select-sm new-milestone-type" data-row-id="${rowId}">
+                        <option value="deliverable" selected>Deliverable</option>
+                        <option value="payment">Payment</option>
+                        <option value="review">Review</option>
+                        <option value="approval">Approval</option>
+                        <option value="launch">Launch</option>
+                        <option value="testing">Testing</option>
+                        <option value="other">Other</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="date"
+                           class="form-control form-control-sm new-milestone-date"
+                           data-row-id="${rowId}">
+                </td>
+                <td>
+                    <select class="form-select form-select-sm new-milestone-status" data-row-id="${rowId}">
+                        <option value="pending" selected>Pending</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number"
+                           class="form-control form-control-sm new-milestone-progress"
+                           value="0"
+                           min="0"
+                           max="100"
+                           step="5"
+                           style="width: 60px;"
+                           data-row-id="${rowId}">
+                </td>
+                <td>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text" style="font-size: 0.75rem;">$</span>
+                        <input type="number"
+                               class="form-control form-control-sm new-milestone-amount"
+                               placeholder="0.00"
+                               step="0.01"
+                               min="0"
+                               data-row-id="${rowId}">
+                    </div>
+                </td>
+                <td>
+                    <div class="d-flex space-x-1">
+                        <button type="button" class="btn-icon-compact success" title="Save milestone" data-row-id="${rowId}">
+                            <i class="bi bi-check"></i>
+                        </button>
+                        <button type="button" class="btn-icon-compact danger" title="Cancel" data-row-id="${rowId}">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
+    // Add new milestone row
+    addMilestoneBtn.addEventListener('click', function() {
+        if (noMilestonesRow) {
+            noMilestonesRow.style.display = 'none';
+        }
+
+        // Create and insert new row at the top
+        const newRowHtml = createNewMilestoneRow();
+        tbody.insertAdjacentHTML('afterbegin', newRowHtml);
+
+        // Focus on the first new milestone name input
+        const newRow = tbody.querySelector(`#new-milestone-row-${newRowCounter}`);
+        const nameInput = newRow.querySelector('.new-milestone-name');
+        nameInput.focus();
+
+        // Setup event listeners for this row
+        setupNewRowListeners(newRow);
+    });
+
+    // Setup listeners for a new row
+    function setupNewRowListeners(row) {
+        const rowId = row.id;
+        const saveBtn = row.querySelector('.save-new-milestone-btn');
+        const cancelBtn = row.querySelector('.cancel-new-milestone-btn');
+        const nameInput = row.querySelector('.new-milestone-name');
+
+        // Save button
+        saveBtn.addEventListener('click', function() {
+            saveNewMilestone(row);
+        });
+
+        // Cancel button
+        cancelBtn.addEventListener('click', function() {
+            row.remove();
+
+            // Show no milestones row if no milestones exist
+            const milestoneRows = tbody.querySelectorAll('.milestone-row');
+            const newRows = tbody.querySelectorAll('[data-new-row="true"]');
+            if (milestoneRows.length === 0 && newRows.length === 0 && noMilestonesRow) {
+                noMilestonesRow.style.display = '';
+            }
+        });
+
+        // Enter key to save
+        nameInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveNewMilestone(row);
+            }
+        });
+    }
+
+    // Save new milestone
+    function saveNewMilestone(row) {
+        const rowId = row.id;
+        const milestoneName = row.querySelector('.new-milestone-name').value.trim();
+
+        if (!milestoneName) {
+            alert('Please enter a milestone name');
+            row.querySelector('.new-milestone-name').focus();
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('milestone_name', milestoneName);
+        formData.append('description', row.querySelector('.new-milestone-description').value);
+        formData.append('milestone_type', row.querySelector('.new-milestone-type').value);
+        formData.append('status', row.querySelector('.new-milestone-status').value);
+        formData.append('completion_percentage', row.querySelector('.new-milestone-progress').value);
+        formData.append('milestone_date', row.querySelector('.new-milestone-date').value);
+        formData.append('amount', row.querySelector('.new-milestone-amount').value);
+        formData.append('csrfmiddlewaretoken', csrfToken);
+
+        showSaving();
+
+        fetch('{% url "project:milestone_create_inline" project.id %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'HX-Request': 'true'
+            },
+            body: formData
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                return response.text().then(text => {
+                    console.error('Error response:', text);
+                    throw new Error(`Server error: ${response.status}`);
+                });
+            }
+            return response.text();
+        })
+        .then(html => {
+            console.log('Response HTML:', html.substring(0, 200));
+
+            // Create temp div to parse HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            const savedRow = tempDiv.querySelector('tr');
+
+            if (!savedRow) {
+                console.error('No <tr> found in response');
+                throw new Error('Invalid response format');
+            }
+
+            // Replace the new row with the saved row
+            row.parentNode.replaceChild(savedRow, row);
+
+            // Setup inline editing for the saved row
+            setupInlineEditing(savedRow);
+
+            hideSaving();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to create milestone: ' + error.message);
+            hideSaving();
+        });
+    }
+
+    // Setup inline editing for existing milestones
+    function setupInlineEditing(row) {
+        const milestoneId = row.id.replace('milestone-', '');
+
+        // Text inputs (milestone name and description)
+        row.querySelectorAll('input[type="text"], textarea').forEach(input => {
+            input.addEventListener('blur', function() {
+                updateMilestoneField(milestoneId, this.dataset.field, this.value);
+            });
+
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    this.blur();
+                }
+            });
+        });
+
+        // Selects (type, status)
+        row.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', function() {
+                updateMilestoneField(milestoneId, this.dataset.field, this.value);
+            });
+        });
+
+        // Number inputs (progress, amount)
+        row.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('blur', function() {
+                updateMilestoneField(milestoneId, this.dataset.field, this.value);
+            });
+
+            input.addEventListener('change', function() {
+                updateMilestoneField(milestoneId, this.dataset.field, this.value);
+            });
+        });
+
+        // Date inputs
+        row.querySelectorAll('input[type="date"]').forEach(input => {
+            input.addEventListener('change', function() {
+                updateMilestoneField(milestoneId, this.dataset.field, this.value);
+            });
+        });
+
+        // Delete button
+        const deleteBtn = row.querySelector('.delete-milestone-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to delete this milestone?')) {
+                    deleteMilestone(milestoneId, row);
+                }
+            });
+        }
+    }
+
+    // Update milestone field
+    function updateMilestoneField(milestoneId, field, value) {
+        showSaving();
+
+        const formData = new FormData();
+        formData.append(field, value);
+        formData.append('csrfmiddlewaretoken', csrfToken);
+
+        fetch(`/project/milestones/${milestoneId}/update-inline/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                hideSaving();
+            } else {
+                throw new Error('Update failed');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to update milestone. Please try again.');
+            hideSaving();
+        });
+    }
+
+    // Delete milestone
+    function deleteMilestone(milestoneId, row) {
+        showSaving();
+
+        fetch(`/project/milestones/${milestoneId}/delete/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                row.remove();
+
+                // Show no milestones row if no milestones left
+                const milestoneRows = document.querySelectorAll('.milestone-row');
+                if (milestoneRows.length === 0 && noMilestonesRow) {
+                    noMilestonesRow.style.display = '';
+                }
+
+                hideSaving();
+            } else {
+                throw new Error('Delete failed');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to delete milestone. Please try again.');
+            hideSaving();
+        });
+    }
+
+    // Setup inline editing for existing milestones
+    document.querySelectorAll('.milestone-row').forEach(row => {
+        setupInlineEditing(row);
+    });
+
+    // Milestone filtering
+    const statusFilter = document.getElementById('milestone-status-filter');
+    const typeFilter = document.getElementById('milestone-type-filter');
+
+    function filterMilestones() {
+        const statusValue = statusFilter.value;
+        const typeValue = typeFilter.value;
+        const rows = document.querySelectorAll('.milestone-row');
+
+        rows.forEach(row => {
+            const milestoneStatus = row.dataset.status;
+            const milestoneType = row.dataset.type;
+
+            let showRow = true;
+
+            if (statusValue && milestoneStatus !== statusValue) {
+                showRow = false;
+            }
+
+            if (typeValue && milestoneType !== typeValue) {
+                showRow = false;
+            }
+
+            row.style.display = showRow ? '' : 'none';
+        });
+    }
+
+    statusFilter.addEventListener('change', filterMilestones);
+    typeFilter.addEventListener('change', filterMilestones);
+});
+</script>
+
+<style>
+/* Stats card styles */
+.stat-card {
+    padding: 0.625rem 0.75rem;
+    border-radius: 3px;
+    text-align: left;
+    border: 1px solid #f0f0f0;
+    background: #fff;
+}
+
+.stat-number {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 0.125rem;
+}
+
+.stat-label {
+    font-size: 0.6875rem;
+    color: #666;
+}
+
+/* Action bar styles */
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+</style>

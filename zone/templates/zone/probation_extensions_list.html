@@ -1,0 +1,1095 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Probation Extensions{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Compact Design Variables */
+:root {
+    --compact-radius: 6px;
+    --compact-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    --compact-border: 1px solid #e5e7eb;
+    --compact-header-bg: #f9fafb;
+    --compact-text-xs: 0.75rem;
+    --compact-text-sm: 0.875rem;
+    --compact-text-base: 1rem;
+    --compact-spacing-xs: 0.25rem;
+    --compact-spacing-sm: 0.5rem;
+    --compact-spacing-md: 1rem;
+}
+
+/* Page Header */
+.page-header {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    border-radius: var(--compact-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--compact-shadow);
+}
+
+/* Enhanced Navigation Tabs */
+.nav-tabs-container {
+    margin-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 1rem;
+}
+
+.nav-tabs-custom {
+    border-bottom: none;
+    margin-bottom: 0.75rem;
+}
+
+.nav-tabs-custom .nav-link {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--compact-radius);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    margin-right: 0.5rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.nav-tabs-custom .nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+.nav-tabs-custom .nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.4);
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-tabs-custom .nav-link .badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.4rem;
+}
+
+.nav-description {
+    margin-top: 0.5rem;
+}
+
+.nav-description p {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .nav-tabs-custom .nav-link {
+        padding: 0.4rem 0.75rem;
+        margin-right: 0.25rem;
+        font-size: 0.875rem;
+    }
+    
+    .nav-text {
+        display: none;
+    }
+    
+    .nav-tabs-custom .nav-link .badge {
+        margin-left: 0.25rem;
+    }
+    
+    .nav-description {
+        text-align: center;
+    }
+}
+
+/* Quick Stats */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: var(--compact-radius);
+    padding: 1rem;
+    box-shadow: var(--compact-shadow);
+    border: var(--compact-border);
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: var(--compact-text-sm);
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.stat-total { border-left: 4px solid #3b82f6; }
+.stat-days { border-left: 4px solid #f59e0b; }
+.stat-average { border-left: 4px solid #8b5cf6; }
+.stat-recent { border-left: 4px solid #10b981; }
+.stat-active { border-left: 4px solid #10b981; }
+.stat-completed { border-left: 4px solid #3b82f6; }
+
+/* Search and Filter Section */
+.search-filter-section {
+    background: white;
+    border-radius: var(--compact-radius);
+    padding: 1rem;
+    box-shadow: var(--compact-shadow);
+    border: var(--compact-border);
+    margin-bottom: 1.5rem;
+}
+
+.filter-row {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-group label {
+    font-size: var(--compact-text-sm);
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.filter-group select,
+.filter-group input {
+    font-size: var(--compact-text-sm);
+    padding: 0.5rem;
+    border-radius: var(--compact-radius);
+    border: var(--compact-border);
+    background: white;
+    color: #374151;
+    width: 100%;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Extensions Table */
+.extensions-table-container {
+    background: white;
+    border-radius: var(--compact-radius);
+    overflow: hidden;
+    box-shadow: var(--compact-shadow);
+    border: var(--compact-border);
+    margin-bottom: 1.5rem;
+}
+
+.table-header {
+    background: var(--compact-header-bg);
+    border-bottom: var(--compact-border);
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-title {
+    font-size: var(--compact-text-base);
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.results-info {
+    font-size: var(--compact-text-sm);
+    color: #6b7280;
+}
+
+.extensions-table {
+    width: 100%;
+    margin: 0;
+}
+
+.extensions-table th {
+    font-size: var(--compact-text-xs);
+    font-weight: 600;
+    color: #374151;
+    background: var(--compact-header-bg);
+    border-bottom: var(--compact-border);
+    padding: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.extensions-table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: var(--compact-text-sm);
+}
+
+.extensions-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.extensions-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* Sortable Headers */
+.sortable-header {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 1.5rem;
+}
+
+.sortable-header:hover {
+    color: #3b82f6;
+}
+
+.sort-icon {
+    position: absolute;
+    right: 0.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.sortable-header.active .sort-icon {
+    color: #3b82f6;
+}
+
+/* Status Badges */
+.status-badge {
+    font-size: var(--compact-text-xs);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.status-active { background: #d1fae5; color: #065f46; }
+.status-completed { background: #dbeafe; color: #1e3a8a; }
+.status-extended { background: #fef3c7; color: #92400e; }
+.status-failed { background: #fee2e2; color: #991b1b; }
+
+/* Extension Duration Badge */
+.extension-duration {
+    background: #f59e0b;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: var(--compact-text-xs);
+    font-weight: 600;
+}
+
+/* Worker Info */
+.worker-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.worker-avatar-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #f3f4f6;
+}
+
+.worker-avatar-placeholder-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.worker-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.worker-name {
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.2;
+}
+
+.worker-id {
+    font-size: var(--compact-text-xs);
+    color: #6b7280;
+}
+
+/* Pagination - Unified Design */
+.pagination-wrapper {
+    background: white;
+    padding: 0.75rem 1rem;
+    margin-top: 0;
+    border: var(--compact-border);
+    border-top: none;
+    border-radius: 0 0 var(--compact-radius) var(--compact-radius);
+    box-shadow: var(--compact-shadow);
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pagination-info {
+    font-size: var(--compact-text-sm);
+    color: #374151;
+    font-weight: 500;
+}
+
+.pagination-options {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.per-page-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--compact-text-sm);
+}
+
+.per-page-selector select {
+    font-size: var(--compact-text-sm);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--compact-radius);
+    border: var(--compact-border);
+    background: white;
+}
+
+.pagination {
+    margin: 0;
+}
+
+.page-link {
+    font-size: var(--compact-text-sm);
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--compact-radius);
+    border: var(--compact-border);
+    color: #374151;
+    text-decoration: none;
+    margin: 0 0.125rem;
+    transition: all 0.2s ease;
+}
+
+.page-link:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.page-item.active .page-link {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.page-item.disabled .page-link {
+    background: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+}
+
+.btn-compact {
+    font-size: var(--compact-text-sm);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--compact-radius);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6b7280;
+    background: white;
+    border-radius: var(--compact-radius);
+    border: var(--compact-border);
+}
+
+.empty-state .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 1rem;
+    }
+    
+    .filter-row {
+        flex-direction: column;
+    }
+    
+    .filter-group {
+        min-width: auto;
+    }
+    
+    .extensions-table {
+        font-size: var(--compact-text-xs);
+    }
+    
+    .worker-info {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .pagination-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .pagination-options {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .search-filter-section,
+    .action-buttons,
+    .pagination-wrapper {
+        display: none !important;
+    }
+    
+    .page-header {
+        background: white !important;
+        color: black !important;
+        border: 1px solid #000;
+    }
+}
+
+/* Information Panel Styles */
+.info-panel {
+    margin-bottom: 1rem;
+}
+
+.info-card {
+    background: white;
+    border-radius: var(--compact-radius);
+    border: var(--compact-border);
+    box-shadow: var(--compact-shadow);
+    overflow: hidden;
+}
+
+.info-header {
+    background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e1f5fe;
+}
+
+.info-header h6 {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0277bd;
+}
+
+.info-content {
+    padding: 1rem;
+}
+
+.info-content p {
+    font-size: 0.875rem;
+    color: #374151;
+    margin-bottom: 0.75rem;
+}
+
+.info-highlights {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.highlight-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.highlight-item i {
+    font-size: 1rem;
+}
+
+.quick-nav-card {
+    background: white;
+    border-radius: var(--compact-radius);
+    border: var(--compact-border);
+    box-shadow: var(--compact-shadow);
+    overflow: hidden;
+    height: fit-content;
+}
+
+.quick-nav-header {
+    background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f3e8ff;
+}
+
+.quick-nav-header h6 {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #7c3aed;
+}
+
+.quick-nav-content {
+    padding: 0.5rem;
+}
+
+.quick-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: var(--compact-radius);
+    text-decoration: none;
+    color: #374151;
+    transition: all 0.2s ease;
+    margin-bottom: 0.25rem;
+}
+
+.quick-nav-link:hover {
+    background: #f8fafc;
+    color: #3b82f6;
+    text-decoration: none;
+    transform: translateX(2px);
+}
+
+.quick-nav-link i:first-child {
+    font-size: 1.25rem;
+    color: #6b7280;
+}
+
+.quick-nav-link:hover i:first-child {
+    color: #3b82f6;
+}
+
+.quick-nav-link div {
+    flex-grow: 1;
+}
+
+.quick-nav-link strong {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.quick-nav-link small {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    line-height: 1.2;
+}
+
+.quick-nav-link i:last-child {
+    font-size: 0.875rem;
+    color: #d1d5db;
+    transition: all 0.2s ease;
+}
+
+.quick-nav-link:hover i:last-child {
+    color: #3b82f6;
+    transform: translateX(2px);
+}
+
+@media (max-width: 768px) {
+    .info-highlights {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .highlight-item {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="row align-items-center mb-3">
+            <div class="col-md-8">
+                <h3 class="mb-1">
+                    <i class="bi bi-clock-history me-2"></i>
+                    Probation
+                </h3>
+                <p class="mb-0 opacity-75">Complete overview of all probation extensions across workers</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="{% url 'zone:probation_list' %}" class="btn btn-light btn-sm">
+                    <i class="bi bi-hourglass-split"></i> View Probations
+                </a>
+            </div>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs-container">
+            <ul class="nav nav-tabs nav-tabs-custom">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'zone:probation_list' %}">
+                        <i class="bi bi-hourglass me-2"></i>
+                        <span class="nav-text">Probation Periods</span>
+                        <span class="badge bg-primary ms-2">{{ active_extensions|add:completed_extensions|add:failed_extensions }}</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'zone:probation_extensions_list' %}">
+                        <i class="bi bi-clock-history me-2"></i>
+                        <span class="nav-text">All Extensions</span>
+                        <span class="badge bg-warning ms-2">{{ total_extensions }}</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="nav-description">
+                <p class="mb-0">
+                    <strong>Current View:</strong> All probation extensions across all workers and periods.
+                    <a href="{% url 'zone:probation_list' %}" class="text-white text-decoration-underline">
+                        ← View probation periods
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-container">
+        <div class="stat-card stat-total">
+            <div class="stat-number text-primary">{{ total_extensions }}</div>
+            <div class="stat-label">Total Extensions</div>
+        </div>
+        
+        <div class="stat-card stat-days">
+            <div class="stat-number text-warning">{{ total_extension_days }}</div>
+            <div class="stat-label">Total Extension Days</div>
+        </div>
+        
+        <div class="stat-card stat-average">
+            <div class="stat-number text-info">{{ avg_extension_days|floatformat:1 }}</div>
+            <div class="stat-label">Average Days/Extension</div>
+        </div>
+        
+        <div class="stat-card stat-recent">
+            <div class="stat-number text-success">{{ recent_extensions }}</div>
+            <div class="stat-label">Recent (7 days)</div>
+        </div>
+        
+        <div class="stat-card stat-active">
+            <div class="stat-number text-success">{{ active_extensions }}</div>
+            <div class="stat-label">Active Probations</div>
+        </div>
+        
+        <div class="stat-card stat-completed">
+            <div class="stat-number text-primary">{{ completed_extensions }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+
+    <!-- Contextual Information Panel -->
+    <div class="info-panel mb-3">
+        <div class="row g-3">
+            <div class="col-md-8">
+                <div class="info-card">
+                    <div class="info-header">
+                        <h6><i class="bi bi-lightbulb me-2"></i>Understanding Probation Extensions</h6>
+                    </div>
+                    <div class="info-content">
+                        <p class="mb-2">Extensions are additional days added to probation periods when workers need more evaluation time. Each extension shows which probation period it belongs to.</p>
+                        <div class="info-highlights">
+                            <span class="highlight-item">
+                                <i class="bi bi-clock-history text-warning"></i>
+                                <strong>{{ total_extensions }}</strong> total extensions
+                            </span>
+                            <span class="highlight-item">
+                                <i class="bi bi-calendar-plus text-info"></i>
+                                <strong>{{ total_extension_days }}</strong> total days added
+                            </span>
+                            <span class="highlight-item">
+                                <i class="bi bi-graph-up text-success"></i>
+                                <strong>{{ avg_extension_days|floatformat:1 }}</strong> average days
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="quick-nav-card">
+                    <div class="quick-nav-header">
+                        <h6><i class="bi bi-compass me-2"></i>Quick Navigation</h6>
+                    </div>
+                    <div class="quick-nav-content">
+                        <a href="{% url 'zone:probation_list' %}" class="quick-nav-link">
+                            <i class="bi bi-hourglass"></i>
+                            <div>
+                                <strong>View Probation Periods</strong>
+                                <small>See individual worker probations</small>
+                            </div>
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                        <a href="{% url 'zone:worker_list' %}" class="quick-nav-link">
+                            <i class="bi bi-people"></i>
+                            <div>
+                                <strong>Worker Management</strong>
+                                <small>Manage worker profiles</small>
+                            </div>
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="search-filter-section">
+        <form method="get" class="filter-form">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="{{ search_form.search.id_for_label }}">Search</label>
+                    {{ search_form.search }}
+                </div>
+                
+                <div class="filter-group">
+                    <label for="{{ search_form.status.id_for_label }}">Status</label>
+                    {{ search_form.status }}
+                </div>
+                
+                <div class="filter-group">
+                    <label for="{{ search_form.zone.id_for_label }}">Zone</label>
+                    {{ search_form.zone }}
+                </div>
+                
+                <div class="filter-group">
+                    <label for="{{ search_form.building.id_for_label }}">Building</label>
+                    {{ search_form.building }}
+                </div>
+                
+                <div class="filter-group">
+                    <label for="{{ search_form.date_range.id_for_label }}">Date Range</label>
+                    {{ search_form.date_range }}
+                </div>
+                
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-funnel"></i> Filter
+                    </button>
+                    <a href="{% url 'zone:probation_extensions_list' %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Extensions Table -->
+    {% if page_obj.object_list %}
+        <div class="extensions-table-container">
+            <div class="table-header">
+                <h5 class="table-title">
+                    <i class="bi bi-list-ul text-primary"></i>
+                    Extensions List
+                </h5>
+                <div class="results-info">
+                    {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }} extensions
+                </div>
+            </div>
+            
+            <table class="table table-hover extensions-table">
+                <thead>
+                    <tr>
+                        <th class="sortable-header {% if current_sort == 'probation_period__worker__first_name' or current_sort == '-probation_period__worker__first_name' %}active{% endif %}"
+                            onclick="sortTable('probation_period__worker__first_name')">
+                            Worker
+                            <i class="sort-icon bi bi-chevron-{% if current_sort == 'probation_period__worker__first_name' %}up{% elif current_sort == '-probation_period__worker__first_name' %}down{% else %}expand{% endif %}"></i>
+                        </th>
+                        <th class="sortable-header {% if current_sort == 'extension_duration_days' or current_sort == '-extension_duration_days' %}active{% endif %}"
+                            onclick="sortTable('extension_duration_days')">
+                            Duration
+                            <i class="sort-icon bi bi-chevron-{% if current_sort == 'extension_duration_days' %}up{% elif current_sort == '-extension_duration_days' %}down{% else %}expand{% endif %}"></i>
+                        </th>
+                        <th>Reason</th>
+                        <th class="sortable-header {% if current_sort == 'probation_period__status' or current_sort == '-probation_period__status' %}active{% endif %}"
+                            onclick="sortTable('probation_period__status')">
+                            Status
+                            <i class="sort-icon bi bi-chevron-{% if current_sort == 'probation_period__status' %}up{% elif current_sort == '-probation_period__status' %}down{% else %}expand{% endif %}"></i>
+                        </th>
+                        <th class="sortable-header {% if current_sort == 'probation_period__worker__zone__name' or current_sort == '-probation_period__worker__zone__name' %}active{% endif %}"
+                            onclick="sortTable('probation_period__worker__zone__name')">
+                            Zone
+                            <i class="sort-icon bi bi-chevron-{% if current_sort == 'probation_period__worker__zone__name' %}up{% elif current_sort == '-probation_period__worker__zone__name' %}down{% else %}expand{% endif %}"></i>
+                        </th>
+                        <th>Approved By</th>
+                        <th class="sortable-header {% if current_sort == 'created_at' or current_sort == '-created_at' %}active{% endif %}"
+                            onclick="sortTable('created_at')">
+                            Date Created
+                            <i class="sort-icon bi bi-chevron-{% if current_sort == 'created_at' %}up{% elif current_sort == '-created_at' %}down{% else %}expand{% endif %}"></i>
+                        </th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for extension in page_obj.object_list %}
+                        <tr>
+                            <td>
+                                <div class="worker-info">
+                                    {% if extension.probation_period.worker.photo %}
+                                        <img src="{% url "zone:serve_worker_photo" extension.probation_period.worker.id %}" class="worker-avatar-small" alt="Worker Photo">
+                                    {% else %}
+                                        <div class="worker-avatar-placeholder-small">
+                                            {{ extension.probation_period.worker.first_name|first }}{{ extension.probation_period.worker.last_name|first }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="worker-details">
+                                        <div class="worker-name">{{ extension.probation_period.worker.get_full_name }}</div>
+                                        <div class="worker-id">{{ extension.probation_period.worker.worker_id }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <td>
+                                <span class="extension-duration">
+                                    +{{ extension.extension_duration_days }}d
+                                </span>
+                            </td>
+                            
+                            <td>
+                                <div class="text-truncate" style="max-width: 250px;" title="{{ extension.reason }}">
+                                    {{ extension.reason }}
+                                </div>
+                            </td>
+                            
+                            <td>
+                                <span class="status-badge status-{{ extension.probation_period.worker.status }}">
+                                    {{ extension.probation_period.worker.get_status_display }}
+                                </span>
+                            </td>
+                            
+                            <td>
+                                <div class="fw-semibold">{{ extension.probation_period.worker.zone.name }}</div>
+                                <small class="text-muted">{{ extension.probation_period.worker.building.name|default:"No building" }}</small>
+                            </td>
+                            
+                            <td>
+                                {% if extension.approved_by %}
+                                    <div class="fw-semibold">{{ extension.approved_by.get_full_name }}</div>
+                                    <small class="text-muted">Approved</small>
+                                {% else %}
+                                    <span class="text-muted">System</span>
+                                {% endif %}
+                            </td>
+                            
+                            <td>
+                                <div>{{ extension.created_at|date:"d/m/Y" }}</div>
+                                <small class="text-muted">{{ extension.created_at|time:"g:i A" }}</small>
+                            </td>
+                            
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{% url 'zone:probation_detail' extension.probation_period.id %}" 
+                                       class="btn btn-outline-primary btn-compact" 
+                                       title="View Full Probation Period (includes all extensions)"
+                                       data-bs-toggle="tooltip">
+                                        <i class="bi bi-hourglass"></i>
+                                        <span class="d-none d-md-inline ms-1">Probation</span>
+                                    </a>
+                                    <a href="{% url 'zone:worker_detail' extension.probation_period.worker.id %}" 
+                                       class="btn btn-outline-secondary btn-compact" 
+                                       title="View Worker Profile and Details"
+                                       data-bs-toggle="tooltip">
+                                        <i class="bi bi-person"></i>
+                                        <span class="d-none d-md-inline ms-1">Worker</span>
+                                    </a>
+                                    <a href="{% url 'zone:worker_probation_extensions' extension.probation_period.worker.id %}" 
+                                       class="btn btn-outline-warning btn-compact" 
+                                       title="View All Extensions for This Worker"
+                                       data-bs-toggle="tooltip">
+                                        <i class="bi bi-clock-history"></i>
+                                        <span class="d-none d-md-inline ms-1">History</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+            <div class="pagination-wrapper">
+                <div class="pagination-controls">
+                    <div class="pagination-info">
+                        Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }} extensions
+                    </div>
+                    
+                    <div class="pagination-options">
+                        <div class="per-page-selector">
+                            <label for="perPageSelect">Show:</label>
+                            <select id="perPageSelect" onchange="changePerPage(this.value)">
+                                <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                                <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                                <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                                <option value="200" {% if per_page == 200 %}selected{% endif %}>200</option>
+                            </select>
+                        </div>
+                        
+                        <nav aria-label="Extensions pagination">
+                            <ul class="pagination">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">
+                                            <i class="bi bi-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link"><i class="bi bi-chevron-left"></i></span>
+                                    </li>
+                                {% endif %}
+                                
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">
+                                            <i class="bi bi-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link"><i class="bi bi-chevron-right"></i></span>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="bi bi-clock-history"></i>
+            </div>
+            <h5>No Extensions Found</h5>
+            <p class="text-muted">
+                {% if request.GET %}
+                    No extensions match the current search criteria.
+                {% else %}
+                    No probation extensions have been recorded yet.
+                {% endif %}
+            </p>
+            {% if request.GET %}
+                <a href="{% url 'zone:probation_extensions_list' %}" class="btn btn-primary">
+                    <i class="bi bi-x-circle"></i> Clear Filters
+                </a>
+            {% else %}
+                <a href="{% url 'zone:probation_list' %}" class="btn btn-primary">
+                    <i class="bi bi-hourglass-split"></i> View Probations
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<script>
+// Sorting functionality
+function sortTable(field) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentSort = urlParams.get('sort') || '';
+    const currentOrder = urlParams.get('order') || 'desc';
+    
+    let newSort = field;
+    let newOrder = 'desc';
+    
+    // If clicking the same field, toggle order
+    if (currentSort === field) {
+        newOrder = currentOrder === 'desc' ? 'asc' : 'desc';
+    } else if (currentSort === '-' + field) {
+        newOrder = 'asc';
+        newSort = field;
+    }
+    
+    // Apply sort direction prefix
+    if (newOrder === 'desc' && !newSort.startsWith('-')) {
+        newSort = '-' + newSort;
+    }
+    
+    urlParams.set('sort', newSort);
+    urlParams.set('order', newOrder);
+    urlParams.delete('page'); // Reset to first page when sorting
+    
+    window.location.search = urlParams.toString();
+}
+
+// Per page selector
+function changePerPage(value) {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('per_page', value);
+    urlParams.delete('page'); // Reset to first page
+    window.location.search = urlParams.toString();
+}
+</script>
+{% endblock %} 

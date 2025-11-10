@@ -1,0 +1,702 @@
+{% extends 'base/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Audit Sessions{% endblock %}
+
+{% block main_class %}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Ultra Minimal & Compact Audit Sessions Design */
+
+/* Page Headers */
+.page-header {
+    padding: 4px 0;
+    margin-bottom: 8px;
+}
+.page-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+}
+.page-header p {
+    font-size: 10px;
+    color: #666;
+    margin: 0;
+}
+
+/* Compact Filter Section */
+.filter-section {
+    background: #f8fafb;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.filter-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 6px;
+    align-items: end;
+}
+
+.form-label {
+    font-size: 10px;
+    margin-bottom: 2px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.form-control, .form-select {
+    font-size: 11px;
+    padding: 4px 8px;
+    height: auto;
+    border-radius: 3px;
+    border: 1px solid #d1d5db;
+    line-height: 1.3;
+    background: white;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+/* Unified Button System - Ultra Compact */
+.btn-minimal {
+    font-size: 10px;
+    font-weight: 500;
+    border-radius: 3px;
+    padding: 3px 6px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    line-height: 1.2;
+}
+
+/* Primary - Blue */
+.btn-minimal-primary {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+.btn-minimal-primary:hover {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+/* Secondary - Gray */
+.btn-minimal-secondary {
+    background: #f8fafc;
+    color: #475569;
+    border-color: #e2e8f0;
+}
+.btn-minimal-secondary:hover {
+    background: #f1f5f9;
+    color: #334155;
+    border-color: #cbd5e1;
+}
+
+/* Success - Green */
+.btn-minimal-success {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+.btn-minimal-success:hover {
+    background: #a7f3d0;
+    color: #047857;
+    border-color: #6ee7b7;
+}
+
+/* Warning - Yellow */
+.btn-minimal-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde68a;
+}
+.btn-minimal-warning:hover {
+    background: #fde68a;
+    color: #78350f;
+    border-color: #f59e0b;
+}
+
+/* Sessions Container */
+.sessions-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+/* Session Items */
+.session-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: all 0.1s ease;
+    gap: 8px;
+    font-size: 11px;
+}
+
+.session-item:hover {
+    background-color: #f8fafb;
+}
+
+.session-item:last-child {
+    border-bottom: none;
+}
+
+.session-item.inactive {
+    opacity: 0.6;
+    background-color: #fafafa;
+}
+
+/* Session Status Icon */
+.session-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.session-status.active {
+    background: #22c55e;
+    animation: pulse 2s infinite;
+}
+
+.session-status.inactive {
+    background: #9ca3af;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Session Time */
+.session-time {
+    min-width: 120px;
+    font-size: 9px;
+    color: #6b7280;
+    font-family: 'Courier New', monospace;
+    flex-shrink: 0;
+}
+
+.session-time .time-started {
+    font-weight: 600;
+    color: #374151;
+    font-size: 10px;
+}
+
+.session-time .time-last {
+    font-size: 8px;
+    color: #9ca3af;
+}
+
+.session-time .duration {
+    font-size: 8px;
+    color: #6366f1;
+    font-weight: 500;
+}
+
+/* Session User */
+.session-user {
+    min-width: 100px;
+    flex-shrink: 0;
+}
+
+.session-user .user-name {
+    font-weight: 600;
+    font-size: 10px;
+    color: #374151;
+}
+
+.session-user .user-avatar {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-right: 4px;
+}
+
+/* Session Location */
+.session-location {
+    min-width: 120px;
+    flex-shrink: 0;
+}
+
+.session-location .ip-address {
+    font-weight: 600;
+    font-size: 10px;
+    color: #374151;
+    font-family: 'Courier New', monospace;
+}
+
+.session-location .location-info {
+    font-size: 8px;
+    color: #9ca3af;
+}
+
+/* Session Device */
+.session-device {
+    flex: 1;
+    min-width: 0;
+}
+
+.session-device .device-type {
+    font-weight: 600;
+    font-size: 10px;
+    color: #1f2937;
+    margin-bottom: 1px;
+}
+
+.session-device .browser-info {
+    font-size: 9px;
+    color: #6b7280;
+    line-height: 1.2;
+}
+
+/* Session Key */
+.session-key {
+    min-width: 80px;
+    flex-shrink: 0;
+    font-family: 'Courier New', monospace;
+}
+
+.session-key .key-display {
+    font-size: 8px;
+    color: #6b7280;
+    background: #f3f4f6;
+    padding: 1px 3px;
+    border-radius: 2px;
+}
+
+/* Session Actions */
+.session-actions {
+    display: flex;
+    gap: 1px;
+    flex-shrink: 0;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 24px;
+    color: #6b7280;
+}
+
+.empty-state i {
+    font-size: 28px;
+    color: #d1d5db;
+    margin-bottom: 8px;
+}
+
+.empty-state h6 {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.empty-state p {
+    font-size: 10px;
+    margin-bottom: 12px;
+}
+
+/* Compact Pagination */
+.pagination-compact {
+    margin: 0;
+}
+
+.pagination-compact .page-item .page-link {
+    padding: 3px 6px;
+    font-size: 10px;
+    border: 1px solid #e2e8f0;
+    color: #374151;
+    margin: 0 1px;
+    border-radius: 3px;
+}
+
+.pagination-compact .page-item.active .page-link {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.pagination-compact .page-item .page-link:hover {
+    background: #f8fafb;
+    border-color: #d1d5db;
+}
+
+/* Session Stats */
+.session-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 6px 8px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.stat-card .stat-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 1px;
+}
+
+.stat-card .stat-label {
+    font-size: 8px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-card.active .stat-value {
+    color: #22c55e;
+}
+
+.stat-card.inactive .stat-value {
+    color: #ef4444;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .filter-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+    
+    .session-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .page-header-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+    }
+    
+    .session-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        padding: 6px;
+    }
+    
+    .session-time,
+    .session-user,
+    .session-location,
+    .session-key {
+        min-width: auto;
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Compact Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <div>
+            <h2><i class="bi bi-person-lines-fill me-2"></i>Audit Sessions</h2>
+            <p>Monitor active and historical user sessions</p>
+        </div>
+        <div class="d-flex align-items-center page-header-actions">
+            <a href="{% url 'audit_management:dashboard' %}" class="btn-minimal btn-minimal-secondary">
+                <i class="bi bi-arrow-left"></i>
+                <span class="d-none d-md-inline">Dashboard</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Session Statistics -->
+    <div class="session-stats">
+        <div class="stat-card">
+            <div class="stat-value">{{ page_obj.paginator.count }}</div>
+            <div class="stat-label">Total Sessions</div>
+        </div>
+        <div class="stat-card active">
+            <div class="stat-value">
+                {% with active_count=0 %}
+                    {% for session in page_obj.paginator.object_list %}
+                        {% if session.is_active %}
+                            {% with active_count=active_count|add:1 %}{% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ active_count }}
+                {% endwith %}
+            </div>
+            <div class="stat-label">Active Now</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">
+                {% now "H:i" %}
+            </div>
+            <div class="stat-label">Current Time</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">
+                {% now "M d" %}
+            </div>
+            <div class="stat-label">Today</div>
+        </div>
+    </div>
+
+    <!-- Compact Filter Section -->
+    <div class="filter-section">
+        <form method="get" class="filter-row">
+            <div>
+                <label for="user" class="form-label">User</label>
+                <input type="text" class="form-control" id="user" name="user" 
+                       value="{{ current_filters.user }}" placeholder="Search username...">
+            </div>
+            <div>
+                <label for="active" class="form-label">Status</label>
+                <select class="form-select" id="active" name="active">
+                    <option value="">All Sessions</option>
+                    <option value="true" {% if current_filters.active == 'true' %}selected{% endif %}>Active Only</option>
+                    <option value="false" {% if current_filters.active == 'false' %}selected{% endif %}>Inactive Only</option>
+                </select>
+            </div>
+            <div></div>
+            <div class="d-flex gap-1">
+                <button type="submit" class="btn-minimal btn-minimal-primary">
+                    <i class="bi bi-search"></i>
+                    <span class="d-none d-md-inline">Filter</span>
+                </button>
+                {% if request.GET %}
+                <a href="{% url 'audit_management:sessions' %}" class="btn-minimal btn-minimal-secondary">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Sessions Container -->
+    <div class="sessions-container">
+        {% for session in page_obj %}
+        <div class="session-item {% if not session.is_active %}inactive{% endif %}">
+            <!-- Status -->
+            <span class="session-status {% if session.is_active %}active{% else %}inactive{% endif %}"></span>
+            
+            <!-- Time Info -->
+            <div class="session-time">
+                <div class="time-started">{{ session.started_at|date:"M d, H:i" }}</div>
+                <div class="time-last">Last: {{ session.last_activity|date:"H:i" }}</div>
+                <div class="duration">
+                    {% if session.is_active %}
+                        Active {{ session.last_activity|timesince }}
+                    {% else %}
+                        Ended {{ session.last_activity|timesince }} ago
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- User -->
+            <div class="session-user">
+                <div class="user-name">
+                    <span class="user-avatar">{{ session.user.username|first|upper }}</span>
+                    {{ session.user.username|truncatechars:15 }}
+                </div>
+                {% if session.user.first_name %}
+                <div style="font-size: 8px; color: #9ca3af;">{{ session.user.first_name }} {{ session.user.last_name|default:""|truncatechars:10 }}</div>
+                {% endif %}
+            </div>
+            
+            <!-- Location -->
+            <div class="session-location">
+                <div class="ip-address">{{ session.ip_address }}</div>
+                <div class="location-info">
+                    {% if session.ip_address|slice:":3" == "192" or session.ip_address|slice:":2" == "10" %}
+                        <i class="bi bi-house-fill"></i> Local Network
+                    {% else %}
+                        <i class="bi bi-globe"></i> External
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Device Info -->
+            <div class="session-device">
+                <div class="device-type">
+                    {% if "Mobile" in session.user_agent %}
+                        <i class="bi bi-phone"></i> Mobile Device
+                    {% elif "Tablet" in session.user_agent %}
+                        <i class="bi bi-tablet"></i> Tablet
+                    {% else %}
+                        <i class="bi bi-laptop"></i> Desktop
+                    {% endif %}
+                </div>
+                <div class="browser-info">
+                    {% if "Chrome" in session.user_agent %}
+                        Chrome
+                    {% elif "Firefox" in session.user_agent %}
+                        Firefox
+                    {% elif "Safari" in session.user_agent %}
+                        Safari
+                    {% elif "Edge" in session.user_agent %}
+                        Edge
+                    {% else %}
+                        {{ session.user_agent|truncatechars:20 }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Session Key -->
+            <div class="session-key">
+                <div class="key-display">{{ session.session_key|slice:":8" }}...</div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="session-actions">
+                <a href="{% url 'audit_management:user_activity' session.user.id %}" class="btn-minimal btn-minimal-secondary">
+                    <i class="bi bi-activity"></i>
+                    <span class="d-none d-lg-inline">Activity</span>
+                </a>
+                {% if session.is_active %}
+                <button type="button" class="btn-minimal btn-minimal-warning" onclick="showSessionDetails({{ session.id }})">
+                    <i class="bi bi-info-circle"></i>
+                    <span class="d-none d-lg-inline">Details</span>
+                </button>
+                {% else %}
+                <button type="button" class="btn-minimal btn-minimal-secondary" onclick="showSessionDetails({{ session.id }})">
+                    <i class="bi bi-clock-history"></i>
+                    <span class="d-none d-lg-inline">History</span>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="bi bi-person-x"></i>
+            <h6>No Sessions Found</h6>
+            <p>
+                {% if request.GET %}
+                    No sessions match your current filter criteria.
+                {% else %}
+                    No audit sessions have been recorded yet.
+                {% endif %}
+            </p>
+        </div>
+        {% endfor %}
+        
+        <!-- Ultra Compact Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="d-flex justify-content-between align-items-center p-2 border-top" style="background: #f8fafb;">
+            <div class="d-flex align-items-center">
+                <span style="font-size: 9px; color: #6b7280;">
+                    {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }}
+                </span>
+            </div>
+            <nav aria-label="Sessions pagination">
+                <ul class="pagination pagination-compact">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in current_filters.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1">
+                                <i class="bi bi-chevron-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in current_filters.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-double-left"></i></span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-left"></i></span>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_obj.number }}</span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in current_filters.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.next_page_number }}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in current_filters.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.paginator.num_pages }}">
+                                <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-right"></i></span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link"><i class="bi bi-chevron-double-right"></i></span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showSessionDetails(sessionId) {
+    // For now, just show a simple alert. In the future, this could open a detailed modal
+    // or redirect to a detail page with session logs
+    alert('Session details functionality can be implemented here');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-refresh active sessions every 30 seconds
+    setInterval(function() {
+        const activeSessionsCount = document.querySelectorAll('.session-status.active').length;
+        if (activeSessionsCount > 0) {
+            // Only refresh if there are active sessions
+            // window.location.reload();
+        }
+    }, 30000);
+    
+    // Add real-time session duration updates
+    function updateSessionDurations() {
+        const durationElements = document.querySelectorAll('.duration');
+        durationElements.forEach(function(element) {
+            // This would require more complex JavaScript to update durations in real-time
+            // For now, we'll rely on page refreshes
+        });
+    }
+    
+    // Update durations every minute
+    setInterval(updateSessionDurations, 60000);
+});
+</script>
+{% endblock %}

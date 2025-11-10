@@ -1,0 +1,171 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Leave Policies - {{ system_title }}{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact Design System - Policy List */
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    /* Compact table */
+    .table-container {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    .table {
+        margin: 0;
+        font-size: 11px;
+    }
+    .table th {
+        background: #f9fafb;
+        font-weight: 600;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        padding: 6px 8px;
+        border: none;
+        color: #374151;
+    }
+    .table td {
+        padding: 6px 8px;
+        border: none;
+        border-bottom: 1px solid #f3f4f6;
+        vertical-align: middle;
+    }
+    .table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    /* Action buttons */
+    .btn-sm {
+        font-size: 10px;
+        padding: 3px 6px;
+        border-radius: 3px;
+    }
+    .btn-outline-primary {
+        border: 1px solid #87CEEB;
+        color: #87CEEB;
+        background: white;
+    }
+    .btn-outline-primary:hover {
+        background: #87CEEB;
+        color: white;
+    }
+
+    /* Badge styling */
+    .badge {
+        font-size: 9px;
+        padding: 2px 6px;
+        font-weight: 500;
+    }
+
+    /* Add button */
+    .button-min-primary {
+        background: #87CEEB;
+        border: none;
+        color: white;
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 3px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+    .button-min-primary:hover {
+        background: #5DADE2;
+        color: white;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-3">
+    <!-- Page Header -->
+    <div class="py-3 d-flex justify-content-between align-items-center">
+        <h2 class="text-lg font-medium">Leave Policies</h2>
+        <a href="{% url 'policies:leave_policy_create' %}" class="button-min-primary">
+            <div>
+                <i class="fa fa-plus me-1"></i>Add
+            </div>
+        </a>
+    </div>
+
+    <div class="table-container">
+        {% if policies %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Policy Name</th>
+                    <th>Description</th>
+                    <th>Min Employment (Months)</th>
+                    <th>Probation Applicable</th>
+                    <th>Requires Approval</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for policy in policies %}
+                <tr>
+                    <td><strong>{{ policy.name }}</strong></td>
+                    <td>{{ policy.description|truncatewords:10|default:"—" }}</td>
+                    <td>{{ policy.min_employment_months }}</td>
+                    <td>
+                        {% if policy.applicable_to_probation %}
+                            <span class="badge bg-success">Yes</span>
+                        {% else %}
+                            <span class="badge bg-secondary">No</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if policy.requires_approval %}
+                            <span class="badge bg-warning">Required</span>
+                        {% else %}
+                            <span class="badge bg-success">Auto</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if policy.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ policy.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        <a href="{% url 'policies:leave_policy_edit' policy.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi-pencil"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="p-4 text-center text-muted">
+            <i class="bi-inbox fs-1 d-block mb-2" style="font-size: 32px;"></i>
+            <p style="font-size: 11px;">No leave policies configured yet.</p>
+            <a href="{% url 'policies:leave_policy_create' %}" class="button-min-primary mt-2">
+                <i class="fa fa-plus me-1"></i>Add First Policy
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

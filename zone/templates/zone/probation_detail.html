@@ -1,0 +1,377 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ probation.worker.get_full_name }} - Probation Details{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.back-link {
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.back-link:hover {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.worker-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.worker-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.worker-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #3b82f6;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.worker-info h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 4px 0;
+}
+
+.worker-meta {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 2px 0;
+}
+
+.status-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid #f3f4f6;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-probation { background: #dbeafe; color: #1d4ed8; }
+.status-extended { background: #fef3c7; color: #d97706; }
+.status-passed { background: #d1fae5; color: #065f46; }
+.status-failed { background: #fee2e2; color: #dc2626; }
+.status-pending_extension { background: #e0e7ff; color: #3730a3; }
+
+.days-remaining {
+    font-size: 14px;
+    color: #374151;
+    font-weight: 500;
+}
+
+.info-section {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f9fafb;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.info-value {
+    font-size: 14px;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+.actions-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.action-btn {
+    padding: 12px;
+    border: 1px solid;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.btn-primary { background: #3b82f6; color: white; border-color: #3b82f6; }
+.btn-primary:hover { background: #2563eb; border-color: #2563eb; color: white; text-decoration: none; }
+
+.btn-success { background: #10b981; color: white; border-color: #10b981; }
+.btn-success:hover { background: #059669; border-color: #059669; color: white; text-decoration: none; }
+
+.btn-warning { background: #f59e0b; color: white; border-color: #f59e0b; }
+.btn-warning:hover { background: #d97706; border-color: #d97706; color: white; text-decoration: none; }
+
+.btn-danger { background: #ef4444; color: white; border-color: #ef4444; }
+.btn-danger:hover { background: #dc2626; border-color: #dc2626; color: white; text-decoration: none; }
+
+.btn-outline { background: white; color: #6b7280; border-color: #d1d5db; }
+.btn-outline:hover { background: #f9fafb; color: #374151; border-color: #9ca3af; text-decoration: none; }
+
+.timeline {
+    margin-top: 8px;
+}
+
+.timeline-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.timeline-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.timeline-date {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.timeline-content {
+    font-size: 13px;
+    color: #4b5563;
+}
+
+.notes-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 12px;
+}
+
+.notes-content {
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.worker-name-link {
+    color: #3b82f6;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.worker-name-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .actions-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .worker-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .status-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="{% url 'zone:probation_list' %}" class="back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to List
+    </a>
+
+    <!-- Worker Card -->
+    <div class="worker-card">
+        <div class="worker-header">
+            <div class="worker-avatar">
+                {{ probation.worker.first_name|first|upper }}{{ probation.worker.last_name|first|upper }}
+            </div>
+            <div class="worker-info">
+                <h2><a href="{% url 'zone:worker_detail' probation.worker.id %}" class="worker-name-link">{{ probation.worker.get_full_name }}</a></h2>
+                <div class="worker-meta">{{ probation.worker.worker_id|default:"No ID" }} • {{ probation.worker.position.name|default:"No Position" }}</div>
+                <div class="worker-meta">{{ probation.worker.zone.name }}</div>
+            </div>
+        </div>
+        
+        <div class="status-row">
+            <span class="status-badge status-{{ probation.worker.status }}">
+                {{ probation.worker.get_status_display }}
+            </span>
+            {% if probation.worker.status == 'probation' or probation.worker.status == 'extended' %}
+                {% with days=probation.calculated_days_remaining %}
+                    <span class="days-remaining">
+                        {% if days < 0 %}
+                            {{ days|add:"-1"|stringformat:"d"|slice:"1:" }} days overdue
+                        {% elif days == 0 %}
+                            Ends today
+                        {% else %}
+                            {{ days }} days remaining
+                        {% endif %}
+                    </span>
+                {% endwith %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Basic Info -->
+    <div class="info-section">
+        <div class="section-title">
+            <i class="bi bi-info-circle"></i>
+            Probation Details
+        </div>
+        <div class="info-row">
+            <span class="info-label">Start Date</span>
+            <span class="info-value">{{ probation.start_date|date:"d/m/Y" }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">End Date</span>
+            <span class="info-value">{{ probation.get_end_date|date:"d/m/Y" }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Duration</span>
+            <span class="info-value">{{ probation.get_total_duration_days }} days</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Created By</span>
+            <span class="info-value">{{ probation.created_by.get_full_name|default:"System" }}</span>
+        </div>
+    </div>
+
+    <!-- Extensions -->
+    {% if extensions %}
+    <div class="info-section">
+        <div class="section-title">
+            <i class="bi bi-clock-history"></i>
+            Extensions ({{ extensions.count }})
+        </div>
+        <div class="timeline">
+            {% for extension in extensions %}
+            <div class="timeline-item">
+                <div class="timeline-header">
+                    <span class="timeline-title">+{{ extension.extension_duration_days }} days</span>
+                    <span class="timeline-date">{{ extension.created_at|date:"d/m/Y" }}</span>
+                </div>
+                <div class="timeline-content">{{ extension.reason }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Notes -->
+    {% if probation.evaluation_notes %}
+    <div class="info-section">
+        <div class="section-title">
+            <i class="bi bi-journal-text"></i>
+            Notes
+        </div>
+        <div class="notes-content">{{ probation.evaluation_notes }}</div>
+    </div>
+    {% endif %}
+
+    <!-- Actions -->
+    {% if probation.worker.status == 'probation' or probation.worker.status == 'extended' %}
+        {% if request.user.is_staff or request.user.is_superuser %}
+        <div class="actions-section">
+            <a href="{% url 'zone:probation_workflow_action' probation.id 'pass' %}" class="action-btn btn-success">
+                <i class="bi bi-check"></i> Pass
+            </a>
+            <a href="{% url 'zone:probation_workflow_action' probation.id 'fail' %}" class="action-btn btn-danger">
+                <i class="bi bi-x"></i> Fail
+            </a>
+            {% if probation.can_be_extended %}
+            <a href="{% url 'zone:probation_extend' probation.id %}" class="action-btn btn-warning">
+                <i class="bi bi-clock"></i> Extend
+            </a>
+            {% endif %}
+        </div>
+
+        {% endif %}
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.toast, .alert:not(.alert-permanent)').forEach(el => el.remove());
+});
+</script>
+{% endblock %}

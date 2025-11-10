@@ -1,0 +1,158 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}HR Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3" style="background-color: #f8f9fa; border: 1px solid #dee2e6; padding: 8px 12px;">
+    <h2 class="mb-0">HR Dashboard</h2>
+    <div class="btn-group">
+        <a href="{% url 'hr:employee_create' %}" class="btn btn-primary">Add Employee</a>
+        <a href="{% url 'hr:employee_import' %}" class="btn btn-outline-primary">Import</a>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                Export
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'hr:employee_export' %}?format=csv">CSV Export</a></li>
+                <li><a class="dropdown-item" href="{% url 'hr:employee_export' %}?format=excel">Excel Export</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="mb-1">{{ stats.total_employees }}</h4>
+                <small class="text-muted">Total Employees</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="mb-1">{{ stats.active_employees }}</h4>
+                <small class="text-muted">Active Employees</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="mb-1">{{ stats.total_departments }}</h4>
+                <small class="text-muted">Departments</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h4 class="mb-1">{{ stats.total_positions }}</h4>
+                <small class="text-muted">Positions</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Employees -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Recent Employees</span>
+                    <a href="{% url 'hr:employee_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Position</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for employee in recent_employees %}
+                        <tr>
+                            <td>{{ employee.employee_id }}</td>
+                            <td>
+                                <a href="{% url 'hr:employee_detail' employee.pk %}" class="text-decoration-none">
+                                    {{ employee.get_full_name }}
+                                </a>
+                            </td>
+                            <td>No Department</td>
+                            <td>No Position</td>
+                            <td>
+                                <span class="badge {% if employee.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {{ employee.get_employment_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'hr:employee_detail' employee.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">No employees found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Department Statistics -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                Department Overview
+            </div>
+            <div class="card-body">
+                {% for dept in department_stats %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="small">{{ dept.name }}</span>
+                    <span class="badge bg-primary">{{ dept.employee_count }}</span>
+                </div>
+                {% empty %}
+                <p class="text-muted small">No departments found</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card mt-3">
+            <div class="card-header">
+                Quick Actions
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'hr:employee_create' %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-person-plus"></i> Add New Employee
+                    </a>
+                    <a href="/admin/hr/department/" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-diagram-2"></i> Manage Departments
+                    </a>
+                    <a href="/admin/hr/position/" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-award"></i> Manage Positions
+                    </a>
+                    <a href="{% url 'hr:employee_import' %}" class="btn btn-outline-info btn-sm">
+                        <i class="bi bi-upload"></i> Import Employees
+                    </a>
+                    <a href="{% url 'hr:worker_reports_dashboard' %}" class="btn btn-outline-success btn-sm">
+                        <i class="bi bi-file-earmark-text"></i> Worker Reports
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

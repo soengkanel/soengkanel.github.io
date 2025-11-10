@@ -1,0 +1,567 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Import Workers - Zone Management{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Minimal Import UI Styles */
+.import-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.import-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.import-header h1 {
+    font-size: 2rem;
+    font-weight: 300;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.import-header p {
+    color: #718096;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Drag & Drop File Upload Area */
+.file-drop-area {
+    position: relative;
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+    padding: 60px 40px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background: #fafafa;
+    cursor: pointer;
+    margin-bottom: 30px;
+}
+
+.file-drop-area:hover,
+.file-drop-area.dragover {
+    border-color: #4299e1;
+    background: #ebf8ff;
+    transform: translateY(-2px);
+}
+
+.file-drop-area.has-file {
+    border-color: #48bb78;
+    background: #f0fff4;
+}
+
+.file-upload-icon {
+    font-size: 3rem;
+    color: #a0aec0;
+    margin-bottom: 16px;
+    transition: color 0.3s ease;
+}
+
+.file-drop-area:hover .file-upload-icon,
+.file-drop-area.dragover .file-upload-icon {
+    color: #4299e1;
+}
+
+.file-drop-area.has-file .file-upload-icon {
+    color: #48bb78;
+}
+
+.file-upload-text {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 8px;
+}
+
+.file-upload-hint {
+    font-size: 0.875rem;
+    color: #a0aec0;
+    margin-bottom: 20px;
+}
+
+.file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-info {
+    display: none;
+    background: white;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.file-info.show {
+    display: block;
+}
+
+.file-name {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 4px;
+}
+
+.file-size {
+    font-size: 0.875rem;
+    color: #718096;
+}
+
+.remove-file {
+    background: none;
+    border: none;
+    color: #e53e3e;
+    font-size: 0.875rem;
+    cursor: pointer;
+    float: right;
+    margin-top: -4px;
+}
+
+.remove-file:hover {
+    color: #c53030;
+}
+
+/* Options */
+.import-options {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 30px;
+    border: 1px solid #e2e8f0;
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f7fafc;
+}
+
+.option-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.option-checkbox {
+    width: 20px;
+    height: 20px;
+    margin-right: 16px;
+    accent-color: #4299e1;
+}
+
+.option-label {
+    font-weight: 500;
+    color: #2d3748;
+    margin-bottom: 4px;
+}
+
+.option-description {
+    font-size: 0.875rem;
+    color: #718096;
+    line-height: 1.4;
+}
+
+/* Action Buttons */
+.import-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btn-import {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 16px 32px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 150px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-import:hover {
+    background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(65, 153, 225, 0.3);
+}
+
+.btn-import:disabled {
+    background: #e2e8f0;
+    color: #a0aec0;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-cancel {
+    background: transparent;
+    color: #718096;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px 32px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-cancel:hover {
+    background: #f7fafc;
+    border-color: #cbd5e0;
+    color: #4a5568;
+    text-decoration: none;
+}
+
+/* Loading State */
+.loading-spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff40;
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+.btn-import.loading .loading-spinner {
+    display: inline-block;
+}
+
+.btn-import.loading {
+    pointer-events: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Progress Bar */
+.upload-progress {
+    display: none;
+    width: 100%;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+.upload-progress.show {
+    display: block;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4299e1 0%, #48bb78 100%);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Messages */
+.message {
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.message-success {
+    background: #f0fff4;
+    border: 1px solid #9ae6b4;
+    color: #22543d;
+}
+
+.message-error {
+    background: #fed7d7;
+    border: 1px solid #feb2b2;
+    color: #742a2a;
+}
+
+.message-info {
+    background: #ebf8ff;
+    border: 1px solid #90cdf4;
+    color: #2a4365;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .import-container {
+        padding: 16px;
+    }
+    
+    .file-drop-area {
+        padding: 40px 20px;
+    }
+    
+    .import-actions {
+        flex-direction: column;
+    }
+    
+    .btn-import,
+    .btn-cancel {
+        width: 100%;
+    }
+}
+
+/* Animation for smooth transitions */
+* {
+    box-sizing: border-box;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="import-container fade-in">
+    <!-- Header -->
+    <div class="import-header">
+        <h1>Import Workers</h1>
+        <p>Upload your Excel file to import worker data with images</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message message-{{ message.tags|default:'info' }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Import Form -->
+    <form method="post" enctype="multipart/form-data" id="importForm">
+        {% csrf_token %}
+        
+        <!-- File Upload Area -->
+        <div class="file-drop-area" id="fileDropArea">
+            <div class="file-upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <div class="file-upload-text">Choose Excel file or drag it here</div>
+            <div class="file-upload-hint">Supports .xlsx and .xls files up to 100MB</div>
+            <input type="file" 
+                   name="excel_file" 
+                   id="excelFile" 
+                   class="file-input"
+                   accept=".xlsx,.xls" 
+                   required>
+            
+            <!-- File Info (shown when file is selected) -->
+            <div class="file-info" id="fileInfo">
+                <div class="file-name" id="fileName"></div>
+                <div class="file-size" id="fileSize"></div>
+                <button type="button" class="remove-file" id="removeFile">
+                    <i class="fas fa-times"></i> Remove
+                </button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
+        <!-- Upload Progress -->
+        <div class="upload-progress" id="uploadProgress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Import Options -->
+        <div class="import-options">
+            <div class="option-item">
+                <input type="checkbox" 
+                       name="update_existing" 
+                       id="updateExisting" 
+                       class="option-checkbox"
+                       {{ form.update_existing.value|yesno:"checked," }}>
+                <div>
+                    <div class="option-label">Update existing workers</div>
+                    <div class="option-description">Update workers with matching names instead of creating duplicates</div>
+                </div>
+            </div>
+            
+            <div class="option-item">
+                <input type="checkbox" 
+                       name="skip_duplicates" 
+                       id="skipDuplicates" 
+                       class="option-checkbox"
+                       {{ form.skip_duplicates.value|yesno:"checked," }}>
+                <div>
+                    <div class="option-label">Skip duplicate workers</div>
+                    <div class="option-description">Skip workers that already exist in the system</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="import-actions">
+            <button type="submit" class="btn-import" id="importButton" disabled>
+                <div class="loading-spinner"></div>
+                <span class="button-text">Upload & Preview</span>
+            </button>
+            <a href="{% url 'zone:worker_list' %}" class="btn-cancel">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileDropArea = document.getElementById('fileDropArea');
+    const fileInput = document.getElementById('excelFile');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const removeFileBtn = document.getElementById('removeFile');
+    const importButton = document.getElementById('importButton');
+    const importForm = document.getElementById('importForm');
+    const uploadProgress = document.getElementById('uploadProgress');
+    const progressBar = document.getElementById('progressBar');
+
+    // File size formatter
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Handle file selection
+    function handleFileSelect(file) {
+        if (file) {
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.classList.add('show');
+            fileDropArea.classList.add('has-file');
+            importButton.disabled = false;
+            
+            // Update upload area text
+            fileDropArea.querySelector('.file-upload-text').textContent = 'File selected';
+            fileDropArea.querySelector('.file-upload-hint').textContent = 'Click to change file or drag new file here';
+        }
+    }
+
+    // Handle file removal
+    function clearFile() {
+        fileInput.value = '';
+        fileInfo.classList.remove('show');
+        fileDropArea.classList.remove('has-file');
+        importButton.disabled = true;
+        
+        // Reset upload area text
+        fileDropArea.querySelector('.file-upload-text').textContent = 'Choose Excel file or drag it here';
+        fileDropArea.querySelector('.file-upload-hint').textContent = 'Supports .xlsx and .xls files up to 100MB';
+    }
+
+    // File input change event
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            handleFileSelect(file);
+        }
+    });
+
+    // Remove file button
+    removeFileBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        clearFile();
+    });
+
+    // Drag and drop events
+    fileDropArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        fileDropArea.classList.add('dragover');
+    });
+
+    fileDropArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        fileDropArea.classList.remove('dragover');
+    });
+
+    fileDropArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        fileDropArea.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            // Check file type
+            if (file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls')) {
+                fileInput.files = files;
+                handleFileSelect(file);
+            } else {
+                alert('Please select an Excel file (.xlsx or .xls)');
+            }
+        }
+    });
+
+    // Form submission
+    importForm.addEventListener('submit', function(e) {
+        const file = fileInput.files[0];
+        if (!file) {
+            e.preventDefault();
+            alert('Please select an Excel file first');
+            return;
+        }
+
+        // Show loading state
+        importButton.classList.add('loading');
+        importButton.disabled = true;
+        
+        // Simulate upload progress (since we can't track real progress easily)
+        uploadProgress.classList.add('show');
+        let progress = 0;
+        const progressInterval = setInterval(function() {
+            progress += Math.random() * 15;
+            if (progress > 90) progress = 90;
+            progressBar.style.width = progress + '%';
+        }, 100);
+
+        // Clean up on form submission
+        setTimeout(function() {
+            clearInterval(progressInterval);
+            progressBar.style.width = '100%';
+        }, 2000);
+    });
+
+    // Prevent default drag behaviors on document
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        document.addEventListener(eventName, function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+<div class=" rounded-lg border border-gray-200 mt-4">
+    <div class="border-b border-gray-200 py-2 px-3 bg-gray-50 rounded-t-lg">
+        <h4 class="text-[16px] font-semibold"><i class="fa fa-phone me-2"></i>Contact Information</h4>
+    </div>
+    <div class="p-3">
+        <div class="grid grid-cols-1 gap-3">
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-gray-600">Phone Number</label>
+                <div class="p-2 rounded border border-gray-200 bg-gray-50 text-sm">{{ worker.phone_number|default:"Not provided" }}</div>
+            </div>
+        </div>
+    </div>
+</div>

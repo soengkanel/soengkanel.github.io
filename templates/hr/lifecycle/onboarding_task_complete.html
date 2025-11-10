@@ -1,0 +1,195 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    .form-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 20px;
+    }
+
+    .task-info {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    .task-info-row {
+        display: flex;
+        padding: 6px 0;
+    }
+
+    .task-info-label {
+        font-size: 12px;
+        color: #6b7280;
+        width: 120px;
+        flex-shrink: 0;
+    }
+
+    .task-info-value {
+        font-size: 13px;
+        color: #1a1a1a;
+        font-weight: 500;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    .form-control, .form-select {
+        font-size: 13px;
+    }
+
+    .btn-group-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>{{ title }}</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="form-card">
+                <!-- Task Information -->
+                <div class="task-info">
+                    <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">
+                        {% trans "Task Information" %}
+                    </h3>
+                    <div class="task-info-row">
+                        <div class="task-info-label">{% trans "Task:" %}</div>
+                        <div class="task-info-value">{{ task.title }}</div>
+                    </div>
+                    {% if task.description %}
+                    <div class="task-info-row">
+                        <div class="task-info-label">{% trans "Description:" %}</div>
+                        <div class="task-info-value">{{ task.description }}</div>
+                    </div>
+                    {% endif %}
+                    <div class="task-info-row">
+                        <div class="task-info-label">{% trans "Type:" %}</div>
+                        <div class="task-info-value">{{ task.get_task_type_display }}</div>
+                    </div>
+                    <div class="task-info-row">
+                        <div class="task-info-label">{% trans "Priority:" %}</div>
+                        <div class="task-info-value">{{ task.get_priority_display }}</div>
+                    </div>
+                    <div class="task-info-row">
+                        <div class="task-info-label">{% trans "Due Date:" %}</div>
+                        <div class="task-info-value">{{ task.due_date|date:"M d, Y" }}</div>
+                    </div>
+                    {% if task.estimated_hours %}
+                    <div class="task-info-row">
+                        <div class="task-info-label">{% trans "Est. Hours:" %}</div>
+                        <div class="task-info-value">{{ task.estimated_hours }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Completion Form -->
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Completion Notes -->
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.completion_notes.id_for_label }}">
+                            {{ form.completion_notes.label }}
+                        </label>
+                        {{ form.completion_notes }}
+                        {% if form.completion_notes.errors %}
+                            <div class="text-danger small mt-1">{{ form.completion_notes.errors.0 }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            {% trans "Describe what was done to complete this task" %}
+                        </small>
+                    </div>
+
+                    <!-- Actual Hours -->
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.actual_hours.id_for_label }}">
+                            {{ form.actual_hours.label }}
+                        </label>
+                        {{ form.actual_hours }}
+                        {% if form.actual_hours.errors %}
+                            <div class="text-danger small mt-1">{{ form.actual_hours.errors.0 }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            {% trans "How many hours did it take to complete this task?" %}
+                        </small>
+                    </div>
+
+                    <!-- Attachments -->
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.attachments.id_for_label }}">
+                            {{ form.attachments.label }}
+                        </label>
+                        {{ form.attachments }}
+                        {% if form.attachments.errors %}
+                            <div class="text-danger small mt-1">{{ form.attachments.errors.0 }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            {% trans "Optional: Upload any relevant documents or screenshots" %}
+                        </small>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="btn-group-actions">
+                        <button type="submit" class="btn btn-success">
+                            ✓ {% trans "Mark as Completed" %}
+                        </button>
+                        <a href="{% url 'hr:onboarding_detail' task.onboarding.pk %}" class="btn btn-secondary">
+                            {% trans "Cancel" %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="col-lg-4">
+            <div class="form-card">
+                <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">
+                    💡 {% trans "Completion Tips" %}
+                </h3>
+                <ul style="font-size: 12px; color: #6b7280; padding-left: 20px;">
+                    <li class="mb-2">{% trans "Provide detailed notes about what was accomplished" %}</li>
+                    <li class="mb-2">{% trans "Track actual hours to improve future estimates" %}</li>
+                    <li class="mb-2">{% trans "Attach any relevant documents or screenshots" %}</li>
+                    <li class="mb-2">{% trans "This will update the onboarding progress automatically" %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

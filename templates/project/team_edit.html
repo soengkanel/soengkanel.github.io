@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit {{ team.team_name }} - Team Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'project:team_list' %}">Teams</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'project:team_detail' team.id %}">{{ team.team_name }}</a></li>
+                <li class="breadcrumb-item active">Edit</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark-emphasis mb-1">Edit Team</h2>
+        <p class="text-muted mb-0">Update team details and settings</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Team Details</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label">Team Name *</label>
+                                <input type="text" name="team_name" class="form-control" value="{{ team.team_name }}" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Max Members *</label>
+                                <input type="number" name="max_members" class="form-control" value="{{ team.max_members }}" min="1" max="100" required>
+                                <div class="form-text">Current: {{ team.member_count }} members</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Team Type *</label>
+                                <select name="team_type" class="form-select" required>
+                                    {% for value, label in team_types %}
+                                    <option value="{{ value }}" {% if team.team_type == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Status *</label>
+                                <select name="status" class="form-select" required>
+                                    {% for value, label in status_choices %}
+                                    <option value="{{ value }}" {% if team.status == value %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Department</label>
+                                <select name="department" class="form-select">
+                                    <option value="">Select department</option>
+                                    {% for dept in departments %}
+                                    <option value="{{ dept.id }}" {% if team.department_id == dept.id %}selected{% endif %}>{{ dept.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Team Lead</label>
+                            <select name="team_lead" class="form-select">
+                                <option value="">Select team lead</option>
+                                {% for employee in employees %}
+                                <option value="{{ employee.id }}" {% if team.team_lead_id == employee.id %}selected{% endif %}>
+                                    {{ employee.full_name }} - {{ employee.job_title|default:"" }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">The team lead will have special permissions and responsibilities</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="4">{{ team.description|default:"" }}</textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'project:team_detail' team.id %}" class="btn-light-modern">Cancel</a>
+                            <button type="submit" class="btn-primary-modern">
+                                <i class="bi bi-check"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Current Team Info -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-info-circle text-info"></i> Current Team Info
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center mb-3">
+                        <div class="col-6">
+                            <div class="text-muted small">Team Code</div>
+                            <div class="fw-bold">{{ team.team_code }}</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted small">Created</div>
+                            <div class="fw-bold">{{ team.created_at|date:"M d, Y" }}</div>
+                        </div>
+                    </div>
+
+                    <div class="row text-center mb-3">
+                        <div class="col-6">
+                            <div class="text-muted small">Members</div>
+                            <div class="fw-bold">{{ team.member_count }}</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted small">Capacity</div>
+                            <div class="fw-bold">{{ team.max_members }}</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-muted">Team Utilization</span>
+                            <span class="small">{{ team.member_count }}/{{ team.max_members }}</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: {% widthratio team.member_count team.max_members 100 %}%">
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if team.team_lead %}
+                    <div class="mb-3">
+                        <div class="text-muted small mb-1">Current Team Lead</div>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm me-2">{{ team.team_lead.first_name|first|upper }}</div>
+                            <div>
+                                <div class="fw-medium">{{ team.team_lead.full_name }}</div>
+                                <div class="text-muted small">{{ team.team_lead.job_title|default:"Team Lead" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Change Impact -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="bi bi-exclamation-triangle text-warning"></i> Change Impact
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="small">
+                        <div class="mb-2">
+                            <strong>Team Name Changes:</strong>
+                            <ul class="mt-1 mb-0">
+                                <li>Updates all references</li>
+                                <li>Notifies team members</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-2">
+                            <strong>Capacity Changes:</strong>
+                            <ul class="mt-1 mb-0">
+                                <li>Cannot reduce below current member count</li>
+                                <li>May affect future assignments</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-2">
+                            <strong>Status Changes:</strong>
+                            <ul class="mt-1 mb-0">
+                                <li>Inactive teams cannot accept new members</li>
+                                <li>Archived teams are hidden from selection</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-0">
+                            <strong>Team Lead Changes:</strong>
+                            <ul class="mt-1 mb-0">
+                                <li>Transfers management permissions</li>
+                                <li>Updates project assignments</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar-sm {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 10px;
+}
+</style>
+{% endblock %}

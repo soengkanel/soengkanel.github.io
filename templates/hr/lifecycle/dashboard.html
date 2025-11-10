@@ -1,0 +1,507 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Employee Lifecycle Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact & Minimal Design System */
+    body {
+        background: #fafbfc;
+    }
+
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 12px;
+    }
+
+    /* Page Header */
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    /* Statistics Cards */
+    .stats-row {
+        margin-bottom: 12px;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        height: 100%;
+    }
+
+    .stat-number {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .stat-label {
+        font-size: 10px;
+        color: #6b7280;
+        margin: 2px 0 0 0;
+        text-transform: uppercase;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+
+    .stat-card.primary {
+        border-left: 3px solid #3b82f6;
+    }
+
+    .stat-card.success {
+        border-left: 3px solid #10b981;
+    }
+
+    .stat-card.warning {
+        border-left: 3px solid #f59e0b;
+    }
+
+    .stat-card.danger {
+        border-left: 3px solid #ef4444;
+    }
+
+    .stat-card.info {
+        border-left: 3px solid #06b6d4;
+    }
+
+    /* Section Cards */
+    .section-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .section-action {
+        font-size: 11px;
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .section-action:hover {
+        text-decoration: underline;
+    }
+
+    /* Activity List */
+    .activity-item {
+        padding: 8px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-name {
+        font-size: 12px;
+        font-weight: 500;
+        color: #1a1a1a;
+        margin-bottom: 2px;
+    }
+
+    .activity-name a {
+        color: #1a1a1a;
+        text-decoration: none;
+    }
+
+    .activity-name a:hover {
+        color: #3b82f6;
+    }
+
+    .activity-meta {
+        font-size: 10px;
+        color: #6b7280;
+    }
+
+    .activity-badge {
+        display: inline-block;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 9px;
+        font-weight: 500;
+        margin-left: 6px;
+        text-transform: uppercase;
+    }
+
+    .badge-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .badge-in_progress, .badge-in-progress {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .badge-completed {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .badge-approved {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .badge-scheduled {
+        background: #e0e7ff;
+        color: #3730a3;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 20px;
+        color: #9ca3af;
+        font-size: 11px;
+    }
+
+    /* Quick Links */
+    .quick-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .quick-link {
+        display: block;
+        padding: 10px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #374151;
+        transition: all 0.2s;
+        text-align: center;
+    }
+
+    .quick-link:hover {
+        background: white;
+        border-color: #3b82f6;
+        color: #3b82f6;
+    }
+
+    .quick-link-text {
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    /* Progress bars */
+    .progress {
+        height: 4px;
+        background: #f3f4f6;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        transition: width 0.3s;
+    }
+
+    /* Small text */
+    small {
+        font-size: 11px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>Employee Lifecycle Dashboard</h2>
+    </div>
+
+    <!-- Overview Statistics -->
+    <div class="row stats-row g-3">
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card primary">
+                <p class="stat-number">{{ total_onboarding }}</p>
+                <p class="stat-label">Total Onboarding</p>
+                <small class="text-muted">{{ active_onboarding }} active</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card info">
+                <p class="stat-number">{{ total_probation }}</p>
+                <p class="stat-label">Probation Periods</p>
+                <small class="text-muted">{{ active_probation }} active</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card success">
+                <p class="stat-number">{{ total_promotions_transfers }}</p>
+                <p class="stat-label">Promotions/Transfers</p>
+                <small class="text-muted">{{ pending_approval }} pending</small>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="stat-card warning">
+                <p class="stat-number">{{ total_exits }}</p>
+                <p class="stat-label">Exit Interviews</p>
+                <small class="text-muted">{{ scheduled_exits }} scheduled</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Statistics -->
+    <div class="row g-3">
+        <div class="col-lg-3 col-md-6">
+            <div class="section-card">
+                <h3 class="section-title" style="font-size: 12px; margin-bottom: 8px;">Onboarding Status</h3>
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small>Active</small>
+                        <small class="fw-bold">{{ active_onboarding }}</small>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-primary" style="width: {% widthratio active_onboarding total_onboarding 100 %}%"></div>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small>Completed</small>
+                        <small class="fw-bold">{{ completed_onboarding }}</small>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" style="width: {% widthratio completed_onboarding total_onboarding 100 %}%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <small class="text-danger">Overdue</small>
+                        <small class="fw-bold text-danger">{{ overdue_onboarding }}</small>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-danger" style="width: {% widthratio overdue_onboarding total_onboarding 100 %}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="section-card">
+                <h3 class="section-title" style="font-size: 12px; margin-bottom: 8px;">Probation Status</h3>
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small>Active</small>
+                        <small class="fw-bold">{{ active_probation }}</small>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-info" style="width: {% widthratio active_probation total_probation 100 %}%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <small>Completed</small>
+                        <small class="fw-bold">{{ completed_probation }}</small>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" style="width: {% widthratio completed_probation total_probation 100 %}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="section-card">
+                <h3 class="section-title" style="font-size: 12px; margin-bottom: 8px;">Promotion/Transfer</h3>
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small>Pending</small>
+                        <small class="fw-bold">{{ pending_approval }}</small>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-warning" style="width: {% widthratio pending_approval total_promotions_transfers 100 %}%"></div>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small>Approved</small>
+                        <small class="fw-bold">{{ approved_pending_implementation }}</small>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-info" style="width: {% widthratio approved_pending_implementation total_promotions_transfers 100 %}%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <small>Implemented</small>
+                        <small class="fw-bold">{{ implemented }}</small>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" style="width: {% widthratio implemented total_promotions_transfers 100 %}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="section-card">
+                <h3 class="section-title" style="font-size: 12px; margin-bottom: 8px;">Exit Management</h3>
+                <div class="mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small>Scheduled</small>
+                        <small class="fw-bold">{{ scheduled_exits }}</small>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-warning" style="width: {% widthratio scheduled_exits total_exits 100 %}%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <small>Completed</small>
+                        <small class="fw-bold">{{ completed_exits }}</small>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" style="width: {% widthratio completed_exits total_exits 100 %}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="row g-3">
+        <div class="col-lg-4">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3 class="section-title">Recent Onboarding</h3>
+                    <a href="{% url 'hr:onboarding_list' %}" class="section-action">View All →</a>
+                </div>
+                {% if recent_onboarding %}
+                    {% for onboarding in recent_onboarding %}
+                        <div class="activity-item">
+                            <div class="activity-name">
+                                <a href="{% url 'hr:onboarding_detail' onboarding.pk %}">{{ onboarding.employee.full_name }}</a>
+                                <span class="activity-badge badge-{{ onboarding.status }}">{{ onboarding.get_status_display }}</span>
+                            </div>
+                            <div class="activity-meta">
+                                {{ onboarding.progress_percentage }}% complete • Started {{ onboarding.start_date|date:"M d, Y" }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        No onboarding processes yet
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3 class="section-title">Recent Promotions/Transfers</h3>
+                    <a href="{% url 'hr:promotion_transfer_list' %}" class="section-action">View All →</a>
+                </div>
+                {% if recent_promotions %}
+                    {% for promotion in recent_promotions %}
+                        <div class="activity-item">
+                            <div class="activity-name">
+                                <a href="{% url 'hr:promotion_transfer_detail' promotion.pk %}">{{ promotion.employee.full_name }}</a>
+                                <span class="activity-badge badge-{{ promotion.status }}">{{ promotion.get_status_display }}</span>
+                            </div>
+                            <div class="activity-meta">
+                                {{ promotion.get_change_type_display }} • {{ promotion.new_position.name }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        No promotions/transfers yet
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="section-card">
+                <div class="section-header">
+                    <h3 class="section-title">Recent Exit Interviews</h3>
+                    <a href="{% url 'hr:exit_interview_list' %}" class="section-action">View All →</a>
+                </div>
+                {% if recent_exits %}
+                    {% for exit in recent_exits %}
+                        <div class="activity-item">
+                            <div class="activity-name">
+                                <a href="{% url 'hr:exit_interview_detail' exit.pk %}">{{ exit.employee.full_name }}</a>
+                                <span class="activity-badge badge-{{ exit.status }}">{{ exit.get_status_display }}</span>
+                            </div>
+                            <div class="activity-meta">
+                                {{ exit.get_exit_reason_display }} • Last day: {{ exit.last_working_day|date:"M d, Y" }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        No exit interviews yet
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="section-card">
+        <h3 class="section-title">Quick Actions</h3>
+        <div class="quick-links">
+            <a href="{% url 'hr:onboarding_create' %}" class="quick-link">
+                <div class="quick-link-text">Create Onboarding</div>
+            </a>
+            <a href="{% url 'hr:probation_create' %}" class="quick-link">
+                <div class="quick-link-text">Start Probation</div>
+            </a>
+            <a href="{% url 'hr:promotion_transfer_create' %}" class="quick-link">
+                <div class="quick-link-text">New Promotion/Transfer</div>
+            </a>
+            <a href="{% url 'hr:exit_interview_create' %}" class="quick-link">
+                <div class="quick-link-text">Schedule Exit Interview</div>
+            </a>
+            <a href="{% url 'hr:onboarding_list' %}" class="quick-link">
+                <div class="quick-link-text">All Onboarding</div>
+            </a>
+            <a href="{% url 'hr:probation_list' %}" class="quick-link">
+                <div class="quick-link-text">All Probations</div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

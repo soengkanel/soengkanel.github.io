@@ -1,0 +1,595 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Audit Logs{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Compact audit log styles */
+.audit-container {
+    padding: 12px;
+    max-width: 100%;
+    margin: 0;
+}
+
+.audit-header {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.audit-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.audit-subtitle {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.quick-action-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Compact stats */
+.stats-compact {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 8px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-item-compact {
+    text-align: center;
+    padding: 4px 8px;
+}
+
+.stat-number-compact {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+}
+
+.stat-label-compact {
+    font-size: 10px;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin: 2px 0 0 0;
+}
+
+/* Compact filters */
+.filters-compact {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: end;
+    margin-bottom: 12px;
+}
+
+.filter-group-compact {
+    display: flex;
+    flex-direction: column;
+    min-width: 120px;
+}
+
+.filter-label-compact {
+    font-size: 10px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 2px;
+}
+
+.filter-input-compact, .filter-select-compact {
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 12px;
+    background: white;
+    height: 32px;
+}
+
+.filter-input-compact:focus, .filter-select-compact:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.filter-actions-compact {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 32px;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    color: white;
+}
+
+.btn-outline {
+    background: white;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.btn-outline:hover {
+    background: #f9fafb;
+    color: #374151;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+    color: white;
+}
+
+/* Compact logs table */
+.logs-section {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.logs-table th {
+    background: #f9fafb;
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.logs-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 12px;
+    vertical-align: top;
+}
+
+.logs-table tr:hover {
+    background: #f9fafb;
+}
+
+.logs-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Compact action badges */
+.action-badge {
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.action-create { background: #dcfce7; color: #166534; }
+.action-update { background: #dbeafe; color: #1e40af; }
+.action-delete { background: #fee2e2; color: #991b1b; }
+.action-login { background: #f0f9ff; color: #0c4a6e; }
+.action-logout { background: #fef3c7; color: #92400e; }
+
+/* Compact user info */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.user-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    font-size: 9px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-name {
+    font-weight: 500;
+    color: #1f2937;
+    font-size: 12px;
+}
+
+/* Compact timestamp */
+.timestamp {
+    color: #6b7280;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+/* Compact description */
+.description {
+    color: #374151;
+    line-height: 1.3;
+    font-size: 12px;
+}
+
+.object-name {
+    font-weight: 500;
+    color: #1f2937;
+    font-size: 12px;
+}
+
+/* Compact changes details */
+.changes-detail {
+    font-size: 10px;
+    color: #6b7280;
+    margin-top: 2px;
+    font-style: italic;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.empty-icon {
+    font-size: 48px;
+    color: #d1d5db;
+    margin-bottom: 16px;
+}
+
+/* Compact pagination */
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+.pagination {
+    display: flex;
+    gap: 2px;
+}
+
+.pagination a, .pagination span {
+    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #374151;
+    font-size: 12px;
+}
+
+.pagination a:hover {
+    background: #f3f4f6;
+}
+
+.pagination .current {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .audit-container {
+        padding: 16px;
+    }
+    
+    .filters-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .filter-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .logs-table {
+        font-size: 12px;
+    }
+    
+    .logs-table th, .logs-table td {
+        padding: 8px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="audit-container">
+    <!-- Compact Header -->
+    <div class=" flex py-2 justify-between">
+        <div>
+            <h1 class="audit-title">
+                <i class="bi bi-shield-check"></i>
+                Audit Logs
+            </h1>
+            <p class="audit-subtitle mt-1">{{ stats.total_logs|default:0 }} total • {{ stats.today_logs|default:0 }} today • {{ stats.active_users|default:0 }} active users</p>
+        </div>
+        <div class="header-actions">
+           
+            
+            <a href="{% url 'audit_management:clear_simple_logs' %}" class="button-min-danger">
+                <div>
+                    <i class="bi bi-trash"></i>
+                    Clear
+                </div>
+            </a>
+            <a href="{% url 'audit_management:export_simple_logs' %}?{{ request.GET.urlencode }}" class="button-min-primary">
+                <div>
+                    <i class="bi bi-download"></i>
+                    Export
+                </div>
+            </a>
+            <a href="{% url 'audit_management:audit_models_settings' %}" class="button-min-default h-9 flex items-center">
+                <div class="mt-1">
+                    <i class="bi bi-gear"></i>
+                        Models
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Compact Filters -->
+    <div class="filters-compact">
+        <form method="get">
+            <div class="filters-row">
+                <div class="filter-group-compact">
+                    <label class="filter-label-compact">Search</label>
+                    <input type="text" name="search" value="{{ current_filters.search }}" 
+                           placeholder="Search..." class="filter-input-compact">
+                </div>
+                
+                <div class="filter-group-compact">
+                    <label class="filter-label-compact">User</label>
+                    <select name="user" class="filter-select-compact">
+                        <option value="">All Users</option>
+                        {% for user in users %}
+                        <option value="{{ user.id }}" {% if current_filters.user == user.id|stringformat:"s" %}selected{% endif %}>
+                            {{ user.get_full_name|default:user.username|truncatechars:15 }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group-compact">
+                    <label class="filter-label-compact">Action</label>
+                    <select name="action" class="filter-select-compact">
+                        <option value="">All</option>
+                        {% for action_code, action_name in actions %}
+                        <option value="{{ action_code }}" {% if current_filters.action == action_code %}selected{% endif %}>
+                            {{ action_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group-compact">
+                    <label class="filter-label-compact">Model</label>
+                    <select name="model" class="filter-select-compact">
+                        <option value="">All</option>
+                        {% for model in models %}
+                        <option value="{{ model }}" {% if current_filters.model == model %}selected{% endif %}>
+                            {{ model }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group-compact">
+                    <label class="filter-label-compact">From</label>
+                    <input type="date" name="start_date" value="{{ current_filters.start_date }}" class="filter-input-compact">
+                </div>
+                
+                <div class="filter-group-compact">
+                    <label class="filter-label-compact">To</label>
+                    <input type="date" name="end_date" value="{{ current_filters.end_date }}" class="filter-input-compact">
+                </div>
+            </div>
+            
+            <div class="filter-actions-compact">
+                <button type="submit" class="button-min-primary">
+                   <div>
+                    <i class="bi bi-search me-1"></i>
+                    Filter
+                   </div>
+                </button>
+                
+                <a href="{% url 'audit_management:simple_logs' %}" class="button-min-default">
+                    <i class="bi bi-arrow-clockwise me-1"></i>
+                    Reset
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Logs Table -->
+    <div class="logs-section">
+        {% if page_obj %}
+        <table class="logs-table">
+            <thead>
+                <tr>
+                    <th>When</th>
+                    <th>Who</th>
+                    <th>Action</th>
+                    <th>What Changed</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in page_obj %}
+                <tr>
+                    <td class="timestamp">
+                        {{ log.timestamp|date:"d/m/Y" }}<br>
+                        {{ log.timestamp|time:"H:i:s" }}
+                    </td>
+                    
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                {% if log.user %}
+                                {{ log.user.first_name|first|default:log.user.username|first|upper }}{{ log.user.last_name|first|upper }}
+                                {% else %}
+                                ?
+                                {% endif %}
+                            </div>
+                            <div class="user-name">
+                                {% if log.user_display == "Unknown User" %}
+                                <span style="color: #dc3545; font-style: italic;">{{ log.user_display }}</span>
+                                {% else %}
+                                {{ log.user_display }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if log.ip_address %}
+                        <div style="font-size: 11px; color: #9ca3af; margin-top: 2px;">{{ log.ip_address }}</div>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        <span class="action-badge action-{{ log.action }}">
+                            {{ log.get_action_display }}
+                        </span>
+                    </td>
+                    
+                    <td>
+                        <div class="description">
+                            <span class="object-name">{{ log.model_name }}</span>
+                            {% if log.object_name %}
+                            <br><small style="color: #6b7280;">"{{ log.object_name }}"</small>
+                            {% endif %}
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <div class="description">{{ log.description }}</div>
+                        {% if log.old_values and log.new_values %}
+                        <div class="changes-detail">
+                            Changed from: {{ log.old_values|truncatechars:50 }}<br>
+                            Changed to: {{ log.new_values|truncatechars:50 }}
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-wrapper">
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                <a href="?page=1&{{ request.GET.urlencode }}">&laquo; First</a>
+                <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}">&lsaquo; Previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}">Next &rsaquo;</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&{{ request.GET.urlencode }}">Last &raquo;</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📋</div>
+            <h3 style="margin: 0 0 8px 0; color: #374151;">No audit logs found</h3>
+            <p style="margin: 0;">{% if current_filters %}No logs match your current filters.{% else %}No audit logs have been recorded yet.{% endif %}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,159 @@
+<!-- Attendance Page Specific Delete Confirmation Modal Component -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>
+                    <span id="deleteModalTitle">Delete Item?</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2" id="deleteModalName" style="font-size: 12px; font-weight: 500;"></p>
+                <p class="text-muted mb-0" style="font-size: 11px;">
+                    <i class="bi bi-info-circle me-1"></i>
+                    This action cannot be undone
+                </p>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex gap-1">
+                    <button type="button" class="button-min-warn py-1" data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <button type="button" class="button-min-danger py-1" id="confirmDeleteBtn">
+                    Delete
+                </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Attendance page specific delete modal functionality - wrapped in IIFE to avoid conflicts
+(function() {
+    let currentDeleteUrl = null;
+
+    function initializeDeleteModal() {
+        console.log('🗑️ DELETE MODAL (ATTENDANCE PAGE): Initializing...');
+        const deleteModalElement = document.getElementById('deleteModal');
+
+        if (!deleteModalElement) {
+            console.error('❌ DELETE MODAL: Modal element not found!');
+            return;
+        }
+
+        const deleteModal = new bootstrap.Modal(deleteModalElement, {
+            backdrop: false,
+            keyboard: true
+        });
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        console.log('✅ DELETE MODAL: Modal initialized');
+
+        // Handle delete button clicks
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.delete-btn')) {
+                e.preventDefault();
+                const button = e.target.closest('.delete-btn');
+
+                const title = button.dataset.deleteTitle || 'Delete Item?';
+                const name = button.dataset.deleteName || '';
+                const url = button.dataset.deleteUrl || button.href;
+
+                console.log('🗑️ DELETE MODAL: Delete button clicked');
+                console.log('🎯 Delete URL:', url);
+                console.log('📝 Item name:', name);
+
+                // Store delete URL
+                currentDeleteUrl = url;
+
+                // Update modal content
+                document.querySelector('#deleteModalTitle').textContent = title;
+                document.getElementById('deleteModalName').textContent = name;
+
+                // Show modal
+                deleteModal.show();
+            }
+        });
+
+        // Handle delete confirmation
+        confirmDeleteBtn.addEventListener('click', function() {
+            console.log('🔥 DELETE MODAL: Confirm delete button clicked');
+
+            if (currentDeleteUrl) {
+                // Get CSRF token
+                function getCSRFToken() {
+                    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                    if (csrfMeta) return csrfMeta.getAttribute('content');
+
+                    const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+                    if (csrfInput) return csrfInput.value;
+
+                    const csrfCookie = document.cookie.match(/csrftoken=([^;]+)/);
+                    if (csrfCookie) return csrfCookie[1];
+
+                    return null;
+                }
+
+                const csrfToken = getCSRFToken();
+
+                if (!csrfToken) {
+                    alert('Security token not found. Please refresh the page and try again.');
+                    return;
+                }
+
+                // Show loading state
+                const originalContent = confirmDeleteBtn.innerHTML;
+                confirmDeleteBtn.disabled = true;
+                confirmDeleteBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Deleting...';
+
+                // Create and submit form
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = currentDeleteUrl;
+
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfmiddlewaretoken';
+                csrfInput.value = csrfToken;
+                form.appendChild(csrfInput);
+
+                // Add timeout to prevent indefinite hanging
+                const timeoutId = setTimeout(() => {
+                    confirmDeleteBtn.disabled = false;
+                    confirmDeleteBtn.innerHTML = originalContent;
+                    deleteModal.hide();
+                }, 10000);
+
+                form.addEventListener('submit', function() {
+                    clearTimeout(timeoutId);
+                    deleteModal.hide();
+                });
+
+                document.body.appendChild(form);
+
+                try {
+                    form.submit();
+                    console.log('✅ DELETE MODAL: Form submitted successfully');
+                } catch (error) {
+                    console.error('❌ DELETE MODAL: Error submitting form:', error);
+                    alert('Error submitting delete request: ' + error.message);
+                    confirmDeleteBtn.disabled = false;
+                    confirmDeleteBtn.innerHTML = originalContent;
+                }
+            }
+        });
+
+        // Reset modal when hidden
+        deleteModalElement.addEventListener('hidden.bs.modal', function() {
+            currentDeleteUrl = null;
+            confirmDeleteBtn.disabled = false;
+            confirmDeleteBtn.innerHTML = 'Delete';
+        });
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initializeDeleteModal);
+})();
+</script>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Receipt - {{ receipt.receipt_number }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0.5cm;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            line-height: 1.2;
+            background: white;
+        }
+        
+        .receipt-container {
+            width: 100%;
+            max-width: 21cm;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+            border: 1px solid #ddd;
+        }
+        
+        /* Grid background */
+        .grid-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(to right, #f0f0f0 1px, transparent 1px),
+                linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
+            background-size: 15px 15px;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+            padding: 10px;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .company-info {
+            flex: 1;
+        }
+        
+        .company-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #0066cc;
+            margin-bottom: 5px;
+        }
+        
+        .department {
+            font-size: 14px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin: 0 20px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #0066cc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 5px auto;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        }
+        
+        .logo-text {
+            font-size: 10px;
+            font-weight: bold;
+            color: #0066cc;
+            text-align: center;
+        }
+        
+        .receipt-number {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: right;
+        }
+        
+        /* Receipt title section */
+        .receipt-title {
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid #000;
+            padding: 10px;
+        }
+        
+        .receipt-title-khmer {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .receipt-title-english {
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        /* Tax payment info */
+        .tax-info {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+        
+        .tax-info-khmer {
+            margin-bottom: 5px;
+        }
+        
+        .tax-info-english {
+            font-weight: bold;
+        }
+        
+        /* Main content table */
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .receipt-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            vertical-align: top;
+        }
+        
+        .label-cell {
+            width: 30%;
+            font-weight: bold;
+        }
+        
+        .value-cell {
+            width: 20%;
+            text-align: center;
+        }
+        
+        /* Amount sections */
+        .amount-row {
+            background: #ffff00;
+            font-weight: bold;
+        }
+        
+        .total-row {
+            background: #ffff00;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .receipt-container {
+                border: none;
+                box-shadow: none;
+            }
+            
+            .grid-background {
+                opacity: 0.2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <div class="grid-background"></div>
+        
+        <div class="content">
+            <!-- Header -->
+            <div class="header">
+                <div class="company-info">
+                    <div class="company-name">L.Y.P GROUP CO., LTD</div>
+                    <div class="department">HUMAN RESOURCES DEPARTMENT</div>
+                </div>
+                
+                <div class="logo-section">
+                    <div class="logo">
+                        <div style="color: white; font-weight: bold; font-size: 12px;">KKR</div>
+                    </div>
+                    <div class="logo-text">KOH KONG RESORT</div>
+                </div>
+                
+                <div class="receipt-number">
+                    No. {{ receipt.receipt_number }}
+                </div>
+            </div>
+            
+            <!-- Receipt Title -->
+            <div class="receipt-title">
+                <div class="receipt-title-khmer">សំបុត្រសន្ទនាការ</div>
+                <div class="receipt-title-english">OFFICIAL RECEIPT</div>
+            </div>
+            
+            <!-- Tax Payment Info -->
+            <div class="tax-info">
+                <div class="tax-info-khmer">បង់ពន្ធលើបុគ្គលិកការងារហាត់ការ និងបណ្តុះបណ្តាលវិជ្ជាជីវៈ ឆ្នាំ ២០២៥</div>
+                <div class="tax-info-english">TAX PAYMENT TO DEPARTMENT OF LABOUR AND VOCATIONAL TRAINING FOR YEAR {{ receipt.year }}</div>
+            </div>
+            
+            <!-- Main Receipt Table -->
+            <table class="receipt-table">
+                <tr>
+                    <td class="label-cell">{{ receipt.employee_number }}<br><br>{{ receipt.employee_name }}</td>
+                    <td class="label-cell">EMPL. NO.<br><br>TOTAL AMOUNT</td>
+                    <td class="value-cell">{{ receipt.total_pass }} PASS<br><br>{{ receipt.total_amount|floatformat:2 }}</td>
+                    <td class="value-cell">{{ receipt.total_amount|floatformat:2 }}<br><br>{{ receipt.total_amount|floatformat:2 }}</td>
+                </tr>
+                
+                <tr class="total-row">
+                    <td colspan="2" style="text-align: center;">TOTAL PAID</td>
+                    <td style="text-align: center;">$</td>
+                    <td style="text-align: center;">-</td>
+                </tr>
+                
+                {% if receipt.service_fee_5 > 0 %}
+                <tr>
+                    <td class="label-cell">Income Service from Service (5$/p)</td>
+                    <td class="total-row" style="text-align: center;">TOTAL PAID</td>
+                    <td class="total-row" style="text-align: center;">$</td>
+                    <td class="total-row" style="text-align: center;">{{ receipt.service_fee_5|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+                
+                {% if receipt.quota_fee_25 > 0 %}
+                <tr>
+                    <td class="label-cell">Income Service from Quota (25$/p)</td>
+                    <td class="total-row" style="text-align: center;">TOTAL PAID</td>
+                    <td class="total-row" style="text-align: center;">$</td>
+                    <td class="total-row" style="text-align: center;">{{ receipt.quota_fee_25|floatformat:2 }}</td>
+                </tr>
+                {% endif %}
+                
+                {% if receipt.support_document_amount > 0 %}
+                <tr>
+                    <td class="label-cell">Available for used to support document out side</td>
+                    <td class="total-row" style="text-align: center;">TOTAL PAID</td>
+                    <td class="total-row" style="text-align: center;">$</td>
+                    <td class="total-row" style="text-align: center;">({{ receipt.support_document_amount|floatformat:2 }})</td>
+                </tr>
+                {% endif %}
+            </table>
+            
+            {% if receipt.notes %}
+            <div style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;">
+                <strong>Notes:</strong><br>
+                {{ receipt.notes|linebreaks }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script>
+        // Auto-print when page loads
+        window.onload = function() {
+            window.print();
+        };
+    </script>
+</body>
+</html> 

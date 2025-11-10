@@ -1,0 +1,216 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'components/delete_modal.html' %}
+
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold text-gray-800">{{ title }}</h2>
+            <div class="flex items-center gap-3">
+                <a href="{% url 'leave:holiday_list' %}" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                    Back
+                </a>
+                {% if holiday %}
+                <button type="button" class="delete-btn px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors"
+                        data-delete-url="{% url 'leave:holiday_delete' holiday.id %}"
+                        data-delete-title="Delete Holiday?"
+                        data-delete-name="{{ holiday.name }}">
+                    Delete
+                </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Holiday Name -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.name.label }}</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            {% if not holiday %}
+            <!-- Date Range Toggle (only for create) -->
+            <div class="mb-4">
+                <div class="flex items-center">
+                    {{ form.use_date_range }}
+                    <label for="{{ form.use_date_range.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                        {{ form.use_date_range.label }}
+                    </label>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">{{ form.use_date_range.help_text }}</p>
+            </div>
+
+            <!-- Single Date (default) -->
+            <div id="singleDateSection" class="grid grid-cols-3 gap-4 mb-4">
+                <div class="col-span-3 md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.date.label }}</label>
+                    {{ form.date }}
+                    {% if form.date.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-span-3 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.year.label }}</label>
+                    {{ form.year }}
+                    {% if form.year.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.year.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Date Range -->
+            <div id="dateRangeSection" class="grid grid-cols-2 gap-4 mb-4" style="display: none;">
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.from_date.label }}</label>
+                    {{ form.from_date }}
+                    {% if form.from_date.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.from_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.to_date.label }}</label>
+                    {{ form.to_date }}
+                    {% if form.to_date.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.to_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <!-- Edit mode - only single date -->
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="col-span-3 md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.date.label }}</label>
+                    {{ form.date }}
+                    {% if form.date.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-span-3 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.year.label }}</label>
+                    {{ form.year }}
+                    {% if form.year.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.year.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Description -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.description.label }}</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.description.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Options -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="flex items-center">
+                    {{ form.is_optional }}
+                    <label for="{{ form.is_optional.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                        {{ form.is_optional.label }}
+                    </label>
+                </div>
+
+                <div class="flex items-center">
+                    {{ form.applies_to_all }}
+                    <label for="{{ form.applies_to_all.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                        {{ form.applies_to_all.label }}
+                    </label>
+                </div>
+            </div>
+
+            <!-- Regions -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ form.regions.label }}</label>
+                {{ form.regions }}
+                {% if form.regions.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.regions.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-1">{{ form.regions.help_text }}</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3">
+                <a href="{% url 'leave:holiday_list' %}" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                    <i class="bi bi-check-circle mr-1"></i>Save
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+// Toggle between single date and date range
+document.addEventListener('DOMContentLoaded', function() {
+    const useDateRangeCheckbox = document.getElementById('{{ form.use_date_range.id_for_label }}');
+    const singleDateSection = document.getElementById('singleDateSection');
+    const dateRangeSection = document.getElementById('dateRangeSection');
+
+    if (useDateRangeCheckbox) {
+        useDateRangeCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                singleDateSection.style.display = 'none';
+                dateRangeSection.style.display = 'grid';
+                // Clear single date fields
+                document.getElementById('{{ form.date.id_for_label }}').value = '';
+            } else {
+                singleDateSection.style.display = 'grid';
+                dateRangeSection.style.display = 'none';
+                // Clear date range fields
+                document.getElementById('{{ form.from_date.id_for_label }}').value = '';
+                document.getElementById('{{ form.to_date.id_for_label }}').value = '';
+            }
+        });
+
+        // Auto-update year field when from_date changes (for date range)
+        const fromDateField = document.getElementById('{{ form.from_date.id_for_label }}');
+        const yearField = document.getElementById('{{ form.year.id_for_label }}');
+
+        if (fromDateField && yearField) {
+            fromDateField.addEventListener('change', function() {
+                if (this.value) {
+                    const year = new Date(this.value).getFullYear();
+                    yearField.value = year;
+                }
+            });
+        }
+
+        // Auto-update year field when single date changes
+        const dateField = document.getElementById('{{ form.date.id_for_label }}');
+
+        if (dateField && yearField) {
+            dateField.addEventListener('change', function() {
+                if (this.value) {
+                    const year = new Date(this.value).getFullYear();
+                    yearField.value = year;
+                }
+            });
+        }
+    }
+});
+</script>
+{% endblock %}
+
+{% block modals %}
+    {% include 'components/delete_modal.html' %}
+{% endblock %}

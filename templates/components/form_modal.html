@@ -1,0 +1,254 @@
+<!-- Global Form Modal Component -->
+<div class="modal fade" id="globalFormModal" tabindex="-1" aria-labelledby="globalFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="globalFormModalLabel">
+                    <span id="globalFormModalTitle">Form</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Dynamic form content will be inserted here -->
+                <div id="globalFormModalBody"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-danger" id="globalFormDeleteBtn" style="display: none;">
+                    <i class="bi bi-trash me-1"></i>
+                    Delete
+                </button>
+                <button type="button" class="btn btn-primary" id="globalFormSubmitBtn">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Modal Styles - Following Design Guideline */
+#globalFormModal .modal-dialog {
+    margin: 1.75rem auto;
+    z-index: 1056;
+}
+
+#globalFormModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+#globalFormModal.modal.show .modal-content {
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+#globalFormModal .modal-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem 1.5rem;
+}
+
+#globalFormModal .modal-title {
+    font-weight: 600;
+    font-size: 1.125rem;
+    color: #1f2937;
+}
+
+#globalFormModal .modal-body {
+    padding: 1.5rem;
+    color: #4b5563;
+}
+
+#globalFormModal .modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 1rem 1.5rem;
+    gap: 0.5rem;
+}
+
+#globalFormModal .modal-footer .btn {
+    font-size: 14px;
+    padding: 8px 16px;
+}
+
+/* Form field styling */
+#globalFormModal .form-label {
+    font-size: 13px;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #374151;
+}
+
+#globalFormModal .form-control,
+#globalFormModal .form-select {
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+}
+
+#globalFormModal .form-control:focus,
+#globalFormModal .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+#globalFormModal .form-text {
+    font-size: 12px;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-backdrop.show {
+    backdrop-filter: blur(3px);
+}
+
+#globalFormModal .modal-header .btn-close {
+    position: relative;
+    z-index: 10;
+}
+</style>
+
+<script>
+// Global form modal functionality
+let globalFormModalInstance = null;
+let globalFormOnSubmit = null;
+let globalFormOnDelete = null;
+
+function initializeFormModal() {
+    const modalElement = document.getElementById('globalFormModal');
+    globalFormModalInstance = new bootstrap.Modal(modalElement);
+
+    const submitBtn = document.getElementById('globalFormSubmitBtn');
+    const deleteBtn = document.getElementById('globalFormDeleteBtn');
+
+    // Enhanced modal behavior
+    modalElement.addEventListener('shown.bs.modal', function() {
+        const focusableElement = modalElement.querySelector('input, select, textarea, button');
+        if (focusableElement) {
+            focusableElement.focus();
+        }
+    });
+
+    // Keyboard navigation
+    modalElement.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modalInstance = bootstrap.Modal.getInstance(modalElement);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        }
+    });
+
+    // Handle submit button
+    submitBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        if (globalFormOnSubmit) {
+            const formData = new FormData();
+
+            // Collect all form inputs from the modal body
+            const inputs = modalElement.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    formData.append(input.name, input.checked);
+                } else if (input.name) {
+                    formData.append(input.name, input.value);
+                }
+            });
+
+            globalFormOnSubmit(formData);
+        }
+    });
+
+    // Handle delete button
+    deleteBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        if (globalFormOnDelete) {
+            globalFormOnDelete();
+        }
+    });
+
+    // Reset modal when hidden
+    modalElement.addEventListener('hidden.bs.modal', function() {
+        globalFormOnSubmit = null;
+        globalFormOnDelete = null;
+        document.getElementById('globalFormDeleteBtn').style.display = 'none';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Save';
+    });
+}
+
+/**
+ * Open global form modal
+ * @param {Object} options - Modal configuration
+ * @param {string} options.title - Modal title
+ * @param {string} options.formHtml - HTML content for form fields
+ * @param {Function} options.onSubmit - Callback when form is submitted
+ * @param {Function} options.onDelete - Optional callback for delete action
+ * @param {Object} options.formData - Optional data to pre-fill form
+ */
+function openFormModal(options) {
+    const {
+        title = 'Form',
+        formHtml = '',
+        onSubmit = null,
+        onDelete = null,
+        formData = {}
+    } = options;
+
+    // Set title
+    document.getElementById('globalFormModalTitle').textContent = title;
+
+    // Set form content
+    document.getElementById('globalFormModalBody').innerHTML = formHtml;
+
+    // Pre-fill form data
+    if (formData && Object.keys(formData).length > 0) {
+        setTimeout(() => {
+            Object.keys(formData).forEach(key => {
+                const input = document.querySelector(`#globalFormModal [name="${key}"]`);
+                if (input) {
+                    if (input.type === 'checkbox') {
+                        input.checked = formData[key];
+                    } else {
+                        input.value = formData[key];
+                    }
+                }
+            });
+        }, 50);
+    }
+
+    // Set callbacks
+    globalFormOnSubmit = onSubmit;
+    globalFormOnDelete = onDelete;
+
+    // Show/hide delete button
+    const deleteBtn = document.getElementById('globalFormDeleteBtn');
+    if (onDelete) {
+        deleteBtn.style.display = 'inline-block';
+    } else {
+        deleteBtn.style.display = 'none';
+    }
+
+    // Show modal
+    console.log('📝 FORM MODAL: Showing modal');
+    globalFormModalInstance.show();
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeFormModal);
+</script>

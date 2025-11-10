@@ -1,0 +1,714 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Foreign / Khmer Report - {{ report_date }}{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="{% static 'vendor/fonts/google-fonts.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/tailwind.min.css' %}">
+<style>
+  
+    
+    @page {
+        size: A4;
+        margin: 0.5cm;
+    }
+    
+
+    #main-content {
+        transition: none !important;
+    }
+
+    /* Foreign/Khmer Report - Compact Print-Ready Design */
+    :root {
+        --spacing-xs: 4px;
+        --spacing-sm: 8px;
+        --spacing-md: 12px;
+        --spacing-lg: 16px;
+        --spacing-xl: 20px;
+
+        --font-xs: 11px;
+        --font-s: 12px;
+        --font-m: 13px;
+        --font-l: 14px;
+        --font-xl: 16px;
+        --font-2xl: 18px;
+
+        --primary: #2563eb;
+        --border: #000;
+        --light-blue: #e6f3ff;
+        --yellow: #fff3cd;
+    }
+
+    .report-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: var(--spacing-xl);
+    }
+
+    /* Filters Section */
+    .filters-section {
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .filters-form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: var(--spacing-lg);
+        align-items: end;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-size: var(--font-s);
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .form-group select {
+        padding: 6px 6px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: var(--font-m);
+    }
+
+    .btn-filter {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: var(--spacing-sm) var(--spacing-lg);
+        border-radius: 4px;
+        font-size: var(--font-m);
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .btn-filter:hover {
+        background: #1d4ed8;
+    }
+
+    /* Report Header */
+    .report-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: var(--spacing-xl);
+        border-bottom: 2px solid var(--border);
+        padding-bottom: var(--spacing-lg);
+    }
+
+    .logo-left {
+        text-align: left;
+    }
+
+    .khmer-title {
+        font-size: var(--font-xl);
+        font-weight: bold;
+        color: var(--border);
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .english-title {
+        font-size: var(--font-l);
+        font-weight: bold;
+        color: var(--primary);
+    }
+
+    .logo-right {
+        text-align: right;
+    }
+
+    .company-logo {
+        position: relative;
+        width: 80px;
+        height: 50px;
+        background: #f59e0b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+    }
+
+    .company-text {
+        font-size: var(--font-xs);
+        font-weight: bold;
+        color: white;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    /* Title Section */
+    .title-section {
+        text-align: center;
+        margin: var(--spacing-xl) 0;
+    }
+
+    .main-title {
+        font-size: var(--font-l);
+        font-weight: bold;
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .period-title {
+        font-size: var(--font-l);
+        font-weight: bold;
+    }
+
+    /* Report Table */
+    .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: var(--spacing-xl) 0;
+        font-size: var(--font-m);
+    }
+
+    .report-table th,
+    .report-table td {
+        border: 1.5px solid var(--border);
+        padding: var(--spacing-md) var(--spacing-lg);
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    .report-table th {
+        background-color: var(--light-blue);
+        font-weight: bold;
+        text-align: center;
+        font-size: var(--font-m);
+    }
+
+    .report-table td {
+        font-size: var(--font-m);
+    }
+
+    .number-col {
+        width: 60px;
+        text-align: center;
+    }
+
+    .building-col {
+        min-width: 200px;
+    }
+
+    .staff-col {
+        width: 120px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .signature-col {
+        width: 80px;
+        text-align: center;
+    }
+
+    .total-row {
+        background-color: var(--yellow);
+        font-weight: bold;
+    }
+
+    .total-row td {
+        border-top: 2px solid #f59e0b;
+        font-weight: bold;
+        font-size: var(--font-l);
+    }
+
+    /* Signature Section */
+    .signature-section {
+        display: flex;
+        justify-content: center;
+        margin-top: var(--spacing-3xl);
+        padding-top: var(--spacing-xl);
+    }
+
+    .signature-box {
+        text-align: center;
+        min-width: 200px;
+    }
+
+    .signature-line {
+        border-bottom: 1px solid var(--border);
+        height: 60px;
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .signature-title {
+        font-size: var(--font-m);
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-xl);
+        justify-content: flex-end;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm) var(--spacing-lg);
+        border: none;
+        border-radius: 4px;
+        font-size: var(--font-m);
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #4b5563;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-success {
+        background: #059669;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #047857;
+        color: white;
+        text-decoration: none;
+    }
+
+    @page {
+        size: A4;
+    }
+
+    .moul-regular {
+        font-family: "Moul", serif;
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    .time-roman {
+        font-family: 'Times New Roman', Times, serif;
+        font-style: normal;
+    }
+
+    .noto-sans-sc-500 {
+        font-family: "Noto Sans SC", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 500;
+        font-style: normal;
+    }
+
+    .kh-content-regular {
+        font-family: "Content", system-ui;
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    .kh-content-bold {
+        font-family: "Content", system-ui;
+        font-weight: 700;
+        font-style: normal;
+    }
+    .main-section{
+        padding-left:80px;
+        padding-right:80px;
+    }
+
+    /* Print Styles */
+    @media print {
+
+        * {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        
+        /* Hide navigation and UI elements */
+        nav, .sidebar, .btn, .header-actions,
+        .breadcrumb, .pagination, .footer,
+        header, #sidebar, aside, .sidebar-overlay,
+        .toast-container, .alert, .messages,
+        /* Hide modals and dialogs */
+        .modal, .modal-backdrop, .modal-dialog,
+        .modal-content, .modal-header, .modal-body, .modal-footer,
+        /* Hide confirmation dialogs */
+        .confirm-delete, .delete-confirmation,
+        /* Hide overlays and popups */
+        .overlay, .popup, .dropdown-menu,
+        /* Hide any Bootstrap modals */
+        .fade, .show,
+        /* Hide specific deletion confirmation elements */
+        [id*="delete"], [class*="delete"], [id*="confirm"], [class*="confirm"],
+        /* Hide any fixed positioned elements */
+        [style*="position: fixed"], [style*="position:fixed"] {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        
+        /* Reset body for clean print layout */
+        body {
+            padding: 0 !important;
+            margin: 0 !important;
+            background: white !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        }
+        
+        /* Override any parent containers to be visible */
+        .container-fluid,
+        .flex.items-start,
+        #main-content {
+            display: block !important;
+            width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            position: static !important;
+        }
+        
+        /* Document container styles for print */
+        .container {
+            display: block !important;
+            visibility: visible !important;
+            position: static !important;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
+            background: white !important;
+        }
+
+
+        /* Show print-only elements */
+        .print-only {
+            display: block !important;
+            visibility: visible !important;
+        }
+        
+        /* Hide screen-only elements */
+        .screen-only {
+            display: none !important;
+        }
+
+        /* Additional modal hiding rules for any remaining elements */
+        body > .modal,
+        body > .modal-backdrop,
+        body > div[class*="modal"],
+        body > div[id*="Modal"],
+        div[aria-hidden="false"],
+        div[role="dialog"],
+        div[tabindex="-1"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+        footer{
+            display:none;
+        }
+        .main-section{
+            padding-left:25px;
+            padding-right:25px;
+        }
+        .print-header{
+            display:none;
+        }
+
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-section">
+    <!-- Action Buttons -->
+     <div class="print-header">
+    <div class="w-full flex justify-between items-center border-b my-4 pb-4">
+        <h1 class="text-lg font-semibold ">Foreign / Khmer Report </h1>
+       
+        <button onclick="window.print()" class="button-min-primary">
+            <div><i class="bi bi-printer"></i>
+                Print Report
+            </div>
+        </button>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="border px-3 py-2 rounded-lg bg-gray-50 mb-5">
+        <div class="mb-2 text-xs text-gray-600">
+            <strong>Filters:</strong> Shows workers hired/joined in the selected month/year, zone, building, and floor
+        </div>
+        <form method="get" class="filters-form" id="filterForm">
+            <div class="form-group">
+                <label for="year">Hire Year</label>
+                <select name="year" id="year">
+                    {% for y in years %}
+                    <option value="{{ y }}" {% if y == year %} selected {% endif %} >{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="month">Hire Month</label>
+                <select name="month" id="month">
+                    {% for m_num, m_name in months %}
+                    <option value="{{ m_num }}" {% if m_num == month %} selected {% endif %} >{{ m_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="zone">Zone</label>
+                <select name="zone" id="zone">
+                    <option value="">All Zones</option>
+                    {% for zone in zones %}
+                    <option value="{{ zone.id }}" {% if zone.id|stringformat:"s" == selected_zone %} selected {% endif %}>{{ zone.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="building">Building</label>
+                <select name="building" id="building">
+                    <option value="">All Buildings</option>
+                    {% for building in buildings %}
+                    <option value="{{ building.id }}" {% if building.id|stringformat:"s" == selected_building %} selected {% endif %} data-zone="{{ building.zone.id|default:'' }}">{{ building.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="floor">Floor</label>
+                <select name="floor" id="floor">
+                    <option value="">All Floors</option>
+                    {% for floor in floors %}
+                    <option value="{{ floor.id }}" {% if floor.id|stringformat:"s" == selected_floor %} selected {% endif %} data-building="{{ floor.building.id }}">{{ floor.building.name }} - {{ floor.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="button-min-primary">
+                   <div>
+                    <i class="bi bi-funnel"></i>
+                    Generate Report
+                   </div>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <div>
+        <!-- Report Header -->
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center justify-between">
+                <div class="space-y-2">
+                    <h1 class="moul-regular text-3xl text-blue-700"> កោះកុង​​ រីសត</h1>
+                    <h1 class="time-roman text-2xl text-blue-700 uppercase">Koh Kong Resort</h1>
+                </div>
+                <div>
+                    <img src="{% static 'images/logos/lyp-logo.jpeg' %}" style="width:80%" alt="LYP" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Title Section -->
+        <div class="mt-1 text-left">
+            <p class="time-roman text-12 font-semibold">
+                Monthly report Foreign and Khmer staff hired{% if is_filtered_building %} at {{ filtered_building.name }}{% else %} at each building{% endif %}{% if selected_zone %} in selected zone{% endif %}{% if selected_floor %} on selected floor{% endif %} in {{ report_date }}
+            </p>
+            <p class="time-roman text-10 text-gray-600 mt-1">
+                <strong>Note:</strong> Shows workers who joined during {{ month_name }} {{ year }}{% if selected_zone or selected_building or selected_floor %} with applied filters{% endif %}
+            </p>
+        </div>
+
+        <div class="mt-4">
+
+
+            <table class="table-auto border-1 border-gray-900 border-collapse w-full">
+                <thead>
+                    <tr class="time-roman text-12">
+                        <th class="border-1 border-gray-800 px-2 py-1 text-center">No</th>
+                        <th class="border-1 border-gray-800 px-2 py-1 print:px-2 text-center">Building Name</th>
+                        <th class="border-1 border-gray-800 px-2 py-1 text-center">Foreign</th>
+                        <th class="border-1 border-gray-800 px-2 py-1 text-center">Khmer</th>
+                        <th class="border-1 border-gray-800 px-2 print:px-1 py-2 text-center">Total</th>
+                        <th class="border-1 border-gray-800 px-2 py-1 text-center">Signature</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for item in building_data %}
+                    <tr class="time-roman text-12">
+                        <td class="border-1 border-gray-800 px-2 py-1 text-center">{{ forloop.counter }}</td>
+                        <td class="border-1 border-gray-800 px-2 py-1 text-left whitespace-nowrap">{{ item.building.name }}</td>
+                        <td class="border-1 border-gray-800 px-2 py-1 text-center">{{ item.foreign_workers }}</td>
+                        <td class="border-1 border-gray-800 px-2 py-1 text-center">{{ item.khmer_workers }}</td>
+                        <td class="border-1 border-gray-800 px-2 py-1 text-center font-semibold">{{ item.total }}</td>
+                        <td class="border-1 border-gray-800 px-2 py-1 text-center"></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 20px; color: #6b7280;">
+                            No data available for the selected filters.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if building_data %}
+                    <!-- Total Row -->
+                    <tr class="time-roman text-12 bg-yellow-200">
+                        <td class="border-1 border-gray-800 px-2 py-1 text-right font-bold" colspan="2">TOTAL</td>
+                        <td class="border-1 border-gray-800 px-2 py-1 text-center font-bold">{{ total_foreign }}</td>
+                        <td class="border-1 border-gray-800 px-2 py-1 text-center font-bold">{{ total_khmer }}</td>
+                        <td class="border-1 border-gray-800 px-2 py-1 text-center font-bold">{{ total_foreign_khmer }}</td>
+                        <td class="border-1 border-gray-800 px-2 py-1 text-center font-bold"></td>
+                    </tr>
+                    {% endif %}
+
+                </tbody>
+            </table>
+
+            <!-- Signature Section -->
+            {% if building_data %}
+            <div class="w-full px-2 py-2 mt-2 grid grid-cols-6">
+                <div></div>
+                <div class="text-center">
+                    <h2 class="time-roman text-sm font-semibold">Reported by</h2>
+                    
+                </div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+
+            <div class="w-full px-2 py-2 mt-2 grid grid-cols-6 mt-5 pt-5">
+                <div></div>
+                <div class="border-t-2 border-gray-800 text-center">
+                    <h2 class="time-roman text-sm font-semibold mt-2">HR MANAGER</h2>
+                    {% comment %} <h2 class="time-roman text-lg font-semibold">Samno Khit</h2> {% endcomment %}
+                </div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function printBlock(id) {
+      let original = document.body.innerHTML;
+      let printContent = document.getElementById(id).outerHTML;
+      document.body.innerHTML = printContent;
+      window.print();
+      document.body.innerHTML = original;
+    }
+
+    // Chain selection logic for Zone -> Building -> Floor
+    document.addEventListener('DOMContentLoaded', function() {
+        const zoneSelect = document.getElementById('zone');
+        const buildingSelect = document.getElementById('building');
+        const floorSelect = document.getElementById('floor');
+
+        // Store currently selected values for restoration
+        const currentZone = zoneSelect.value;
+        const currentBuilding = buildingSelect.value;
+        const currentFloor = floorSelect.value;
+
+        async function updateBuildings() {
+            const selectedZone = zoneSelect.value;
+            const selectedBuilding = buildingSelect.value;
+            
+            try {
+                const url = selectedZone ? 
+                    `{% url 'hr:get_buildings_by_zone' %}?zone_id=${selectedZone}` :
+                    `{% url 'hr:get_buildings_by_zone' %}`;
+                    
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Clear and repopulate building options
+                buildingSelect.innerHTML = '<option value="">All Buildings</option>';
+                data.buildings.forEach(building => {
+                    const option = new Option(building.name, building.id);
+                    buildingSelect.appendChild(option);
+                });
+                
+                // Restore selection if it still exists
+                if (selectedBuilding && Array.from(buildingSelect.options).some(opt => opt.value === selectedBuilding)) {
+                    buildingSelect.value = selectedBuilding;
+                }
+                
+                // Update floors after buildings are updated
+                updateFloors();
+            } catch (error) {
+                console.error('Error fetching buildings:', error);
+            }
+        }
+
+        async function updateFloors() {
+            const selectedBuilding = buildingSelect.value;
+            const selectedFloor = floorSelect.value;
+            
+            try {
+                const url = selectedBuilding ? 
+                    `{% url 'hr:get_floors_by_building' %}?building_id=${selectedBuilding}` :
+                    `{% url 'hr:get_floors_by_building' %}`;
+                    
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                // Clear and repopulate floor options
+                floorSelect.innerHTML = '<option value="">All Floors</option>';
+                data.floors.forEach(floor => {
+                    const displayName = selectedBuilding ? floor.name : `${floor.building_name} - ${floor.name}`;
+                    const option = new Option(displayName, floor.id);
+                    floorSelect.appendChild(option);
+                });
+                
+                // Restore selection if it still exists
+                if (selectedFloor && Array.from(floorSelect.options).some(opt => opt.value === selectedFloor)) {
+                    floorSelect.value = selectedFloor;
+                }
+            } catch (error) {
+                console.error('Error fetching floors:', error);
+            }
+        }
+
+        // Event listeners
+        zoneSelect.addEventListener('change', updateBuildings);
+        buildingSelect.addEventListener('change', updateFloors);
+
+        // Initialize on page load only if zone has changed
+        if (zoneSelect.value !== currentZone) {
+            updateBuildings();
+        } else if (buildingSelect.value !== currentBuilding) {
+            updateFloors();
+        }
+    });
+    </script>
+{% endblock %}

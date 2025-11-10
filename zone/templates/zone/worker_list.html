@@ -1,0 +1,1318 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Workers - Zone Management{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact Design System - Workers */
+    .page-header {
+        padding: 8px 0;
+        margin-bottom: 12px;
+    }
+    .page-header h2 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+    .page-header p {
+        font-size: 11px;
+        color: #666;
+        margin: 0;
+    }
+
+    /* Compact search filters */
+    .search-filters {
+        background: #f8fafb;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+    .filter-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr auto;
+        gap: 8px;
+        align-items: end;
+    }
+    .form-label {
+        font-size: 11px !important;
+        margin-bottom: 4px !important;
+        font-weight: 500;
+        color: #374151;
+    }
+    .form-control, .form-select {
+        font-size: 12px !important;
+        padding: 6px 10px !important;
+        height: auto !important;
+        border-radius: 4px;
+        border: 1px solid #d1d5db;
+        line-height: 1.4;
+        background: white;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #87ceeb;
+        box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.2);
+        outline: none;
+    }
+    
+    /* Disabled form elements */
+    .form-select:disabled, .form-control:disabled {
+        background-color: #f3f4f6 !important;
+        color: #6b7280 !important;
+        border-color: #d1d5db !important;
+        cursor: not-allowed !important;
+        opacity: 0.7;
+    }
+
+    /* Ultra-Minimal Button System - Light Blue Theme */
+    .btn-compact {
+        font-size: 10px;
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 4px 8px;
+        border: 1px solid #bfdbfe;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        line-height: 1;
+    }
+
+    /* Primary Button - Ultra-Compact Light Blue */
+    .btn-primary-compact {
+        background: #87ceeb;
+        color: #ffffff;
+        border-color: #87ceeb;
+    }
+    .btn-primary-compact:hover {
+        background: #5fb3d9;
+        border-color: #5fb3d9;
+        color: #ffffff;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    /* Secondary Button - Ultra-Compact Light Blue */
+    .btn-secondary-compact {
+        background: #ffffff;
+        color: #1e3a8a;
+        border-color: #bfdbfe;
+    }
+    .btn-secondary-compact:hover {
+        background: #eff6ff;
+        color: #1e40af;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    /* Danger Button - Ultra-Compact */
+    .btn-danger-compact {
+        background: #dc2626;
+        color: #ffffff;
+        border-color: #dc2626;
+    }
+    .btn-danger-compact:hover {
+        background: #b91c1c;
+        border-color: #b91c1c;
+        color: #ffffff;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    /* Focus states for accessibility */
+    .btn-compact:focus {
+        box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.4);
+        outline: none;
+    }
+
+
+    .empty-state i {
+        font-size: 20px !important;
+        color: #87ceeb !important;
+    }
+
+    /* Ultra-minimal pagination icons */
+    .pagination-compact .page-link i {
+        font-size: 9px !important;
+        color: #87ceeb !important;
+    }
+
+    .pagination-compact .page-item.active .page-link i {
+        color: white !important;
+    }
+
+    /* Compact stats */
+    .stats-row {
+        margin-bottom: 12px;
+    }
+    .stat-item {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .stat-number {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+    }
+    .stat-label {
+        font-size: 11px;
+        color: #6b7280;
+        margin: 4px 0 0 0;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Simple text link for "No Card" */
+    .no-card-link {
+        color: #6b7280;
+        font-size: 10px;
+        text-decoration: none;
+        font-weight: 400;
+        transition: color 0.2s ease;
+    }
+    
+    .no-card-link:hover {
+        color: #374151;
+        text-decoration: underline;
+    }
+    .status-active {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    .status-inactive {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+    .status-on_leave {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    .status-terminated {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+    .status-suspended {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    .status-probation {
+        background-color: #e0e7ff;
+        color: #3730a3;
+    }
+    .status-extended {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    .status-ending {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+    .status-completed {
+        background-color: #e0e7ff;
+        color: #1e40af;
+    }
+    .status-failed {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+    .status-passed {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    .status-no-card {
+        background-color: #f3f4f6;
+        color: #6b7280;
+        padding: 1px 4px !important;
+        font-size: 8px !important;
+        font-weight: 400 !important;
+        white-space: nowrap !important;
+        display: inline-block !important;
+    }
+    .status-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    .status-approved {
+        background-color: #e0e7ff;
+        color: #3730a3;
+    }
+    .status-printed {
+        background-color: #ddd6fe;
+        color: #5b21b6;
+    }
+    .status-delivered {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    .status-expired {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+    .status-lost {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+    .status-damaged {
+        background-color: #fecaca;
+        color: #b91c1c;
+    }
+
+    /* ID Card Status Links Styling */
+    .btn-compact .status-badge {
+        margin-left: 4px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .btn-compact:hover .status-badge {
+        opacity: 0.9;
+        transform: none; /* Don't apply transform to badge */
+    }
+    .btn-compact i {
+        vertical-align: middle;
+    }
+
+
+    /* Modern Table Items */
+    .modern-table-container {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .table {
+        margin: 0;
+        font-size: 12px;
+    }
+    .table th {
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        background: #f8fafb;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 8px 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+    }
+    .table td {
+        padding: 8px 8px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .table tbody tr:hover {
+        background: #f8fafb;
+    }
+
+    .worker-avatar-list {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 11px;
+    }
+
+    .worker-details h6 {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+    }
+    .worker-details p {
+        font-size: 11px;
+        color: #6b7280;
+        margin: 2px 0 0 0;
+    }
+
+    /* Badge system for positions and other info */
+    .position-badge {
+        background: #e0e7ff;
+        color: #3730a3;
+        padding: 2px 6px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+    }
+
+    .nationality-badge {
+        background: #fef3c7;
+        color: #92400e;
+        padding: 2px 6px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6b7280;
+    }
+    .empty-state i {
+        font-size: 32px;
+        color: #d1d5db;
+        margin-bottom: 12px;
+    }
+    .empty-state h6 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+    .empty-state p {
+        font-size: 12px;
+        margin-bottom: 16px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .filter-row {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        .stats-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+
+    /* Compact Pagination */
+    .pagination-compact {
+        margin: 12px 0 0 0;
+        justify-content: center;
+    }
+
+    .pagination-compact .page-item {
+        margin: 0 1px;
+    }
+
+    .pagination-compact .page-link {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 8px;
+        min-width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #3b82f6;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.15s ease;
+    }
+
+    .pagination-compact .page-link:hover {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+
+    .pagination-compact .page-item.active .page-link {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+        font-weight: 600;
+    }
+
+    .pagination-compact .page-item.disabled .page-link {
+        color: #9ca3af;
+        background: #f9fafb;
+        border-color: #e5e7eb;
+        cursor: not-allowed;
+    }
+
+    .pagination-compact .page-item.disabled .page-link:hover {
+        transform: none;
+        box-shadow: none;
+        background: #f9fafb;
+        color: #9ca3af;
+        border-color: #e5e7eb;
+    }
+
+    .pagination-compact .page-nav {
+        font-size: 10px;
+        padding: 4px 6px;
+        min-width: auto;
+    }
+    .btn-sm-modern {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    
+    @media (max-width: 768px) {
+        .pagination-compact .page-link {
+            font-size: 10px;
+            padding: 3px 6px;
+            min-width: 24px;
+            height: 24px;
+        }
+        
+        .pagination-compact .page-nav {
+            padding: 3px 5px;
+        }
+        
+        .pagination-compact .page-text {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Compact Page Header -->
+
+    <div class="page-header d-flex justify-content-between align-items-center pb-3">
+        <div>
+            <h2>
+                {% if request.GET.worker_type == 'vip' %}
+                    VIP Management
+                {% elif request.GET.worker_type == 'worker' %}
+                    Worker Management
+                {% else %}
+                    Worker Management
+                {% endif %}
+            </h2>
+        </div>
+        <div class="d-flex align-items-center space-x-3">
+            <div class="ms-2">
+                <a href="{% url 'zone:import_workers' %}" class="button-min-primary space-x-1">
+                  <div>
+                    <i class="bi bi-upload text-xs"></i>
+                    <span class="font-medium">Import Excel</span>
+                  </div>
+                </a>
+            </div>
+            <div class="ms-3">
+                <a href="{% url 'zone:worker_reports' %}" class="button-min-default space-x-1">
+                   <div>
+                    <i class="bi bi-graph-up text-xs"></i>
+                    <span class="font-medium">Reports</span>
+                   </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Results Display -->
+    {% if import_results %}
+    <div class="alert alert-info alert-dismissible fade show mb-3" role="alert" style="background: linear-gradient(135deg, #E0F2FE 0%, #DBEAFE 100%); border: 1px solid #60A5FA; border-radius: 8px;">
+        <h5 style="font-size: 14px; font-weight: 600; color: #1E40AF; margin-bottom: 8px;">
+            <i class="bi bi-check-circle-fill"></i> Import Results
+        </h5>
+        
+        <!-- Summary -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px;">
+            <div style="background: white; padding: 8px; border-radius: 6px; text-align: center;">
+                <div style="font-size: 18px; font-weight: bold; color: #059669;">{{ import_results.processed }}</div>
+                <div style="font-size: 11px; color: #6B7280;">Imported</div>
+            </div>
+            <div style="background: white; padding: 8px; border-radius: 6px; text-align: center;">
+                <div style="font-size: 18px; font-weight: bold; color: #DC2626;">{{ import_results.skipped }}</div>
+                <div style="font-size: 11px; color: #6B7280;">Duplicates Skipped</div>
+            </div>
+            <div style="background: white; padding: 8px; border-radius: 6px; text-align: center;">
+                <div style="font-size: 18px; font-weight: bold; color: #1E40AF;">{{ import_results.total_rows }}</div>
+                <div style="font-size: 11px; color: #6B7280;">Total Rows</div>
+            </div>
+        </div>
+        
+        <!-- Duplicate Details -->
+        {% if import_results.duplicates %}
+        <div style="background: #FEF2F2; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
+            <h6 style="font-size: 12px; font-weight: 600; color: #DC2626; margin-bottom: 6px;">
+                <i class="bi bi-person-x"></i> Duplicates Skipped:
+            </h6>
+            {% for dup in import_results.duplicates %}
+            <div style="font-size: 11px; color: #7F1D1D; margin-bottom: 4px;">
+                • Row {{ dup.row }}: <strong>{{ dup.worker_name }}</strong> - Matches: {{ dup.matches }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Errors -->
+        {% if import_results.errors %}
+        <div style="background: #FEF2F2; padding: 10px; border-radius: 6px;">
+            <h6 style="font-size: 12px; font-weight: 600; color: #DC2626; margin-bottom: 6px;">
+                <i class="bi bi-exclamation-triangle"></i> Errors:
+            </h6>
+            {% for error in import_results.errors %}
+            <div style="font-size: 11px; color: #7F1D1D; margin-bottom: 2px;">• {{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="position: absolute; top: 10px; right: 10px;"></button>
+    </div>
+    {% endif %}
+
+    <!-- Compact Stats -->
+    <div class="row stats-row my-3">
+        {% if request.GET.worker_type == 'vip' %}
+            <!-- 2-column layout for VIP workers -->
+            <div class="col-6">
+                <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                    <div class="stat-number">{{ total_count }}</div>
+                    <div class="stat-label">VIPs</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                    <div class="stat-number">{{ workers|length }}</div>
+                    <div class="stat-label">Current Page</div>
+                </div>
+            </div>
+        {% elif request.GET.worker_type == 'worker' %}
+            <!-- 3-column layout for regular workers -->
+            <div class="col-4">
+                <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                    <div class="stat-number">{{ total_count }}</div>
+                    <div class="stat-label">Workers</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                    <div class="stat-number">{{ workers|length }}</div>
+                    <div class="stat-label">Current Page</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                    <div class="stat-number">{{ active_count|default:"0" }}</div>
+                    <div class="stat-label">Active</div>
+                </div>
+            </div>
+        {% else %}
+            <!-- 4-column layout for all workers view -->
+            <div class="col-3">
+                <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                    <div class="stat-number">{{ total_count }}</div>
+                    <div class="stat-label">Workers</div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                    <div class="stat-number">{{ workers|length }}</div>
+                    <div class="stat-label">Current Page</div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                    <div class="stat-number">{{ active_count|default:"0" }}</div>
+                    <div class="stat-label">Active</div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                    <div class="stat-number">{{ vip_count|default:"0" }}</div>
+                    <div class="stat-label">VIPs</div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Compact Search and Filters -->
+    <div class="rounded-xl bg-white border px-3 py-2">
+        <form method="get" id="filterForm">
+            {% csrf_token %}
+            {% comment %}Preserve worker_type parameter when it's specified in URL{% endcomment %}
+            {% if request.GET.worker_type %}
+                <input type="hidden" name="worker_type" value="{{ request.GET.worker_type }}">
+            {% endif %}
+            <!-- First Row: Main Filters -->
+            <div class="filter-row">
+                <div>
+                    <label for="search" class="form-label">Search</label>
+                    {{ search_form.search }}
+                </div>
+                <div>
+                    <label for="position" class="form-label">Position</label>
+                    {{ search_form.position }}
+                </div>
+                <div>
+                    <label for="zone" class="form-label">Zone</label>
+                    {{ search_form.zone }}
+                </div>
+                <div>
+                    <label for="building" class="form-label">Building</label>
+                    {{ search_form.building }}
+                </div>
+                {% if request.GET.worker_type != 'vip' %}
+                <div>
+                    <label for="status" class="form-label">Status</label>
+                    {{ search_form.status }}
+                </div>
+                {% endif %}
+                <div style="display: none;">
+                    <label for="worker_type" class="form-label">Type</label>
+                    {{ search_form.worker_type }}
+                </div>
+                <div class="flex space-x-2 items-end w-36">
+                    <button type="submit" class="button-min-primary">
+                       <div>
+                        <i class="fa fa-search" style="font-size:10px;"></i>
+                        <span>Filter</span>
+                       </div>
+                    </button>
+                    {% if request.GET %}
+                    <a href="{% url 'zone:worker_list' %}{% if request.GET.worker_type %}?worker_type={{ request.GET.worker_type }}{% endif %}" class="button-min-default">
+                        <i class="fas fa-redo" style="font-size:10px;"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Second Row: Compact Date Range Filter -->
+            <div style="display: flex; align-items: center; margin-top: 10px; padding-top: 10px; border-top: 1px solid #e5e7eb;">
+                <div style="display: inline-flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 11px; font-weight: 500; color: #374151; min-width: 70px;">Date Joined</span>
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        {{ search_form.date_joined_from }}
+                        <span style="font-size: 10px; color: #9ca3af;">to</span>
+                        {{ search_form.date_joined_to }}
+                    </div>
+                </div>
+            </div>
+        </form>
+        {% if request.GET %}
+        <div class="mt-0">
+            <span style="font-size: 11px; color: #6b7280;">{{ total_count }} record{{ total_count|pluralize }} found</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Worker List -->
+    <div class="mt-4">
+        {% if workers %}
+        <!-- Bulk Actions -->
+        {% if perms.zone.delete_worker and request.user.role_assignments.first and request.user.role_assignments.first.role.name != 'User' %}
+        <div class="mb-3" id="bulkActions" style="display: none;">
+            <div class="d-flex align-items-center gap-2">
+                <span id="selectedCount" class="badge bg-primary">0 selected</span>
+                <button type="button" class="btn btn-sm btn-danger" id="bulkDeleteBtn">
+                    <i class="bi bi-trash"></i> Delete Selected
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary" id="clearSelectionBtn">
+                    Clear Selection
+                </button>
+            </div>
+        </div>
+        {% endif %}
+        <div class="modern-table-container">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="workersTable">
+                    <thead>
+                        <tr>
+                            {% if perms.zone.delete_worker and request.user.role_assignments.first and request.user.role_assignments.first.role.name != 'User' %}
+                            <th style="width: 40px;">
+                                <input type="checkbox" id="selectAll" class="form-check-input">
+                            </th>
+                            {% endif %}
+                            <th>Name</th>
+                            {% if not is_vip_view %}
+                            <th>ID / Status</th>
+                            {% else %}
+                            <th>ID</th>
+                            {% endif %}
+                            <th>Nationality</th>
+                            <th>DOB</th>
+                            <th>Phone</th>
+                            <th>ID Card</th>
+                            <th>Position</th>
+                            <th>Zone</th>
+                            <th>Expiry Date</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for worker in workers %}
+                        <tr>
+                            {% if perms.zone.delete_worker and request.user.role_assignments.first and request.user.role_assignments.first.role.name != 'User' %}
+                            <td>
+                                <input type="checkbox" class="form-check-input worker-checkbox" value="{{ worker.id }}">
+                            </td>
+                            {% endif %}
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if worker.photo %}
+                                        <!-- DEBUG: List Photo URL: {% url "zone:serve_worker_photo" worker.id %} -->
+                                        <img src="{% url 'zone:serve_worker_photo' worker.id %}" 
+                                             alt="{{ worker.get_full_name }}" 
+                                             class=" me-2" 
+                                             style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <div class="worker-avatar-list me-2" style="display: none;">
+                                            {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+                                        </div>
+                                    {% else %}
+                                        <!-- DEBUG: No photo for list view: {{ worker.get_full_name }} -->
+                                        <div class="worker-avatar-list me-2">
+                                            {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+                                        </div>
+                                    {% endif %}
+                                    <div class="worker-details">
+                                        <h6>
+                                            {{ worker.get_full_name }}
+                                            {% if worker.is_vip %}
+                                                <span class="status-badge" style="background-color: #fbbf24; color: #92400e; margin-left: 4px; font-size: 8px;">VIP</span>
+                                            {% endif %}
+                                        </h6>
+                                        <p>
+                                            {% if worker.passport_number %}
+                                                Doc No: {{ worker.passport_number }}
+                                            {% else %}
+                                                {% for doc in worker.documents.all %}
+                                                    {% if doc.document_type == 'passport' %}
+                                                        Doc No: {{ doc.document_number }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for doc in worker.documents.all %}
+                                                    {% if doc.document_type == 'id_card' %}
+                                                        Doc No: {{ doc.document_number }}
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% if not worker.documents.all %}
+                                                    <span style="color: #9ca3af; font-style: italic;">No ID/Passport</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="worker-details space-y-2">
+                                    <h6>{{ worker.worker_id|default:"No ID" }}</h6>
+                                    {% if not is_vip_view %}
+                                    <span class="status-badge status-{{ worker.status }}">{{ worker.get_status_display }}</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="worker-details">
+                                    {% if worker.nationality %}
+                                        <span class="nationality-badge">{{ worker.get_nationality_display }}</span>
+                                    {% else %}
+                                        <span style="color: #9ca3af; font-size: 11px;">Not specified</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="worker-details">
+                                    {% if worker.dob %}
+                                        <h6>{{ worker.dob|date:"d/m/Y" }}</h6>
+                                        <p>{{ worker.dob|timesince }} old</p>
+                                    {% else %}
+                                        <h6 style="color: #9ca3af; font-style: italic;">No DOB</h6>
+                                        <p style="color: #9ca3af;">Not provided</p>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="worker-details">
+                                    {% if worker.phone_number %}
+                                        <h6>{{ worker.phone_number }}</h6>
+                                        <p>Contact Number</p>
+                                    {% else %}
+                                        <h6 style="color: #9ca3af; font-style: italic;">No Phone</h6>
+                                        <p style="color: #9ca3af;">Not provided</p>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="worker-details">
+                                    {% with card_info=worker.id_card_info %}
+                                        {% if card_info.status == 'no_card' %}
+                                            {% comment %}Check if worker is eligible for card creation{% endcomment %}
+                                            {% if worker.is_vip or worker.has_passed_probation and worker.status != 'probation' %}
+                                                {% comment %}Eligible for card creation{% endcomment %}
+                                                {% if request.GET.worker_type == 'vip' or worker.is_vip %}
+                                                    <a href="{% url 'cards:worker_id_card_create' filter='vip' %}?worker={{ worker.id }}" class="no-card-link" title="Create VIP ID Card">
+                                                        + No Card
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{% url 'cards:worker_id_card_create' filter='worker' %}?worker={{ worker.id }}" class="no-card-link" title="Create ID Card">
+                                                        + No Card
+                                                    </a>
+                                                {% endif %}
+                                            {% else %}
+                                                {% comment %}Not eligible for card - show as plain text{% endcomment %}
+                                                <span style="color: #9ca3af; font-size: 10px;">No Card</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <a href="{% url 'cards:worker_id_card_detail' worker.current_id_card.id %}" class="btn-compact btn-secondary-compact" title="View ID Card Details">
+                                                <i class="fas fa-id-card"></i> <span class="status-badge {{ card_info.badge_class }}">{{ card_info.display }}</span>
+                                            </a>
+                                            {% if card_info.card_number %}
+                                                <p style="font-size: 10px; color: #6b7280; margin: 2px 0 0 0;">{{ card_info.card_number }}</p>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="worker-details">
+                                    {% if worker.position %}
+                                        <h6>{{ worker.position.name }}</h6>
+                                        <p>Level {{ worker.position.level|default:"N/A" }}</p>
+                                    {% else %}
+                                        <h6>No Position</h6>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="worker-details">
+                                    <h6>
+                                        {{ worker.zone.name }}{% if worker.building %}-{{ worker.building.name }}{% endif %}{% if worker.floor %}-F{{ worker.floor.floor_number }}{% endif %}
+                                    </h6>
+                                    <p style="color: #6b7280; font-size: 10px;">
+                                        {% if not worker.building %}
+                                            <span style="color: #9ca3af;">No building assigned</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="worker-details">
+                                    {% with latest_doc=worker.documents.all|first %}
+                                        {% if latest_doc %}
+                                            <h6 style="font-size: 11px; color: #374151; font-weight: normal;">
+                                                {% if latest_doc.issue_date %}
+                                                    I:{{ latest_doc.issue_date|date:"d/m/Y" }}
+                                                {% else %}
+                                                    <span style="color: #9ca3af; font-style: italic;">I:No Issue Date</span>
+                                                {% endif %}
+                                            </h6>
+                                            <p style="font-size: 11px; color: #374151; margin: 2px 0 0 0; font-weight: bold;">
+                                                {% if latest_doc.expiry_date %}
+                                                    E:{{ latest_doc.expiry_date|date:"d/m/Y" }}
+                                                {% else %}
+                                                    <span style="color: #9ca3af; font-style: italic;">E:No Expiry Date</span>
+                                                {% endif %}
+                                            </p>
+                                        {% else %}
+                                            <h6 style="color: #9ca3af; font-style: italic; font-size: 11px;">No Documents</h6>
+                                            <p style="color: #9ca3af; font-size: 11px;">Not available</p>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="worker-details">
+                                    <h6>{{ worker.date_joined|date:"d/m/Y" }}</h6>
+                                    <p>{{ worker.date_joined|timesince }} ago</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{% url 'zone:worker_detail' worker.id %}" class="button-min-default  btn-sm-modern" style="border-radius:9px;">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'zone:worker_edit' worker.id %}" class="button-min-default  btn-sm-modern" style="border-radius:9px;">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    {% if perms.zone.delete_worker and request.user.role_assignments.first and request.user.role_assignments.first.role.name != 'User' %}
+                                    <button type="button" class="button-min-default btn-sm-modern delete-btn"
+                                        data-delete-url="{% url 'zone:worker_delete' worker.id %}"
+                                        data-delete-title="Delete Worker?"
+                                        data-delete-name="{{ worker.get_full_name }}" 
+                                        style="border-radius:9px;"
+                                        onclick="console.log('Delete button clicked for:', '{{ worker.get_full_name }}');">
+                                         <i class="bi bi-trash text-red-500"></i>
+                                     </button>
+                                     {% elif perms.zone.delete_worker %}
+                                     <button type="button" class="button-min-default btn-sm-modern" 
+                                        style="border-radius:9px; opacity: 0.5; cursor: not-allowed;"
+                                        title="Your role doesn't allow deleting workers"
+                                        disabled>
+                                         <i class="bi bi-trash text-gray-400"></i>
+                                     </button>
+                                     {% else %}
+                                     <button type="button" class="button-min-default btn-sm-modern" 
+                                        style="border-radius:9px; opacity: 0.5; cursor: not-allowed;"
+                                        title="You don't have permission to delete workers"
+                                        disabled>
+                                         <i class="bi bi-trash text-gray-400"></i>
+                                     </button>
+                                     {% endif %}
+                                     
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="border py-4 rounded-lg w-full flex flex-col justify-center items-center space-y-1 text-center">
+            <i class="fas fa-users text-3xl text-blue-500"></i>
+            <h2 class="text-lg font-semibold">No Record Found</h2>
+            <p class="text-sm text-gray-600">
+                {% if request.GET %}
+                    No record match your search criteria.
+                {% else %}
+                    Get started by adding your first record.
+                {% endif %}
+            </p>
+            
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Compact Pagination with Per-Page Selector -->
+    {% if workers %}
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <!-- Per-Page Selector -->
+        <div class="d-flex align-items-center">
+            <span style="font-size: 11px; color: #6b7280; margin-right: 8px;">Show:</span>
+            <select class="form-select form-select-sm rounded" style="width: auto; font-size: 11px; padding: 4px 8px;" onchange="changePerPage(this.value)">
+                <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                <option value="200" {% if per_page == 200 %}selected{% endif %}>200</option>
+            </select>
+            <span style="font-size: 11px; color: #6b7280; margin-left: 8px;">per page</span>
+        </div>
+
+        <!-- Pagination -->
+        {% if workers.has_other_pages %}
+        <nav aria-label="Workers pagination">
+            <ul class="pagination pagination-compact w-full">
+                {% if workers.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link page-nav rounded" href="?page=1&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <i class="fas fa-angle-double-left"></i><span class="page-text ms-1" style="border:none;">First</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link page-nav rounded" href="?page={{ workers.previous_page_number }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <i class="fas fa-angle-left"></i><span class="page-text ms-1" style="border:none;">Prev</span>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                {% for num in workers.paginator.page_range %}
+                    {% if workers.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link rounded">{{ num }}</span>
+                        </li>
+                    {% elif num > workers.number|add:'-2' and num < workers.number|add:'2' %}
+                        <li class="page-item">
+                            <a class="page-link rounded" href="?page={{ num }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if workers.has_next %}
+                    <li class="page-item">
+                        <a class="page-link page-nav rounded" href="?page={{ workers.next_page_number }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <span class="page-text me-1" style="border:none;">Next</span><i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link page-nav rounded" href="?page={{ workers.paginator.num_pages }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <span class="page-text me-1" style="border:none;">Last</span><i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Per-Page JavaScript -->
+<script>
+// Comprehensive toast removal script
+(function() {
+    // Remove existing toasts and alerts immediately
+    function removeToasts() {
+        const selectors = [
+            '.toast',
+            '.alert',
+            '.alert-dismissible', 
+            '[data-bs-dismiss="toast"]',
+            '[data-bs-dismiss="alert"]',
+            '.toast-container',
+            '#toast-container',
+            '.django-messages',
+            '.messages'
+        ];
+        
+        selectors.forEach(selector => {
+            document.querySelectorAll(selector).forEach(element => {
+                element.remove();
+            });
+        });
+    }
+
+    // Override global toast/alert functions
+    window.showToast = function() { return false; };
+    window.createToast = function() { return false; };
+    window.addToast = function() { return false; };
+    window.Toast = function() { return { show: function() {} }; };
+    
+    // Override Bootstrap Toast but preserve Modal functionality
+    if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+        const originalToast = bootstrap.Toast;
+        bootstrap.Toast = function(element, options) {
+            // Only disable if it's specifically for toasts
+            if (element && (element.classList.contains('toast') || element.closest('.toast-container'))) {
+                return { show: function() {}, hide: function() {}, dispose: function() {} };
+            }
+            // Preserve original functionality for non-toast elements
+            return new originalToast(element, options);
+        };
+        // Preserve static methods and prototype
+        Object.assign(bootstrap.Toast, originalToast);
+        Object.setPrototypeOf(bootstrap.Toast, originalToast);
+    }
+
+    // Remove toasts immediately on load
+    removeToasts();
+
+    // Monitor for new toasts and remove them
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1) {
+                        // Check if the added node is a toast/alert
+                        if (node.matches && (
+                            node.matches('.toast') || 
+                            node.matches('.alert') ||
+                            node.matches('.alert-dismissible') ||
+                            node.matches('.toast-container') ||
+                            node.matches('#toast-container') ||
+                            node.matches('.django-messages') ||
+                            node.matches('.messages')
+                        )) {
+                            node.remove();
+                            return;
+                        }
+                        
+                        // Check for toasts/alerts within the added node
+                        const toasts = node.querySelectorAll && node.querySelectorAll('.toast, .alert, .alert-dismissible, .toast-container, #toast-container, .django-messages, .messages');
+                        if (toasts && toasts.length > 0) {
+                            toasts.forEach(toast => toast.remove());
+                        }
+                    }
+                });
+            }
+        });
+    });
+
+    // Start observing
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    // Multiple cleanup attempts
+    setTimeout(removeToasts, 100);
+    setTimeout(removeToasts, 500);
+    setTimeout(removeToasts, 1000);
+    
+    // Clean up on page ready states
+    document.addEventListener('DOMContentLoaded', removeToasts);
+    window.addEventListener('load', removeToasts);
+})();
+
+// Per-page change function
+function changePerPage(perPage) {
+    const url = new URL(window.location);
+    url.searchParams.set('per_page', perPage);
+    url.searchParams.set('page', '1'); // Reset to first page when changing per_page
+    window.location.href = url.toString();
+}
+
+// Bulk selection and delete functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const workerCheckboxes = document.querySelectorAll('.worker-checkbox');
+    const bulkActions = document.getElementById('bulkActions');
+    const selectedCount = document.getElementById('selectedCount');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    const clearSelectionBtn = document.getElementById('clearSelectionBtn');
+    
+    // Exit early if no checkboxes exist (User role)
+    if (!selectAllCheckbox && workerCheckboxes.length === 0) {
+        return;
+    }
+    
+    // Update bulk actions visibility and count
+    function updateBulkActions() {
+        const checkedBoxes = document.querySelectorAll('.worker-checkbox:checked');
+        const count = checkedBoxes.length;
+        
+        if (count > 0) {
+            bulkActions.style.display = 'block';
+            selectedCount.textContent = `${count} selected`;
+        } else {
+            bulkActions.style.display = 'none';
+        }
+        
+        // Update select all checkbox state
+        if (count === 0) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = false;
+        } else if (count === workerCheckboxes.length) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = true;
+        } else {
+            selectAllCheckbox.indeterminate = true;
+            selectAllCheckbox.checked = false;
+        }
+    }
+    
+    // Select all checkbox functionality
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            workerCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+            updateBulkActions();
+        });
+    }
+    
+    // Individual checkbox functionality
+    workerCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateBulkActions);
+    });
+    
+    // Clear selection functionality
+    if (clearSelectionBtn) {
+        clearSelectionBtn.addEventListener('click', function() {
+            workerCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updateBulkActions();
+        });
+    }
+    
+    // Bulk delete functionality
+    if (bulkDeleteBtn) {
+        bulkDeleteBtn.addEventListener('click', function() {
+            const checkedBoxes = document.querySelectorAll('.worker-checkbox:checked');
+            const workerIds = Array.from(checkedBoxes).map(cb => cb.value);
+            
+            if (workerIds.length === 0) {
+                alert('Please select workers to delete.');
+                return;
+            }
+            
+            const confirmMessage = `Are you sure you want to delete ${workerIds.length} worker${workerIds.length !== 1 ? 's' : ''}? This action cannot be undone.`;
+            
+            if (confirm(confirmMessage)) {
+                // Disable button and show loading
+                bulkDeleteBtn.disabled = true;
+                bulkDeleteBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Deleting...';
+                
+                // Prepare form data
+                const formData = new FormData();
+                workerIds.forEach(id => {
+                    formData.append('worker_ids[]', id);
+                });
+                
+                // Get CSRF token
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfToken) {
+                    formData.append('csrfmiddlewaretoken', csrfToken.value);
+                }
+                
+                // Send AJAX request
+                fetch('{% url "zone:bulk_delete_workers" %}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        alert(data.message);
+                        
+                        // Remove deleted rows from table
+                        checkedBoxes.forEach(checkbox => {
+                            const row = checkbox.closest('tr');
+                            if (row) {
+                                row.remove();
+                            }
+                        });
+                        
+                        // Update counts and hide bulk actions
+                        updateBulkActions();
+                        
+                        // Optionally refresh the page to update stats
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        alert('Error: ' + (data.error || 'Failed to delete workers'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Bulk delete error:', error);
+                    alert('An error occurred while deleting workers. Please try again.');
+                })
+                .finally(() => {
+                    // Re-enable button
+                    bulkDeleteBtn.disabled = false;
+                    bulkDeleteBtn.innerHTML = '<i class="bi bi-trash"></i> Delete Selected';
+                });
+            }
+        });
+    }
+    
+    // Initial update
+    updateBulkActions();
+});
+</script>
+{% endblock %}
+
+{% block modals %}
+    {% include 'components/delete_modal.html' %}
+{% endblock %} 

@@ -1,0 +1,356 @@
+{% load i18n %}
+<!-- Reject Overtime Modal Component -->
+<div class="modal fade" id="rejectOvertimeModal" tabindex="-1" aria-labelledby="rejectOvertimeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectOvertimeModalLabel">
+                    <i class="bi bi-x-circle-fill text-danger me-1"></i>
+                    <span>{% trans "Reject Overtime Request" %}</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2" style="font-size: 12px; font-weight: 500;">
+                    <span id="rejectOvertimeEmployeeName"></span> - <span id="rejectOvertimeDate"></span>
+                </p>
+                <div class="mb-3">
+                    <label for="rejectionReasonTextarea" class="form-label">
+                        {% trans "Rejection Reason" %} <span class="text-danger">*</span>
+                    </label>
+                    <textarea
+                        class="form-control"
+                        id="rejectionReasonTextarea"
+                        rows="4"
+                        placeholder="{% trans 'Please provide a detailed reason for rejecting this overtime request...' %}"
+                        style="font-size: 12px;"
+                        required></textarea>
+                    <div class="invalid-feedback" id="rejectionReasonError" style="display: none;">
+                        {% trans "Please provide a reason for rejection" %}
+                    </div>
+                </div>
+                <p class="text-muted mb-0" style="font-size: 11px;">
+                    <i class="bi bi-info-circle me-1"></i>
+                    {% trans "The employee will be notified of the rejection reason" %}
+                </p>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex gap-1 w-100 justify-content-end">
+                    <button type="button" class="button-min-default py-1" data-bs-dismiss="modal">
+                        {% trans "Cancel" %}
+                    </button>
+                    <button type="button" class="button-min-danger py-1" id="confirmRejectBtn">
+                        <i class="bi bi-x-circle me-1"></i>
+                        {% trans "Reject Request" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Reject Overtime Modal Styles */
+    #rejectOvertimeModal {
+        z-index: 1080 !important;
+    }
+
+    #rejectOvertimeModal .modal-dialog {
+        margin: 1.75rem auto;
+        position: relative;
+        z-index: 1081;
+        max-width: 500px;
+    }
+
+    #rejectOvertimeModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        position: relative;
+        z-index: 1081;
+    }
+
+    #rejectOvertimeModal.modal.show .modal-content {
+        animation: modalSlideIn 0.3s ease-out;
+    }
+
+    #rejectOvertimeModal .modal-header {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0.75rem 1rem;
+        position: relative;
+        z-index: 1082;
+    }
+
+    #rejectOvertimeModal .modal-title {
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: #1f2937;
+    }
+
+    #rejectOvertimeModal .modal-title i {
+        font-size: 0.875rem;
+    }
+
+    #rejectOvertimeModal .modal-body {
+        padding: 1rem;
+        color: #4b5563;
+        position: relative;
+        z-index: 1082;
+    }
+
+    #rejectOvertimeModal .modal-footer {
+        border-top: 1px solid #e5e7eb;
+        padding: 0.75rem 1rem;
+        gap: 0.5rem;
+        position: relative;
+        z-index: 1082;
+    }
+
+    #rejectOvertimeModal .form-control {
+        font-size: 12px;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+    }
+
+    #rejectOvertimeModal .form-control:focus {
+        border-color: #ef4444;
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+
+    #rejectOvertimeModal .form-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    #rejectOvertimeModal .modal-header .btn-close {
+        position: relative;
+        z-index: 1084;
+        pointer-events: auto;
+        font-size: 0.75rem;
+        padding: 0.25rem;
+    }
+
+    /* Ensure backdrop doesn't block interaction */
+    .modal-backdrop {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+
+    .modal-backdrop.show {
+        backdrop-filter: blur(3px);
+    }
+
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+</style>
+
+<script>
+// Reject overtime modal functionality
+let currentRejectRequestId = null;
+
+function initializeRejectOvertimeModal() {
+    console.log('🚫 REJECT MODAL: Initializing...');
+    const rejectModalElement = document.getElementById('rejectOvertimeModal');
+
+    if (!rejectModalElement) {
+        console.error('❌ REJECT MODAL: Modal element not found!');
+        return;
+    }
+
+    const rejectModal = new bootstrap.Modal(rejectModalElement);
+    const confirmRejectBtn = document.getElementById('confirmRejectBtn');
+    const rejectionReasonTextarea = document.getElementById('rejectionReasonTextarea');
+    const rejectionReasonError = document.getElementById('rejectionReasonError');
+
+    console.log('✅ REJECT MODAL: Modal initialized');
+
+    // Watch for backdrop creation and immediately fix it
+    let backdropFixed = false;
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.classList && node.classList.contains('modal-backdrop') && !backdropFixed) {
+                    console.log('🎭 BACKDROP DETECTED: Fixing once');
+
+                    // Mark as fixed to prevent infinite loop
+                    backdropFixed = true;
+
+                    // Disconnect observer temporarily to prevent loop
+                    observer.disconnect();
+
+                    // Set z-index lower than modal (no need to move in DOM)
+                    node.style.setProperty('z-index', '1075', 'important');
+                    console.log('✅ Backdrop fixed on creation');
+                }
+            });
+        });
+    });
+
+    // Start observing when modal is about to show
+    rejectModalElement.addEventListener('show.bs.modal', function() {
+        backdropFixed = false;
+        observer.observe(document.body, { childList: true });
+        console.log('👀 REJECT OBSERVER: Started watching for backdrop');
+        rejectModalElement.style.setProperty('z-index', '1080', 'important');
+    });
+
+    // Stop observing after modal is shown
+    rejectModalElement.addEventListener('shown.bs.modal', function() {
+        setTimeout(() => {
+            observer.disconnect();
+            console.log('👀 REJECT OBSERVER: Stopped watching');
+        }, 100);
+
+        // Focus on textarea
+        rejectionReasonTextarea.focus();
+
+        // Ensure all interactive elements have pointer-events enabled
+        const allInteractive = rejectModalElement.querySelectorAll('input, select, textarea, button');
+        allInteractive.forEach(element => {
+            element.style.setProperty('pointer-events', 'auto', 'important');
+        });
+    });
+
+    // Keyboard navigation
+    rejectModalElement.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modalInstance = bootstrap.Modal.getInstance(rejectModalElement);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        }
+    });
+
+    // Clear error on input
+    rejectionReasonTextarea.addEventListener('input', function() {
+        rejectionReasonTextarea.classList.remove('is-invalid');
+        rejectionReasonError.style.display = 'none';
+    });
+
+    // Handle reject confirmation
+    confirmRejectBtn.addEventListener('click', function() {
+        console.log('🔥 REJECT MODAL: Confirm reject button clicked');
+
+        const reason = rejectionReasonTextarea.value.trim();
+
+        if (!reason) {
+            rejectionReasonTextarea.classList.add('is-invalid');
+            rejectionReasonError.style.display = 'block';
+            rejectionReasonTextarea.focus();
+            return;
+        }
+
+        if (currentRejectRequestId) {
+            // Get CSRF token
+            function getCSRFToken() {
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                if (csrfMeta) return csrfMeta.getAttribute('content');
+
+                const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfInput) return csrfInput.value;
+
+                const csrfCookie = document.cookie.match(/csrftoken=([^;]+)/);
+                if (csrfCookie) return csrfCookie[1];
+
+                return null;
+            }
+
+            const csrfToken = getCSRFToken();
+
+            if (!csrfToken) {
+                alert('Security token not found. Please refresh the page and try again.');
+                return;
+            }
+
+            // Show loading state
+            const originalContent = confirmRejectBtn.innerHTML;
+            confirmRejectBtn.disabled = true;
+            confirmRejectBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Rejecting...';
+
+            // Create and submit form
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/attendance/overtime/${currentRejectRequestId}/approve/`;
+
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = csrfToken;
+            form.appendChild(csrfInput);
+
+            const actionInput = document.createElement('input');
+            actionInput.type = 'hidden';
+            actionInput.name = 'action';
+            actionInput.value = 'reject';
+            form.appendChild(actionInput);
+
+            const reasonInput = document.createElement('input');
+            reasonInput.type = 'hidden';
+            reasonInput.name = 'rejection_reason';
+            reasonInput.value = reason;
+            form.appendChild(reasonInput);
+
+            // Add timeout to prevent indefinite hanging
+            const timeoutId = setTimeout(() => {
+                confirmRejectBtn.disabled = false;
+                confirmRejectBtn.innerHTML = originalContent;
+                rejectModal.hide();
+            }, 10000);
+
+            form.addEventListener('submit', function() {
+                clearTimeout(timeoutId);
+                rejectModal.hide();
+            });
+
+            document.body.appendChild(form);
+
+            try {
+                form.submit();
+                console.log('✅ REJECT MODAL: Form submitted successfully');
+            } catch (error) {
+                console.error('❌ REJECT MODAL: Error submitting form:', error);
+                alert('Error submitting rejection: ' + error.message);
+                confirmRejectBtn.disabled = false;
+                confirmRejectBtn.innerHTML = originalContent;
+            }
+        }
+    });
+
+    // Reset modal when hidden
+    rejectModalElement.addEventListener('hidden.bs.modal', function() {
+        currentRejectRequestId = null;
+        rejectionReasonTextarea.value = '';
+        rejectionReasonTextarea.classList.remove('is-invalid');
+        rejectionReasonError.style.display = 'none';
+        confirmRejectBtn.disabled = false;
+        confirmRejectBtn.innerHTML = '<i class="bi bi-x-circle me-1"></i>{% trans "Reject Request" %}';
+    });
+}
+
+// Global function to show reject modal
+function showRejectModal(requestId, employeeName, date) {
+    currentRejectRequestId = requestId;
+    document.getElementById('rejectOvertimeEmployeeName').textContent = employeeName;
+    document.getElementById('rejectOvertimeDate').textContent = date;
+
+    const rejectModalElement = document.getElementById('rejectOvertimeModal');
+    const rejectModal = bootstrap.Modal.getInstance(rejectModalElement) || new bootstrap.Modal(rejectModalElement);
+    rejectModal.show();
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeRejectOvertimeModal);
+</script>

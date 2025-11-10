@@ -1,0 +1,488 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Team - Project Management{% endblock %}
+
+{% block extra_css %}
+<style>
+    .member-row {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 10px;
+        position: relative;
+    }
+
+    .member-row:hover {
+        background: #f1f3f5;
+    }
+
+    .btn-remove-member {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    .member-fields {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 10px;
+        align-items: end;
+    }
+
+    .add-member-section {
+        background: #f0f9ff;
+        border: 2px dashed #3b82f6;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .add-member-section:hover {
+        background: #e0f2fe;
+        border-color: #2563eb;
+    }
+
+    .employee-select {
+        position: relative;
+    }
+
+    .employee-info {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 4px;
+    }
+
+    @media (max-width: 768px) {
+        .member-fields {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'project:team_list' %}">Teams</a></li>
+                <li class="breadcrumb-item active">Create Team</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-dark-emphasis mb-1">Create New Team</h2>
+        <p class="text-muted mb-0">Set up a new team and assign members</p>
+    </div>
+
+    <form method="post" id="teamCreateForm">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Team Details Card -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Team Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label class="form-label">Team Name <span class="text-danger">*</span></label>
+                                <input type="text" name="team_name" class="form-control" required
+                                       placeholder="Enter team name">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Max Members <span class="text-danger">*</span></label>
+                                <input type="number" name="max_members" class="form-control" value="10" min="1" max="100" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Team Type <span class="text-danger">*</span></label>
+                                <select name="team_type" class="form-select" required>
+                                    <option value="">Select team type</option>
+                                    {% for value, label in team_types %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Department</label>
+                                <select name="department" class="form-select">
+                                    <option value="">Select department</option>
+                                    {% for dept in departments %}
+                                    <option value="{{ dept.id }}">{{ dept.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Team Lead</label>
+                            <select name="team_lead" id="teamLeadSelect" class="form-select">
+                                <option value="">Select team lead</option>
+                                {% for employee in employees %}
+                                <option value="{{ employee.id }}"
+                                        data-name="{{ employee.full_name }}"
+                                        data-title="{{ employee.job_title|default:'' }}">
+                                    {{ employee.full_name }} - {{ employee.job_title|default:"" }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">The team lead will have special permissions</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="3"
+                                      placeholder="Describe the team's purpose and responsibilities..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Members Card -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Team Members</h5>
+                        <span class="badge bg-primary" id="memberCount">0 members</span>
+                    </div>
+                    <div class="card-body">
+                        <div id="teamMembersList">
+                            <!-- Dynamic member rows will be added here -->
+                        </div>
+
+                        <div class="add-member-section" onclick="addMemberRow()">
+                            <i class="bi bi-person-plus-fill text-primary" style="font-size: 24px;"></i>
+                            <div class="mt-2">
+                                <strong>Add Team Member</strong>
+                                <div class="text-muted small">Click to assign an employee to this team</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'project:team_list' %}" class="btn btn-light">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Create Team with Members
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Quick Add Employees -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-lightning-charge text-warning"></i> Quick Add
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label small">Add by Department</label>
+                            <select class="form-select form-select-sm" id="quickAddDepartment">
+                                <option value="">Select department</option>
+                                {% for dept in departments %}
+                                <option value="{{ dept.id }}">{{ dept.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-2"
+                                    onclick="addByDepartment()">
+                                Add All from Department
+                            </button>
+                        </div>
+
+                        <div>
+                            <label class="form-label small">Available Employees</label>
+                            <div style="max-height: 200px; overflow-y: auto;">
+                                {% for employee in employees %}
+                                <div class="form-check">
+                                    <input class="form-check-input employee-checkbox" type="checkbox"
+                                           value="{{ employee.id }}"
+                                           data-name="{{ employee.full_name }}"
+                                           data-title="{{ employee.job_title|default:'' }}"
+                                           data-department="{{ employee.department.id|default:'' }}"
+                                           id="emp_{{ employee.id }}">
+                                    <label class="form-check-label small" for="emp_{{ employee.id }}">
+                                        {{ employee.full_name }}
+                                        {% if employee.job_title %}
+                                        <span class="text-muted">({{ employee.job_title }})</span>
+                                        {% endif %}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary w-100 mt-2"
+                                    onclick="addSelectedEmployees()">
+                                Add Selected
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Role & Rate Templates -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-info-circle text-info"></i> Member Settings
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="small">
+                            <div class="mb-3">
+                                <strong>Roles:</strong>
+                                <ul class="mt-1 mb-0">
+                                    <li><strong>Member:</strong> Basic team member</li>
+                                    <li><strong>Senior:</strong> Senior team member</li>
+                                    <li><strong>Lead:</strong> Team lead role</li>
+                                    <li><strong>Specialist:</strong> Subject matter expert</li>
+                                </ul>
+                            </div>
+
+                            <div class="mb-3">
+                                <strong>Allocation:</strong>
+                                <p class="mb-0">Percentage of time allocated to this team (1-100%)</p>
+                            </div>
+
+                            <div>
+                                <strong>Hourly Rate:</strong>
+                                <p class="mb-0">Optional billing rate for project costing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Member Row Template -->
+<template id="memberRowTemplate">
+    <div class="member-row" data-member-index="">
+        <button type="button" class="btn btn-sm btn-danger btn-remove-member" onclick="removeMemberRow(this)">
+            <i class="bi bi-x"></i>
+        </button>
+        <div class="member-fields">
+            <div>
+                <label class="form-label small">Employee <span class="text-danger">*</span></label>
+                <select name="member_employee[]" class="form-select member-employee-select" required onchange="updateMemberInfo(this)">
+                    <option value="">Select employee</option>
+                    {% for employee in employees %}
+                    <option value="{{ employee.id }}"
+                            data-name="{{ employee.full_name }}"
+                            data-title="{{ employee.job_title|default:'' }}">
+                        {{ employee.full_name }} {% if employee.job_title %}({{ employee.job_title }}){% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+                <div class="employee-info"></div>
+            </div>
+            <div>
+                <label class="form-label small">Role <span class="text-danger">*</span></label>
+                <select name="member_role[]" class="form-select" required>
+                    <option value="member">Member</option>
+                    <option value="senior">Senior Member</option>
+                    <option value="lead">Lead</option>
+                    <option value="specialist">Specialist</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label small">Allocation %</label>
+                <input type="number" name="member_allocation[]" class="form-control"
+                       value="100" min="1" max="100" placeholder="100">
+            </div>
+            <div>
+                <label class="form-label small">Hourly Rate</label>
+                <input type="number" name="member_rate[]" class="form-control"
+                       step="0.01" min="0" placeholder="0.00">
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+let memberIndex = 0;
+let addedEmployees = new Set();
+
+function addMemberRow(employeeId = null, employeeName = null) {
+    const template = document.getElementById('memberRowTemplate');
+    const clone = template.content.cloneNode(true);
+
+    // Set unique index
+    clone.querySelector('.member-row').setAttribute('data-member-index', memberIndex);
+
+    // If employee is provided, pre-select it
+    if (employeeId) {
+        const select = clone.querySelector('.member-employee-select');
+        select.value = employeeId;
+
+        // Disable this option in other selects
+        addedEmployees.add(employeeId);
+        updateAllEmployeeSelects();
+    }
+
+    // Add to list
+    document.getElementById('teamMembersList').appendChild(clone);
+
+    memberIndex++;
+    updateMemberCount();
+}
+
+function removeMemberRow(button) {
+    const row = button.closest('.member-row');
+    const select = row.querySelector('.member-employee-select');
+    const employeeId = select.value;
+
+    if (employeeId) {
+        addedEmployees.delete(employeeId);
+        updateAllEmployeeSelects();
+    }
+
+    row.remove();
+    updateMemberCount();
+}
+
+function updateMemberInfo(select) {
+    const employeeId = select.value;
+    const infoDiv = select.parentElement.querySelector('.employee-info');
+
+    if (employeeId) {
+        const option = select.selectedOptions[0];
+        const title = option.dataset.title;
+        if (title) {
+            infoDiv.textContent = title;
+        }
+
+        // Update added employees set
+        const row = select.closest('.member-row');
+        const previousValue = row.dataset.previousEmployee;
+
+        if (previousValue) {
+            addedEmployees.delete(previousValue);
+        }
+
+        addedEmployees.add(employeeId);
+        row.dataset.previousEmployee = employeeId;
+
+        updateAllEmployeeSelects();
+    } else {
+        infoDiv.textContent = '';
+    }
+}
+
+function updateAllEmployeeSelects() {
+    // Update all employee selects to disable already selected options
+    document.querySelectorAll('.member-employee-select').forEach(select => {
+        const currentValue = select.value;
+
+        select.querySelectorAll('option').forEach(option => {
+            if (option.value && option.value !== currentValue) {
+                option.disabled = addedEmployees.has(option.value);
+            }
+        });
+    });
+
+    // Update checkboxes
+    document.querySelectorAll('.employee-checkbox').forEach(checkbox => {
+        checkbox.disabled = addedEmployees.has(checkbox.value);
+        if (addedEmployees.has(checkbox.value)) {
+            checkbox.checked = false;
+        }
+    });
+}
+
+function updateMemberCount() {
+    const count = document.querySelectorAll('.member-row').length;
+    document.getElementById('memberCount').textContent = `${count} member${count !== 1 ? 's' : ''}`;
+}
+
+function addSelectedEmployees() {
+    const checkboxes = document.querySelectorAll('.employee-checkbox:checked:not(:disabled)');
+
+    checkboxes.forEach(checkbox => {
+        addMemberRow(checkbox.value, checkbox.dataset.name);
+        checkbox.checked = false;
+    });
+}
+
+function addByDepartment() {
+    const deptSelect = document.getElementById('quickAddDepartment');
+    const deptId = deptSelect.value;
+
+    if (!deptId) {
+        alert('Please select a department');
+        return;
+    }
+
+    const checkboxes = document.querySelectorAll('.employee-checkbox:not(:disabled)');
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.dataset.department === deptId) {
+            addMemberRow(checkbox.value, checkbox.dataset.name);
+        }
+    });
+
+    deptSelect.value = '';
+}
+
+// Auto-add team lead as a member
+document.getElementById('teamLeadSelect').addEventListener('change', function() {
+    const leadId = this.value;
+
+    if (leadId && !addedEmployees.has(leadId)) {
+        const option = this.selectedOptions[0];
+        addMemberRow(leadId, option.dataset.name);
+
+        // Set role to 'lead' for team lead
+        const lastRow = document.querySelector('.member-row:last-child');
+        if (lastRow) {
+            lastRow.querySelector('select[name="member_role[]"]').value = 'lead';
+        }
+    }
+});
+
+// Form validation
+document.getElementById('teamCreateForm').addEventListener('submit', function(e) {
+    const memberRows = document.querySelectorAll('.member-row');
+
+    if (memberRows.length === 0) {
+        if (!confirm('No team members assigned. Create team without members?')) {
+            e.preventDefault();
+            return false;
+        }
+    }
+
+    // Validate unique employees
+    const employees = new Set();
+    let hasDuplicates = false;
+
+    memberRows.forEach(row => {
+        const employeeId = row.querySelector('.member-employee-select').value;
+        if (employeeId) {
+            if (employees.has(employeeId)) {
+                hasDuplicates = true;
+            }
+            employees.add(employeeId);
+        }
+    });
+
+    if (hasDuplicates) {
+        alert('Duplicate employees detected. Each employee can only be added once.');
+        e.preventDefault();
+        return false;
+    }
+});
+</script>
+{% endblock %}

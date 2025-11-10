@@ -1,0 +1,309 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load eform_tags %}
+
+{% block title %}Submission #{{ submission.id }}{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --primary: #3b82f6;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --white: #ffffff;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    background: var(--gray-50);
+}
+
+.submission-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+.submission-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.submission-header {
+    border-bottom: 1px solid var(--gray-200);
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+}
+
+.submission-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin: 0 0 8px 0;
+}
+
+.submission-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--gray-600);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.meta-item i {
+    color: var(--primary);
+}
+
+.field-group {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.field-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.field-value {
+    font-size: 14px;
+    color: var(--gray-900);
+    padding: 10px;
+    background: var(--gray-50);
+    border-radius: 4px;
+    border: 1px solid var(--gray-200);
+    min-height: 40px;
+}
+
+.field-value.empty {
+    color: var(--gray-400);
+    font-style: italic;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--white);
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    color: var(--gray-700);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+
+.back-button:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-400);
+    color: var(--gray-900);
+    text-decoration: none;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--gray-200);
+}
+
+.print-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+
+.print-button:hover {
+    background: #2563eb;
+    color: var(--white);
+    text-decoration: none;
+}
+
+@media print {
+    .back-button,
+    .action-buttons {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
+
+    .submission-container {
+        padding: 0;
+    }
+}
+
+#main-content {
+    transition: none !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="submission-container">
+    <div style="margin-bottom: 16px;">
+        <a href="javascript:history.back()" class="back-button">
+            <i class="bi bi-arrow-left"></i>
+            Back to List
+        </a>
+    </div>
+
+    <div class="submission-card">
+        <div class="submission-header">
+            <h1 class="submission-title">
+                <i class="bi bi-file-text-fill" style="color: var(--primary);"></i>
+                {{ form.title }}
+            </h1>
+            <div class="submission-meta">
+                <div class="meta-item">
+                    <i class="bi bi-hash"></i>
+                    <span>Submission #{{ submission.id }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="bi bi-person"></i>
+                    <span>
+                        {% if submission.submitted_by %}
+                            {{ submission.submitted_by.get_full_name|default:submission.submitted_by.username }}
+                        {% else %}
+                            Anonymous
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="meta-item">
+                    <i class="bi bi-calendar"></i>
+                    <span>{{ submission.submitted_at|date:"F d, Y" }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="bi bi-clock"></i>
+                    <span>{{ submission.submitted_at|time:"H:i" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="submission-content">
+            {% if processed_data %}
+                {% for field_name, field_value in processed_data.items %}
+                <div class="field-group">
+                    <div class="field-label">{{ field_name }}</div>
+                    <div class="field-value {% if not field_value %}empty{% endif %}">
+                        {% if field_value %}
+                            {% if field_name == 'Employee Name' %}
+                                {# Display employee with nice avatar #}
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #8b5cf6); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 12px;">
+                                        {{ field_value|slice:":1" }}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 600; color: #111827;">{{ field_value }}</div>
+                                        {% if processed_data.Employee %}
+                                            <div style="font-size: 11px; color: #6b7280;">ID: {{ processed_data|get_item:'Employee ID' }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% elif field_name == 'Employee ID' %}
+                                {# Skip - already shown with Employee Name #}
+                                <div style="display: none;"></div>
+                            {% elif field_value|length > 200 %}
+                                {{ field_value|linebreaksbr }}
+                            {% else %}
+                                {{ field_value }}
+                            {% endif %}
+                        {% else %}
+                            Not provided
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="field-value empty">
+                    No data submitted
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="action-buttons">
+            {% if submission.submitted_by == request.user %}
+            <a href="{% url 'eform:edit_submission' submission.id %}" class="print-button" style="text-decoration: none;">
+                <i class="bi bi-pencil"></i>
+                Edit
+            </a>
+            {% endif %}
+            <button onclick="window.print()" class="print-button">
+                <i class="bi bi-printer"></i>
+                Print
+            </button>
+        </div>
+    </div>
+
+    <!-- Additional Info Card -->
+    <div class="submission-card">
+        <h3 style="font-size: 14px; font-weight: 600; color: var(--gray-700); margin: 0 0 12px 0;">
+            <i class="bi bi-info-circle"></i>
+            Submission Information
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; font-size: 12px;">
+            <div>
+                <div class="field-label" style="margin-bottom: 4px;">IP Address</div>
+                <div style="color: var(--gray-600);">{{ submission.ip_address|default:"Not recorded" }}</div>
+            </div>
+            <div>
+                <div class="field-label" style="margin-bottom: 4px;">Email</div>
+                <div style="color: var(--gray-600);">{{ submission.email|default:"Not provided" }}</div>
+            </div>
+            <div>
+                <div class="field-label" style="margin-bottom: 4px;">User Agent</div>
+                <div style="color: var(--gray-600); word-break: break-all;">
+                    {{ submission.user_agent|default:"Not recorded"|truncatewords:10 }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,2133 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Billing{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Compact Invoice Form Design */
+:root {
+    --primary-blue: #2563eb;
+    --success-green: #059669;
+    --warning-orange: #d97706;
+    --danger-red: #dc2626;
+    --neutral-gray: #6b7280;
+    --light-gray: #f8fafc;
+    --border-color: #e5e7eb;
+    --shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-hover: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    --radius: 6px;
+}
+
+/* Compact page header */
+.page-header {
+    background: white;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+  
+}
+
+.page-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1f2937;
+}
+
+.page-header p {
+    font-size: 0.75rem;
+    color: var(--neutral-gray);
+    margin: 0.25rem 0 0 0;
+}
+
+/* Form sections */
+.form-section {
+    background: white;
+    border: 1px solid var(--border-color);
+
+    margin-bottom: 0.75rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.form-section h4 {
+    color: #1f2937;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #ddd;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.form-section h4, i {
+    color: #374151;
+    font-size: 0.9rem;
+}
+
+/* Form controls */
+.form-label {
+    font-size: 0.75rem !important;
+    margin-bottom: 0.25rem !important;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.form-control, .form-select {
+    font-size: 0.8rem !important;
+    padding: 0.375rem 0.5rem !important;
+    height: auto !important;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    line-height: 1.3;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    outline: none;
+    background: #fafbfc;
+}
+
+.form-control:hover:not(:focus), .form-select:hover:not(:focus) {
+    border-color: #9ca3af;
+    background: #f9fafb;
+}
+
+/* Client selection */
+.client-selection-container {
+    background: var(--light-gray);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.client-type-selector {
+    margin-bottom: 0.75rem;
+}
+
+.client-fields {
+    display: none !important;
+    margin-top: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.75rem;
+    background: white;
+}
+
+.client-fields.active {
+    display: block !important;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Debug styling */
+.client-fields {
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.75rem;
+    background: white;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Autocomplete styling */
+.autocomplete-container {
+    position: relative;
+}
+
+.autocomplete-input {
+    position: relative;
+    z-index: 1;
+}
+
+.autocomplete-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.autocomplete-item {
+    padding: 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s ease;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.autocomplete-item:hover {
+    background: var(--light-gray);
+}
+
+.autocomplete-item.loading {
+    color: var(--neutral-gray);
+    font-style: italic;
+    cursor: default;
+    text-align: center;
+}
+
+.autocomplete-item.empty {
+    color: var(--neutral-gray);
+    font-style: italic;
+    cursor: default;
+    text-align: center;
+}
+
+.autocomplete-item.error {
+    color: var(--danger-red);
+    font-style: italic;
+    cursor: default;
+    text-align: center;
+}
+
+.item-main {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+}
+
+.item-subtitle {
+    font-size: 0.7rem;
+    color: var(--neutral-gray);
+    line-height: 1.3;
+}
+
+/* Service Autocomplete Styling */
+.service-autocomplete-container {
+    position: relative;
+    width: 100%;
+}
+
+.service-autocomplete-input {
+    width: 100%;
+    font-size: 13px !important;
+    padding: 8px 12px !important;
+    height: auto !important;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    background: white;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.service-autocomplete-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.service-autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.service-autocomplete-item {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.service-autocomplete-item:hover,
+.service-autocomplete-item.highlighted {
+    background-color: #f8fafc;
+}
+
+.service-autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.service-item-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.service-item-details {
+    font-size: 11px;
+    color: #6b7280;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.service-item-code {
+    background: #e0e7ff;
+    color: #3730a3;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+.service-item-price {
+    font-weight: 600;
+    color: #059669;
+}
+
+.service-no-results {
+    padding: 12px;
+    text-align: center;
+    color: #9ca3af;
+    font-size: 12px;
+    font-style: italic;
+}
+
+/* Selected client display */
+.selected-client {
+    background: #ecfdf5;
+    border: 1px solid #10b981;
+    border-radius: 4px;
+    padding: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.selected-client-info {
+    flex: 1;
+}
+
+.selected-client .client-name {
+    color: #065f46;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.selected-client .client-details {
+    color: #047857;
+    font-size: 0.7rem;
+    line-height: 1.3;
+}
+
+.clear-selection {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.clear-selection:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+.clear-selection i {
+    font-size: 0.8rem;
+}
+
+/* Line items table */
+.line-items-section {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.line-items-header {
+    background: var(--light-gray);
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.line-items-header h4 {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.add-line-btn {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.add-line-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.line-items-table {
+    width: 100%;
+    font-size: 0.75rem;
+    margin: 0;
+}
+
+.line-items-table th {
+    background: var(--light-gray);
+    color: #374151;
+    font-weight: 600;
+    padding: 0.5rem 0.375rem;
+    border-bottom: 1px solid var(--border-color);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-size: 0.7rem;
+}
+
+.line-items-table td {
+    padding: 0.5rem 0.375rem;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+}
+
+.line-item-row {
+    transition: all 0.2s ease;
+}
+
+.line-item-row:hover {
+    background: #f9fafb;
+}
+
+.line-item-row.to-delete {
+    opacity: 0.5;
+    background: #fee2e2;
+}
+
+.line-item-row .form-control,
+.line-item-row .form-select {
+    font-size: 0.7rem !important;
+    padding: 0.25rem 0.375rem !important;
+    margin: 0;
+    border-radius: 3px;
+}
+
+.line-item-total {
+    font-weight: 600;
+    color: #1f2937;
+    text-align: right;
+    background: #f9fafb;
+}
+
+.delete-line-btn {
+    background: var(--danger-red);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 0.25rem 0.375rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete-line-btn:hover {
+    background: #b91c1c;
+    transform: scale(1.05);
+}
+
+/* Inline checkbox and delete button styling */
+.line-item-row input[type="checkbox"] {
+    transform: scale(0.9);
+    margin: 0;
+}
+
+.line-item-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 32px;
+}
+
+/* Invoice totals */
+.invoice-totals {
+    background: var(--light-gray);
+    padding: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.totals-table {
+    width: 100%;
+    max-width: 300px;
+    margin-left: auto;
+    font-size: 0.8rem;
+}
+
+.totals-table td {
+    padding: 0.25rem 0.5rem;
+    border: none;
+}
+
+.totals-table .total-label {
+    font-weight: 500;
+    color: #374151;
+    text-align: right;
+}
+
+.totals-table .total-value {
+    font-weight: 600;
+    color: #1f2937;
+    text-align: right;
+    width: 120px;
+}
+
+.grand-total {
+    border-top: 2px solid var(--primary-blue);
+    font-size: 1rem !important;
+}
+
+.grand-total .total-label,
+.grand-total .total-value {
+    font-weight: 700;
+    color: var(--primary-blue);
+    padding-top: 0.5rem;
+}
+
+/* Submit area */
+.submit-buttons {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 0.5rem;
+    justify-content: end;
+}
+
+
+.btn-modern {
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    line-height: 1.2;
+}
+
+.btn-primary-modern {
+    background: var(--primary-blue);
+    color: white;
+}
+.btn-primary-modern:hover {
+    background: #1d4ed8;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+}
+
+.btn-success-modern {
+    background: var(--success-green);
+    color: white;
+}
+.btn-success-modern:hover {
+    background: #047857;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-warning-modern {
+    background: var(--warning-orange);
+    color: white;
+}
+.btn-warning-modern:hover {
+    background: #b45309;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-danger-modern {
+    background: var(--danger-red);
+    color: white;
+}
+.btn-danger-modern:hover {
+    background: #b91c1c;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-outline-modern {
+    background: white;
+    color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+}
+.btn-outline-modern:hover {
+    background: var(--primary-blue);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-light-modern {
+    background: var(--light-gray);
+    color: #374151;
+    border: 1px solid var(--border-color);
+}
+.btn-light-modern:hover {
+    background: #e5e7eb;
+    color: #1f2937;
+    transform: translateY(-1px);
+}
+
+.btn-sm-modern {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    gap: 0.25rem;
+}
+
+/* Required field indicator */
+.required-field {
+    color: var(--danger-red);
+    font-weight: 600;
+}
+
+/* Tax percentage input styling */
+.input-group .form-control {
+    border-right: none;
+}
+
+.input-group .input-group-text {
+    background: #f8f9fa;
+    border-left: none;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Error styling */
+.invalid-feedback {
+    font-size: 0.7rem;
+    color: var(--danger-red);
+    margin-top: 0.25rem;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: var(--danger-red);
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1);
+}
+
+/* Empty formset template hidden */
+.empty-form {
+    display: none;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .line-items-table {
+        font-size: 0.7rem;
+    }
+    
+    .line-items-table th,
+    .line-items-table td {
+        padding: 0.375rem 0.25rem;
+    }
+    
+    .line-item-row .form-control,
+    .line-item-row .form-select {
+        font-size: 0.65rem !important;
+        padding: 0.125rem 0.25rem !important;
+    }
+    
+    .submit-buttons {
+        flex-direction: column;
+        gap: 0.375rem;
+    }
+    
+    .btn-modern {
+        justify-content: center;
+    }
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the correct field IDs from Django
+    const clientTypeSelect = document.getElementById('id_client_type');
+    const workerField = document.getElementById('worker-field');
+    const batchField = document.getElementById('batch-field');
+    const vipField = document.getElementById('vip-field');
+    const otherField = document.getElementById('other-field');
+    
+    // Autocomplete elements
+    const workerSearchInput = document.getElementById('id_worker_search');
+    const workerResults = document.getElementById('worker-results');
+    const workerIdInput = document.getElementById('id_worker_id');
+    const selectedWorkerDiv = document.getElementById('selected-worker');
+    
+    const batchSearchInput = document.getElementById('id_batch_name');
+    const batchResults = document.getElementById('batch-results');
+    const selectedBatchDiv = document.getElementById('selected-batch');
+    
+    const vipSearchInput = document.getElementById('id_vip_search');
+    const vipResults = document.getElementById('vip-results');
+    const vipIdInput = document.getElementById('id_vip_id');
+    const selectedVipDiv = document.getElementById('selected-vip');
+    
+    let searchTimeout;
+    
+    function toggleClientFields() {
+        if (!clientTypeSelect) return;
+        
+        const clientType = clientTypeSelect.value;
+        
+        // Hide all fields first
+        if (workerField) {
+            workerField.classList.remove('active');
+        }
+        if (batchField) {
+            batchField.classList.remove('active');
+        }
+        if (vipField) {
+            vipField.classList.remove('active');
+        }
+        if (otherField) {
+            otherField.classList.remove('active');
+        }
+        
+        // Clear previous selections when switching types
+        if (clientType !== 'worker') {
+            clearWorkerSelection();
+        }
+        if (clientType !== 'batch_workers') {
+            clearBatchSelection();
+        }
+        if (clientType !== 'vip') {
+            clearVipSelection();
+        }
+        
+        // Show relevant field
+        if (clientType === 'worker' && workerField) {
+            workerField.classList.add('active');
+        } else if (clientType === 'batch_workers' && batchField) {
+            batchField.classList.add('active');
+        } else if (clientType === 'vip' && vipField) {
+            vipField.classList.add('active');
+        } else if (clientType === 'other' && otherField) {
+            otherField.classList.add('active');
+        }
+        
+    }
+    
+    // Initialize client type handling
+    if (clientTypeSelect) {
+        clientTypeSelect.addEventListener('change', toggleClientFields);
+        
+        // Force initialization after a short delay to ensure DOM is ready
+        setTimeout(() => {
+            toggleClientFields();
+        }, 100);
+        
+    } else {
+        console.error('❌ Client type selector not found');
+    }
+    
+    // Worker autocomplete functionality
+    if (workerSearchInput) {
+        workerSearchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value.trim();
+            
+            if (query.length < 2) {
+                hideResults(workerResults);
+                return;
+            }
+            
+            // Show loading state
+            showLoadingResults(workerResults, 'Searching workers...');
+            
+            searchTimeout = setTimeout(() => {
+                fetch(`/billing/ajax/search-workers/?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        showWorkerResults(data.results);
+                    })
+                    .catch(error => {
+                        console.error('❌ Worker search error:', error);
+                        showErrorResults(workerResults, 'Error searching workers');
+                    });
+            }, 300); // Debounce delay
+        });
+        
+        // Hide results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!workerSearchInput.contains(e.target) && !workerResults.contains(e.target)) {
+                hideResults(workerResults);
+            }
+        });
+    }
+    
+    // Batch autocomplete functionality
+    if (batchSearchInput) {
+        batchSearchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value.trim();
+            
+            if (query.length < 2) {
+                hideResults(batchResults);
+                return;
+            }
+            
+            // Show loading state
+            showLoadingResults(batchResults, 'Searching batches...');
+            
+            searchTimeout = setTimeout(() => {
+                fetch(`/billing/ajax/search-batches/?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        showBatchResults(data.results);
+                    })
+                    .catch(error => {
+                        console.error('❌ Batch search error:', error);
+                        showErrorResults(batchResults, 'Error searching batches');
+                    });
+            }, 300); // Debounce delay
+        });
+        
+        // Hide results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!batchSearchInput.contains(e.target) && !batchResults.contains(e.target)) {
+                hideResults(batchResults);
+            }
+        });
+    }
+    
+    // VIP autocomplete functionality
+    if (vipSearchInput) {
+        vipSearchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value.trim();
+            
+            if (query.length < 2) {
+                hideResults(vipResults);
+                return;
+            }
+            
+            // Show loading state
+            showLoadingResults(vipResults, 'Searching VIPs...');
+            
+            searchTimeout = setTimeout(() => {
+                fetch(`/billing/ajax/search-vips/?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        showVipResults(data.results);
+                    })
+                    .catch(error => {
+                        console.error('❌ VIP search error:', error);
+                        showErrorResults(vipResults, 'Error searching VIPs');
+                    });
+            }, 300); // Debounce delay
+        });
+        
+        // Hide results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!vipSearchInput.contains(e.target) && !vipResults.contains(e.target)) {
+                hideResults(vipResults);
+            }
+        });
+    }
+    
+    function showWorkerResults(results) {
+        if (results.length === 0) {
+            showEmptyResults(workerResults, 'No records found');
+            return;
+        }
+        
+        const html = results.map(worker => `
+            <div class="autocomplete-item" onclick="selectWorker(${worker.id}, '${escapeHtml(worker.text)}', '${escapeHtml(worker.subtitle)}')">
+                <div class="item-main">${escapeHtml(worker.text)}</div>
+                <div class="item-subtitle">${escapeHtml(worker.subtitle)}</div>
+            </div>
+        `).join('');
+        
+        workerResults.innerHTML = html;
+        workerResults.style.display = 'block';
+    }
+    
+    function showBatchResults(results) {
+        if (results.length === 0) {
+            showEmptyResults(batchResults, 'No batches found');
+            return;
+        }
+        
+        const html = results.map(batch => `
+            <div class="autocomplete-item" onclick="selectBatch('${escapeHtml(batch.name)}', '${escapeHtml(batch.details)}', ${batch.worker_count})">
+                <div class="item-main">${escapeHtml(batch.name)}</div>
+                <div class="item-subtitle">${escapeHtml(batch.details)}</div>
+            </div>
+        `).join('');
+        
+        batchResults.innerHTML = html;
+        batchResults.style.display = 'block';
+    }
+    
+    function showVipResults(results) {
+        if (results.length === 0) {
+            showEmptyResults(vipResults, 'No VIPs found');
+            return;
+        }
+        
+        const html = results.map(vip => `
+            <div class="autocomplete-item" onclick="selectVip(${vip.id}, '${escapeHtml(vip.text)}', '${escapeHtml(vip.subtitle)}')">
+                <div class="item-main">${escapeHtml(vip.text)}</div>
+                <div class="item-subtitle">${escapeHtml(vip.subtitle)}</div>
+            </div>
+        `).join('');
+        
+        vipResults.innerHTML = html;
+        vipResults.style.display = 'block';
+    }
+    
+    // Global functions for selection
+    window.selectWorker = function(id, text, subtitle) {
+        workerIdInput.value = id;
+        workerSearchInput.value = text;
+        selectedWorkerDiv.querySelector('.client-name').textContent = text;
+        selectedWorkerDiv.querySelector('.client-details').textContent = subtitle;
+        selectedWorkerDiv.style.display = 'block';
+        workerSearchInput.style.display = 'none';
+        hideResults(workerResults);
+    };
+    
+    window.selectBatch = function(name, details, workerCount) {
+        batchSearchInput.value = name;
+        selectedBatchDiv.querySelector('.client-name').textContent = name;
+        selectedBatchDiv.querySelector('.client-details').textContent = details;
+        selectedBatchDiv.style.display = 'block';
+        batchSearchInput.style.display = 'none';
+        hideResults(batchResults);
+        
+        // Store worker count in a data attribute
+        batchSearchInput.dataset.workerCount = workerCount;
+        
+        
+        // Auto-set quantity in all line items to worker count
+        setQuantityForAllLineItems(workerCount);
+    };
+    
+    window.selectVip = function(id, text, subtitle) {
+        vipIdInput.value = id;
+        vipSearchInput.value = text;
+        selectedVipDiv.querySelector('.client-name').textContent = text;
+        selectedVipDiv.querySelector('.client-details').textContent = subtitle;
+        selectedVipDiv.style.display = 'block';
+        vipSearchInput.style.display = 'none';
+        hideResults(vipResults);
+    };
+    
+    window.clearWorkerSelection = function() {
+        workerIdInput.value = '';
+        workerSearchInput.value = '';
+        selectedWorkerDiv.style.display = 'none';
+        workerSearchInput.style.display = 'block';
+        hideResults(workerResults);
+        workerSearchInput.focus();
+    };
+    
+    window.clearBatchSelection = function() {
+        batchSearchInput.value = '';
+        selectedBatchDiv.style.display = 'none';
+        batchSearchInput.style.display = 'block';
+        hideResults(batchResults);
+        batchSearchInput.focus();
+        
+        // Clear worker count data
+        delete batchSearchInput.dataset.workerCount;
+        
+    };
+    
+    window.clearVipSelection = function() {
+        vipIdInput.value = '';
+        vipSearchInput.value = '';
+        selectedVipDiv.style.display = 'none';
+        vipSearchInput.style.display = 'block';
+        hideResults(vipResults);
+        vipSearchInput.focus();
+    };
+    
+    // Function to set quantity for all line items when batch is selected
+    function setQuantityForAllLineItems(workerCount) {
+        console.log(`🔢 Setting quantity to ${workerCount} for all line items...`);
+        
+        // Get all visible line item rows
+        const lineItemRows = document.querySelectorAll('tr.line-item-row:not(.to-delete)');
+        
+        lineItemRows.forEach((row, index) => {
+            // Skip hidden rows
+            if (row.style.display === 'none') return;
+            
+            const quantityField = row.querySelector('input[name*="quantity"]');
+            if (quantityField) {
+                console.log(`📝 Setting quantity for line item ${index + 1} to ${workerCount}`);
+                quantityField.value = workerCount;
+                
+                // Trigger input event to ensure any listeners are notified
+                const event = new Event('input', { bubbles: true });
+                quantityField.dispatchEvent(event);
+                
+                // Calculate line total for this row
+                calculateLineTotal(row);
+            }
+        });
+        
+        // If no line items exist yet, store the count for when they're added
+        if (lineItemRows.length === 0) {
+            console.log('⚠️ No line items found. Storing worker count for new items.');
+            window.batchWorkerCount = workerCount;
+        }
+        
+        // Recalculate invoice total
+        setTimeout(() => {
+            calculateInvoiceTotal();
+        }, 100);
+    }
+    
+    // Utility functions
+    function showLoadingResults(container, message) {
+        container.innerHTML = `<div class="autocomplete-item loading">${message}</div>`;
+        container.style.display = 'block';
+    }
+    
+    function showEmptyResults(container, message) {
+        container.innerHTML = `<div class="autocomplete-item empty">${message}</div>`;
+        container.style.display = 'block';
+    }
+    
+    function showErrorResults(container, message) {
+        container.innerHTML = `<div class="autocomplete-item error">${message}</div>`;
+        container.style.display = 'block';
+    }
+    
+    function hideResults(container) {
+        container.style.display = 'none';
+    }
+    
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Initialize selections if editing existing invoice
+    if (workerIdInput.value && workerSearchInput.value) {
+        selectedWorkerDiv.querySelector('.client-name').textContent = workerSearchInput.value;
+        selectedWorkerDiv.style.display = 'block';
+        workerSearchInput.style.display = 'none';
+    }
+    
+    if (vipIdInput.value && vipSearchInput.value) {
+        selectedVipDiv.querySelector('.client-name').textContent = vipSearchInput.value;
+        selectedVipDiv.style.display = 'block';
+        vipSearchInput.style.display = 'none';
+    }
+    
+    // Service selection auto-fill
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('service-select')) {
+            const serviceId = e.target.value;
+            
+            if (serviceId) {
+                fetch(`/billing/api/services/${serviceId}/`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const row = e.target.closest('tr');
+                        const descriptionField = row.querySelector('input[name*="description"]');
+                        const unitPriceField = row.querySelector('input[name*="unit_price"]');
+                        
+                        if (descriptionField && !descriptionField.value) {
+                            descriptionField.value = data.name;
+                        }
+                        if (unitPriceField && !unitPriceField.value) {
+                            unitPriceField.value = data.default_price;
+                            console.log(`💰 Auto-filled price from service dropdown: $${data.default_price}`);
+                        }
+                        
+                        // Set default quantity if empty
+                        const quantityField = row.querySelector('input[name*="quantity"]');
+                        if (quantityField && !quantityField.value) {
+                            quantityField.value = '1';
+                            console.log(`🔢 Auto-filled quantity from service dropdown: 1`);
+                        }
+                        
+                        // Trigger input events to ensure event delegation picks them up
+                        if (quantityField) {
+                            quantityField.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                        if (unitPriceField) {
+                            unitPriceField.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                        
+                        // Trigger calculation with delay to ensure DOM updates
+                        setTimeout(() => {
+                            console.log(`🔄 Triggering calculation for service dropdown selection: ${data.name}`);
+                            calculateLineTotal(row);
+                        }, 50);
+                    })
+                    .catch(error => {
+                        console.error('❌ Error fetching service details:', error);
+                    });
+            }
+        }
+    });
+    
+    // Line item calculations - Global event delegation
+    document.addEventListener('input', function(e) {
+        if (e.target.name && (e.target.name.includes('quantity') || e.target.name.includes('unit_price'))) {
+            console.log('💫 Input event detected on:', e.target.name, 'value:', e.target.value);
+            const row = e.target.closest('tr');
+            calculateLineTotal(row);
+        }
+    });
+    
+    // Also trigger on blur for better UX
+    document.addEventListener('blur', function(e) {
+        if (e.target.name && (e.target.name.includes('quantity') || e.target.name.includes('unit_price'))) {
+            console.log('💫 Blur event detected on:', e.target.name, 'value:', e.target.value);
+            const row = e.target.closest('tr');
+            calculateLineTotal(row);
+        }
+    }, true);
+    
+    function calculateLineTotal(row) {
+        console.log('📊 Calculating line total for row...', row);
+        
+        const quantityField = row.querySelector('input[name*="quantity"]');
+        const unitPriceField = row.querySelector('input[name*="unit_price"]');
+        const totalCell = row.querySelector('.line-total');
+        
+        console.log('🔍 Element search results:', {
+            quantityField: quantityField ? {
+                name: quantityField.name, 
+                value: quantityField.value,
+                type: quantityField.type
+            } : 'NOT FOUND',
+            unitPriceField: unitPriceField ? {
+                name: unitPriceField.name, 
+                value: unitPriceField.value,
+                type: unitPriceField.type
+            } : 'NOT FOUND',
+            totalCell: totalCell ? {
+                className: totalCell.className,
+                currentText: totalCell.textContent
+            } : 'NOT FOUND'
+        });
+        
+        if (quantityField && unitPriceField && totalCell) {
+            const quantity = parseFloat(quantityField.value) || 0;
+            const unitPrice = parseFloat(unitPriceField.value) || 0;
+            const total = quantity * unitPrice;
+            
+            console.log(`🔢 Calculation details:
+                Raw values: qty="${quantityField.value}", price="${unitPriceField.value}"
+                Parsed values: qty=${quantity}, price=${unitPrice}
+                Result: ${quantity} × ${unitPrice} = ${total}
+            `);
+            
+            const formattedTotal = '$' + total.toFixed(2);
+            totalCell.textContent = formattedTotal;
+            console.log(`✅ Total cell updated from "${totalCell.textContent}" to "${formattedTotal}"`);
+            
+            calculateInvoiceTotal();
+        } else {
+            console.error('❌ Missing required elements for line calculation:', {
+                quantityField: !!quantityField,
+                unitPriceField: !!unitPriceField,
+                totalCell: !!totalCell
+            });
+            
+            // Try alternative selectors
+            console.log('🔍 Trying alternative selectors...');
+            const altQuantity = row.querySelector('input[name$="quantity"]');
+            const altPrice = row.querySelector('input[name$="unit_price"]');
+            const altTotal = row.querySelector('td.line-item-total, td.line-total, .total');
+            
+            console.log('🔍 Alternative selector results:', {
+                altQuantity: altQuantity ? altQuantity.name : 'NOT FOUND',
+                altPrice: altPrice ? altPrice.name : 'NOT FOUND', 
+                altTotal: altTotal ? altTotal.className : 'NOT FOUND'
+            });
+        }
+    }
+    
+    function calculateInvoiceTotal() {
+        console.log('🧮 Calculating invoice totals...');
+        
+        // Only get line totals from visible, non-deleted rows
+        const visibleRows = document.querySelectorAll('tr.line-item-row:not(.to-delete)');
+        let subtotal = 0;
+        let lineCount = 0;
+        
+        visibleRows.forEach(row => {
+            // Skip hidden rows
+            if (row.style.display === 'none') return;
+            
+            const totalCell = row.querySelector('.line-total');
+            if (totalCell) {
+                const value = parseFloat(totalCell.textContent.replace('$', '')) || 0;
+                console.log(`📄 Line ${lineCount + 1}: $${value.toFixed(2)}`);
+                subtotal += value;
+                lineCount++;
+            }
+        });
+        
+        console.log(`💰 Subtotal from ${lineCount} lines: $${subtotal.toFixed(2)}`);
+        
+        const taxPercentageField = document.getElementById('id_tax_percentage');
+        const taxPercentage = parseFloat(taxPercentageField ? taxPercentageField.value : 0) || 0;
+        const tax = (subtotal * taxPercentage) / 100;
+        const total = subtotal + tax;
+        
+        console.log(`🏷️ Tax Percentage: ${taxPercentage}%`);
+        console.log(`🏷️ Tax Amount: $${tax.toFixed(2)}`);
+        console.log(`🧾 Final Total: $${total.toFixed(2)}`);
+        
+        // Update totals display
+        const subtotalCell = document.getElementById('subtotal-amount');
+        const taxCell = document.getElementById('tax-amount');
+        const totalCell = document.getElementById('total-amount');
+        
+        if (subtotalCell) {
+            subtotalCell.textContent = '$' + subtotal.toFixed(2);
+            console.log('✅ Subtotal display updated');
+        } else {
+            console.warn('⚠️ Subtotal cell not found');
+        }
+        
+        if (taxCell) {
+            taxCell.textContent = '$' + tax.toFixed(2);
+            console.log('✅ Tax display updated');
+        } else {
+            console.warn('⚠️ Tax cell not found');
+        }
+        
+        if (totalCell) {
+            totalCell.textContent = '$' + total.toFixed(2);
+            console.log('✅ Total display updated');
+        } else {
+            console.warn('⚠️ Total cell not found');
+        }
+    }
+    
+    // Tax percentage change handler
+    const taxPercentageField = document.getElementById('id_tax_percentage');
+    if (taxPercentageField) {
+        taxPercentageField.addEventListener('input', calculateInvoiceTotal);
+        taxPercentageField.addEventListener('blur', calculateInvoiceTotal);
+    }
+    
+    // Functions moved outside DOMContentLoaded for global access
+    
+    // Initialize calculations on page load (no need to attach handlers - using global delegation)
+    setTimeout(() => {
+        console.log('🚀 Initializing line item calculations...');
+        document.querySelectorAll('tr.line-item-row').forEach((row, index) => {
+            if (row.querySelector('input[name*="quantity"]')) {
+                console.log(`📋 Initializing row ${index + 1}...`);
+                calculateLineTotal(row);
+            }
+        });
+        
+        // Initial total calculation
+        console.log('💰 Calculating initial invoice total...');
+        calculateInvoiceTotal();
+    }, 200);
+    
+});
+
+// Global functions for onclick handlers (must be outside DOMContentLoaded)
+window.addLineItem = function() {
+    console.log('🔄 Add line item clicked');
+    
+    // Find formset container
+    const formsetContainer = document.getElementById('formset-container');
+    if (!formsetContainer) {
+        console.error('❌ formset-container not found');
+        alert('Error: Could not find form container. Please refresh and try again.');
+        return;
+    }
+    
+    // Find table body
+    const tableBody = formsetContainer.querySelector('tbody');
+    if (!tableBody) {
+        console.error('❌ Table body not found');
+        alert('Error: Could not find table body. Please refresh and try again.');
+        return;
+    }
+    
+    // Find total forms input
+    const totalFormsInput = document.querySelector('input[name$="-TOTAL_FORMS"]');
+    if (!totalFormsInput) {
+        console.error('❌ TOTAL_FORMS input not found');
+        alert('Error: Could not find form management input. Please refresh and try again.');
+        return;
+    }
+    
+    const formCount = parseInt(totalFormsInput.value);
+    console.log('📊 Current form count:', formCount);
+    
+    // Find empty form template
+    const emptyFormTemplate = document.getElementById('empty-form-template');
+    if (!emptyFormTemplate) {
+        console.error('❌ Empty form template not found');
+        alert('Error: Could not find form template. Please refresh and try again.');
+        return;
+    }
+    
+    console.log('✅ All elements found, creating new form...');
+    
+    // Clone the empty form template
+    const newForm = emptyFormTemplate.cloneNode(true);
+    newForm.id = '';
+    newForm.classList.remove('empty-form');
+    newForm.classList.add('line-item-row');
+    
+    // Update form index in all name and id attributes
+    const formRegex = /__prefix__/g;
+    newForm.innerHTML = newForm.innerHTML.replace(formRegex, formCount);
+    
+    // Add to table
+    tableBody.appendChild(newForm);
+    console.log('✅ New form added to table');
+    
+    // Update form count
+    totalFormsInput.value = formCount + 1;
+    console.log('✅ Form count updated to:', formCount + 1);
+    
+    // Focus on the new service autocomplete input
+    const serviceInput = newForm.querySelector('.service-autocomplete-input');
+    if (serviceInput) {
+        setTimeout(() => {
+            serviceInput.focus();
+        }, 100);
+        console.log('✅ Service input focused');
+    } else {
+        console.warn('⚠️ Service input not found in new form');
+    }
+    
+    // Event handlers will be handled by global delegation (no need to attach individually)
+    console.log('✅ Event handlers will be handled by global event delegation');
+    
+    // Initialize autocomplete for the new row
+    if (window.initializeServiceAutocomplete) {
+        window.initializeServiceAutocomplete(newForm);
+        console.log('✅ Service autocomplete initialized for new row');
+    }
+    
+    // If batch workers is selected, auto-set the quantity
+    const clientTypeSelect = document.getElementById('id_client_type');
+    const batchSearchInput = document.getElementById('id_batch_name');
+    
+    if (clientTypeSelect && clientTypeSelect.value === 'batch_workers') {
+        const workerCount = batchSearchInput?.dataset.workerCount || window.batchWorkerCount;
+        if (workerCount) {
+            const quantityField = newForm.querySelector('input[name*="quantity"]');
+            if (quantityField) {
+                console.log(`🔢 Auto-setting quantity to ${workerCount} for new line item (batch workers)`);
+                quantityField.value = workerCount;
+                
+                // Trigger calculation after a short delay to ensure all fields are ready
+                setTimeout(() => {
+                    calculateLineTotal(newForm);
+                }, 100);
+            }
+        }
+    }
+    
+    console.log('✅ Add line item completed successfully');
+};
+
+// Global delete function
+window.deleteLineItem = function(button) {
+    const row = button.closest('tr');
+    const deleteCheckbox = row.querySelector('input[type="checkbox"][name*="DELETE"]');
+    
+    if (deleteCheckbox) {
+        deleteCheckbox.checked = true;
+        row.classList.add('to-delete');
+        row.style.display = 'none';
+        calculateInvoiceTotal();
+    } else {
+        // If no delete checkbox (new unsaved item), just remove the row
+        row.remove();
+    }
+};
+
+// Global tax percentage setter function
+window.setTaxPercentage = function(percentage) {
+    const taxPercentageField = document.getElementById('id_tax_percentage');
+    if (taxPercentageField) {
+        taxPercentageField.value = percentage; // Use whole number instead of toFixed(2)
+        console.log(`🏷️ Tax percentage set to: ${percentage}%`);
+        
+        // Trigger input event to update calculations
+        taxPercentageField.dispatchEvent(new Event('input', { bubbles: true }));
+        
+        // Force recalculation
+        calculateInvoiceTotal();
+    } else {
+        console.error('❌ Tax percentage field not found');
+    }
+};
+
+// Service Autocomplete Functionality
+class ServiceAutocomplete {
+    constructor() {
+        this.searchTimeout = null;
+        this.activeInput = null;
+        this.selectedIndex = -1;
+        this.initializeAutocomplete();
+    }
+
+    initializeAutocomplete() {
+        // Initialize existing autocomplete inputs
+        document.querySelectorAll('.service-autocomplete-input').forEach(input => {
+            this.bindEvents(input);
+        });
+    }
+
+    bindEvents(input) {
+        input.addEventListener('input', (e) => this.handleInput(e));
+        input.addEventListener('focus', (e) => this.handleFocus(e));
+        input.addEventListener('blur', (e) => this.handleBlur(e));
+        input.addEventListener('keydown', (e) => this.handleKeydown(e));
+    }
+
+    handleInput(e) {
+        const input = e.target;
+        const query = input.value.trim();
+        
+        // Clear service ID when user types (indicates new search)
+        if (input.dataset.serviceId) {
+            input.dataset.serviceId = '';
+            const row = input.closest('tr');
+            const hiddenInput = row.querySelector('input[type="hidden"][name*="service"]');
+            if (hiddenInput) {
+                hiddenInput.value = '';
+            }
+        }
+        
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => {
+            if (query.length >= 2) {
+                this.searchServices(input, query);
+            } else {
+                this.hideDropdown(input);
+            }
+        }, 300);
+    }
+
+    handleFocus(e) {
+        this.activeInput = e.target;
+        const query = e.target.value.trim();
+        if (query.length >= 2) {
+            this.searchServices(e.target, query);
+        }
+    }
+
+    handleBlur(e) {
+        // Delay hiding to allow clicking on dropdown items
+        setTimeout(() => {
+            this.hideDropdown(e.target);
+            this.activeInput = null;
+        }, 200);
+    }
+
+    handleKeydown(e) {
+        if (!this.activeInput) return;
+        
+        const dropdown = this.activeInput.nextElementSibling;
+        const items = dropdown.querySelectorAll('.service-autocomplete-item');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            this.selectedIndex = Math.min(this.selectedIndex + 1, items.length - 1);
+            this.updateSelection(items);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            this.selectedIndex = Math.max(this.selectedIndex - 1, -1);
+            this.updateSelection(items);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (this.selectedIndex >= 0 && items[this.selectedIndex]) {
+                this.selectService(items[this.selectedIndex]);
+            }
+        } else if (e.key === 'Escape') {
+            this.hideDropdown(this.activeInput);
+        }
+    }
+
+    updateSelection(items) {
+        items.forEach((item, index) => {
+            item.classList.toggle('highlighted', index === this.selectedIndex);
+        });
+    }
+
+    async searchServices(input, query) {
+        try {
+            const response = await fetch(`/billing/api/services/search/?q=${encodeURIComponent(query)}&limit=8`);
+            const data = await response.json();
+            this.showDropdown(input, data.results);
+        } catch (error) {
+            console.error('Error searching services:', error);
+            this.showDropdown(input, []);
+        }
+    }
+
+    showDropdown(input, results) {
+        const dropdown = input.nextElementSibling;
+        dropdown.innerHTML = '';
+        
+        if (results.length === 0) {
+            dropdown.innerHTML = '<div class="service-no-results">No services found</div>';
+        } else {
+            results.forEach((service, index) => {
+                const item = document.createElement('div');
+                item.className = 'service-autocomplete-item';
+                item.dataset.serviceId = service.id;
+                item.dataset.serviceName = service.name;
+                item.dataset.serviceCode = service.service_code;
+                item.dataset.defaultPrice = service.default_price;
+                item.dataset.description = service.description;
+                
+                item.innerHTML = `
+                    <div class="service-item-name">${service.name}</div>
+                    <div class="service-item-details">
+                        <div>
+                            ${service.service_code ? `<span class="service-item-code">${service.service_code}</span>` : ''}
+                            <span class="service-item-category">${service.category}</span>
+                        </div>
+                        <span class="service-item-price">$${parseFloat(service.default_price).toFixed(2)}</span>
+                    </div>
+                `;
+                
+                item.addEventListener('click', () => this.selectService(item));
+                dropdown.appendChild(item);
+            });
+        }
+        
+        dropdown.style.display = 'block';
+        this.selectedIndex = -1;
+    }
+
+    hideDropdown(input) {
+        const dropdown = input.nextElementSibling;
+        dropdown.style.display = 'none';
+        this.selectedIndex = -1;
+    }
+
+    selectService(item) {
+        if (!this.activeInput) return;
+        
+        const serviceId = item.dataset.serviceId;
+        const serviceName = item.dataset.serviceName;
+        const serviceCode = item.dataset.serviceCode;
+        const defaultPrice = item.dataset.defaultPrice;
+        const description = item.dataset.description;
+        
+        // Update the autocomplete input display
+        this.activeInput.value = serviceCode ? `${serviceCode} - ${serviceName}` : serviceName;
+        
+        // Store the selected service ID in data attribute
+        this.activeInput.dataset.serviceId = serviceId;
+        
+        // Find and update the hidden input element
+        const row = this.activeInput.closest('tr');
+        const hiddenInput = row.querySelector('input[type="hidden"][name*="service"]');
+        if (hiddenInput) {
+            hiddenInput.value = serviceId;
+        }
+        
+        // Auto-fill description if empty
+        const descriptionInput = row.querySelector('input[name*="description"]');
+        if (descriptionInput && !descriptionInput.value) {
+            descriptionInput.value = serviceName;
+        }
+        
+        // Auto-fill unit price if empty
+        const priceInput = row.querySelector('input[name*="unit_price"]');
+        if (priceInput && !priceInput.value) {
+            priceInput.value = parseFloat(defaultPrice).toFixed(2);
+            console.log(`💰 Auto-filled price: $${priceInput.value}`);
+        }
+        
+        // Set default quantity if empty
+        const quantityInput = row.querySelector('input[name*="quantity"]');
+        if (quantityInput && !quantityInput.value) {
+            // Check if batch workers is selected
+            const clientTypeSelect = document.getElementById('id_client_type');
+            const batchSearchInput = document.getElementById('id_batch_name');
+            
+            if (clientTypeSelect && clientTypeSelect.value === 'batch_workers') {
+                const workerCount = batchSearchInput?.dataset.workerCount || window.batchWorkerCount;
+                if (workerCount) {
+                    quantityInput.value = workerCount;
+                    console.log(`🔢 Auto-filled quantity for batch: ${workerCount} workers`);
+                } else {
+                    quantityInput.value = '1';
+                    console.log(`🔢 Auto-filled default quantity: 1`);
+                }
+            } else {
+                quantityInput.value = '1';
+                console.log(`🔢 Auto-filled default quantity: 1`);
+            }
+        }
+        
+        // Trigger input events on quantity and price fields to ensure event delegation picks them up
+        if (quantityInput) {
+            quantityInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        if (priceInput) {
+            priceInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        
+        // Force recalculation with a slight delay to ensure DOM updates are processed
+        setTimeout(() => {
+            console.log(`🔄 Triggering calculation for service selection: ${serviceName}`);
+            calculateLineTotal(row);
+        }, 50);
+        
+        // Hide dropdown
+        this.hideDropdown(this.activeInput);
+        
+        console.log(`✅ Service selected: ${serviceCode} - ${serviceName} ($${defaultPrice})`);
+    }
+}
+
+// Initialize service autocomplete when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    window.serviceAutocomplete = new ServiceAutocomplete();
+});
+
+
+// Add autocomplete to new line items
+window.initializeServiceAutocomplete = function(container) {
+    if (window.serviceAutocomplete) {
+        const inputs = container.querySelectorAll('.service-autocomplete-input');
+        inputs.forEach(input => {
+            window.serviceAutocomplete.bindEvents(input);
+        });
+    }
+};
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>{{ title }}</h2>
+        <p>{% if invoice %}Edit invoice details and line items{% else %}Create a new invoice with line items{% endif %}</p>
+    </div>
+
+    <form method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        
+        <!-- Client Selection -->
+        <div class="form-section">
+            <h4><i class="bi bi-person"></i> Client Information</h4>
+            
+            <div class="px-3">
+                <div class="client-type-selector">
+                    <label for="{{ form.client_type.id_for_label }}" class="form-label">
+                        Client Type <span class="required-field">*</span>
+                    </label>
+                    {{ form.client_type }}
+                    {% if form.client_type.errors %}
+                        <div class="invalid-feedback d-block">{{ form.client_type.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Hidden fields for storing selected IDs -->
+                {{ form.worker_id }}
+                {{ form.vip_id }}
+                
+                <div id="worker-field" class="client-fields">
+                    <label for="{{ form.worker_search.id_for_label }}" class="form-label">
+                        Search Worker <span class="required-field">*</span>
+                    </label>
+                    <div class="autocomplete-container">
+                        {{ form.worker_search }}
+                        <div class="autocomplete-results" id="worker-results"></div>
+                        <div class="selected-client" id="selected-worker" style="display: none;">
+                            <div class="selected-client-info">
+                                <strong class="client-name"></strong>
+                                <span class="client-details"></span>
+                            </div>
+                            <button type="button" class="clear-selection" onclick="clearWorkerSelection()">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% if form.worker_search.errors %}
+                        <div class="invalid-feedback d-block">{{ form.worker_search.errors }}</div>
+                    {% endif %}
+                    {% if form.worker_id.errors %}
+                        <div class="invalid-feedback d-block">{{ form.worker_id.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div id="batch-field" class="client-fields">
+                    <label for="{{ form.batch_name.id_for_label }}" class="form-label">
+                        Search Worker Batch <span class="required-field">*</span>
+                    </label>
+                    <div class="autocomplete-container">
+                        {{ form.batch_name }}
+                        <div class="autocomplete-results" id="batch-results"></div>
+                        <div class="selected-client" id="selected-batch" style="display: none;">
+                            <div class="selected-client-info">
+                                <strong class="client-name"></strong>
+                                <span class="client-details"></span>
+                            </div>
+                            <button type="button" class="clear-selection" onclick="clearBatchSelection()">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% if form.batch_name.errors %}
+                        <div class="invalid-feedback d-block">{{ form.batch_name.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div id="vip-field" class="client-fields">
+                    <label for="{{ form.vip_search.id_for_label }}" class="form-label">
+                        Search VIP <span class="required-field">*</span>
+                    </label>
+                    <div class="autocomplete-container">
+                        {{ form.vip_search }}
+                        <div class="autocomplete-results" id="vip-results"></div>
+                        <div class="selected-client" id="selected-vip" style="display: none;">
+                            <div class="selected-client-info">
+                                <strong class="client-name"></strong>
+                                <span class="client-details"></span>
+                            </div>
+                            <button type="button" class="clear-selection" onclick="clearVipSelection()">
+                                <i class="bi bi-x"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% if form.vip_search.errors %}
+                        <div class="invalid-feedback d-block">{{ form.vip_search.errors }}</div>
+                    {% endif %}
+                    {% if form.vip_id.errors %}
+                        <div class="invalid-feedback d-block">{{ form.vip_id.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div id="other-field" class="client-fields">
+                    <label for="{{ form.client_name.id_for_label }}" class="form-label">
+                        Client Name <span class="required-field">*</span>
+                    </label>
+                    {{ form.client_name }}
+                    {% if form.client_name.errors %}
+                        <div class="invalid-feedback d-block">{{ form.client_name.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Details -->
+        <div class="form-section">
+            <h4><i class="bi bi-calendar"></i> Invoice Details</h4>
+            
+            <div class="row g-2 px-3">
+                <div class="col-md-3">
+                    <label for="{{ form.issue_date.id_for_label }}" class="form-label">
+                        Issue Date <span class="required-field">*</span>
+                    </label>
+                    {{ form.issue_date }}
+                    {% if form.issue_date.errors %}
+                        <div class="invalid-feedback d-block">{{ form.issue_date.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    <label for="{{ form.due_date.id_for_label }}" class="form-label">
+                        Due Date <span class="required-field">*</span>
+                    </label>
+                    {{ form.due_date }}
+                    {% if form.due_date.errors %}
+                        <div class="invalid-feedback d-block">{{ form.due_date.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    <label for="{{ form.tax_percentage.id_for_label }}" class="form-label">Tax Percentage (%)</label>
+                    <div class="input-group mb-2">
+                        {{ form.tax_percentage }}
+                        <span class="input-group-text">%</span>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setTaxPercentage(0)">0%</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setTaxPercentage(10)">10%</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setTaxPercentage(15)">15%</button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setTaxPercentage(20)">20%</button>
+                    </div>
+                    {% if form.tax_percentage.errors %}
+                        <div class="invalid-feedback d-block">{{ form.tax_percentage.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    <label for="{{ form.status.id_for_label }}" class="form-label">Status</label>
+                    <select class="form-control" id="id_status" name="status">
+                        {% for value, label in status_choices %}
+                            {% if role.role.name == 'User' %}
+                                {% if value == 'draft' %}
+                                <option value="{{ value }}">
+                                    {{ label }}
+                                </option>
+                                {% endif %}
+                            {% else %}
+                            <option value="{{ value }}" {% if submission.status == value or not submission.status and value == 'draft' %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+
+                    {% comment %} {{ form.status }} {% endcomment %}
+                    {% if form.status.errors %}
+                        <div class="invalid-feedback d-block">{{ form.status.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row g-2 px-3">
+                <div class="col-md-12">
+                    <label for="{{ form.notes.id_for_label }}" class="form-label">Notes</label>
+                    {{ form.notes }}
+                    {% if form.notes.errors %}
+                        <div class="invalid-feedback d-block">{{ form.notes.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Attachments -->
+        <div class="form-section">
+            <h4><i class="bi bi-paperclip"></i> Reference Documents</h4>
+            
+            <div class="row g-2 px-3">
+                <div class="col-md-4">
+                    <label for="{{ form.reference_document.id_for_label }}" class="form-label">
+                        Document 1
+                        {% if invoice.reference_document %}
+                            <span class="badge bg-success ms-2">
+                                <i class="bi bi-check-circle"></i> Uploaded
+                            </span>
+                        {% endif %}
+                    </label>
+                    {% if invoice.reference_document %}
+                        <div class="mb-2">
+                            <a href="{{ invoice.reference_document.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View Current
+                            </a>
+                            <small class="text-muted ms-2">Upload new to replace</small>
+                        </div>
+                    {% endif %}
+                    {{ form.reference_document }}
+                    <small class="form-text text-muted">PDF, DOC, DOCX, JPG, PNG (Max 10MB)</small>
+                    {% if form.reference_document.errors %}
+                        <div class="invalid-feedback d-block">{{ form.reference_document.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="{{ form.reference_document_2.id_for_label }}" class="form-label">
+                        Document 2
+                        {% if invoice.reference_document_2 %}
+                            <span class="badge bg-success ms-2">
+                                <i class="bi bi-check-circle"></i> Uploaded
+                            </span>
+                        {% endif %}
+                    </label>
+                    {% if invoice.reference_document_2 %}
+                        <div class="mb-2">
+                            <a href="{{ invoice.reference_document_2.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View Current
+                            </a>
+                            <small class="text-muted ms-2">Upload new to replace</small>
+                        </div>
+                    {% endif %}
+                    {{ form.reference_document_2 }}
+                    <small class="form-text text-muted">PDF, DOC, DOCX, JPG, PNG (Max 10MB)</small>
+                    {% if form.reference_document_2.errors %}
+                        <div class="invalid-feedback d-block">{{ form.reference_document_2.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4">
+                    <label for="{{ form.reference_document_3.id_for_label }}" class="form-label">
+                        Document 3
+                        {% if invoice.reference_document_3 %}
+                            <span class="badge bg-success ms-2">
+                                <i class="bi bi-check-circle"></i> Uploaded
+                            </span>
+                        {% endif %}
+                    </label>
+                    {% if invoice.reference_document_3 %}
+                        <div class="mb-2">
+                            <a href="{{ invoice.reference_document_3.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> View Current
+                            </a>
+                            <small class="text-muted ms-2">Upload new to replace</small>
+                        </div>
+                    {% endif %}
+                    {{ form.reference_document_3 }}
+                    <small class="form-text text-muted">PDF, DOC, DOCX, JPG, PNG (Max 10MB)</small>
+                    {% if form.reference_document_3.errors %}
+                        <div class="invalid-feedback d-block">{{ form.reference_document_3.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Line Items -->
+        <div class="line-items-section bg-white">
+            <div class="line-items-header py-1">
+                <h4 class=" uppercase"><i class="bi bi-list"></i> Line Items</h4>
+                <button type="button" class="button-min-primary py-1" onclick="addLineItem()">
+                    <div>
+                        <span class="fa fa-plus me-1"></span> Add Item
+                    </div>
+                </button>
+            </div>
+            
+            <div id="formset-container">
+                {{ formset.management_form }}
+                
+                <table class="line-items-table p-3">
+                    <thead>
+                        <tr>
+                            <th width="25%">Service</th>
+                            <th width="30%">Description</th>
+                            <th width="10%">Qty</th>
+                            <th width="15%">Unit Price</th>
+                            <th width="15%">Total</th>
+                            <th width="5%" class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for form in formset %}
+                            <tr class="line-item-row">
+                                {% for hidden in form.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                                
+                                <td>
+                                    <div class="service-autocomplete-container">
+                                        <input type="text" 
+                                               class="service-autocomplete-input form-control" 
+                                               placeholder="Type to search services..."
+                                               data-service-id="{% if form.instance.service %}{{ form.instance.service.id }}{% endif %}"
+                                               value="{% if form.instance.service %}{{ form.instance.service.service_code }}{% if form.instance.service.service_code %} - {% endif %}{{ form.instance.service.name }}{% endif %}">
+                                        <div class="service-autocomplete-dropdown"></div>
+                                    </div>
+                                    <!-- Hidden input to store the actual service ID -->
+                                    <input type="hidden" name="{{ form.service.name }}" value="{% if form.instance.service %}{{ form.instance.service.id }}{% endif %}">
+                                </td>
+                                <td>{{ form.description }}</td>
+                                <td>{{ form.quantity }}</td>
+                                <td>{{ form.unit_price }}</td>
+                                <td class="line-total">
+                                    {% if form.instance.pk %}
+                                        ${{ form.instance.total_amount|floatformat:2 }}
+                                    {% else %}
+                                        $0.00
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if form.DELETE %}
+                                        <div class="line-item-actions">
+                                            {{ form.DELETE }}
+                                            <button type="button" class="button-min-danger py-1 w-4" onclick="deleteLineItem(this)" title="Delete">
+                                                <span class="bi bi-trash"></span>
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            
+                            {% if form.errors %}
+                                <tr>
+                                    <td colspan="6" class="text-danger">
+                                        {% for field, errors in form.errors.items %}
+                                            <small>{{ field }}: {{ errors|join:", " }}</small><br>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Invoice Totals -->
+            <div class="invoice-totals bg-white">
+                <table class="totals-table">
+                    <tr>
+                        <td class="total-label">Subtotal:</td>
+                        <td class="total-value" id="subtotal-amount">
+                            {% if invoice %}
+                                ${{ invoice.subtotal|floatformat:2 }}
+                            {% else %}
+                                $0.00
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="total-label">Tax:</td>
+                        <td class="total-value" id="tax-amount">
+                            {% if invoice %}
+                                ${{ invoice.tax_amount|floatformat:2 }}
+                            {% else %}
+                                $0.00
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr class="grand-total">
+                        <td class="total-label">Total:</td>
+                        <td class="total-value" id="total-amount">
+                            {% if invoice %}
+                                ${{ invoice.total_amount|floatformat:2 }}
+                            {% else %}
+                                $0.00
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Hidden empty form template for cloning -->
+        <table style="display: none;">
+            <tbody>
+                <tr id="empty-form-template" class="empty-form">
+                    {% for form in formset.empty_form.hidden_fields %}
+                        {{ form }}
+                    {% endfor %}
+                    <td>
+                        <div class="service-autocomplete-container">
+                            <input type="text" 
+                                   class="service-autocomplete-input form-control" 
+                                   placeholder="Type to search services..."
+                                   data-service-id="">
+                            <div class="service-autocomplete-dropdown"></div>
+                        </div>
+                        <!-- Hidden input to store the actual service ID -->
+                        <input type="hidden" name="{{ formset.empty_form.service.name }}" value="">
+                    </td>
+                    <td>{{ formset.empty_form.description }}</td>
+                    <td>{{ formset.empty_form.quantity }}</td>
+                    <td>{{ formset.empty_form.unit_price }}</td>
+                    <td class="line-total">$0.00</td>
+                    <td>
+                        <button type="button" class="button-min-danger py-1 px-2  text-xs" onclick="deleteLineItem(this)" title="Delete">
+                            <i class="bi bi-trash" style="font-size:11px; color:#fff;"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Non-field errors -->
+        {% if form.non_field_errors or formset.non_form_errors %}
+            <div class="form-section">
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                    {% for error in formset.non_form_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Submit Buttons -->
+        <div class="flex justify-end space-x-3 my-4">
+            <a href="{% url 'billing:invoice_list' %}" class="button-min-danger">Cancel</a>
+            <button type="submit" class="button-min-primary">{{ submit_text }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %} 

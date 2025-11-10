@@ -1,0 +1,119 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Upload Document{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+                <p class="text-sm text-red-600 font-medium">Please correct the errors below:</p>
+                {{ form.errors }}
+            </div>
+            {% endif %}
+
+            <!-- Document Type and Number -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.document_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.document_type.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.document_type }}
+                    {% if form.document_type.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.document_type.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.document_number.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.document_number.label }}
+                    </label>
+                    {{ form.document_number }}
+                    {% if form.document_number.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.document_number.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-xs text-gray-500 mt-1">Document number or ID (if applicable)</p>
+                </div>
+            </div>
+
+            <!-- Document File -->
+            <div class="mb-4">
+                <label for="{{ form.document_file.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.document_file.label }} <span class="text-red-500">*</span>
+                </label>
+                {{ form.document_file }}
+                {% if form.document_file.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.document_file.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-1">Upload PDF, DOC, DOCX, JPG, PNG (Max 10MB)</p>
+            </div>
+
+            <!-- Issue Date and Expiry Date -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.issue_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.issue_date.label }}
+                    </label>
+                    {{ form.issue_date }}
+                    {% if form.issue_date.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.issue_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.expiry_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.expiry_date.label }}
+                    </label>
+                    {{ form.expiry_date }}
+                    {% if form.expiry_date.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.expiry_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Issuing Authority -->
+            <div class="mb-4">
+                <label for="{{ form.issuing_authority.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.issuing_authority.label }}
+                </label>
+                {{ form.issuing_authority }}
+                {% if form.issuing_authority.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.issuing_authority.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-1">Organization that issued this document</p>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-6">
+                <label for="{{ form.notes.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.notes.label }}
+                </label>
+                {{ form.notes }}
+                {% if form.notes.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.notes.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3">
+                <a href="{% url 'employee_portal:document_list' %}"
+                   class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                    <i class="bi bi-upload"></i> Upload Document
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}

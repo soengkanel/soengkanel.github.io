@@ -1,0 +1,621 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load card_codes %}
+{% load qr_code %}
+
+{% block title %}Print Preview - {{ total_cards }} Cards{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tailwind.min.css' %}" media="screen">
+<link rel="stylesheet" href="{% static 'css/card-print.css' %}" media="screen">
+<meta name="csrf-token" content="{{ csrf_token }}">
+<style>
+/* Simple Standard Design - Employee Cards Print Preview */
+:root {
+    --primary: #007bff;
+    --secondary: #6c757d;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --white: #ffffff;
+    --border: #dee2e6;
+    --text: #212529;
+    --text-muted: #6c757d;
+}
+
+/* Container */
+.page-container {
+    padding: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header */
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--light);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.back-link:hover {
+    color: var(--text);
+}
+
+.header-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+}
+
+.header-subtitle {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.print-btn {
+    padding: 6px 12px;
+    background: var(--primary);
+    color: var(--white);
+    border: 1px solid var(--primary);
+    font-size: 11px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.print-btn:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+    color: var(--white);
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-bottom: 12px;
+}
+
+.stat-item {
+    padding: 12px;
+    border: 1px solid var(--border);
+    background: var(--white);
+}
+
+.stat-item:first-child {
+    border-right: none;
+}
+
+.stat-item:nth-child(2) {
+    border-right: none;
+}
+
+.stat-item:nth-child(3) {
+    border-right: none;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* Info Bar */
+.info-bar {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.info-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.info-subtitle {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.info-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.info-tip {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+/* Card Layout */
+.idcar-size {
+    height: 3.375in;
+    width: 2.125in;
+}
+
+.id-image-size {
+    width: 75px;
+    height: 95px;
+}
+
+.id-qr-size {
+    width: 70px;
+    height: 70px;
+}
+
+.font-size {
+    font-size: 8pt;
+}
+
+.photo-size {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 8px;
+}
+
+.flip-card {
+    background-color: transparent;
+    perspective: 1000px;
+    height: 3.375in;
+    width: 2.125in;
+}
+
+.flip-card-inner {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-family: sans-serif;
+}
+
+.flip-card-front {
+    z-index: 2;
+}
+
+.flip-card-back {
+    transform: rotateY(180deg);
+    z-index: 1;
+}
+
+@page {
+    size: A4;
+}
+
+@media print {
+    .flip-card:hover .flip-card-inner {
+        transform: none !important;
+    }
+    .flip-card-back {
+        display: none !important;
+    }
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Utility Classes */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.space-x-1 > * + * { margin-left: 4px; }
+.space-x-2 > * + * { margin-left: 8px; }
+.space-y-1 > * + * { margin-top: 4px; }
+.space-y-2 > * + * { margin-top: 8px; }
+.w-4 { width: 16px; }
+.h-4 { height: 16px; }
+.w-5 { width: 20px; }
+.h-5 { height: 20px; }
+.w-6 { width: 24px; }
+.h-6 { height: 24px; }
+.w-10 { width: 40px; }
+.h-10 { height: 40px; }
+.w-16 { width: 64px; }
+.w-full { width: 100%; }
+.mt-2 { margin-top: 8px; }
+.mt-4 { margin-top: 16px; }
+.mt-5 { margin-top: 20px; }
+.mb-10 { margin-bottom: 40px; }
+.px-2 { padding-left: 8px; padding-right: 8px; }
+.px-3 { padding-left: 12px; padding-right: 12px; }
+.py-1 { padding-top: 4px; padding-bottom: 4px; }
+.py-2 { padding-top: 8px; padding-bottom: 8px; }
+.pt-1 { padding-top: 4px; }
+.pt-4 { padding-top: 16px; }
+.pb-2 { padding-bottom: 8px; }
+.pr-2 { padding-right: 8px; }
+.text-xs { font-size: 10px; }
+.text-sm { font-size: 12px; }
+.text-lg { font-size: 16px; }
+.text-2xl { font-size: 24px; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+.uppercase { text-transform: uppercase; }
+.text-center { text-align: center; }
+.text-gray-500 { color: var(--text-muted); }
+.text-gray-700 { color: var(--secondary); }
+.text-gray-800 { color: var(--text); }
+.text-blue-800 { color: #1e40af; }
+.text-red-500 { color: var(--danger); }
+.text-yellow-400 { color: #fbbf24; }
+.bg-gray-100 { background-color: var(--light); }
+.bg-blue-200 { background-color: #bfdbfe; }
+.bg-blue-500 { background-color: var(--primary); }
+.border { border: 1px solid var(--border); }
+.border-b { border-bottom: 1px solid var(--border); }
+.border-t { border-top: 1px solid var(--border); }
+.border-gray-400 { border-color: #9ca3af; }
+.border-gray-500 { border-color: var(--text-muted); }
+.border-gray-700 { border-color: var(--secondary); }
+.rounded { border-radius: 4px; }
+.rounded-l { border-top-left-radius: 4px; border-bottom-left-radius: 4px; }
+.rounded-r { border-top-right-radius: 4px; border-bottom-right-radius: 4px; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.top-0 { top: 0; }
+.left-0 { left: 0; }
+.bottom-0 { bottom: 0; }
+.bottom-2 { bottom: 8px; }
+.flex-col { flex-direction: column; }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Hidden form for CSRF token -->
+    <form style="display: none;">
+        {% csrf_token %}
+    </form>
+
+    <div class="header-container">
+        <div class="header-left">
+            <div>
+                <a href="{% url 'cards:employee_id_card_list' %}" class="back-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                    </svg>                  
+                    <span>Back</span>
+                </a>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>          
+            <div>
+                <h1 class="header-title">Employee Cards Print Preview</h1>
+                <p class="header-subtitle">{{ total_cards }} card{{ total_cards|pluralize }} ready</p>
+            </div>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <button onclick="printCard('worker_id_card')" class="print-btn">
+                <i class="fa fa-print"></i>
+                <span>Print {{ total_cards }} Card{{ total_cards|pluralize }}</span>
+            </button>
+        </div>
+    </div>
+    <div class="stats-grid">
+        <div class="stat-item rounded-l">
+            <span class="stat-label">Total</span>
+            <h2 class="stat-value">{{ total_cards }}</h2>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Ready</span>
+            <h2 class="stat-value">{{ cards|length }}</h2>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Charged</span>
+            <h2 class="stat-value">0</h2>
+        </div>
+        <div class="stat-item rounded-r">
+            <span class="stat-label">Print</span>
+            <h2 class="stat-value">{{ total_cards }}</h2>
+        </div>
+    </div>    <div class="info-bar">
+        <div class="info-left">
+            <h2 class="info-title">Employee ID Cards</h2>
+            <h3 class="info-subtitle">{{ total_cards }} Card{{ total_cards|pluralize }} • <span id="current-date"></span></h3>
+        </div>
+        <div class="info-right">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-yellow-400">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+            </svg>
+            <span class="info-tip">Preview Mode</span>
+        </div>
+    </div>
+
+    <div id="worker_id_card"> 
+        <div class="card-grid mb-10" id="worker_grid">
+    
+    {% for card in cards %}
+    <!-- id card -->
+     
+     <div class="flip-card">
+        <div class="flip-card-inner">
+            <!-- front card -->
+            <div class="flip-card-front">
+            <div class="border border-gray-400 idcar-size  relative">
+                <div class=" absolute top-0 left-0 bg-blue-200 py-1.5 w-full"></div>
+                <div class="w-full pt-4 px-2 flex flex-col justify-start items-center">
+                    <div class="id-image-size bg-gray-100 flex justify-center items-center">
+                        <!-- <span class="text-sm">Photo</span> -->
+                        {% if card.employee.has_photo %}
+                        <img src="{{ card.employee.photo_url }}" alt="{{ card.employee.full_name }}" class=" photo-size" />
+                        {% else %}
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-500">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                            </svg>
+                        
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                </div>
+                <div class="mt-2 px-2 font-size space-y-1.5">
+                    <div class="flex items-start">
+                        <span class="w-16 font-semibold uppercase">ID NO :</span>
+                        <div class="font-bold text-blue-800" style="font-size:9px !important;">{{ card.card_number|default:"" }}</div>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="w-16 font-semibold uppercase">Name :</span>
+                        <span class="font-semibold uppercase text-blue-800"> {{ card.employee.full_name|upper }}</span>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="w-16 font-semibold uppercase">Position :</span>
+                        <span class="font-semibold text-blue-800"> {{ card.employee.position.name|default:"EMPLOYEE"|upper }}</span>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="w-16 font-semibold uppercase">Building :</span>
+                        <span class="font-semibold text-red-500"> {{ card.employee.department.name|default:"COMPANY NAME"|upper }}</span>
+                    </div>
+                    {% comment %} <div class="flex items-center">
+                        <span class="w-16 font-semibold uppercase">Type :</span>
+                        <span class="font-semibold text-red-500"> {{ card.get_card_type_display|upper }}</span>
+                    </div> {% endcomment %}
+                </div>
+                <div class="w-full flex justify-center absolute bottom-2 left-0">
+                    <div class=" id-qr-size flex justify-center items-center" >
+                        {% qr_from_text card.card_number|default:"PENDING" %}
+                    </div>
+                </div>
+                <div class=" absolute bottom-0 left-0 bg-blue-200 py-1.5 w-full"></div>
+            </div>
+            </div>
+            <!-- front card -->
+            <!-- back card -->
+            <div class="flip-card-back ">
+                <div class="border border-gray-400 idcar-size relative px-3">
+                    <div class="absolute top-0 left-0 py-2.5 w-full px-3">
+                        <h2 class="text-xs uppercase text-center font-semibold border-b border-gray-700 pb-2">Terms & Conditions</h2>
+                    </div>
+                    <div class="space-y-2 mt-5" style="font-size:10px;">
+                        <p>&#9679;  Property of {{ card.employee.department.name|default:"company" }}</p>
+                        <p>&#9679;  Return upon termination</p>
+                        <p>&#9679;  Report if lost or stolen</p>
+                        <p>&#9679;  Authorized personnel only</p>
+                        <p>&#9679;  Non-transferable</p>
+                        <p>&#9679; Valid until {{ card.expiry_date|date:"d/m/Y" }}</p>
+                       
+                    </div>
+                    <div class=" absolute bottom-0 left-0 py-1.5 w-full px-2">
+                        <div class="w-full flex items-center justify-between border-t pt-1 border-gray-500">
+                            <div>
+                                <div class="flex justify-center items-center w-10 h-10" >
+                                    {% qr_from_text card.card_number|default:"PENDING" %}
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-center" style="font-size:10px;">
+                                <strong >Employee ID:</strong>
+                                <span> {{ card.employee.employee_id|default:"N/A" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- back card -->
+        </div>
+     </div>
+    
+    <!-- id card -->
+            {% empty %}
+            <div class="no-cards">No cards selected for preview.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+
+<script src="{% static 'vendor/qrcodejs/qrcode.min.js' %}"></script>
+  <script>
+    // Generate QR Code
+    new QRCode(document.getElementById("qrcode"), {
+      text: "B014-F2-0020",
+      width: 70,
+      height: 70,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.Q
+    });
+  </script>
+
+<script>
+    // Get today's date
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    document.getElementById("current-date").textContent = formattedDate;
+  </script>
+  <script>
+    function printCard(cardId) {
+        // Clear any existing toast messages first
+        const toastContainer = document.getElementById('toast-container');
+        if (toastContainer) {
+            toastContainer.innerHTML = '';
+        }
+
+        // First, record the printing event
+        recordPrintEvent().then(() => {
+            // Then proceed with actual printing
+            var printContents = document.getElementById(cardId).innerHTML;
+            var elm = document.getElementById(cardId);
+         
+            elm.classList.remove('flip-card', 'flip-card-front');
+
+            // Store the original content of the body
+            var originalContents = document.body.innerHTML;
+
+            // Replace the body's content with only the card's content for printing
+            //document.body.innerHTML = printContents;
+
+            var html = `
+                <html>
+                <head>
+                    <title>Print</title>
+                    <link rel="stylesheet" href="{% static 'css/tailwind.min.css' %}">
+                    <link rel="stylesheet" href="{% static "css/card-print.css" %}" media="all">
+                    <meta name="csrf-token" content="{{ csrf_token }}">
+                </head>
+                <body>${printContents}</body>
+                </html>
+            `
+            document.write(html);
+            
+
+            // Trigger the browser's print dialog
+            window.print();
+
+            // Restore the original content of the body after printing
+
+            document.body.innerHTML = originalContents;
+
+            // Reload the page to clear all CSS and toast messages
+            window.location.reload();
+        }).catch(error => {
+            console.error('Error recording print event:', error);
+            // Still allow printing even if recording fails
+            var printContents = document.getElementById(cardId).innerHTML;
+            var elm = document.getElementById(cardId);
+         
+            elm.classList.remove('flip-card', 'flip-card-front');
+
+            var originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+            window.location.reload();
+        });
+    }
+
+    async function recordPrintEvent() {
+        // Get card IDs from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const cardIds = urlParams.get('cards');
+        
+        if (!cardIds) {
+            throw new Error('No card IDs found');
+        }
+
+        // Get CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                         document.querySelector('meta[name=csrf-token]')?.content;
+
+        const response = await fetch('{% url "cards:employee_id_card_print_confirm" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrfToken,
+            },
+            body: `cards=${encodeURIComponent(cardIds)}`
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to record print event');
+        }
+
+        return response;
+    }
+</script>
+{% endblock %}
+{% endblock %} 

@@ -1,0 +1,715 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Probation Extensions - {{ worker.get_full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Compact Design Variables */
+:root {
+    --compact-radius: 6px;
+    --compact-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    --compact-border: 1px solid #e5e7eb;
+    --compact-header-bg: #f9fafb;
+    --compact-text-xs: 0.75rem;
+    --compact-text-sm: 0.875rem;
+    --compact-text-base: 1rem;
+    --compact-spacing-xs: 0.25rem;
+    --compact-spacing-sm: 0.5rem;
+    --compact-spacing-md: 1rem;
+}
+
+/* Page Header */
+.page-header {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    border-radius: var(--compact-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--compact-shadow);
+}
+
+
+
+/* Worker Info Card */
+.worker-info-card {
+    background: white;
+    border-radius: var(--compact-radius);
+    padding: 1.5rem;
+    box-shadow: var(--compact-shadow);
+    border: var(--compact-border);
+    margin-bottom: 1.5rem;
+}
+
+.worker-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f8f9fa;
+}
+
+.worker-avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    margin: 0 auto;
+}
+
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f3f4;
+    font-size: var(--compact-text-sm);
+}
+
+.metric-row:last-child {
+    border-bottom: none;
+}
+
+.metric-label {
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.metric-value {
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Stats Cards */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: var(--compact-radius);
+    padding: 1rem;
+    box-shadow: var(--compact-shadow);
+    border: var(--compact-border);
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: var(--compact-text-sm);
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.stat-extensions { border-left: 4px solid #f59e0b; }
+.stat-days { border-left: 4px solid #3b82f6; }
+.stat-active { border-left: 4px solid #10b981; }
+.stat-average { border-left: 4px solid #8b5cf6; }
+
+/* Filter Section */
+.filter-section {
+    background: white;
+    border-radius: var(--compact-radius);
+    padding: 1rem;
+    box-shadow: var(--compact-shadow);
+    border: var(--compact-border);
+    margin-bottom: 1.5rem;
+}
+
+.filter-row {
+    display: flex;
+    gap: 1rem;
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-group label {
+    font-size: var(--compact-text-sm);
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.filter-group select,
+.filter-group input {
+    font-size: var(--compact-text-sm);
+    padding: 0.5rem;
+    border-radius: var(--compact-radius);
+    border: var(--compact-border);
+    background: white;
+    color: #374151;
+    width: 100%;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Extensions Table */
+.extensions-table {
+    background: white;
+    border-radius: var(--compact-radius);
+    overflow: hidden;
+    box-shadow: var(--compact-shadow);
+    border: var(--compact-border);
+    margin-bottom: 1.5rem;
+}
+
+.extensions-table th {
+    font-size: var(--compact-text-xs);
+    font-weight: 600;
+    color: #374151;
+    background: var(--compact-header-bg);
+    border-bottom: var(--compact-border);
+    padding: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.extensions-table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: var(--compact-text-sm);
+}
+
+.extensions-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.extensions-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+/* Extension Card (Alternative Layout) */
+.extension-card {
+    background: white;
+    border-radius: var(--compact-radius);
+    padding: 1rem;
+    box-shadow: var(--compact-shadow);
+    border: var(--compact-border);
+    margin-bottom: 1rem;
+}
+
+.extension-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.extension-title {
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.extension-duration {
+    background: #f59e0b;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: var(--compact-text-xs);
+    font-weight: 600;
+}
+
+.extension-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.extension-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: #f9fafb;
+    border-radius: 4px;
+    font-size: var(--compact-text-sm);
+}
+
+.extension-detail-label {
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.extension-detail-value {
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Status Badges */
+.status-badge {
+    font-size: var(--compact-text-xs);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.status-active { background: #d1fae5; color: #065f46; }
+.status-completed { background: #dbeafe; color: #1e3a8a; }
+.status-extended { background: #fef3c7; color: #92400e; }
+.status-failed { background: #fee2e2; color: #991b1b; }
+
+/* Pagination - Unified Design */
+.pagination-wrapper {
+    background: white;
+    padding: 0.75rem 1rem;
+    margin-top: 0;
+    border: var(--compact-border);
+    border-top: none;
+    border-radius: 0 0 var(--compact-radius) var(--compact-radius);
+    box-shadow: var(--compact-shadow);
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pagination-info {
+    font-size: var(--compact-text-sm);
+    color: #374151;
+    font-weight: 500;
+}
+
+.pagination {
+    margin: 0;
+}
+
+.page-link {
+    font-size: var(--compact-text-sm);
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--compact-radius);
+    border: var(--compact-border);
+    color: #374151;
+    text-decoration: none;
+    margin: 0 0.125rem;
+    transition: all 0.2s ease;
+}
+
+.page-link:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.page-item.active .page-link {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.page-item.disabled .page-link {
+    background: #f9fafb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-compact {
+    font-size: var(--compact-text-sm);
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--compact-radius);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6b7280;
+    background: white;
+    border-radius: var(--compact-radius);
+    border: var(--compact-border);
+}
+
+.empty-state .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 1rem;
+    }
+    
+    .filter-row {
+        flex-direction: column;
+    }
+    
+    .filter-group {
+        min-width: auto;
+    }
+    
+    .extensions-table {
+        font-size: var(--compact-text-xs);
+    }
+    
+    .extension-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .pagination-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .filter-section,
+    .action-buttons,
+    .pagination-wrapper {
+        display: none !important;
+    }
+    
+    .page-header {
+        background: white !important;
+        color: black !important;
+        border: 1px solid #000;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <!-- Header -->
+    <div class="page-header">
+
+        
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h3 class="mb-1">
+                    <i class="bi bi-clock-history me-2"></i>
+                    Probation Extensions
+                </h3>
+                <p class="mb-0 opacity-75">Complete extension history for {{ worker.get_full_name }}</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="action-buttons">
+                    <a href="{% url 'zone:worker_probation_status' worker.id %}" class="btn btn-light btn-sm">
+                        <i class="bi bi-hourglass-split"></i> Probation Status
+                    </a>
+                    <a href="{% url 'zone:worker_detail' worker.id %}" class="btn btn-light btn-sm">
+                        <i class="bi bi-person"></i> Worker Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Worker Information -->
+        <div class="col-lg-4">
+            <div class="worker-info-card">
+                <div class="text-center mb-3">
+                    {% if worker.photo %}
+                        <img src="{% url "zone:serve_worker_photo" worker.id %}" class="worker-avatar" alt="Worker Photo">
+                    {% else %}
+                        <div class="worker-avatar-placeholder">
+                            {{ worker.first_name|first }}{{ worker.last_name|first }}
+                        </div>
+                    {% endif %}
+                    
+                    <h5 class="mt-2 mb-1">{{ worker.get_full_name }}</h5>
+                    <p class="text-muted mb-0">{{ worker.worker_id }}</p>
+                </div>
+                
+                <div class="metric-row">
+                    <span class="metric-label">Position</span>
+                    <span class="metric-value">{{ worker.position.name|default:"Not assigned" }}</span>
+                </div>
+                
+                <div class="metric-row">
+                    <span class="metric-label">Zone</span>
+                    <span class="metric-value">{{ worker.zone.name }}</span>
+                </div>
+                
+                <div class="metric-row">
+                    <span class="metric-label">Building</span>
+                    <span class="metric-value">{{ worker.building.name|default:"Not assigned" }}</span>
+                </div>
+                
+                {% if worker.floor %}
+                    <div class="metric-row">
+                        <span class="metric-label">Floor</span>
+                        <span class="metric-value">{{ worker.floor.name }}</span>
+                    </div>
+                {% endif %}
+                
+                <div class="metric-row">
+                    <span class="metric-label">Status</span>
+                    <span class="metric-value">
+                        <span class="status-badge status-{{ worker.status }}">
+                            {{ worker.get_status_display }}
+                        </span>
+                    </span>
+                </div>
+                
+                <div class="metric-row">
+                    <span class="metric-label">Date Joined</span>
+                    <span class="metric-value">{{ worker.date_joined|date:"M d, Y" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Extensions Content -->
+        <div class="col-lg-8">
+            <!-- Statistics -->
+            <div class="stats-container">
+                <div class="stat-card stat-extensions">
+                    <div class="stat-number text-warning">{{ total_extensions }}</div>
+                    <div class="stat-label">Total Extensions</div>
+                </div>
+                
+                <div class="stat-card stat-days">
+                    <div class="stat-number text-primary">{{ total_extension_days }}</div>
+                    <div class="stat-label">Total Extension Days</div>
+                </div>
+                
+                <div class="stat-card stat-active">
+                    <div class="stat-number text-success">{{ active_probations }}</div>
+                    <div class="stat-label">Active Probations</div>
+                </div>
+                
+                <div class="stat-card stat-average">
+                    <div class="stat-number text-info">
+                        {% if total_extensions > 0 %}
+                            {{ total_extension_days|floatformat:1|div:total_extensions|default:0|floatformat:1 }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </div>
+                    <div class="stat-label">Avg Days/Extension</div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filter-section">
+                <form method="get" class="filter-form">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="status">Probation Status</label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="">All Statuses</option>
+                                <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                                <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                                <option value="failed" {% if status_filter == 'failed' %}selected{% endif %}>Failed</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="date_range">Date Range</label>
+                            <select name="date_range" id="date_range" class="form-select">
+                                <option value="">All Time</option>
+                                <option value="last_30" {% if date_filter == 'last_30' %}selected{% endif %}>Last 30 Days</option>
+                                <option value="last_90" {% if date_filter == 'last_90' %}selected{% endif %}>Last 90 Days</option>
+                                <option value="this_year" {% if date_filter == 'this_year' %}selected{% endif %}>This Year</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-actions">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="bi bi-funnel"></i> Filter
+                            </button>
+                            <a href="{% url 'zone:worker_probation_extensions' worker.id %}" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-x-circle"></i> Clear
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Extensions Table -->
+            {% if extensions %}
+                <div class="extensions-table-container">
+                    <table class="table table-hover extensions-table">
+                        <thead>
+                            <tr>
+                                <th>Probation Period</th>
+                                <th>Duration</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Approved By</th>
+                                <th>Date Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for extension in extensions %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-semibold">
+                                            Period #{{ forloop.counter }}
+                                        </div>
+                                        <small class="text-muted">
+                                            {{ extension.probation_period.start_date|date:"M d, Y" }} - 
+                                            {{ extension.probation_period.get_end_date|date:"M d, Y" }}
+                                        </small>
+                                    </td>
+                                    
+                                    <td>
+                                        <span class="extension-duration">
+                                            +{{ extension.extension_duration_days }}d
+                                        </span>
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 200px;" title="{{ extension.reason }}">
+                                            {{ extension.reason }}
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        <span class="status-badge status-{{ extension.probation_period.worker.status }}">
+                                            {{ extension.probation_period.worker.get_status_display }}
+                                        </span>
+                                    </td>
+                                    
+                                    <td>
+                                        {% if extension.approved_by %}
+                                            <div class="fw-semibold">{{ extension.approved_by.get_full_name }}</div>
+                                        {% else %}
+                                            <span class="text-muted">System</span>
+                                        {% endif %}
+                                    </td>
+                                    
+                                    <td>
+                                        <div>{{ extension.created_at|date:"M d, Y" }}</div>
+                                        <small class="text-muted">{{ extension.created_at|time:"g:i A" }}</small>
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="{% url 'zone:probation_detail' extension.probation_period.id %}" 
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                    <div class="pagination-wrapper">
+                        <div class="pagination-controls">
+                            <div class="pagination-info">
+                                Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }} extensions
+                            </div>
+                            
+                            <nav aria-label="Extensions pagination">
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?{% if status_filter %}status={{ status_filter }}&{% endif %}{% if date_filter %}date_range={{ date_filter }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                                                <i class="bi bi-chevron-left"></i>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="bi bi-chevron-left"></i></span>
+                                        </li>
+                                    {% endif %}
+                                    
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                            <li class="page-item active">
+                                                <span class="page-link">{{ num }}</span>
+                                            </li>
+                                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?{% if status_filter %}status={{ status_filter }}&{% endif %}{% if date_filter %}date_range={{ date_filter }}&{% endif %}page={{ num }}">{{ num }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?{% if status_filter %}status={{ status_filter }}&{% endif %}{% if date_filter %}date_range={{ date_filter }}&{% endif %}page={{ page_obj.next_page_number }}">
+                                                <i class="bi bi-chevron-right"></i>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link"><i class="bi bi-chevron-right"></i></span>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <h5>No Extensions Found</h5>
+                    <p class="text-muted">
+                        {% if status_filter or date_filter %}
+                            No extensions match the current filters.
+                        {% else %}
+                            This worker has no probation extensions recorded.
+                        {% endif %}
+                    </p>
+                    {% if status_filter or date_filter %}
+                        <a href="{% url 'zone:worker_probation_extensions' worker.id %}" class="btn btn-primary">
+                            <i class="bi bi-x-circle"></i> Clear Filters
+                        </a>
+                    {% else %}
+                        <a href="{% url 'zone:worker_probation_status' worker.id %}" class="btn btn-primary">
+                            <i class="bi bi-hourglass-split"></i> View Probation Status
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

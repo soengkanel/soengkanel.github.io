@@ -1,0 +1,529 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}{{ title }} - Card Replacements{% endblock %}
+
+{% block extra_css %}
+<style>
+.replacement-summary {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.replacement-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.replacement-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #495057;
+    margin: 0;
+}
+
+.replacement-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-approved {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-rejected {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.replacement-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.info-value {
+    color: #6c757d;
+}
+
+.charge-highlight {
+    background: #e3f2fd;
+    border: 1px solid #bbdefb;
+    border-radius: 4px;
+    padding: 1rem;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.charge-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1976d2;
+    margin: 0;
+}
+
+.charge-description {
+    color: #6c757d;
+    margin-top: 0.5rem;
+}
+
+.form-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+
+.form-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    border-radius: 8px 8px 0 0;
+}
+
+.form-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.btn-approve {
+    background: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.btn-approve:hover {
+    background: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-reject {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.btn-reject:hover {
+    background: #c82333;
+    border-color: #bd2130;
+}
+
+.compact-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.compact-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.compact-subtitle {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 2px 0 0 0;
+}
+
+.compact-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Compact Info Cards */
+.info-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.info-card {
+    background: #f8fafb;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 12px;
+}
+
+.info-card-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 8px 0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 11px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.info-label {
+    font-size: 9px;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 11px;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+/* Compact Status & Reason */
+.status-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-approved {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-completed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.reason-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.reason-lost {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.reason-damaged {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.reason-expired {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+.reason-stolen {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.reason-other {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+/* Compact Financial Info */
+.financial-info {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.financial-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0369a1;
+}
+
+.financial-desc {
+    font-size: 10px;
+    color: #475569;
+}
+
+.financial-lost {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.financial-lost .financial-amount {
+    color: #dc2626;
+}
+
+/* Compact Notes */
+.notes-section {
+    background: #fffbeb;
+    border: 1px solid #fbbf24;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 16px;
+}
+
+.notes-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: #92400e;
+    margin: 0 0 4px 0;
+}
+
+.notes-content {
+    font-size: 11px;
+    color: #92400e;
+    line-height: 1.4;
+}
+
+#id_action{
+    display:flex;
+}
+#id_action div > label{
+    padding:5px 10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    margin-right:15px;
+}
+#id_action div:first-child > label{
+    border-color: #4bb36a;
+    color: #34854b;
+    background:#e6ffed;
+}
+#id_action div:last-child > label{
+    border-color: #db4632;
+    color:#db4632;
+    background:#ffefed;
+}
+.form-control{
+    border:1px solid #cfcfcf;
+    border-radius:8px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="compact-header mt-3">
+                <div>
+                    <h1 class="compact-title">Replacement Request Summary</h1>
+                    <p class="compact-subtitle">{{ replacement.card_holder_name }} • {{ replacement.created_at|date:"d/m/Y" }}</p>
+                </div>
+                
+            </div>
+
+            <div>
+                 <!-- Info Cards -->
+                <div class="info-cards">
+                    <!-- Basic Info -->
+                    <div class="info-card">
+                        <h3 class="info-card-title">Request Details</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Status</span>
+                                <span class="info-value">
+                                    <span class="status-badge status-{{ replacement.status }}">
+                                        {{ replacement.get_status_display }}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Reason</span>
+                                <span class="info-value">
+                                    <span class="reason-badge reason-{{ replacement.reason }}">
+                                        {{ replacement.get_reason_display }}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Request Date</span>
+                                <span class="info-value">{{ replacement.created_at|date:"d/m/Y" }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Requested By</span>
+                                <span class="info-value">
+                                    {% if replacement.requested_by %}
+                                        {{ replacement.requested_by.get_full_name|default:replacement.requested_by.username }}
+                                    {% else %}
+                                        System
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Info -->
+                    <div class="info-card">
+                        <h3 class="info-card-title">Card Information</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Card Type</span>
+                                <span class="info-value">{{ replacement.card_type }} Card</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Card Number</span>
+                                <span class="info-value">{{ replacement.get_original_card_number }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Card Holder</span>
+                                <span class="info-value">{{ replacement.card_holder_name }}</span>
+                            </div>
+                            {% if replacement.worker_card %}
+                            <div class="info-item">
+                                <span class="info-label">Worker ID</span>
+                                <span class="info-value">{{ replacement.worker_card.worker.worker_id }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Financial Info -->
+                <div class="financial-info {% if replacement.is_lost_card %}financial-lost{% endif %}">
+                    <div>
+                        <div class="financial-amount">${{ replacement.replacement_charge }}</div>
+                        <div class="financial-desc">
+                            {% if replacement.is_lost_card %}
+                                Lost/stolen card fee
+                            {% else %}
+                                {{ replacement.card_type }} card replacement
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="financial-desc">
+                            {% if replacement.invoice_number %}
+                                Invoice: {{ replacement.invoice_number }}
+                            {% else %}
+                                Auto-invoice: {{ replacement.auto_invoice|yesno:"Yes,No" }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+          
+
+          <!-- Approval Form -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="info-card">
+                        <h3 class="info-card-title">Approval Decision</h3>
+
+                        <div class="py-2 px-2">
+                            <form method="post" novalidate>
+                                {% csrf_token %}
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="{{ form.action.id_for_label }}" class="form-label">Decision</label>
+                                            {{ form.action }}
+                                            {% if form.action.errors %}
+                                                <div class="invalid-feedback d-block">
+                                                    {{ form.action.errors|join:" " }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="form-group">
+                                    <label for="{{ form.notes.id_for_label }}" class="form-label">Notes</label>
+                                    {{ form.notes|add_class:"form-control" }}
+                                    {% if form.notes.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.notes.errors|join:" " }}
+                                        </div>
+                                    {% endif %}
+                                    <small class="help-text">Provide notes about your decision (optional)</small>
+                                </div>
+            
+                                <div class="form-group">
+                                    <div class="d-flex gap-2">
+                                        <a href="{% url 'cards:card_replacement_list' %}" class="button-min-danger">
+                                           Cancel
+                                        </a>
+                                        <button type="submit" class="button-min-primary">
+                                            Save
+                                        </button>
+                                        
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- Approval Form -->
+           
+        </div>
+    </div>
+</div>
+{% endblock %} 

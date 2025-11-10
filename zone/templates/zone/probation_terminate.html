@@ -1,0 +1,370 @@
+{% extends 'zone/base.html' %}
+{% load static %}
+
+{% block title %}Terminate Probation - {{ worker.get_full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Ultra Minimal Termination Form */
+.ultra-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0.75rem;
+}
+
+.ultra-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8d7da;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    border-left: 3px solid #dc3545;
+}
+
+.ultra-header h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #721c24;
+}
+
+.ultra-header small {
+    color: #721c24;
+    font-size: 0.8rem;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+}
+
+.ultra-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+}
+
+.ultra-card-header {
+    background: #f8f9fa;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.ultra-card-body {
+    padding: 0.75rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.25rem;
+}
+
+.form-label.required::after {
+    content: " *";
+    color: #dc3545;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #dc3545;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-help {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+}
+
+.form-check-input {
+    margin: 0;
+}
+
+.form-check-label {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #495057;
+}
+
+.worker-ultra {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.worker-photo-ultra {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #dee2e6;
+}
+
+.worker-placeholder-ultra {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #6c757d;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.worker-info-ultra h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #212529;
+}
+
+.worker-info-ultra p {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+.actions-ultra {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.btn-ultra {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 4px;
+    text-decoration: none;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-ultra:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-danger { 
+    background: #dc3545; 
+    color: white; 
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    color: white;
+}
+
+.btn-secondary { 
+    background: #6c757d; 
+    color: white; 
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    color: white;
+}
+
+.error-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.25rem 0 0 0;
+}
+
+.error-list li {
+    color: #dc3545;
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .ultra-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    .actions-ultra {
+        grid-template-columns: 1fr;
+    }
+    
+    .worker-ultra {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ultra-container">
+    <!-- Ultra Compact Header -->
+    <div class="ultra-header">
+        <div>
+            <h1>Terminate Probation</h1>
+            <small>{{ worker.worker_id }} • {{ worker.get_full_name }}</small>
+        </div>
+    </div>
+
+    <!-- Warning Alert -->
+    <div class="alert-warning">
+        <strong>⚠️ Warning:</strong> This action will terminate the worker's employment during probation period. 
+        This action cannot be undone and will set the worker's status to "Terminated".
+    </div>
+
+    <!-- Worker Info -->
+    <div class="ultra-card">
+        <div class="ultra-card-header">Worker Information</div>
+        <div class="ultra-card-body">
+            <div class="worker-ultra">
+                {% if worker.photo %}
+                    <img src="{% url "zone:serve_worker_photo" worker.id %}" class="worker-photo-ultra" alt="">
+                {% else %}
+                    <div class="worker-placeholder-ultra">
+                        {{ worker.first_name|first }}{{ worker.last_name|first }}
+                    </div>
+                {% endif %}
+                <div class="worker-info-ultra">
+                    <h2>{{ worker.get_full_name }}</h2>
+                    <p>{{ worker.position.name|default:"No position" }} • {{ worker.zone.name }}</p>
+                    <p>Probation: {{ probation.start_date|date:"d/m/Y" }} - {{ probation.get_end_date|date:"d/m/Y" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Termination Form -->
+    <div class="ultra-card">
+        <div class="ultra-card-header">Termination Details</div>
+        <div class="ultra-card-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <!-- Termination Date -->
+                <div class="form-group">
+                    <label for="{{ form.terminated_date.id_for_label }}" class="form-label required">
+                        {{ form.terminated_date.label }}
+                    </label>
+                    {{ form.terminated_date }}
+                    {% if form.terminated_date.help_text %}
+                        <div class="form-help">{{ form.terminated_date.help_text }}</div>
+                    {% endif %}
+                    {% if form.terminated_date.errors %}
+                        <ul class="error-list">
+                            {% for error in form.terminated_date.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Termination Reason -->
+                <div class="form-group">
+                    <label for="{{ form.termination_reason.id_for_label }}" class="form-label required">
+                        {{ form.termination_reason.label }}
+                    </label>
+                    {{ form.termination_reason }}
+                    {% if form.termination_reason.help_text %}
+                        <div class="form-help">{{ form.termination_reason.help_text }}</div>
+                    {% endif %}
+                    {% if form.termination_reason.errors %}
+                        <ul class="error-list">
+                            {% for error in form.termination_reason.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Confirmation Checkbox -->
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ form.confirm_termination }}
+                        <label for="{{ form.confirm_termination.id_for_label }}" class="form-check-label">
+                            {{ form.confirm_termination.label }}
+                        </label>
+                    </div>
+                    {% if form.confirm_termination.help_text %}
+                        <div class="form-help">{{ form.confirm_termination.help_text }}</div>
+                    {% endif %}
+                    {% if form.confirm_termination.errors %}
+                        <ul class="error-list">
+                            {% for error in form.confirm_termination.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Form Errors -->
+                {% if form.non_field_errors %}
+                    <div class="form-group">
+                        <ul class="error-list">
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <!-- Actions -->
+                <div class="actions-ultra">
+                    <button type="submit" class="btn-ultra btn-danger">
+                        <i class="bi bi-x-circle"></i> Terminate Worker
+                    </button>
+                    <a href="{% url 'zone:probation_detail' probation.id %}" class="btn-ultra btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

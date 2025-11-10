@@ -1,0 +1,494 @@
+<!-- Salary Structure Delete Modal Component -->
+<div class="modal fade" id="salaryStructureDeleteModal" tabindex="-1" aria-labelledby="salaryStructureDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="salaryStructureDeleteModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill text-danger me-1"></i>
+                    <span id="salaryStructureDeleteModalTitle">Delete Salary Structure?</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2" id="salaryStructureDeleteModalName" style="font-size: 12px; font-weight: 600;"></p>
+                <div id="salaryStructureDeleteInfo" style="font-size: 11px; color: #6b7280; margin-bottom: 8px;">
+                    <!-- Dynamic cascade info will be inserted here -->
+                </div>
+                <p class="text-muted mb-0" style="font-size: 11px;">
+                    <i class="bi bi-info-circle me-1"></i>
+                    This action cannot be undone
+                </p>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex gap-1">
+                    <button type="button" class="button-min-warn py-1" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="button" class="button-min-danger py-1" id="confirmSalaryStructureDeleteBtn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Modal Styles - Following Design Guideline */
+    #salaryStructureDeleteModal {
+        z-index: 1080 !important;
+    }
+
+    #salaryStructureDeleteModal .modal-dialog {
+        margin: 1.75rem auto;
+        position: relative;
+        z-index: 1081;
+    }
+
+    #salaryStructureDeleteModal .modal-content {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        position: relative;
+        z-index: 1081;
+    }
+
+    #salaryStructureDeleteModal.modal.show .modal-content {
+        animation: salaryStructureModalSlideIn 0.3s ease-out;
+    }
+
+    #salaryStructureDeleteModal .modal-header {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0.75rem 1rem;
+        position: relative;
+        z-index: 1082;
+    }
+
+    #salaryStructureDeleteModal .modal-title {
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: #1f2937;
+    }
+
+    #salaryStructureDeleteModal .modal-title i {
+        font-size: 0.875rem;
+    }
+
+    #salaryStructureDeleteModal .modal-body {
+        padding: 1rem;
+        color: #4b5563;
+        position: relative;
+        z-index: 1082;
+    }
+
+    #salaryStructureDeleteModal .modal-footer {
+        border-top: 1px solid #e5e7eb;
+        padding: 0.75rem 1rem;
+        gap: 0.5rem;
+        position: relative;
+        z-index: 1082;
+    }
+
+    #salaryStructureDeleteModal .modal-footer .btn {
+        font-size: 11px;
+        padding: 6px 12px;
+        position: relative;
+        z-index: 1083;
+        pointer-events: auto;
+    }
+
+    #salaryStructureDeleteModal .modal-footer .btn i {
+        font-size: 10px;
+    }
+
+    @keyframes salaryStructureModalSlideIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    #salaryStructureDeleteModal .modal-header .btn-close {
+        position: relative;
+        z-index: 1084;
+        pointer-events: auto;
+        font-size: 0.75rem;
+        padding: 0.25rem;
+    }
+
+    /* Cascade delete info styling */
+    #salaryStructureDeleteInfo .cascade-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        background: #fef2f2;
+        border-radius: 4px;
+        margin-bottom: 4px;
+    }
+
+    #salaryStructureDeleteInfo .cascade-item i {
+        color: #ef4444;
+        font-size: 10px;
+    }
+
+    #salaryStructureDeleteInfo .cascade-count {
+        font-weight: 600;
+        color: #991b1b;
+    }
+
+    /* Ensure backdrop doesn't block interaction */
+    .modal-backdrop {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+
+    .modal-backdrop.show {
+        backdrop-filter: blur(3px);
+    }
+</style>
+
+<script>
+// Salary Structure Delete Modal functionality
+let currentSalaryStructureDeleteUrl = null;
+
+function initializeSalaryStructureDeleteModal() {
+    console.log('🗑️ SALARY STRUCTURE DELETE MODAL: Initializing...');
+    const deleteModalElement = document.getElementById('salaryStructureDeleteModal');
+
+    if (!deleteModalElement) {
+        console.error('❌ SALARY STRUCTURE DELETE MODAL: Modal element not found!');
+        return;
+    }
+
+    // Prevent double initialization
+    if (deleteModalElement.dataset.initialized === 'true') {
+        console.log('ℹ️ SALARY STRUCTURE DELETE MODAL: Already initialized, skipping');
+        return;
+    }
+    deleteModalElement.dataset.initialized = 'true';
+
+    const deleteModal = new bootstrap.Modal(deleteModalElement);
+    const confirmDeleteBtn = document.getElementById('confirmSalaryStructureDeleteBtn');
+    console.log('✅ SALARY STRUCTURE DELETE MODAL: Modal initialized');
+
+    // Watch for backdrop creation and immediately fix it
+    let backdropFixed = false;
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.classList && node.classList.contains('modal-backdrop') && !backdropFixed) {
+                    console.log('🎭 BACKDROP DETECTED: Fixing once');
+
+                    // Mark as fixed to prevent infinite loop
+                    backdropFixed = true;
+
+                    // Disconnect observer temporarily to prevent loop
+                    observer.disconnect();
+
+                    // Set z-index lower than modal (no need to move in DOM)
+                    node.style.setProperty('z-index', '1075', 'important');
+                    console.log('✅ Backdrop fixed on creation');
+                }
+            });
+        });
+    });
+
+    // Start observing when modal is about to show
+    deleteModalElement.addEventListener('show.bs.modal', function() {
+        backdropFixed = false;
+        observer.observe(document.body, { childList: true });
+        console.log('👀 SALARY STRUCTURE OBSERVER: Started watching for backdrop');
+        // Set modal z-index
+        deleteModalElement.style.setProperty('z-index', '1080', 'important');
+    });
+
+    // Stop observing after modal is shown
+    deleteModalElement.addEventListener('shown.bs.modal', function() {
+        setTimeout(() => {
+            observer.disconnect();
+            console.log('👀 SALARY STRUCTURE OBSERVER: Stopped watching');
+        }, 100);
+
+        // Ensure all interactive elements have pointer-events enabled
+        const allInteractive = deleteModalElement.querySelectorAll('input, select, textarea, button');
+        allInteractive.forEach(element => {
+            element.style.setProperty('pointer-events', 'auto', 'important');
+        });
+
+        // Focus first element
+        const focusableElement = deleteModalElement.querySelector('button:not([data-bs-dismiss])');
+        if (focusableElement) {
+            focusableElement.focus();
+        }
+    });
+
+    // Keyboard navigation
+    deleteModalElement.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modalInstance = bootstrap.Modal.getInstance(deleteModalElement);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        }
+    });
+
+    // Handle delete button clicks
+    document.addEventListener('click', function(e) {
+        const button = e.target.closest('.salary-structure-delete-btn');
+        if (button) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('🖱️ SALARY STRUCTURE DELETE: Button clicked!', button);
+
+            const title = button.dataset.deleteTitle || 'Delete Salary Structure?';
+            const name = button.dataset.deleteName || '';
+            const url = button.dataset.deleteUrl || button.href;
+            const detailsCount = button.dataset.detailsCount || '0';
+            const assignmentsCount = button.dataset.assignmentsCount || '0';
+            const salarySlipsCount = button.dataset.salarySlipsCount || '0';
+
+            console.log('🗑️ SALARY STRUCTURE DELETE MODAL: Delete button clicked');
+            console.log('🎯 Delete URL:', url);
+            console.log('📝 Structure name:', name);
+            console.log('📊 Details:', detailsCount, 'Assignments:', assignmentsCount, 'Salary Slips:', salarySlipsCount);
+
+            // Store delete URL
+            currentSalaryStructureDeleteUrl = url;
+
+            // Update modal content
+            document.querySelector('#salaryStructureDeleteModalTitle').textContent = title;
+            document.getElementById('salaryStructureDeleteModalName').textContent = name;
+
+            // Build cascade delete info
+            const infoContainer = document.getElementById('salaryStructureDeleteInfo');
+            let infoHtml = '';
+
+            const totalDetails = parseInt(detailsCount);
+            const totalAssignments = parseInt(assignmentsCount);
+            const totalSalarySlips = parseInt(salarySlipsCount);
+
+            if (totalDetails > 0 || totalAssignments > 0 || totalSalarySlips > 0) {
+                infoHtml += '<div style="margin-bottom: 6px; font-weight: 600; color: #991b1b;">This will also delete:</div>';
+
+                if (totalDetails > 0) {
+                    infoHtml += `<div class="cascade-item">
+                        <i class="bi bi-dash-circle-fill"></i>
+                        <span><span class="cascade-count">${totalDetails}</span> salary component(s)</span>
+                    </div>`;
+                }
+
+                if (totalAssignments > 0) {
+                    infoHtml += `<div class="cascade-item">
+                        <i class="bi bi-dash-circle-fill"></i>
+                        <span><span class="cascade-count">${totalAssignments}</span> employee assignment(s)</span>
+                    </div>`;
+                }
+
+                if (totalSalarySlips > 0) {
+                    infoHtml += `<div class="cascade-item">
+                        <i class="bi bi-dash-circle-fill"></i>
+                        <span><span class="cascade-count">${totalSalarySlips}</span> salary slip(s)</span>
+                    </div>`;
+                }
+            }
+
+            infoContainer.innerHTML = infoHtml;
+
+            // Show modal
+            deleteModal.show();
+        }
+    });
+
+    // Handle delete confirmation
+    confirmDeleteBtn.addEventListener('click', function() {
+        console.log('🔥 SALARY STRUCTURE DELETE MODAL: Confirm delete button clicked');
+
+        const deleteUrl = window.currentSalaryStructureDeleteUrl || currentSalaryStructureDeleteUrl;
+        if (deleteUrl) {
+            // Get CSRF token
+            function getCSRFToken() {
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                if (csrfMeta) return csrfMeta.getAttribute('content');
+
+                const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfInput) return csrfInput.value;
+
+                const csrfCookie = document.cookie.match(/csrftoken=([^;]+)/);
+                if (csrfCookie) return csrfCookie[1];
+
+                return null;
+            }
+
+            const csrfToken = getCSRFToken();
+
+            if (!csrfToken) {
+                alert('Security token not found. Please refresh the page and try again.');
+                return;
+            }
+
+            // Show loading state
+            const originalContent = confirmDeleteBtn.innerHTML;
+            confirmDeleteBtn.disabled = true;
+            confirmDeleteBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Deleting...';
+
+            // Create and submit form
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = deleteUrl;
+
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = csrfToken;
+            form.appendChild(csrfInput);
+
+            // Add timeout to prevent indefinite hanging
+            const timeoutId = setTimeout(() => {
+                confirmDeleteBtn.disabled = false;
+                confirmDeleteBtn.innerHTML = originalContent;
+                deleteModal.hide();
+            }, 10000);
+
+            form.addEventListener('submit', function() {
+                clearTimeout(timeoutId);
+                deleteModal.hide();
+            });
+
+            document.body.appendChild(form);
+
+            try {
+                form.submit();
+                console.log('✅ SALARY STRUCTURE DELETE MODAL: Form submitted successfully');
+            } catch (error) {
+                console.error('❌ SALARY STRUCTURE DELETE MODAL: Error submitting form:', error);
+                alert('Error submitting delete request: ' + error.message);
+                confirmDeleteBtn.disabled = false;
+                confirmDeleteBtn.innerHTML = originalContent;
+            }
+        }
+    });
+
+    // Reset modal when hidden
+    deleteModalElement.addEventListener('hidden.bs.modal', function() {
+        window.currentSalaryStructureDeleteUrl = null;
+        currentSalaryStructureDeleteUrl = null;
+        confirmDeleteBtn.disabled = false;
+        confirmDeleteBtn.innerHTML = 'Delete';
+        document.getElementById('salaryStructureDeleteInfo').innerHTML = '';
+    });
+}
+
+// Global function to show salary structure delete modal
+window.showSalaryStructureDeleteModal = function(button) {
+    console.log('🗑️ showSalaryStructureDeleteModal called', button);
+
+    const modalElement = document.getElementById('salaryStructureDeleteModal');
+    if (!modalElement) {
+        console.error('❌ Modal element not found');
+        return;
+    }
+
+    const title = button.dataset.deleteTitle || 'Delete Salary Structure?';
+    const name = button.dataset.deleteName || '';
+    const url = button.dataset.deleteUrl || button.href;
+    const detailsCount = button.dataset.detailsCount || '0';
+    const assignmentsCount = button.dataset.assignmentsCount || '0';
+    const salarySlipsCount = button.dataset.salarySlipsCount || '0';
+
+    console.log('📝 Structure:', name);
+    console.log('🎯 URL:', url);
+
+    // Store delete URL globally
+    window.currentSalaryStructureDeleteUrl = url;
+
+    // Update modal content
+    document.querySelector('#salaryStructureDeleteModalTitle').textContent = title;
+    document.getElementById('salaryStructureDeleteModalName').textContent = name;
+
+    // Build cascade delete info
+    const infoContainer = document.getElementById('salaryStructureDeleteInfo');
+    let infoHtml = '';
+
+    const totalDetails = parseInt(detailsCount);
+    const totalAssignments = parseInt(assignmentsCount);
+    const totalSalarySlips = parseInt(salarySlipsCount);
+
+    if (totalDetails > 0 || totalAssignments > 0 || totalSalarySlips > 0) {
+        infoHtml += '<div style="margin-bottom: 6px; font-weight: 600; color: #991b1b;">This will also delete:</div>';
+
+        if (totalDetails > 0) {
+            infoHtml += `<div class="cascade-item">
+                <i class="bi bi-dash-circle-fill"></i>
+                <span><span class="cascade-count">${totalDetails}</span> salary component(s)</span>
+            </div>`;
+        }
+
+        if (totalAssignments > 0) {
+            infoHtml += `<div class="cascade-item">
+                <i class="bi bi-dash-circle-fill"></i>
+                <span><span class="cascade-count">${totalAssignments}</span> employee assignment(s)</span>
+            </div>`;
+        }
+
+        if (totalSalarySlips > 0) {
+            infoHtml += `<div class="cascade-item">
+                <i class="bi bi-dash-circle-fill"></i>
+                <span><span class="cascade-count">${totalSalarySlips}</span> salary slip(s)</span>
+            </div>`;
+        }
+    }
+
+    infoContainer.innerHTML = infoHtml;
+
+    // Show modal
+    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    modal.show();
+    console.log('✅ Modal shown');
+};
+
+// Test function to manually open modal (for debugging)
+window.testSalaryStructureDeleteModal = function() {
+    const modalElement = document.getElementById('salaryStructureDeleteModal');
+    if (modalElement) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+        document.getElementById('salaryStructureDeleteModalName').textContent = 'Test Structure';
+        document.getElementById('salaryStructureDeleteInfo').innerHTML = '<p style="color: green;">Modal is working!</p>';
+        modal.show();
+        console.log('✅ Test modal opened successfully');
+    } else {
+        console.error('❌ Modal element not found');
+    }
+};
+
+// Initialize when DOM is loaded - with retry for Bootstrap
+function tryInitializeSalaryStructureDeleteModal() {
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        initializeSalaryStructureDeleteModal();
+    } else {
+        console.warn('⚠️ Bootstrap not ready, retrying in 100ms...');
+        setTimeout(tryInitializeSalaryStructureDeleteModal, 100);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', tryInitializeSalaryStructureDeleteModal);
+
+// Also try on window load as backup
+window.addEventListener('load', function() {
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        // Check if already initialized
+        const modalElement = document.getElementById('salaryStructureDeleteModal');
+        if (modalElement && !modalElement.dataset.initialized) {
+            modalElement.dataset.initialized = 'true';
+            tryInitializeSalaryStructureDeleteModal();
+        }
+    }
+});
+</script>

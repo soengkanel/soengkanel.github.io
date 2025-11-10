@@ -1,0 +1,783 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Timesheets{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact Variables */
+    :root {
+        --primary: #3b82f6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+    }
+
+    /* Compact Header */
+    .page-header-compact {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 16px;
+    }
+
+    .page-header-compact h1 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+
+    .btn-compact {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 500;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.15s;
+        border: 1px solid;
+    }
+
+    .btn-primary-compact {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .btn-primary-compact:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-secondary-compact {
+        background: white;
+        color: #374151;
+        border-color: #d1d5db;
+    }
+
+    .btn-secondary-compact:hover {
+        background: #f9fafb;
+    }
+
+    /* Compact Stats */
+    .stats-compact {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .stat-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .stat-compact-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #111827;
+        margin: 0 0 4px 0;
+    }
+
+    .stat-compact-label {
+        font-size: 11px;
+        color: #6b7280;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-compact-sub {
+        font-size: 10px;
+        color: #9ca3af;
+        margin-top: 4px;
+    }
+    .stat-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 1rem;
+        background: #fff;
+    }
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0.25rem 0;
+    }
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 6px;
+        margin-bottom: 12px;
+    }
+
+    /* Compact Table */
+    .table-container-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .table-compact {
+        width: 100%;
+        margin: 0;
+        font-size: 13px;
+        border-collapse: collapse;
+    }
+
+    .table-compact thead th {
+        background: #f9fafb;
+        padding: 10px 12px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .table-compact tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #f3f4f6;
+        color: #111827;
+        vertical-align: middle;
+    }
+
+    .table-compact tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-compact tbody tr:hover {
+        background: #f9fafb;
+        cursor: pointer;
+    }
+
+    /* Status Badges */
+    .badge-compact {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .badge-draft { background: #f3f4f6; color: #4b5563; }
+    .badge-submitted { background: #fef3c7; color: #92400e; }
+    .badge-approved { background: #d1fae5; color: #065f46; }
+    .badge-rejected { background: #fee2e2; color: #991b1b; }
+
+    /* Action Buttons */
+    .btn-icon-compact {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: white;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .btn-icon-compact:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+        color: #111827;
+    }
+
+    .btn-icon-compact.success {
+        color: var(--success);
+        border-color: var(--success);
+    }
+
+    .btn-icon-compact.success:hover {
+        background: #d1fae5;
+    }
+
+    .btn-icon-compact.danger {
+        color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .btn-icon-compact.danger:hover {
+        background: #fee2e2;
+    }
+
+    .btn-icon-compact.warning {
+        color: var(--warning);
+        border-color: var(--warning);
+    }
+
+    .btn-icon-compact.warning:hover {
+        background: #f7e2be;
+    }
+    .btn-icon-compact.primary {
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .btn-icon-compact.primary:hover {
+        background: #c8daf7;
+    }
+
+    /* Empty State */
+    .empty-state-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .empty-state-compact i {
+        font-size: 48px;
+        color: #d1d5db;
+        margin-bottom: 12px;
+    }
+
+    .empty-state-compact h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0 0 8px 0;
+    }
+
+    .empty-state-compact p {
+        font-size: 13px;
+        color: #6b7280;
+        margin: 0 0 16px 0;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .table-compact {
+            font-size: 12px;
+        }
+
+        .table-compact thead th,
+        .table-compact tbody td {
+            padding: 8px 10px;
+        }
+
+        .stats-compact {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* Compact Filters */
+    .filters-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+
+    .filters-compact input,
+    .filters-compact select {
+        font-size: 13px;
+        padding: 6px 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+    }
+
+    .filters-compact label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+    /* Sortable Headers */
+    .sortable-header {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+        padding-right: 20px !important;
+    }
+
+    .sortable-header:hover {
+        background: #f3f4f6;
+    }
+
+    .sort-icon {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 10px;
+        color: #9ca3af;
+    }
+
+    .sort-icon.active {
+        color: #3b82f6;
+    }
+
+    /* Compact Pagination */
+    .pagination-compact {
+        margin: 12px 0 0 0;
+        justify-content: center;
+    }
+
+    .pagination-compact .page-item {
+        margin: 0 1px;
+    }
+
+    .pagination-compact .page-link {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 8px;
+        min-width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #3b82f6;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .pagination-compact .page-link:hover {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+
+    .pagination-compact .page-item.active .page-link {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+        font-weight: 600;
+    }
+
+    .pagination-compact .page-item.disabled .page-link {
+        color: #9ca3af;
+        background: #f9fafb;
+        border-color: #e5e7eb;
+        cursor: not-allowed;
+    }
+
+    .pagination-compact .page-nav {
+        font-size: 10px;
+        padding: 4px 6px;
+        min-width: auto;
+    }
+
+    /* Per-Page Selector */
+    .per-page-selector {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 5px 24px 5px 8px;
+        height: 28px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        background: white;
+        color: #374151;
+        cursor: pointer;
+        transition: all 0.15s;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23374151' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 6px center;
+        background-size: 12px;
+        min-width: 60px;
+    }
+
+    .per-page-selector:hover {
+        border-color: #3b82f6;
+        outline: none;
+    }
+
+    .per-page-selector:focus {
+        border-color: #3b82f6;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .per-page-label {
+        font-size: 11px;
+        color: #6b7280;
+        font-weight: 500;
+    }
+    .form-control { 
+        font-size: 11px !important; 
+        padding: 4px 6px !important; 
+        height: auto !important; 
+        border-radius: 3px; 
+        border: 1px solid #d1d5db; 
+    }
+    .form-label { 
+        font-size: 10px !important; 
+        margin-bottom: 3px !important; 
+        font-weight: 500; 
+        color: #374151; 
+    }
+    .page-header { padding: 6px 0; margin-bottom: 12px; }
+    .page-header h2 { font-size: 16px; font-weight: 600; margin: 0; color: #1a1a1a; }
+    .status-badge { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 500; text-transform: uppercase; }
+    .status-draft { background-color: #f3f4f6; color: #374151; }
+    .status-processing { background-color: #fef3c7; color: #92400e; }
+    .status-closed { background-color: #f73636; color: #f3f4f6;; }
+    .status-approved { background-color: #dbeafe; color: #1e40af; }
+    .status-paid { background-color: #dcfce7; color: #166534; }
+    .status-cancelled { background-color: #fee2e2; color: #991b1b; }
+    .table { font-size: 11px; }
+    .table th { font-weight: 600; color: #374151; text-transform: uppercase; font-size: 10px; padding: 8px; border-bottom: 2px solid #e2e8f0; }
+    .table td { padding: 8px; vertical-align: middle; }
+    .filter-pill { padding: 4px 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 10px; text-decoration: none; color: #6b7280; transition: all 0.2s; }
+    .filter-pill:hover, .filter-pill.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3 py-3">
+    <!-- Compact Header -->
+    <div class="page-header-compact">
+        <h1>Timesheets</h1>
+        <div style="display: flex; gap: 8px;">
+            <a href="{% url 'project:timesheet_create' %}" class="button-min-primary py-1">
+                <div>
+                    <i class="bi bi-plus" style="font-size: 9px;"></i>
+                    Add
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Compact Stats -->
+    <div class="stats-grid mt-2">
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-compact-value">{{ total_hours|floatformat:1 }}h</div>
+            <p class="stat-compact-label">This Week</p>
+            <p class="stat-compact-sub">
+                {% if week_comparison >= 0 %}▲{% else %}▼{% endif %} {{ week_comparison|floatformat:0 }}% vs last
+            </p>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-compact-value">{{ stats.submitted }}</div>
+            <p class="stat-compact-label">Pending</p>
+            <p class="stat-compact-sub">Awaiting approval</p>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-compact-value">{{ stats.approved }}</div>
+            <p class="stat-compact-label">Approved</p>
+            <p class="stat-compact-sub">Ready for billing</p>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-compact-value">{{ total_billable_hours|floatformat:1 }}h</div>
+            <p class="stat-compact-label">Billable</p>
+            <p class="stat-compact-sub">{{ billable_percentage|floatformat:0 }}% of total</p>
+        </div>
+    </div>
+
+    <!-- Compact Filters -->
+    <div class="filters-compact">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label mb-1">Search</label>
+                <input type="text" name="search" class="form-control" placeholder="Code, employee name..." value="{{ search_query|default:'' }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label mb-1">Status</label>
+                <select name="status" class="form-control">
+                    <option value="">All Statuses</option>
+                    <option value="draft" {% if status_filter == 'draft' %}selected{% endif %}>Draft</option>
+                    <option value="submitted" {% if status_filter == 'submitted' %}selected{% endif %}>Submitted</option>
+                    <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+                    <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+            </div>
+            {% if is_manager %}
+            <div class="col-md-2">
+                <label class="form-label mb-1">Employee</label>
+                <select name="employee" class="form-control">
+                    <option value="">All Employees</option>
+                    {% for emp in all_employees %}
+                    <option value="{{ emp.id }}" {% if employee_filter == emp.id|stringformat:"s" %}selected{% endif %}>
+                        {{ emp.full_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+            <div class="col-md-2">
+                <label class="form-label mb-1">Start From</label>
+                <input type="date" name="start_date_from" class="form-control" value="{{ start_date_from|default:'' }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label mb-1">Start To</label>
+                <input type="date" name="start_date_to" class="form-control" value="{{ start_date_to|default:'' }}">
+            </div>
+            <div class="col-md-1 d-flex gap-2">
+                <button type="submit" class="button-min-primary" title="Apply Filters">
+                    <i class="fa fa-search" style="font-size:10px;"></i>
+                </button>
+                {% if search_query or status_filter or employee_filter or start_date_from or start_date_to %}
+                <a href="{% url 'project:timesheet_list' %}" class="button-min-default" title="Clear Filters">
+                    <i class="fas fa-redo" style="font-size:10px;"></i>
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Compact Table -->
+    {% if timesheets %}
+    <div class="table-container-compact">
+        <table class="table-compact">
+            <thead>
+                <tr>
+                    <th class="sortable-header" onclick="sortTable('timesheet_code')">
+                        Code
+                        <span class="sort-icon {% if current_sort == 'timesheet_code' %}active{% endif %}">
+                            {% if current_sort == 'timesheet_code' %}
+                                {% if current_order == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}⇅{% endif %}
+                        </span>
+                    </th>
+                    <th class="sortable-header" onclick="sortTable('start_date')">
+                        Period
+                        <span class="sort-icon {% if current_sort == 'start_date' %}active{% endif %}">
+                            {% if current_sort == 'start_date' %}
+                                {% if current_order == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}⇅{% endif %}
+                        </span>
+                    </th>
+                    <th class="text-end sortable-header" onclick="sortTable('total_hours')">
+                        Total Hrs
+                        <span class="sort-icon {% if current_sort == 'total_hours' %}active{% endif %}">
+                            {% if current_sort == 'total_hours' %}
+                                {% if current_order == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}⇅{% endif %}
+                        </span>
+                    </th>
+                    <th class="text-end sortable-header" onclick="sortTable('total_billable_hours')">
+                        Billable Hrs
+                        <span class="sort-icon {% if current_sort == 'total_billable_hours' %}active{% endif %}">
+                            {% if current_sort == 'total_billable_hours' %}
+                                {% if current_order == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}⇅{% endif %}
+                        </span>
+                    </th>
+                    <th class="text-end">Amount</th>
+                    <th class="sortable-header" onclick="sortTable('status')">
+                        Status
+                        <span class="sort-icon {% if current_sort == 'status' %}active{% endif %}">
+                            {% if current_sort == 'status' %}
+                                {% if current_order == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}⇅{% endif %}
+                        </span>
+                    </th>
+                    <th class="sortable-header" onclick="sortTable('submitted_date')">
+                        Submitted
+                        <span class="sort-icon {% if current_sort == 'submitted_date' %}active{% endif %}">
+                            {% if current_sort == 'submitted_date' %}
+                                {% if current_order == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}⇅{% endif %}
+                        </span>
+                    </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for timesheet in timesheets %}
+                <tr onclick="window.location.href='{% url 'project:timesheet_detail' timesheet.id %}'">
+                    <td>
+                        <div style="font-weight: 600;">{{ timesheet.timesheet_code }}</div>
+                        <div style="font-size: 11px; color: #6b7280;">{{ timesheet.employee.full_name }}</div>
+                    </td>
+                    <td>
+                        <div>{{ timesheet.start_date|date:"M d" }} - {{ timesheet.end_date|date:"M d, Y" }}</div>
+                    </td>
+                    <td class="text-end">
+                        <span style="font-weight: 600;">{{ timesheet.total_hours|floatformat:1 }}</span>
+                    </td>
+                    <td class="text-end">
+                        <span style="font-weight: 600; color: #10b981;">{{ timesheet.total_billable_hours|floatformat:1 }}</span>
+                    </td>
+                    <td class="text-end">
+                        {% if timesheet.total_billable_amount %}
+                        <span style="font-weight: 600;">${{ timesheet.total_billable_amount|floatformat:2 }}</span>
+                        {% else %}
+                        <span style="color: #9ca3af;">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge-compact badge-{{ timesheet.status }}">
+                            {{ timesheet.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if timesheet.submitted_date %}
+                        <div>{{ timesheet.submitted_date|date:"M d, Y" }}</div>
+                        <div style="font-size: 11px; color: #9ca3af;">{{ timesheet.submitted_date|time:"H:i" }}</div>
+                        {% else %}
+                        <span style="color: #9ca3af;">-</span>
+                        {% endif %}
+                    </td>
+                    <td onclick="event.stopPropagation();">
+                        <div style="display: flex; gap: 4px;">
+                            <a href="{% url 'project:timesheet_detail' timesheet.id %}"
+                               class="btn-icon-compact primary"
+                               title="View">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            {% if timesheet.status == 'draft' %}
+                            <a href="{% url 'project:timesheet_edit' timesheet.id %}"
+                               class="btn-icon-compact warning"
+                               title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% endif %}
+                            {% if timesheet.status == 'submitted' and request.user.is_superuser %}
+                            <form method="post" action="{% url 'project:timesheet_approve' timesheet.id %}" style="margin: 0;">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn-icon-compact success"
+                                        title="Approve"
+                                        onclick="return confirm('Approve this timesheet?')">
+                                    <i class="bi bi-check"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Compact Pagination with Per-Page Selector -->
+    <div class="d-flex justify-content-between align-items-center mt-3 mb-5">
+        <!-- Per-Page Selector -->
+        <div class="d-flex align-items-center gap-2">
+            <span class="per-page-label">Show:</span>
+            <select class="per-page-selector" onchange="changePerPage(this.value)">
+                <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                <option value="200" {% if per_page == 200 %}selected{% endif %}>200</option>
+            </select>
+            <span class="per-page-label">per page</span>
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Timesheets pagination">
+            <ul class="pagination pagination-compact w-full">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link page-nav rounded"
+                        href="?page=1&per_page={{ per_page }}&sort={{ current_sort }}&order={{ current_order }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if employee_filter %}&employee={{ employee_filter }}{% endif %}{% if start_date_from %}&start_date_from={{ start_date_from }}{% endif %}{% if start_date_to %}&start_date_to={{ start_date_to }}{% endif %}">
+                        <i class="bi bi-chevron-double-left"></i><span class="page-text ms-1 px-0"
+                            style="border:none;">First</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link page-nav rounded"
+                        href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&sort={{ current_sort }}&order={{ current_order }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if employee_filter %}&employee={{ employee_filter }}{% endif %}{% if start_date_from %}&start_date_from={{ start_date_from }}{% endif %}{% if start_date_to %}&start_date_to={{ start_date_to }}{% endif %}">
+                        <i class="bi bi-chevron-left"></i><span class="page-text ms-1 px-0"
+                            style="border:none;">Prev</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link rounded">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+                <li class="page-item">
+                    <a class="page-link rounded"
+                        href="?page={{ num }}&per_page={{ per_page }}&sort={{ current_sort }}&order={{ current_order }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if employee_filter %}&employee={{ employee_filter }}{% endif %}{% if start_date_from %}&start_date_from={{ start_date_from }}{% endif %}{% if start_date_to %}&start_date_to={{ start_date_to }}{% endif %}">{{ num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link page-nav rounded"
+                        href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&sort={{ current_sort }}&order={{ current_order }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if employee_filter %}&employee={{ employee_filter }}{% endif %}{% if start_date_from %}&start_date_from={{ start_date_from }}{% endif %}{% if start_date_to %}&start_date_to={{ start_date_to }}{% endif %}">
+                        <span class="page-text me-1 px-0" style="border:none;">Next</span><i
+                            class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link page-nav rounded"
+                        href="?page={{ page_obj.paginator.num_pages }}&per_page={{ per_page }}&sort={{ current_sort }}&order={{ current_order }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if employee_filter %}&employee={{ employee_filter }}{% endif %}{% if start_date_from %}&start_date_from={{ start_date_from }}{% endif %}{% if start_date_to %}&start_date_to={{ start_date_to }}{% endif %}">
+                        <span class="page-text me-1 px-0" style="border:none;">Last</span><i
+                            class="bi bi-chevron-double-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="empty-state-compact">
+        <i class="bi bi-calendar-week"></i>
+        <h3>No Timesheets Found</h3>
+        <p>Start tracking your time by creating your first timesheet.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Sorting function
+    function sortTable(sortField) {
+        const url = new URL(window.location);
+        const currentSort = url.searchParams.get('sort') || 'start_date';
+        const currentOrder = url.searchParams.get('order') || 'desc';
+
+        // Toggle order if clicking the same column, otherwise default to desc
+        let newOrder = 'desc';
+        if (currentSort === sortField) {
+            newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+        }
+
+        url.searchParams.set('sort', sortField);
+        url.searchParams.set('order', newOrder);
+        url.searchParams.set('page', '1'); // Reset to first page when sorting
+        window.location.href = url.toString();
+    }
+
+    // Per-page change function
+    function changePerPage(perPage) {
+        const url = new URL(window.location);
+        url.searchParams.set('per_page', perPage);
+        url.searchParams.set('page', '1'); // Reset to first page when changing per_page
+        window.location.href = url.toString();
+    }
+</script>
+{% endblock %}

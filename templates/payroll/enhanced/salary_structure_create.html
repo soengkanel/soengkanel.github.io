@@ -1,0 +1,288 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Create Salary Structure{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+<style>
+    .component-row {
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        margin-bottom: 12px;
+        background: #f9fafb;
+    }
+
+    .component-header {
+        background: #e5e7eb;
+        padding: 10px 12px;
+        border-radius: 0.375rem 0.375rem 0 0;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .formula-input {
+        font-family: 'Courier New', monospace;
+        background: #f9fafb;
+    }
+
+    .component-type-earning { border-left: 4px solid #10b981; }
+    .component-type-deduction { border-left: 4px solid #ef4444; }
+    .component-type-employer { border-left: 4px solid #3b82f6; }
+
+    .add-component-btn {
+        border: 2px dashed #3b82f6;
+        color: #3b82f6;
+        background: transparent;
+        padding: 15px;
+        border-radius: 0.375rem;
+        width: 100%;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .add-component-btn:hover {
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    .formula-help {
+        font-size: 12px;
+        color: #6b7280;
+        font-style: italic;
+        margin-top: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <form method="post" id="structureForm">
+            {% csrf_token %}
+
+            <!-- Basic Information -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Structure Name *</label>
+                    <input type="text" name="name"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           required>
+                    <p class="text-xs text-gray-500 mt-1">Descriptive name for this salary structure</p>
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                    <input type="text" name="company"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <p class="text-xs text-gray-500 mt-1">Optional company association</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="col-span-3 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Currency *</label>
+                    <select name="currency"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                        <option value="USD">USD - US Dollar</option>
+                        <option value="KHR" selected>KHR - Cambodian Riel</option>
+                    </select>
+                </div>
+
+                <div class="col-span-3 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Payroll Frequency *</label>
+                    <select name="payroll_frequency"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                        <option value="Monthly" selected>Monthly</option>
+                        <option value="Fortnightly">Fortnightly</option>
+                        <option value="Weekly">Weekly</option>
+                    </select>
+                </div>
+
+                <div class="col-span-3 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Hourly Rate</label>
+                    <input type="number" name="hour_rate"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           step="0.01">
+                    <p class="text-xs text-gray-500 mt-1">Rate per hour for overtime calculations</p>
+                </div>
+            </div>
+
+            <!-- Options -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="flex items-center">
+                    <input type="checkbox" name="is_active" id="is_active"
+                           class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" checked>
+                    <label for="is_active" class="ml-2 text-sm text-gray-700">Active</label>
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" name="is_default" id="is_default"
+                           class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="is_default" class="ml-2 text-sm text-gray-700">Set as Default Structure</label>
+                </div>
+            </div>
+
+            <!-- Salary Components Section -->
+            <div class="mb-6">
+                <h3 class="text-base font-semibold text-gray-800 mb-4">Salary Components</h3>
+
+                <div id="components-container">
+                    <!-- Components will be added dynamically -->
+                </div>
+
+                <button type="button" class="add-component-btn" onclick="addComponent()">
+                    <i class="fas fa-plus mr-2"></i>Add Component
+                </button>
+
+                <!-- Quick Add and Formula Examples -->
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div class="bg-blue-50 border border-blue-200 rounded-md p-4 text-center">
+                        <h6 class="text-sm font-semibold text-gray-800 mb-2">Quick Add: Basic Salary Components</h6>
+                        <button type="button"
+                                class="px-4 py-2 text-sm text-blue-700 border border-blue-300 rounded-md hover:bg-blue-100 transition-colors"
+                                onclick="addBasicComponents()">
+                            Add Basic Set
+                        </button>
+                    </div>
+
+                    <div class="bg-gray-50 border border-gray-200 rounded-md p-4">
+                        <h6 class="text-sm font-semibold text-gray-800 mb-2">Formula Examples:</h6>
+                        <div class="text-xs text-gray-600">
+                            • Basic Salary: <code class="bg-gray-200 px-1 py-0.5 rounded">base</code><br>
+                            • Housing (20%): <code class="bg-gray-200 px-1 py-0.5 rounded">base * 0.2</code><br>
+                            • Tax: <code class="bg-gray-200 px-1 py-0.5 rounded">-gross * 0.05</code><br>
+                            • Conditional: <code class="bg-gray-200 px-1 py-0.5 rounded">base * 0.1 if base > 500000 else 0</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3">
+                <a href="{% url 'payroll_enhanced:structure_list' %}"
+                   class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-save mr-2"></i>Create Structure
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+let componentIndex = 0;
+
+function addComponent(type = '', name = '', formula = '', isCondition = false, condition = '') {
+    const container = document.getElementById('components-container');
+    const componentHtml = `
+        <div class="component-row component-type-${type}" id="component-${componentIndex}">
+            <div class="component-header flex justify-between items-center">
+                <span>Component ${componentIndex + 1}</span>
+                <button type="button" class="px-2 py-1 text-sm text-red-600 border border-red-300 rounded hover:bg-red-50 transition-colors" onclick="removeComponent(${componentIndex})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="p-3">
+                <div class="grid grid-cols-6 gap-4">
+                    <div class="col-span-6 md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                        <select name="components[${componentIndex}][type]"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                onchange="updateComponentStyle(${componentIndex})" required>
+                            <option value="">Select Type</option>
+                            <option value="earning" ${type === 'earning' ? 'selected' : ''}>Earning</option>
+                            <option value="deduction" ${type === 'deduction' ? 'selected' : ''}>Deduction</option>
+                            <option value="employer_contribution" ${type === 'employer_contribution' ? 'selected' : ''}>Employer Contribution</option>
+                        </select>
+                    </div>
+                    <div class="col-span-6 md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Component Name</label>
+                        <input type="text" name="components[${componentIndex}][name]"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               value="${name}" required>
+                    </div>
+                    <div class="col-span-6 md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Formula</label>
+                        <input type="text" name="components[${componentIndex}][formula]"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 formula-input"
+                               value="${formula}" placeholder="e.g., base * 0.2">
+                        <div class="formula-help">Use variables: base, gross, net, or other component names</div>
+                    </div>
+                    <div class="col-span-6 md:col-span-3">
+                        <div class="flex items-center mt-6">
+                            <input type="checkbox" name="components[${componentIndex}][is_condition]"
+                                   class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                   id="condition-${componentIndex}" ${isCondition ? 'checked' : ''}
+                                   onchange="toggleCondition(${componentIndex})">
+                            <label for="condition-${componentIndex}" class="ml-2 text-sm text-gray-700">Conditional Component</label>
+                        </div>
+                    </div>
+                    <div class="col-span-6 md:col-span-3" id="condition-field-${componentIndex}" style="${isCondition ? '' : 'display: none;'}">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Condition</label>
+                        <input type="text" name="components[${componentIndex}][condition]"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 formula-input"
+                               value="${condition}" placeholder="e.g., base > 500000">
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', componentHtml);
+    componentIndex++;
+}
+
+function removeComponent(index) {
+    const component = document.getElementById(`component-${index}`);
+    if (component) {
+        component.remove();
+    }
+}
+
+function updateComponentStyle(index) {
+    const component = document.getElementById(`component-${index}`);
+    const typeSelect = component.querySelector('select');
+    const type = typeSelect.value;
+
+    // Remove all type classes
+    component.classList.remove('component-type-earning', 'component-type-deduction', 'component-type-employer');
+
+    // Add appropriate class
+    if (type) {
+        component.classList.add(`component-type-${type}`);
+    }
+}
+
+function toggleCondition(index) {
+    const checkbox = document.getElementById(`condition-${index}`);
+    const conditionField = document.getElementById(`condition-field-${index}`);
+
+    if (checkbox.checked) {
+        conditionField.style.display = 'block';
+    } else {
+        conditionField.style.display = 'none';
+    }
+}
+
+function addBasicComponents() {
+    // Add basic salary components
+    addComponent('earning', 'Basic Salary', 'base', false, '');
+    addComponent('earning', 'Housing Allowance', 'base * 0.2', false, '');
+    addComponent('earning', 'Transport Allowance', 'base * 0.1', false, '');
+    addComponent('deduction', 'Income Tax', 'gross * 0.05', false, '');
+    addComponent('employer_contribution', 'NSSF Employer', 'base * 0.034', false, '');
+}
+
+// Add one component by default
+document.addEventListener('DOMContentLoaded', function() {
+    addComponent('earning', 'Basic Salary', 'base', false, '');
+});
+</script>
+{% endblock %}

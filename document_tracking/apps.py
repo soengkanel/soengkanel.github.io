@@ -1,0 +1,7 @@
+from django.apps import AppConfig
+
+
+class DocumentTrackingConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'document_tracking'
+    verbose_name = 'Document Tracking'

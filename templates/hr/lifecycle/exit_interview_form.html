@@ -1,0 +1,431 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<style>
+    /* Choices.js customization */
+    .choices__inner {
+        min-height: 38px;
+        padding: 6px 8px;
+        font-size: 14px;
+        border-radius: 0.375rem;
+        border: 1px solid #d1d5db;
+    }
+    .choices__inner:focus,
+    .choices.is-focused .choices__inner {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .choices__list--dropdown .choices__item--selectable {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    .choices__item--selectable.is-highlighted {
+        background-color: #3b82f6;
+    }
+
+    /* Section divider styling */
+    .section-divider {
+        border-top: 2px solid #e5e7eb;
+        padding-top: 20px;
+        margin-top: 24px;
+        margin-bottom: 16px;
+    }
+    .section-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <!-- Form -->
+        <form method="post" class="bg-white border border-gray-200 rounded-lg p-6">
+            {% csrf_token %}
+
+            <!-- Basic Information -->
+            <div class="section-title">Basic Information</div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.employee.id_for_label }}">
+                        {{ form.employee.label }} <span class="text-red-500">*</span>
+                    </label>
+                    <select name="employee" id="{{ form.employee.id_for_label }}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                        <option value="">Select employee</option>
+                        {% for employee in form.employee.field.queryset %}
+                            <option value="{{ employee.pk }}" {% if form.employee.value == employee.pk %}selected{% endif %}>
+                                {{ employee.full_name }} ({{ employee.employee_id }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if form.employee.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.employee.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.exit_reason.id_for_label }}">
+                        {{ form.exit_reason.label }} <span class="text-red-500">*</span>
+                    </label>
+                    <select name="exit_reason" id="{{ form.exit_reason.id_for_label }}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                        <option value="">Select exit reason</option>
+                        {% for value, label in form.exit_reason.field.choices %}
+                            {% if value %}
+                                <option value="{{ value }}" {% if form.exit_reason.value == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    {% if form.exit_reason.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.exit_reason.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="col-span-3 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.last_working_day.id_for_label }}">
+                        {{ form.last_working_day.label }} <span class="text-red-500">*</span>
+                    </label>
+                    <input type="date"
+                           name="last_working_day"
+                           id="{{ form.last_working_day.id_for_label }}"
+                           value="{{ form.last_working_day.value|date:'Y-m-d'|default:'' }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           required>
+                    {% if form.last_working_day.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.last_working_day.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-3 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.interview_date.id_for_label }}">
+                        {{ form.interview_date.label }} <span class="text-red-500">*</span>
+                    </label>
+                    <input type="date"
+                           name="interview_date"
+                           id="{{ form.interview_date.id_for_label }}"
+                           value="{{ form.interview_date.value|date:'Y-m-d'|default:'' }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           required>
+                    {% if form.interview_date.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.interview_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-3 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.interviewer.id_for_label }}">
+                        {{ form.interviewer.label }}
+                    </label>
+                    <select name="interviewer" id="{{ form.interviewer.id_for_label }}"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select interviewer (optional)</option>
+                        {% for employee in form.interviewer.field.queryset %}
+                            <option value="{{ employee.pk }}" {% if form.interviewer.value == employee.pk %}selected{% endif %}>
+                                {{ employee.full_name }} ({{ employee.employee_id }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if form.interviewer.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.interviewer.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Satisfaction Ratings -->
+            <div class="section-divider">
+                <div class="section-title">Satisfaction Ratings (1-5 scale)</div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.job_satisfaction.id_for_label }}">
+                        {{ form.job_satisfaction.label }}
+                    </label>
+                    <input type="number"
+                           name="job_satisfaction"
+                           id="{{ form.job_satisfaction.id_for_label }}"
+                           min="1"
+                           max="5"
+                           value="{{ form.job_satisfaction.value|default:'' }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="1-5">
+                    {% if form.job_satisfaction.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.job_satisfaction.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.work_environment.id_for_label }}">
+                        {{ form.work_environment.label }}
+                    </label>
+                    <input type="number"
+                           name="work_environment"
+                           id="{{ form.work_environment.id_for_label }}"
+                           min="1"
+                           max="5"
+                           value="{{ form.work_environment.value|default:'' }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="1-5">
+                    {% if form.work_environment.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.work_environment.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.management_quality.id_for_label }}">
+                        {{ form.management_quality.label }}
+                    </label>
+                    <input type="number"
+                           name="management_quality"
+                           id="{{ form.management_quality.id_for_label }}"
+                           min="1"
+                           max="5"
+                           value="{{ form.management_quality.value|default:'' }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="1-5">
+                    {% if form.management_quality.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.management_quality.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.career_development.id_for_label }}">
+                        {{ form.career_development.label }}
+                    </label>
+                    <input type="number"
+                           name="career_development"
+                           id="{{ form.career_development.id_for_label }}"
+                           min="1"
+                           max="5"
+                           value="{{ form.career_development.value|default:'' }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="1-5">
+                    {% if form.career_development.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.career_development.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.work_life_balance.id_for_label }}">
+                        {{ form.work_life_balance.label }}
+                    </label>
+                    <input type="number"
+                           name="work_life_balance"
+                           id="{{ form.work_life_balance.id_for_label }}"
+                           min="1"
+                           max="5"
+                           value="{{ form.work_life_balance.value|default:'' }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="1-5">
+                    {% if form.work_life_balance.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.work_life_balance.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.compensation_benefits.id_for_label }}">
+                        {{ form.compensation_benefits.label }}
+                    </label>
+                    <input type="number"
+                           name="compensation_benefits"
+                           id="{{ form.compensation_benefits.id_for_label }}"
+                           min="1"
+                           max="5"
+                           value="{{ form.compensation_benefits.value|default:'' }}"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="1-5">
+                    {% if form.compensation_benefits.errors %}
+                        <p class="text-xs text-red-500 mt-1">{{ form.compensation_benefits.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Detailed Feedback -->
+            <div class="section-divider">
+                <div class="section-title">Detailed Feedback</div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.liked_most.id_for_label }}">
+                    {{ form.liked_most.label }}
+                </label>
+                <textarea name="liked_most"
+                          id="{{ form.liked_most.id_for_label }}"
+                          rows="3"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="What did the employee like most about working here?">{{ form.liked_most.value|default:'' }}</textarea>
+                {% if form.liked_most.errors %}
+                    <p class="text-xs text-red-500 mt-1">{{ form.liked_most.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.liked_least.id_for_label }}">
+                    {{ form.liked_least.label }}
+                </label>
+                <textarea name="liked_least"
+                          id="{{ form.liked_least.id_for_label }}"
+                          rows="3"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="What did the employee like least?">{{ form.liked_least.value|default:'' }}</textarea>
+                {% if form.liked_least.errors %}
+                    <p class="text-xs text-red-500 mt-1">{{ form.liked_least.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.improvements.id_for_label }}">
+                    {{ form.improvements.label }}
+                </label>
+                <textarea name="improvements"
+                          id="{{ form.improvements.id_for_label }}"
+                          rows="3"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Suggestions for improvement...">{{ form.improvements.value|default:'' }}</textarea>
+                {% if form.improvements.errors %}
+                    <p class="text-xs text-red-500 mt-1">{{ form.improvements.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <div class="flex items-center">
+                    <input type="checkbox"
+                           name="recommend_company"
+                           id="{{ form.recommend_company.id_for_label }}"
+                           {% if form.recommend_company.value %}checked{% endif %}
+                           class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="{{ form.recommend_company.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                        {{ form.recommend_company.label }}
+                    </label>
+                </div>
+                {% if form.recommend_company.errors %}
+                    <p class="text-xs text-red-500 mt-1">{{ form.recommend_company.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.additional_comments.id_for_label }}">
+                    {{ form.additional_comments.label }}
+                </label>
+                <textarea name="additional_comments"
+                          id="{{ form.additional_comments.id_for_label }}"
+                          rows="3"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Any additional comments...">{{ form.additional_comments.value|default:'' }}</textarea>
+                {% if form.additional_comments.errors %}
+                    <p class="text-xs text-red-500 mt-1">{{ form.additional_comments.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.confidential_feedback.id_for_label }}">
+                    {{ form.confidential_feedback.label }}
+                </label>
+                <textarea name="confidential_feedback"
+                          id="{{ form.confidential_feedback.id_for_label }}"
+                          rows="3"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Confidential feedback for HR only...">{{ form.confidential_feedback.value|default:'' }}</textarea>
+                {% if form.confidential_feedback.errors %}
+                    <p class="text-xs text-red-500 mt-1">{{ form.confidential_feedback.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-1">This information is for HR use only and will not be shared</p>
+            </div>
+
+            <!-- Follow-up -->
+            <div class="section-divider">
+                <div class="section-title">Follow-up</div>
+            </div>
+
+            <div class="mb-4">
+                <div class="flex items-center">
+                    <input type="checkbox"
+                           name="follow_up_required"
+                           id="{{ form.follow_up_required.id_for_label }}"
+                           {% if form.follow_up_required.value %}checked{% endif %}
+                           class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="{{ form.follow_up_required.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                        {{ form.follow_up_required.label }}
+                    </label>
+                </div>
+                {% if form.follow_up_required.errors %}
+                    <p class="text-xs text-red-500 mt-1">{{ form.follow_up_required.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1" for="{{ form.follow_up_notes.id_for_label }}">
+                    {{ form.follow_up_notes.label }}
+                </label>
+                <textarea name="follow_up_notes"
+                          id="{{ form.follow_up_notes.id_for_label }}"
+                          rows="3"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Follow-up action items or notes...">{{ form.follow_up_notes.value|default:'' }}</textarea>
+                {% if form.follow_up_notes.errors %}
+                    <p class="text-xs text-red-500 mt-1">{{ form.follow_up_notes.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end space-x-3 mb-3">
+                <a href="{% if exit_interview %}{% url 'hr:exit_interview_detail' exit_interview.pk %}{% else %}{% url 'hr:exit_interview_list' %}{% endif %}" class="button-min-danger">
+                    Cancel
+                </a>
+                <button type="submit" class="button-min-primary px-4">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Choices.js for employee and interviewer dropdowns
+    const employeeSelect = document.getElementById('{{ form.employee.id_for_label }}');
+    const interviewerSelect = document.getElementById('{{ form.interviewer.id_for_label }}');
+
+    if (employeeSelect) {
+        new Choices(employeeSelect, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search employee...',
+            itemSelectText: 'Click to select',
+            shouldSort: false,
+            removeItemButton: false,
+            noResultsText: 'No employee found',
+            noChoicesText: 'No employees available',
+        });
+    }
+
+    if (interviewerSelect) {
+        new Choices(interviewerSelect, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search interviewer...',
+            itemSelectText: 'Click to select',
+            shouldSort: false,
+            removeItemButton: false,
+            noResultsText: 'No employee found',
+            noChoicesText: 'No employees available',
+        });
+    }
+});
+</script>
+{% endblock %}

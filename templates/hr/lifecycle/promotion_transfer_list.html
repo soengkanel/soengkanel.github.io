@@ -1,0 +1,521 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Promotions & Transfers" %}{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Ultra-Minimal Design System - Promotions & Transfers */
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    /* Ultra-Minimal search filters */
+    .search-filters {
+        background: #f8fafb;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        padding: 8px;
+        margin-bottom: 12px;
+    }
+
+    .filter-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr auto;
+        gap: 8px;
+        align-items: end;
+    }
+
+    .form-label {
+        font-size: 10px !important;
+        margin-bottom: 3px !important;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+        height: auto !important;
+        border-radius: 3px;
+        border: 1px solid #d1d5db;
+        line-height: 1.4;
+        background: white;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    /* Ultra-Minimal Button System */
+    .btn-modern {
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 3px;
+        padding: 4px 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    /* Primary Button - Light Blue */
+    .btn-primary-modern {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .btn-primary-modern:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    /* Light Button */
+    .btn-light-modern {
+        background: #f8fafb;
+        color: #374151;
+        border: 1px solid #e2e8f0;
+    }
+
+    .btn-light-modern:hover {
+        background: #e2e8f0;
+        color: #1f2937;
+    }
+
+    /* Small Button Variant */
+    .btn-sm-modern {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    /* Modern Table Container */
+    .modern-table-container {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .table {
+        margin: 0;
+        font-size: 12px;
+    }
+
+    .table th {
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        background: #f8fafb;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 8px 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table tbody tr:hover {
+        background: #f8fafb;
+    }
+
+    /* Employee Details Styling */
+    .employee-details h6 {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .employee-details p {
+        font-size: 11px;
+        color: #6b7280;
+        margin: 2px 0 0 0;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-active {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .status-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-approved {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+
+    .status-implemented {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .status-suspended {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-inactive {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+
+    /* Pagination */
+    .pagination-compact {
+        margin: 0;
+        justify-content: center;
+    }
+
+    .pagination-compact .page-item {
+        margin: 0 1px;
+    }
+
+    .pagination-compact .page-link {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 8px;
+        min-width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #3b82f6;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .pagination-compact .page-link:hover {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+
+    .pagination-compact .page-item.active .page-link {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+        font-weight: 600;
+    }
+
+    .pagination-compact .page-item.disabled .page-link {
+        color: #9ca3af;
+        background: #f9fafb;
+        border-color: #e5e7eb;
+        cursor: not-allowed;
+    }
+
+    .pagination-compact .page-item.disabled .page-link:hover {
+        box-shadow: none;
+        background: #f9fafb;
+        color: #9ca3af;
+        border-color: #e5e7eb;
+    }
+
+    .pagination-compact .page-nav {
+        font-size: 10px;
+        padding: 4px 6px;
+        min-width: auto;
+    }
+
+    @media (max-width: 768px) {
+        .filter-row {
+            grid-template-columns: 1fr;
+        }
+
+        .pagination-compact .page-link {
+            font-size: 10px;
+            padding: 3px 6px;
+            min-width: 24px;
+            height: 24px;
+        }
+
+        .pagination-compact .page-nav {
+            padding: 3px 5px;
+        }
+
+        .pagination-compact .page-text {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center pb-3">
+        <div>
+            <h2><i class="bi bi-arrow-up-circle me-2"></i>{% trans "Promotions & Transfers" %}</h2>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{% url 'hr:promotion_transfer_create' %}" class="btn-modern btn-primary-modern">
+                <i class="bi bi-plus-circle"></i>
+                <span>{% trans "New Promotion/Transfer" %}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="search-filters">
+        <form method="get">
+            <div class="filter-row">
+                <div>
+                    <label for="search" class="form-label">{% trans "Search" %}</label>
+                    <input type="text" name="search" id="search" class="form-control"
+                           placeholder="{% trans 'Search by employee name or ID...' %}"
+                           value="{{ search_query }}">
+                </div>
+                <div>
+                    <label for="change_type" class="form-label">{% trans "Type" %}</label>
+                    <select name="change_type" id="change_type" class="form-select">
+                        <option value="">{% trans "All Types" %}</option>
+                        <option value="promotion" {% if change_type_filter == 'promotion' %}selected{% endif %}>{% trans "Promotion" %}</option>
+                        <option value="transfer" {% if change_type_filter == 'transfer' %}selected{% endif %}>{% trans "Transfer" %}</option>
+                        <option value="demotion" {% if change_type_filter == 'demotion' %}selected{% endif %}>{% trans "Demotion" %}</option>
+                        <option value="lateral_move" {% if change_type_filter == 'lateral_move' %}selected{% endif %}>{% trans "Lateral Move" %}</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="status" class="form-label">{% trans "Status" %}</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">{% trans "All Statuses" %}</option>
+                        <option value="draft" {% if status_filter == 'draft' %}selected{% endif %}>{% trans "Draft" %}</option>
+                        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
+                        <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>{% trans "Approved" %}</option>
+                        <option value="implemented" {% if status_filter == 'implemented' %}selected{% endif %}>{% trans "Implemented" %}</option>
+                        <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>{% trans "Rejected" %}</option>
+                    </select>
+                </div>
+                <div class="d-flex gap-1 align-items-end">
+                    <button type="submit" class="btn-modern btn-primary-modern">
+                        <i class="bi bi-search"></i>
+                        <span>{% trans "Filter" %}</span>
+                    </button>
+                    <a href="{% url 'hr:promotion_transfer_list' %}" class="btn-modern btn-light-modern">
+                        <i class="bi bi-x-circle"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Promotion/Transfer Table -->
+    <div class="modern-table-container">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>{% trans "Employee" %}</th>
+                    <th>{% trans "Type" %}</th>
+                    <th>{% trans "From" %}</th>
+                    <th>{% trans "To" %}</th>
+                    <th>{% trans "Effective Date" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th class="text-center">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pt in promotions_transfers %}
+                <tr>
+                    <td>
+                        <div class="employee-details">
+                            <h6>{{ pt.employee.full_name }}</h6>
+                            <p>{{ pt.employee.employee_id }}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge {% if pt.change_type == 'promotion' %}status-approved{% elif pt.change_type == 'transfer' %}status-pending{% elif pt.change_type == 'demotion' %}status-suspended{% else %}status-inactive{% endif %}">
+                            {{ pt.get_change_type_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="employee-details">
+                            <h6>{{ pt.current_position.name }}</h6>
+                            <p>{{ pt.current_department.name }}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="employee-details">
+                            <h6>{{ pt.new_position.name }}</h6>
+                            <p>{{ pt.new_department.name }}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="employee-details">
+                            <h6>{{ pt.effective_date|date:"M d, Y" }}</h6>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge {% if pt.status == 'implemented' %}status-implemented{% elif pt.status == 'approved' %}status-approved{% elif pt.status == 'pending' %}status-pending{% elif pt.status == 'rejected' %}status-suspended{% else %}status-inactive{% endif %}">
+                            {{ pt.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex gap-1 justify-content-center">
+                            <a href="{% url 'hr:promotion_transfer_detail' pt.pk %}"
+                               class="btn-modern btn-light-modern"
+                               title="{% trans 'View Details' %}">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-5">
+                        <i class="bi bi-inbox" style="font-size: 48px; color: #d1d5db;"></i>
+                        <h6 class="mt-3" style="color: #6b7280;">{% trans "No promotions/transfers found" %}</h6>
+                        <p style="font-size: 11px; color: #9ca3af;">{% trans "Try adjusting your filters or create a new one" %}</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if promotions_transfers %}
+    <div class="d-flex justify-content-between align-items-center mt-3 mb-5">
+        <!-- Per-Page Selector -->
+        <div class="d-flex align-items-center">
+            <span style="font-size: 11px; color: #6b7280; margin-right: 8px;">{% trans "Show:" %}</span>
+            <select class="form-select form-select-sm rounded"
+                    style="width: auto; font-size: 11px; padding: 4px 8px; min-width: 60px;"
+                    onchange="changePerPage(this.value)">
+                <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                <option value="200" {% if per_page == 200 %}selected{% endif %}>200</option>
+            </select>
+            <span style="font-size: 11px; color: #6b7280; margin-left: 8px;">{% trans "per page" %}</span>
+        </div>
+
+        <!-- Pagination Navigation -->
+        {% if promotions_transfers.has_other_pages %}
+        <nav aria-label="{% trans 'Pagination' %}">
+            <ul class="pagination pagination-compact">
+                {% if promotions_transfers.has_previous %}
+                <li class="page-item">
+                    <a class="page-link page-nav rounded" href="?page=1&search={{ search_query }}&change_type={{ change_type_filter }}&status={{ status_filter }}&per_page={{ per_page }}">
+                        <i class="bi bi-chevron-double-left"></i>
+                        <span class="page-text ms-1" style="border:none;">{% trans "First" %}</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link page-nav rounded" href="?page={{ promotions_transfers.previous_page_number }}&search={{ search_query }}&change_type={{ change_type_filter }}&status={{ status_filter }}&per_page={{ per_page }}">
+                        <i class="bi bi-chevron-left"></i>
+                        <span class="page-text ms-1" style="border:none;">{% trans "Prev" %}</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link page-nav rounded">
+                        <i class="bi bi-chevron-double-left"></i>
+                        <span class="page-text ms-1" style="border:none;">{% trans "First" %}</span>
+                    </span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link page-nav rounded">
+                        <i class="bi bi-chevron-left"></i>
+                        <span class="page-text ms-1" style="border:none;">{% trans "Prev" %}</span>
+                    </span>
+                </li>
+                {% endif %}
+
+                {% for num in promotions_transfers.paginator.page_range %}
+                {% if promotions_transfers.number == num %}
+                <li class="page-item active">
+                    <span class="page-link rounded">{{ num }}</span>
+                </li>
+                {% elif num > promotions_transfers.number|add:'-2' and num < promotions_transfers.number|add:'2' %}
+                <li class="page-item">
+                    <a class="page-link rounded" href="?page={{ num }}&search={{ search_query }}&change_type={{ change_type_filter }}&status={{ status_filter }}&per_page={{ per_page }}">{{ num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if promotions_transfers.has_next %}
+                <li class="page-item">
+                    <a class="page-link page-nav rounded" href="?page={{ promotions_transfers.next_page_number }}&search={{ search_query }}&change_type={{ change_type_filter }}&status={{ status_filter }}&per_page={{ per_page }}">
+                        <span class="page-text me-1" style="border:none;">{% trans "Next" %}</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link page-nav rounded" href="?page={{ promotions_transfers.paginator.num_pages }}&search={{ search_query }}&change_type={{ change_type_filter }}&status={{ status_filter }}&per_page={{ per_page }}">
+                        <span class="page-text me-1" style="border:none;">{% trans "Last" %}</span>
+                        <i class="bi bi-chevron-double-right"></i>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link page-nav rounded">
+                        <span class="page-text me-1" style="border:none;">{% trans "Next" %}</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link page-nav rounded">
+                        <span class="page-text me-1" style="border:none;">{% trans "Last" %}</span>
+                        <i class="bi bi-chevron-double-right"></i>
+                    </span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function changePerPage(perPage) {
+    const url = new URL(window.location);
+    url.searchParams.set('per_page', perPage);
+    url.searchParams.set('page', '1');
+    window.location.href = url.toString();
+}
+</script>
+{% endblock %}

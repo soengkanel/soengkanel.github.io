@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Receipt - {{ receipt.receipt_number }}</title>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            body { margin: 0; }
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .receipt-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border: 3px solid #28a745;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .receipt-header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .receipt-header::before {
+            content: "👥";
+            font-size: 3em;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            opacity: 0.3;
+        }
+
+        .receipt-type {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .company-name {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .company-subtitle {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .receipt-body {
+            padding: 30px;
+        }
+
+        .receipt-number {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #d4edda;
+            border-radius: 5px;
+        }
+
+        .receipt-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .info-section h3 {
+            color: #28a745;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .info-item {
+            margin-bottom: 8px;
+            display: flex;
+        }
+
+        .info-label {
+            font-weight: bold;
+            min-width: 100px;
+            color: #495057;
+        }
+
+        .info-value {
+            color: #212529;
+        }
+
+        .amount-section {
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 30px 0;
+            border: 2px solid #28a745;
+        }
+
+        .amount-label {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .amount-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #155724;
+        }
+
+        .payment-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .employee-benefit {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #28a745;
+            color: white;
+            border-radius: 50px;
+            font-weight: bold;
+        }
+
+        .footer-section {
+            background: #6c757d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .print-button:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-issued { background: #28a745; color: white; }
+        .status-delivered { background: #17a2b8; color: white; }
+        .status-cancelled { background: #dc3545; color: white; }
+
+        .employee-info {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+
+        @media (max-width: 768px) {
+            .receipt-info {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">🖨️ Print Receipt</button>
+
+    <div class="receipt-container">
+        <!-- Header -->
+        <div class="receipt-header">
+            <div class="receipt-type">Employee Receipt</div>
+            <div class="company-name">LYP</div>
+            <div class="company-subtitle">Employee Services Receipt</div>
+        </div>
+
+        <!-- Body -->
+        <div class="receipt-body">
+            <!-- Receipt Number -->
+            <div class="receipt-number">
+                Receipt No: {{ receipt.receipt_number }}
+            </div>
+
+            <!-- Employee Information -->
+            {% if receipt.invoice.employee %}
+                <div class="employee-info">
+                    <h3 style="margin: 0 0 10px 0; color: #28a745;">Employee Information</h3>
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <strong>{{ receipt.invoice.employee.first_name }} {{ receipt.invoice.employee.last_name }}</strong><br>
+                            <small>Employee ID: {{ receipt.invoice.employee.employee_id }}</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <small>Department: {{ receipt.invoice.employee.department|default:"N/A" }}</small><br>
+                            <small>Position: {{ receipt.invoice.employee.position|default:"N/A" }}</small>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Receipt Information -->
+            <div class="receipt-info">
+                <div class="info-section">
+                    <h3>Receipt Details</h3>
+                    <div class="info-item">
+                        <span class="info-label">Date:</span>
+                        <span class="info-value">{{ receipt.payment_date|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="status-badge status-{{ receipt.status }}">{{ receipt.get_status_display }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Invoice:</span>
+                        <span class="info-value">{{ receipt.invoice.invoice_number }}</span>
+                    </div>
+                    {% if receipt.payment_reference %}
+                        <div class="info-item">
+                            <span class="info-label">Reference:</span>
+                            <span class="info-value">{{ receipt.payment_reference }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="info-section">
+                    <h3>Payment Information</h3>
+                    <div class="info-item">
+                        <span class="info-label">Method:</span>
+                        <span class="info-value">{{ receipt.payment_method }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Received By:</span>
+                        <span class="info-value">{{ receipt.received_by }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Received From:</span>
+                        <span class="info-value">{{ receipt.received_from }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Amount Section -->
+            <div class="amount-section">
+                <div class="amount-label">Amount Received</div>
+                <div class="amount-value">${{ receipt.amount_paid|floatformat:2 }}</div>
+            </div>
+
+            <!-- Service Details -->
+            {% if receipt.invoice.line_items.all %}
+                <div class="payment-details">
+                    <h3 style="color: #28a745; margin-top: 0;">Employee Services</h3>
+                    {% for item in receipt.invoice.line_items.all %}
+                        <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 5px; border-left: 3px solid #28a745;">
+                            <strong>{{ item.service_item.name }}</strong>
+                            {% if item.service_item.applies_to_employees %}
+                                <span style="background: #28a745; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7em; margin-left: 10px;">EMPLOYEE RATE</span>
+                            {% endif %}
+                            <br><small>{{ item.description }}</small>
+                            <span style="float: right; font-weight: bold; color: #28a745;">${{ item.total_amount|floatformat:2 }}</span>
+                        </div>
+                    {% endfor %}
+                    
+                    {% if receipt.invoice.discount_amount > 0 %}
+                        <div style="text-align: center; margin-top: 15px; padding: 10px; background: #d4edda; border-radius: 5px; color: #155724;">
+                            <strong>Employee Discount Applied: -${{ receipt.invoice.discount_amount|floatformat:2 }}</strong>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Employee Benefit Notice -->
+            <div class="employee-benefit">
+                👥 EMPLOYEE BENEFIT RECEIPT 👥
+                <br><small>Special employee rates applied - Thank you for being part of LYP team!</small>
+            </div>
+
+            <!-- Notes -->
+            {% if receipt.notes %}
+                <div class="payment-details">
+                    <h3 style="color: #28a745; margin-top: 0;">Notes</h3>
+                    <p>{{ receipt.notes|linebreaks }}</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-section">
+            <p><strong>LYP - Leading Your Path</strong></p>
+            <p>Employee Services Division</p>
+            <small>Receipt issued on {{ "now"|date:"d/m/Y \a\\t g:i A" }}</small>
+        </div>
+    </div>
+</body>
+</html> 

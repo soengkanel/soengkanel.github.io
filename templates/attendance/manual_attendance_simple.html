@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}Manual Attendance{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Manual Attendance Entry</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label>{{ form.employee.label }}</label>
+            {{ form.employee }}
+            {% if form.employee.errors %}
+                <div class="text-danger">{{ form.employee.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label>{{ form.date.label }}</label>
+            {{ form.date }}
+            {% if form.date.errors %}
+                <div class="text-danger">{{ form.date.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label>{{ form.clock_in.label }}</label>
+            {{ form.clock_in }}
+            {% if form.clock_in.errors %}
+                <div class="text-danger">{{ form.clock_in.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label>{{ form.clock_out.label }}</label>
+            {{ form.clock_out }}
+            {% if form.clock_out.errors %}
+                <div class="text-danger">{{ form.clock_out.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label>{{ form.status.label }}</label>
+            {{ form.status }}
+            {% if form.status.errors %}
+                <div class="text-danger">{{ form.status.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label>{{ form.manual_entry_reason.label }}</label>
+            {{ form.manual_entry_reason }}
+            {% if form.manual_entry_reason.errors %}
+                <div class="text-danger">{{ form.manual_entry_reason.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label>{{ form.notes.label }}</label>
+            {{ form.notes }}
+            {% if form.notes.errors %}
+                <div class="text-danger">{{ form.notes.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Manual Entry</button>
+        <a href="{% url 'attendance:attendance_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

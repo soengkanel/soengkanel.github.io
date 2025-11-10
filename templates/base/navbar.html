@@ -1,0 +1,881 @@
+{% load static %}
+
+<!-- <header class="loper-header"> -->
+    {% load role_tags %}
+    <header class="w-full z-10 fixed top-0 left-0 px-4 py-1 role-header"
+            data-user-role="{% if user_role_name %}{{ user_role_name|lower }}{% else %}user{% endif %}"
+            style="background-color:
+            {% if user_role_name %}
+                {% if user_role_name == 'Admin' or user_role_name == 'Administrator' or user_role_name == 'Superuser' %}
+                    #DC2626
+                {% elif user_role_name == 'Manager' %}
+                    #2563EB
+                {% elif user_role_name == 'HR' or user_role_name == 'HR Manager' %}
+                    #16A34A
+                {% elif user_role_name == 'Supervisor' %}
+                    #9333EA
+                {% elif user_role_name == 'Employee' %}
+                    #0891B2
+                {% else %}
+                    #87CEEB
+                {% endif %}
+            {% else %}
+                #87CEEB
+            {% endif %}
+            ;">
+        <div class="w-full flex items-center justify-between ">
+            <!-- logo branch -->
+            <div class="flex items-center space-x-3">
+                <a class="flex items-center space-x-2 font-semibold transition-colors duration-200" href="{% url 'dashboard:home' %}">
+                    <i class="fas fa-star" style="color: #4682B4;"></i>
+                    <span class="logo-text"><strong><span class="logo-ng text-black">NG</span><span class="logo-hr text-white">HR</span></strong></span>
+                </a>
+                <button type="button" id="toggleSidebar"
+                    class="px-2 py-1 rounded transition-colors duration-200"
+                    style="margin-left: 8px;"
+                    onmouseover="this.style.backgroundColor='#4FC3F7'"
+                    onmouseout="this.style.backgroundColor='transparent'">
+                    <i class="bi bi-list text-white text-lg"></i>
+                </button>
+
+                <!-- Smart Search box -->
+                <div class="relative" id="smartSearchContainer">
+                    <div class="flex items-center">
+                        <i class="bi bi-search absolute top-1 left-2 text-gray-400"></i>
+                        <input
+                            type="search"
+                            placeholder="Search, employees, pages..."
+                            class="py-1 pl-8 pr-2 rounded-lg w-96 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            id="smartSearchInput"
+                            autocomplete="off"
+                        >
+                        <div class="absolute top-1 right-2">
+                            <div class="loading-spinner hidden" id="searchLoadingSpinner">
+                                <i class="bi bi-arrow-clockwise animate-spin text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Search Results Dropdown -->
+                    <div 
+                        class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-96 overflow-y-auto z-50 hidden"
+                        id="searchResultsDropdown"
+                    >
+                        <!-- Results will be populated by JavaScript -->
+                        <div id="searchResultsContent" class="divide-y divide-gray-100">
+                            <!-- Search results will appear here -->
+                        </div>
+                        
+                        <!-- No results message -->
+                        <div id="noResultsMessage" class="hidden p-4 text-center text-gray-500">
+                            <i class="bi bi-search text-2xl mb-2"></i>
+                            <p class="text-sm">No results found</p>
+                            <p class="text-xs text-gray-400">Try searching by name, ID, or phone number</p>
+                        </div>
+                        
+                        <!-- Search suggestions footer -->
+                        <div id="searchFooter" class="hidden p-3 bg-gray-50 border-t border-gray-100 text-xs text-gray-500">
+                            <div class="flex justify-between items-center">
+                                <span>Type 2+ characters to search</span>
+                                <div class="flex items-center space-x-3">
+                                    <span class="flex items-center">
+                                        <kbd class="px-1 py-0.5 bg-gray-200 rounded text-xs">↑↓</kbd>
+                                        <span class="ml-1">Navigate</span>
+                                    </span>
+                                    <span class="flex items-center">
+                                        <kbd class="px-1 py-0.5 bg-gray-200 rounded text-xs">Enter</kbd>
+                                        <span class="ml-1">Select</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+           
+            <div class="flex items-center space-x-3">
+                <!-- Notification Icons -->
+                <div>
+                    <div class="dropdown notification-dropdown-container hidden">
+                        <button class="position-relative px-3 py-1 rounded" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                onmouseover="this.style.backgroundColor='#4FC3F7'"
+                                onmouseout="this.style.backgroundColor='transparent'">
+                            <i class="bi bi-bell text-white text-lg"></i>
+                            {% if unread_notifications_count > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ unread_notifications_count }}
+                                <span class="visually-hidden">unread notifications</span>
+                            </span>
+                            {% endif %}
+                        </button>
+                        
+                        <div class="dropdown-menu dropdown-menu-end notification-dropdown-minimal" style="width: 320px; max-height: 400px; border: none; border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); overflow: hidden; padding: 0;">
+                            <!-- Header -->
+                            <div class="notification-dropdown-header">
+                                <div class="notification-dropdown-title">
+                                    <i class="bi bi-bell-fill"></i>
+                                    Notifications
+                                </div>
+                                {% if unread_notifications_count > 0 %}
+                                <div class="notification-dropdown-badge">{{ unread_notifications_count }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Quick Action -->
+                            {% if unread_notifications_count > 0 %}
+                            <div class="notification-dropdown-action">
+                                <button class="mark-all-read-btn" onclick="markAllNotificationsRead()">
+                                    <i class="bi bi-check-all"></i>
+                                    Mark all read
+                                </button>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Notification List -->
+                            <div class="notification-dropdown-list">
+                                {% if user_notifications %}
+                                    {% for notification in user_notifications %}
+                                    <div class="notification-dropdown-item {% if not notification.is_read %}unread{% endif %}" onclick="window.location.href='/notifications/{{ notification.id }}/'">
+                                        <div class="notification-dropdown-icon {{ notification.priority }}">
+                                            {% if notification.notification_type == 'probation_ending' or notification.notification_type == 'probation_overdue' %}
+                                                <i class="bi bi-clock-fill"></i>
+                                            {% elif notification.notification_type == 'document_expiring' or notification.notification_type == 'document_expired' %}
+                                                <i class="bi bi-file-earmark-text-fill"></i>
+                                            {% elif notification.notification_type == 'worker_created' %}
+                                                <i class="bi bi-person-plus-fill"></i>
+                                            {% elif notification.notification_type == 'system_alert' %}
+                                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                            {% else %}
+                                                <i class="bi bi-bell-fill"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div class="notification-dropdown-content">
+                                            <div class="notification-dropdown-text">
+                                                <div class="notification-dropdown-subject">{{ notification.title|truncatechars:45 }}</div>
+                                                <div class="notification-dropdown-message">{{ notification.message|truncatechars:65 }}</div>
+                                            </div>
+                                            <div class="notification-dropdown-meta">
+                                                <span class="notification-dropdown-time">
+                                                    <i class="bi bi-clock"></i>
+                                                    {{ notification.created_at|timesince }} ago
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="notification-dropdown-arrow">
+                                            <i class="bi bi-chevron-right"></i>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="notification-dropdown-empty">
+                                        <i class="bi bi-bell-slash"></i>
+                                        <div class="empty-title">No notifications</div>
+                                        <div class="empty-subtitle">You're all caught up!</div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Footer -->
+                            <div class="notification-dropdown-footer">
+                                <a href="{% url 'notification_list' %}" class="view-all-btn">
+                                    <i class="bi bi-arrow-right"></i>
+                                    View All Notifications
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Notification Icons -->
+
+                <!-- User Profile -->
+                <div class="dropdown">
+                    <button class="btn btn-link p-0 d-flex align-items-center text-white text-decoration-none" 
+                            type="button" 
+                            id="userDropdownButton" 
+                            data-bs-toggle="dropdown" 
+                            aria-expanded="false"
+                            style="border: none; background: none;">
+                        {% if user.role_assignment.profile_photo %}
+                            <img src="{{ user.role_assignment.profile_photo.url }}" 
+                                 alt="Profile" 
+                                 class="rounded-circle me-2"
+                                 style="width: 28px; height: 28px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'images/default-avatar.svg' %}" 
+                                 alt="Profile" 
+                                 class="rounded-circle me-2 border"
+                                 style="width: 28px; height: 28px; object-fit: cover;">
+                        {% endif %}
+                        
+                        <div class="d-flex flex-column align-items-start me-2">
+                            <span class="text-white fw-medium" style="font-size: 10px; line-height: 1;">
+                                {{ user.get_full_name|default:user.username }}
+                            </span>
+                            <span class="text-light opacity-75" style="font-size: 9px; line-height: 1;">
+                                {% if user.role_assignment.role %}
+                                    {{ user.role_assignment.role.name }}
+                                {% else %}
+                                    User
+                                {% endif %}
+                            </span>
+                        </div>
+                        
+                        <i class="bi bi-chevron-down text-white" style="font-size: 12px;"></i>
+                    </button>
+                    
+                    <ul class="dropdown-menu dropdown-menu-end shadow" style="min-width: 200px;">
+                        <li class="px-3 py-2 bg-light border-bottom">
+                            <strong class="d-block" style="font-size: 13px;">{{ user.get_full_name|default:user.username }}</strong>
+                            <small class="text-muted">{{ user.email|default:"No email" }}</small>
+                        </li>
+                        <li><a class="dropdown-item py-2" href="{% url 'employee_portal:profile' %}">
+                            <i class="bi bi-person me-2"></i>Profile
+                        </a></li>
+                        {% if user_is_manager_or_admin %}
+                        <li><a class="dropdown-item py-2" href="{% url 'dashboard:settings' %}">
+                            <i class="bi bi-gear me-2"></i>Settings
+                        </a></li>
+                        {% endif %}
+                        <li class="hidden"><a class="dropdown-item py-2" href="#">
+                            <i class="bi bi-question-circle me-2"></i>Help
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2 text-danger" href="{% url 'logout' %}">
+                            <i class="bi bi-box-arrow-right me-2"></i>Sign Out
+                        </a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+    {% comment %} <div class="header-container">
+        <!-- Left Side: Menu & Brand -->
+        <div class="header-left">
+            <button class="menu-toggle" type="button" id="menu-toggle-btn">
+                <i class="bi bi-list"></i>
+            </button>
+            <a class="brand-logo" href="{% url 'dashboard:home' %}">
+                <i class="fas fa-star"></i>
+                <span class="brand-name">{{ tenant_name }} Management</span>
+            </a>
+        </div>
+        
+        <!-- Center: Search Bar -->
+        <div class="header-center">
+            <div class="main-search">
+                <i class="bi bi-search"></i>
+                <input type="search" placeholder="Search" class="search-field">
+            </div>
+        </div>
+        
+        <!-- Right Side: Actions & User -->
+        <div class="header-right">
+          <!-- Notification Icons -->
+            
+            <div class="dropdown notification-dropdown-container">
+                <button class="nav-icon-btn position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-bell"></i>
+                    {% if unread_notifications_count > 0 %}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ unread_notifications_count }}
+                        <span class="visually-hidden">unread notifications</span>
+                    </span>
+                    {% endif %}
+                </button>
+                
+                <div class="dropdown-menu dropdown-menu-end notification-dropdown-minimal" style="width: 320px; max-height: 400px; border: none; border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); overflow: hidden; padding: 0;">
+                    <!-- Header -->
+                    <div class="notification-dropdown-header">
+                        <div class="notification-dropdown-title">
+                            <i class="bi bi-bell-fill"></i>
+                            Notifications
+                        </div>
+                        {% if unread_notifications_count > 0 %}
+                        <div class="notification-dropdown-badge">{{ unread_notifications_count }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Quick Action -->
+                    {% if unread_notifications_count > 0 %}
+                    <div class="notification-dropdown-action">
+                        <button class="mark-all-read-btn" onclick="markAllNotificationsRead()">
+                            <i class="bi bi-check-all"></i>
+                            Mark all read
+                        </button>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Notification List -->
+                    <div class="notification-dropdown-list">
+                        {% if user_notifications %}
+                            {% for notification in user_notifications %}
+                            <div class="notification-dropdown-item {% if not notification.is_read %}unread{% endif %}" onclick="window.location.href='/notifications/{{ notification.id }}/'">
+                                <div class="notification-dropdown-icon {{ notification.priority }}">
+                                    {% if notification.notification_type == 'probation_ending' or notification.notification_type == 'probation_overdue' %}
+                                        <i class="bi bi-clock-fill"></i>
+                                    {% elif notification.notification_type == 'document_expiring' or notification.notification_type == 'document_expired' %}
+                                        <i class="bi bi-file-earmark-text-fill"></i>
+                                    {% elif notification.notification_type == 'worker_created' %}
+                                        <i class="bi bi-person-plus-fill"></i>
+                                    {% elif notification.notification_type == 'system_alert' %}
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                    {% else %}
+                                        <i class="bi bi-bell-fill"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="notification-dropdown-content">
+                                    <div class="notification-dropdown-text">
+                                        <div class="notification-dropdown-subject">{{ notification.title|truncatechars:45 }}</div>
+                                        <div class="notification-dropdown-message">{{ notification.message|truncatechars:65 }}</div>
+                                    </div>
+                                    <div class="notification-dropdown-meta">
+                                        <span class="notification-dropdown-time">
+                                            <i class="bi bi-clock"></i>
+                                            {{ notification.created_at|timesince }} ago
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="notification-dropdown-arrow">
+                                    <i class="bi bi-chevron-right"></i>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="notification-dropdown-empty">
+                                <i class="bi bi-bell-slash"></i>
+                                <div class="empty-title">No notifications</div>
+                                <div class="empty-subtitle">You're all caught up!</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="notification-dropdown-footer">
+                        <a href="{% url 'notification_list' %}" class="view-all-btn">
+                            <i class="bi bi-arrow-right"></i>
+                            View All Notifications
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+
+            
+            <!-- User Profile -->
+            <div class="user-profile-section">
+                <button class="user-profile-btn" type="button" data-bs-toggle="dropdown">
+                    {% if user.role_assignment.profile_photo %}
+                        <img src="{{ user.role_assignment.profile_photo.url }}" 
+                             alt="Profile" class="profile-avatar">
+                    {% else %}
+                        <img src="{% static 'images/default-avatar.svg' %}" 
+                             alt="Profile" class="profile-avatar">
+                    {% endif %}
+                    <div class="user-details">
+                        <span class="user-display-name">{{ user.get_full_name|default:user.username }}</span>
+                        <span class="user-role">
+                            {% if user.role_assignment.role %}
+                                {{ user.role_assignment.role.name }}
+                            {% else %}
+                                User
+                            {% endif %}
+                        </span>
+                    </div>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end user-dropdown-minimal">
+                    <li class="user-info-minimal">
+                        <strong>{{ user.get_full_name|default:user.username }}</strong>
+                        <small>{{ user.email|default:"No email" }}</small>
+                    </li>
+                    <li><a class="dropdown-item-minimal" href="{% url 'employee_portal:profile' %}"><i class="bi bi-person"></i>Profile</a></li>
+                    <li><a class="dropdown-item-minimal" href="{% url 'login' %}"><i class="bi bi-box-arrow-in-right"></i>Login / Switch Account</a></li>
+                    {% if user_is_manager_or_admin %}
+                    <li><a class="dropdown-item-minimal" href="{% url 'dashboard:settings' %}"><i class="bi bi-gear"></i>Settings</a></li>
+                    {% endif %}
+                    <li><a class="dropdown-item-minimal" href="#"><i class="bi bi-question-circle"></i>Help</a></li>
+                    <li><a class="dropdown-item-minimal logout-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i>Sign Out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div> {% endcomment %}
+</header>
+
+<!-- Smart Search Script - Inline -->
+<script>
+console.log('=== INLINE SCRIPT LOADED ===');
+
+// Smart Search Functionality
+class SmartSearch {
+    constructor() {
+        console.log('SmartSearch constructor called');
+        this.searchInput = document.getElementById('smartSearchInput');
+        this.searchContainer = document.getElementById('smartSearchContainer');
+        this.resultsDropdown = document.getElementById('searchResultsDropdown');
+        this.resultsContent = document.getElementById('searchResultsContent');
+        this.noResultsMessage = document.getElementById('noResultsMessage');
+        this.searchFooter = document.getElementById('searchFooter');
+        this.loadingSpinner = document.getElementById('searchLoadingSpinner');
+
+        console.log('Search input found:', this.searchInput ? 'YES' : 'NO');
+
+        this.currentQuery = '';
+        this.searchTimeout = null;
+        this.selectedIndex = -1;
+        this.results = [];
+        this.isVisible = false;
+
+        this.init();
+    }
+
+    init() {
+        if (!this.searchInput) {
+            console.error('Search input not found!');
+            return;
+        }
+
+        console.log('Attaching event listeners...');
+
+        // Bind event listeners
+        this.searchInput.addEventListener('input', this.handleInput.bind(this));
+        this.searchInput.addEventListener('keydown', this.handleKeydown.bind(this));
+        this.searchInput.addEventListener('focus', this.handleFocus.bind(this));
+        this.searchInput.addEventListener('blur', this.handleBlur.bind(this));
+
+        console.log('Event listeners attached!');
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', this.handleOutsideClick.bind(this));
+
+        // Close dropdown on escape key
+        document.addEventListener('keydown', this.handleGlobalKeydown.bind(this));
+    }
+
+    handleInput(event) {
+        const query = event.target.value.trim();
+
+        // Clear previous timeout
+        if (this.searchTimeout) {
+            clearTimeout(this.searchTimeout);
+        }
+
+        // Reset selection
+        this.selectedIndex = -1;
+
+        // If query is too short, hide dropdown
+        if (query.length < 2) {
+            this.hideDropdown();
+            return;
+        }
+
+        // Debounce search requests
+        this.searchTimeout = setTimeout(() => {
+            this.performSearch(query);
+        }, 300);
+    }
+
+    handleFocus() {
+        console.log('=== GLOBAL SEARCH FOCUSED ===');
+        console.log('Search input value:', this.searchInput.value);
+        console.log('Attempting to close sidebar...');
+
+        // Auto-close sidebar when search gets focus
+        this.closeSidebar();
+
+        if (this.results.length > 0 && this.searchInput.value.length >= 2) {
+            console.log('Showing dropdown with existing results');
+            this.showDropdown();
+        }
+
+        console.log('=== END FOCUS HANDLER ===');
+    }
+
+    handleBlur() {
+        // Restore sidebar when search loses focus (after a short delay)
+        setTimeout(() => {
+            // Only restore if dropdown is not visible (user not actively searching)
+            if (!this.isVisible) {
+                console.log('Search lost focus - restoring sidebar...');
+                this.restoreSidebar();
+            }
+        }, 200);
+    }
+
+    closeSidebar() {
+        const sidebar = document.querySelector('#sidebar');
+        const mainContent = document.querySelector('#main-content');
+        const overlay = document.querySelector('#sidebar-overlay');
+
+        console.log('closeSidebar called', {
+            sidebar: sidebar ? 'found' : 'not found',
+            hasSidebarWFull: sidebar?.classList.contains('sidebar-w-full'),
+            windowWidth: window.innerWidth
+        });
+
+        if (!sidebar) {
+            console.warn('Sidebar element not found');
+            return;
+        }
+
+        // Only close if sidebar is currently visible
+        if (sidebar.classList.contains('sidebar-w-full')) {
+            console.log('Sidebar is visible, closing it...');
+
+            if (window.innerWidth > 768) {
+                // Desktop behavior - exactly like hamburger toggle
+                if (mainContent) {
+                    mainContent.classList.add('sidebar-transitioning');
+                }
+
+                // Collapse sidebar
+                sidebar.classList.remove('sidebar-w-full');
+                sidebar.classList.add('sidebar-w-0');
+
+                // Expand main content to full width
+                if (mainContent) {
+                    mainContent.style.width = '100%';
+                    mainContent.style.marginLeft = '0';
+                }
+
+                // DON'T save to localStorage - only temporary hide on search focus
+                // localStorage.setItem('sidebarState', 'collapsed');
+
+                // Remove transition class after animation completes
+                setTimeout(() => {
+                    if (mainContent) {
+                        mainContent.classList.remove('sidebar-transitioning');
+                    }
+                }, 300);
+
+                console.log('Sidebar collapsed (desktop)');
+            } else {
+                // Mobile behavior - hide sidebar
+                sidebar.classList.remove('sidebar-w-full');
+                sidebar.classList.add('sidebar-w-0');
+
+                // Hide overlay if exists
+                if (overlay) overlay.classList.remove('active');
+
+                // Restore body scroll
+                document.body.style.overflow = '';
+                console.log('Sidebar hidden (mobile)');
+            }
+        } else {
+            console.log('Sidebar already collapsed/hidden');
+        }
+    }
+
+    restoreSidebar() {
+        const sidebar = document.querySelector('#sidebar');
+        const mainContent = document.querySelector('#main-content');
+
+        console.log('restoreSidebar called');
+
+        if (!sidebar) {
+            console.warn('Sidebar element not found');
+            return;
+        }
+
+        // Only restore if sidebar is currently collapsed
+        if (sidebar.classList.contains('sidebar-w-0')) {
+            console.log('Sidebar is collapsed, restoring it...');
+
+            if (window.innerWidth > 768) {
+                // Desktop behavior - expand sidebar
+                if (mainContent) {
+                    mainContent.classList.add('sidebar-transitioning');
+                }
+
+                // Expand sidebar
+                sidebar.classList.remove('sidebar-w-0');
+                sidebar.classList.add('sidebar-w-full');
+
+                // Restore main content width
+                if (mainContent) {
+                    mainContent.style.width = '85%';
+                    mainContent.style.marginLeft = '15%';
+                }
+
+                // Remove transition class after animation completes
+                setTimeout(() => {
+                    if (mainContent) {
+                        mainContent.classList.remove('sidebar-transitioning');
+                    }
+                }, 300);
+
+                console.log('Sidebar restored (desktop)');
+            }
+        } else {
+            console.log('Sidebar already expanded');
+        }
+    }
+
+    handleKeydown(event) {
+        if (!this.isVisible || this.results.length === 0) return;
+
+        switch (event.key) {
+            case 'ArrowDown':
+                event.preventDefault();
+                this.selectedIndex = Math.min(this.selectedIndex + 1, this.results.length - 1);
+                this.updateSelection();
+                break;
+
+            case 'ArrowUp':
+                event.preventDefault();
+                this.selectedIndex = Math.max(this.selectedIndex - 1, -1);
+                this.updateSelection();
+                break;
+
+            case 'Enter':
+                event.preventDefault();
+                if (this.selectedIndex >= 0) {
+                    this.selectResult(this.results[this.selectedIndex]);
+                }
+                break;
+
+            case 'Escape':
+                this.hideDropdown();
+                this.searchInput.blur();
+                break;
+        }
+    }
+
+    handleOutsideClick(event) {
+        if (!this.searchContainer.contains(event.target)) {
+            this.hideDropdown();
+        }
+    }
+
+    handleGlobalKeydown(event) {
+        if (event.key === 'Escape') {
+            this.hideDropdown();
+        }
+    }
+
+    async performSearch(query) {
+        if (query === this.currentQuery) return;
+
+        this.currentQuery = query;
+        this.showLoading();
+
+        try {
+            const response = await fetch(`/zone/ajax/smart-search/?q=${encodeURIComponent(query)}`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            this.results = data.results || [];
+            this.displayResults();
+
+        } catch (error) {
+            this.displayError();
+        } finally {
+            this.hideLoading();
+        }
+    }
+
+    displayResults() {
+        if (this.results.length === 0) {
+            this.showNoResults();
+            return;
+        }
+
+        this.resultsContent.innerHTML = '';
+        this.noResultsMessage.classList.add('hidden');
+
+        this.results.forEach((result, index) => {
+            const resultElement = this.createResultElement(result, index);
+            this.resultsContent.appendChild(resultElement);
+        });
+
+        this.showDropdown();
+    }
+
+    createResultElement(result, index) {
+        const div = document.createElement('div');
+        div.className = `search-result-item p-3 hover:bg-gray-50 cursor-pointer transition-colors duration-150`;
+        div.dataset.index = index;
+
+        // Add click handler
+        div.addEventListener('click', () => this.selectResult(result));
+
+        // Create type badge
+        const typeBadge = this.createTypeBadge(result.type_class, result.type);
+
+        // Create avatar or icon
+        const avatarOrIcon = this.createAvatarOrIcon(result);
+
+        // Build content
+        div.innerHTML = `
+            <div class="flex items-center space-x-3">
+                ${avatarOrIcon}
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <p class="text-sm font-medium text-gray-900 truncate">
+                                ${this.highlightMatch(result.title, this.currentQuery)}
+                            </p>
+                            ${typeBadge}
+                        </div>
+                        ${result.status ? `<span class="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">${result.status}</span>` : ''}
+                    </div>
+                    <p class="text-xs text-gray-500 truncate mt-1">
+                        ${this.highlightMatch(result.subtitle, this.currentQuery)}
+                    </p>
+                </div>
+                <div class="flex-shrink-0">
+                    <i class="bi bi-arrow-right text-gray-400"></i>
+                </div>
+            </div>
+        `;
+
+        return div;
+    }
+
+    createTypeBadge(typeClass, typeText) {
+        const colors = {
+            'worker': 'bg-blue-100 text-blue-800',
+            'vip': 'bg-purple-100 text-purple-800',
+            'employee': 'bg-green-100 text-green-800',
+            'menu': 'bg-orange-100 text-orange-800'
+        };
+
+        const color = colors[typeClass] || 'bg-gray-100 text-gray-800';
+
+        return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${color}">
+            ${typeText}
+        </span>`;
+    }
+
+    createAvatarOrIcon(result) {
+        // For menu items, show an icon
+        if (result.type_class === 'menu' && result.icon) {
+            return `<div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                <i class="${result.icon}"></i>
+            </div>`;
+        }
+
+        // For people (workers/employees), show avatar
+        return this.createAvatar(result.avatar, result.title);
+    }
+
+    createAvatar(avatarUrl, title) {
+        if (avatarUrl) {
+            return `<img class="w-8 h-8 rounded-full object-cover border" src="${avatarUrl}" alt="${title}" onerror="this.src='/static/images/default-avatar.svg'">`;
+        } else {
+            const initials = title.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            return `<div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-xs font-medium text-gray-700">${initials}</div>`;
+        }
+    }
+
+    highlightMatch(text, query) {
+        if (!query || !text) return text;
+
+        const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        return text.replace(regex, '<mark class="bg-yellow-200 px-0.5 rounded">$1</mark>');
+    }
+
+    selectResult(result) {
+        // Navigate to the result URL
+        if (result.url) {
+            window.location.href = result.url;
+        }
+
+        // Hide dropdown
+        this.hideDropdown();
+
+        // Clear search
+        this.searchInput.value = '';
+        this.currentQuery = '';
+    }
+
+    updateSelection() {
+        // Remove previous selection
+        this.resultsContent.querySelectorAll('.search-result-item').forEach((item, index) => {
+            if (index === this.selectedIndex) {
+                item.classList.add('bg-blue-50', 'border-l-4', 'border-blue-500');
+                item.scrollIntoView({ block: 'nearest' });
+            } else {
+                item.classList.remove('bg-blue-50', 'border-l-4', 'border-blue-500');
+            }
+        });
+    }
+
+    showDropdown() {
+        this.resultsDropdown.classList.remove('hidden');
+        this.searchFooter.classList.remove('hidden');
+        this.isVisible = true;
+    }
+
+    hideDropdown() {
+        this.resultsDropdown.classList.add('hidden');
+        this.isVisible = false;
+        this.selectedIndex = -1;
+    }
+
+    showNoResults() {
+        this.resultsContent.innerHTML = '';
+        this.noResultsMessage.classList.remove('hidden');
+        this.searchFooter.classList.remove('hidden');
+        this.showDropdown();
+    }
+
+    displayError() {
+        this.resultsContent.innerHTML = `
+            <div class="p-4 text-center text-red-500">
+                <i class="bi bi-exclamation-triangle text-2xl mb-2"></i>
+                <p class="text-sm">Search temporarily unavailable</p>
+                <p class="text-xs text-gray-400">Please try again later</p>
+            </div>
+        `;
+        this.searchFooter.classList.add('hidden');
+        this.showDropdown();
+    }
+
+    showLoading() {
+        this.loadingSpinner.classList.remove('hidden');
+    }
+
+    hideLoading() {
+        this.loadingSpinner.classList.add('hidden');
+    }
+}
+
+// Initialize smart search when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded - Initializing SmartSearch...');
+
+    // Clear any old collapsed state saved by search (one-time fix)
+    const savedState = localStorage.getItem('sidebarState');
+    if (savedState === 'collapsed') {
+        console.log('Clearing old collapsed state from localStorage');
+        localStorage.removeItem('sidebarState');
+        // Force reload to apply the change
+        const sidebar = document.querySelector('#sidebar');
+        const mainContent = document.querySelector('#main-content');
+        if (sidebar && sidebar.classList.contains('sidebar-w-0')) {
+            sidebar.classList.remove('sidebar-w-0');
+            sidebar.classList.add('sidebar-w-full');
+            if (mainContent) {
+                mainContent.style.width = '85%';
+                mainContent.style.marginLeft = '15%';
+            }
+        }
+    }
+
+    const smartSearch = new SmartSearch();
+    console.log('SmartSearch initialized:', smartSearch);
+});
+
+console.log('=== END OF INLINE SCRIPT ===');
+</script>

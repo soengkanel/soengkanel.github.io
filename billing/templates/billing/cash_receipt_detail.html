@@ -1,0 +1,418 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Billing{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Cash Receipt Detail Design */
+:root {
+    --primary-blue: #2563eb;
+    --success-green: #059669;
+    --border-color: #e5e7eb;
+    --light-gray: #f8fafc;
+    --shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --radius: 6px;
+}
+
+.receipt-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.receipt-header {
+    background: var(--primary-blue);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.receipt-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.receipt-number {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    opacity: 0.9;
+}
+
+.receipt-body {
+    padding: 1.5rem;
+}
+
+.receipt-section {
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    border-bottom:none !important;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 0.95rem;
+    color: #111827;
+    font-weight: 500;
+    border-radius:8px;
+    padding:4px 8px;
+    background:var(--light-gray);
+}
+
+.amount-highlight {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--success-green);
+}
+
+.invoice-connection {
+    background: #f0f9ff;
+    border: 1px solid #0369a1;
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.invoice-connection .section-title {
+    color: #0369a1;
+    border-bottom-color: #0369a1;
+    margin-bottom: 0.75rem;
+}
+
+.invoice-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-completed {
+    background: rgba(5, 150, 105, 0.1);
+    color: var(--success-green);
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-outline {
+    background: white;
+    color: var(--primary-blue);
+    border-color: var(--border-color);
+}
+
+.btn-outline:hover {
+    background: var(--light-gray);
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+
+.btn-success {
+    background: var(--success-green);
+    color: white;
+    border-color: var(--success-green);
+}
+
+.btn-success:hover {
+    background: #047857;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.metadata-section {
+    background: var(--light-gray);
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-top: 1.5rem;
+}
+
+.metadata-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Print styles */
+@media print {
+    .action-buttons {
+        display: none !important;
+    }
+    
+    .receipt-container {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+    
+    .btn {
+        display: none !important;
+    }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .receipt-container {
+        margin: 1rem;
+        border-radius: var(--radius);
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .invoice-info {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .metadata-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <div class="receipt-container">
+        <!-- Receipt Header -->
+        <div class="flex justify-between py-3 px-3 bg-blue-100">
+            <h1 class="text-lg font-semibold"><i class="bi bi-receipt me-2"></i>Cash/Cheque Receipt</h1>
+            <div class="font-bold text-blue-600 text-lg">{{ receipt.receipt_number }}</div>
+        </div>
+
+        <div class="receipt-body">
+            <!-- Related Invoice (if any) -->
+            {% if receipt.invoice %}
+            <div class="invoice-connection">
+                <div class="section-title">
+                    <i class="bi bi-link-45deg"></i> Connected Invoice
+                </div>
+                <div class="invoice-info">
+                    <div>
+                        <strong>Invoice #{{ receipt.invoice.invoice_number }}</strong><br>
+                        <small style="color: #0369a1;">
+                            Status: {{ receipt.invoice.get_status_display }} | 
+                            Due: {{ receipt.invoice.due_date|date:"d/m/Y" }}
+                        </small>
+                    </div>
+                    <div>
+                        <span class="status-badge status-completed">
+                            <i class="bi bi-check-circle"></i> Payment Recorded
+                        </span>
+                        <a href="{% url 'billing:invoice_detail' receipt.invoice.id %}" class="btn btn-sm btn-outline-primary ms-2">
+                            <i class="bi bi-eye"></i> View Invoice
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Receipt Information -->
+            <div class="receipt-section">
+                <div class="section-title">
+                    <i class="bi bi-info-circle"></i> Receipt Details
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Date</span>
+                        <span class="info-value">{{ receipt.date|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Payment Method</span>
+                        <span class="info-value">{{ receipt.get_payment_method_display|default:"N/A" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="receipt-section">
+                <div class="section-title">
+                    <i class="bi bi-person"></i> Payment Information
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Received From</span>
+                        <span class="info-value">{{ receipt.received_from }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Amount</span>
+                        <span class="info-value amount-highlight">${{ receipt.amount_usd|floatformat:2 }}</span>
+                    </div>
+                </div>
+                
+                {% if receipt.amount_in_words %}
+                <div class="info-grid" style="margin-top: 1rem;">
+                    <div class="info-item" style="grid-column: span 2;">
+                        <span class="info-label">Amount in Words</span>
+                        <span class="info-value" style="font-style: italic; color: #374151;">{{ receipt.amount_in_words }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Purpose -->
+            <div class="receipt-section">
+                <div class="section-title">
+                    <i class="bi bi-chat-text"></i> Payment Purpose
+                </div>
+                <div class="info-item">
+                    <span class="info-value" style="line-height: 1.6; color: #374151;">
+                        {{ receipt.payment_purpose|default:"No purpose specified" }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- System Metadata -->
+            <div class="metadata-section">
+                <div class="metadata-grid">
+                    <div>
+                        <strong>Created:</strong> {{ receipt.created_at|date:"d/m/Y g:i A" }}
+                    </div>
+                    {% if receipt.created_by %}
+                    <div>
+                        <strong>Created By:</strong> {{ receipt.created_by.get_full_name|default:receipt.created_by.username }}
+                    </div>
+                    {% endif %}
+                    {% if receipt.updated_at != receipt.created_at %}
+                    <div>
+                        <strong>Last Updated:</strong> {{ receipt.updated_at|date:"d/m/Y g:i A" }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="w-full flex justify-end space-x-3 mt-3">
+                {% if receipt.invoice %}
+                    <a href="{% url 'billing:invoice_detail' receipt.invoice.id %}" class="button-min-default">
+                        <i class="bi bi-arrow-left"></i>
+                        Back to Invoice
+                    </a>
+                {% else %}
+                    <a href="{% url 'billing:cash_receipt_list' %}" class="button-min-default">
+                        <i class="bi bi-list"></i>
+                        All Receipts
+                    </a>
+                {% endif %}
+                
+                
+
+                 <a href="{% url 'billing:cash_receipt_print' receipt.id %}" class="button-min-default">
+                    <i class="bi bi-printer"></i>
+                   Print Preview
+                </a>
+                
+                {% comment %} <button onclick="window.print()" class="btn btn-success">
+                    <i class="bi bi-printer"></i>
+                    Print Receipt
+                </button> {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add print keyboard shortcut
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+P or Cmd+P for print
+        if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+            e.preventDefault();
+            window.print();
+        }
+    });
+});
+</script>
+{% endblock %}

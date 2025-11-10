@@ -1,0 +1,938 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Projects - Project Management{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Ultra-Minimal Design System - Projects */
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    /* Compact Header */
+    .page-header-compact {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 16px;
+    }
+
+    .page-header-compact h1 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+
+    /* Ultra-Minimal search filters */
+    .search-filters {
+        background: #f8fafb;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        padding: 8px;
+        margin-bottom: 12px;
+    }
+
+    .filter-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr auto;
+        gap: 8px;
+        align-items: end;
+    }
+
+    .form-label {
+        font-size: 10px !important;
+        margin-bottom: 3px !important;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+        height: auto !important;
+        border-radius: 3px;
+        border: 1px solid #d1d5db;
+        line-height: 1.4;
+        background: white;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    /* Ultra-Minimal Button System */
+    .btn-modern {
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 3px;
+        padding: 4px 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    /* Primary Button - Light Blue */
+    .btn-primary-modern {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .btn-primary-modern:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    /* Secondary Button - Dark */
+    .btn-secondary-modern {
+        background: #374151;
+        color: white;
+    }
+
+    .btn-secondary-modern:hover {
+        background: #1f2937;
+        color: white;
+    }
+
+    /* Outline Button - White with Blue Border */
+    .btn-outline-modern {
+        background: white;
+        color: #3b82f6;
+        border: 1px solid #3b82f6;
+    }
+
+    .btn-outline-modern:hover {
+        background: #3b82f6;
+        color: white;
+    }
+
+    /* Danger Button */
+    .btn-danger-modern {
+        background: #ef4444;
+        color: white;
+    }
+
+    .btn-danger-modern:hover {
+        background: #dc2626;
+        color: white;
+    }
+
+    /* Light Button */
+    .btn-light-modern {
+        background: #f8fafb;
+        color: #374151;
+        border: 1px solid #e2e8f0;
+    }
+
+    .btn-light-modern:hover {
+        background: #e2e8f0;
+        color: #1f2937;
+    }
+
+    /* Small Button Variant */
+    .btn-sm-modern {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    /* Ultra-Minimal stats */
+    .stats-row {
+        margin-bottom: 12px;
+    }
+
+    .stat-item {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        padding: 8px;
+        text-align: center;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-number {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .stat-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 1rem;
+        background: #fff;
+    }
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0.25rem 0;
+    }
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 6px;
+        margin-bottom: 12px;
+    }
+
+    /* View Toggle Styles */
+    .view-toggle {
+        display: flex;
+        gap: 0;
+        margin-left: 12px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+
+    .view-toggle .btn {
+        padding: 6px 10px;
+        border: none;
+        background: white;
+        color: #6b7280;
+        font-size: 12px;
+        margin: 0;
+        border-radius: 10px;
+    }
+
+    .view-toggle .btn.active {
+        background: linear-gradient(180deg, #4B91F7 0%, #367AF6 100%);
+        background-origin: border-box;
+        box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(3, 97, 190, 0.15);
+        color: white;
+    }
+
+    .view-toggle .btn:hover:not(.active) {
+        color: #374151;
+    }
+
+    /* Grid View - Modern Cards */
+    .project-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 12px;
+    }
+
+    .modern-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 16px;
+        background: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .modern-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .modern-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .modern-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .project-code {
+        font-size: 10px;
+        color: #6b7280;
+        font-family: monospace;
+    }
+
+    /* Status badges */
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-open {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+
+    .status-in_progress {
+        background-color: #fef3c7;
+        color: #d97706;
+    }
+
+    .status-completed {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .status-on_hold {
+        background-color: #e0e7ff;
+        color: #3730a3;
+    }
+
+    .status-cancelled {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-overdue {
+        background-color: #fef2f2;
+        color: #7f1d1d;
+    }
+
+    /* Priority badges */
+    .priority-badge {
+        padding: 3px 6px;
+        border-radius: 8px;
+        font-size: 9px;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+
+    .priority-low {
+        background-color: #f0f9ff;
+        color: #0369a1;
+    }
+
+    .priority-medium {
+        background-color: #fffbeb;
+        color: #d97706;
+    }
+
+    .priority-high {
+        background-color: #fef2f2;
+        color: #dc2626;
+    }
+
+    .priority-urgent {
+        background-color: #7f1d1d;
+        color: white;
+    }
+
+    /* Modern Table */
+    .modern-table-container {
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .table {
+        margin: 0;
+        font-size: 12px;
+    }
+
+    .table th {
+        background: #f8fafb;
+        border: none;
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table tbody tr:hover {
+        background: #f8fafb;
+    }
+
+    .project-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 11px;
+    }
+
+    .project-details h6 {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .project-details p {
+        font-size: 11px;
+        color: #6b7280;
+        margin: 2px 0 0 0;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+        height: 4px;
+        background: #f3f4f6;
+        border-radius: 2px;
+        overflow: hidden;
+        margin: 4px 0;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+        transition: width 0.3s ease;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6b7280;
+    }
+
+    .empty-state i {
+        font-size: 32px;
+        color: #d1d5db;
+        margin-bottom: 12px;
+    }
+
+    .empty-state h6 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    .empty-state p {
+        font-size: 12px;
+        margin-bottom: 16px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .filter-row {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .stats-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .project-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* View toggle states */
+    .view-content {
+        display: none;
+    }
+
+    .view-content.active {
+        display: block;
+    }
+
+    /* Compact Pagination */
+    .pagination {
+        justify-content: center;
+        margin: 12px 0 0 0;
+    }
+
+    .page-link {
+        font-size: 11px;
+        padding: 4px 8px;
+        border: 1px solid #e2e8f0;
+        color: #374151;
+    }
+
+    .page-link:hover {
+        background: #f8fafb;
+        border-color: #3b82f6;
+        color: #3b82f6;
+    }
+
+    .page-item.active .page-link {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+    }
+    /* Compact Filters */
+    .filters-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+
+    .filters-compact input,
+    .filters-compact select {
+        font-size: 13px;
+        padding: 6px 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+    }
+    /* Action Buttons */
+    .btn-icon-compact {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        font-size: 10px;
+        padding: 0;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: white;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .btn-icon-compact:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+        color: #111827;
+    }
+
+    .btn-icon-compact.success {
+        color: var(--success);
+        border-color: var(--success);
+    }
+
+    .btn-icon-compact.success:hover {
+        background: #d1fae5;
+    }
+
+    .btn-icon-compact.danger {
+        color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .btn-icon-compact.danger:hover {
+        background: #fee2e2;
+    }
+
+    .btn-icon-compact.warning {
+        color: var(--warning);
+        border-color: var(--warning);
+    }
+
+    .btn-icon-compact.warning:hover {
+        background: #f7e2be;
+    }
+    .btn-icon-compact.primary {
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .btn-icon-compact.primary:hover {
+        background: #c8daf7;
+    }
+    .form-control { 
+        font-size: 11px !important; 
+        padding: 4px 6px !important; 
+        height: auto !important; 
+        border-radius: 3px; 
+        border: 1px solid #d1d5db; 
+    }
+    .form-label { 
+        font-size: 10px !important; 
+        margin-bottom: 3px !important; 
+        font-weight: 500; 
+        color: #374151; 
+    }
+    .page-header { padding: 6px 0; margin-bottom: 12px; }
+    .page-header h2 { font-size: 16px; font-weight: 600; margin: 0; color: #1a1a1a; }
+    .status-badge { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 500; text-transform: uppercase; }
+    .status-draft { background-color: #f3f4f6; color: #374151; }
+    .status-processing { background-color: #fef3c7; color: #92400e; }
+    .status-closed { background-color: #f73636; color: #f3f4f6;; }
+    .status-approved { background-color: #dbeafe; color: #1e40af; }
+    .status-paid { background-color: #dcfce7; color: #166534; }
+    .status-cancelled { background-color: #fee2e2; color: #991b1b; }
+    .table { font-size: 11px; }
+    .table th { font-weight: 600; color: #374151; text-transform: uppercase; font-size: 10px; padding: 8px; border-bottom: 2px solid #e2e8f0; }
+    .table td { padding: 8px; vertical-align: middle; }
+    .filter-pill { padding: 4px 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 10px; text-decoration: none; color: #6b7280; transition: all 0.2s; }
+    .filter-pill:hover, .filter-pill.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <!-- Page Header -->
+    <div class="page-header-compact">
+        <h2>Projects</h2>
+        <div class="d-flex align-items-end">
+            <a href="{% url 'project:project_create' %}" class="button-min-primary py-1">
+            <div>
+                <i class="fas fa-plus" style="font-size: 9px;"></i>
+                <span>Add</span>
+            </div>
+        </a>
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="stats-grid mt-2">
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value">{{ stats.total }}</div>
+            <div class="stat-label">Total Projects</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value">{{ stats.open }}</div>
+            <div class="stat-label">Open</div>
+        </div>    
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value">{{ stats.in_progress }}</div>
+            <div class="stat-label">In Progress</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value">{{ stats.completed }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+
+    <!-- Compact Search and Filters -->
+    <div class="filters-compact">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label for="search" class="form-label">Search Projects</label>
+                <input type="text" name="search" value="{{ request.GET.search }}" 
+                       placeholder="Search by name, code, or description..." class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label for="status" class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Status</option>
+                    <option value="open" {% if request.GET.status == 'open' %}selected{% endif %}>Open</option>
+                    <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+                    <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option>
+                    <option value="on_hold" {% if request.GET.status == 'on_hold' %}selected{% endif %}>On Hold</option>
+                    <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                    <option value="overdue" {% if request.GET.status == 'overdue' %}selected{% endif %}>Overdue</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="priority" class="form-label">Priority</label>
+                <select name="priority" class="form-control">
+                    <option value="">All Priorities</option>
+                    <option value="low" {% if request.GET.priority == 'low' %}selected{% endif %}>Low</option>
+                    <option value="medium" {% if request.GET.priority == 'medium' %}selected{% endif %}>Medium</option>
+                    <option value="high" {% if request.GET.priority == 'high' %}selected{% endif %}>High</option>
+                    <option value="urgent" {% if request.GET.priority == 'urgent' %}selected{% endif %}>Urgent</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="date_from" class="form-label">Start From</label>
+                <input type="date" name="date_from" value="{{ request.GET.date_from }}" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label mb-1">Start To</label>
+                <input type="date" name="start_date_to" class="form-control" value="{{ start_date_to|default:'' }}">
+            </div>
+            <div class="col-md-1 d-flex gap-2">
+                <button type="submit" class="button-min-primary py-1">
+                    <div class="flex items-center space-x-1">
+                        <i class="bi bi-search" style="font-size:10px;"></i>
+                        <span class="font-medium">Filter</span>
+                    </div>
+                </button>
+                {% if request.GET %}
+                <a href="{% url 'project:project_list' %}" class="button-min-default py-1">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </a>
+                {% endif %}
+            </div>
+        </form>
+        {% if request.GET %}
+        <div class="mt-2">
+            <span style="font-size: 11px; color: #6b7280;">{{ projects|length }} project{{ projects|length|pluralize }} found</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- View Toggle -->
+    <!-- <div class="d-flex justify-content-between align-items-center mt-3 mb-2">
+        <div></div>
+        <div class="view-toggle">
+            <button type="button" class="btn active" onclick="toggleView('table')">
+                <i class="bi bi-list-ul"></i> Table
+            </button>
+            <button type="button" class="btn" onclick="toggleView('grid')">
+                <i class="bi bi-grid-3x3-gap"></i> Grid
+            </button>
+        </div>
+    </div> -->
+
+    <!-- Table View -->
+    <div id="table-view" class="view-content active mt-4">
+        {% if projects %}
+        <div class="modern-table-container">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Manager</th>
+                            <th>Team</th>
+                            <th>Progress</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Due Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in projects %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="project-avatar me-2">
+                                        {{ project.project_name|first|upper }}
+                                    </div>
+                                    <div class="project-details">
+                                        <h6>{{ project.project_name }}</h6>
+                                        <p>{{ project.project_code }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if project.project_manager %}
+                                    {{ project.project_manager.get_full_name }}
+                                {% else %}
+                                    <span class="text-muted">Not assigned</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span style="font-size: 11px; color: #6b7280;">
+                                    {{ project.team_members.count }} member{{ project.team_members.count|pluralize }}
+                                </span>
+                            </td>
+                            <td>
+                                <div style="width: 60px;">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: {{ project.percent_complete }}%"></div>
+                                    </div>
+                                    <span style="font-size: 10px; color: #6b7280;">{{ project.percent_complete|floatformat:0 }}%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="priority-badge priority-{{ project.priority }}">
+                                    {{ project.get_priority_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ project.status }}">
+                                    {{ project.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if project.expected_end_date %}
+                                    <span style="font-size: 11px;">{{ project.expected_end_date|date:"M d, Y" }}</span>
+                                {% else %}
+                                    <span class="text-muted">Not set</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a href="{% url 'project:project_detail' project.id %}" class="btn-icon-compact primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'project:project_edit' project.id %}" class="btn-icon-compact warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-kanban"></i>
+            <h6>No projects found</h6>
+            <p>Get started by creating your first project.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Grid View -->
+    <div id="grid-view" class="view-content">
+        {% if projects %}
+        <div class="project-grid">
+            {% for project in projects %}
+            <div class="modern-card">
+                <div class="modern-card-header">
+                    <div>
+                        <h5 class="modern-title">{{ project.project_name }}</h5>
+                        <p class="project-code">{{ project.project_code }}</p>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <span class="priority-badge priority-{{ project.priority }}">{{ project.get_priority_display }}</span>
+                        <span class="status-badge status-{{ project.status }}">{{ project.get_status_display }}</span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between text-muted mb-1" style="font-size: 11px;">
+                        <span>Progress</span>
+                        <span>{{ project.percent_complete|floatformat:0 }}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ project.percent_complete }}%"></div>
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3" style="font-size: 11px;">
+                    <div class="col-6">
+                        <strong>Manager:</strong><br>
+                        {% if project.project_manager %}
+                            {{ project.project_manager.get_full_name }}
+                        {% else %}
+                            <span class="text-muted">Not assigned</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <strong>Team:</strong><br>
+                        {{ project.team_members.count }} member{{ project.team_members.count|pluralize }}
+                    </div>
+                    <div class="col-6">
+                        <strong>Start:</strong><br>
+                        {% if project.expected_start_date %}
+                            {{ project.expected_start_date|date:"M d, Y" }}
+                        {% else %}
+                            <span class="text-muted">Not set</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <strong>Due:</strong><br>
+                        {% if project.expected_end_date %}
+                            {{ project.expected_end_date|date:"M d, Y" }}
+                        {% else %}
+                            <span class="text-muted">Not set</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <small class="text-muted">Created {{ project.created_at|date:"M d" }}</small>
+                    <div class="d-flex gap-1">
+                        <a href="{% url 'project:project_detail' project.id %}" class="btn-outline-modern btn-sm-modern">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <a href="{% url 'project:project_edit' project.id %}" class="btn-light-modern btn-sm-modern">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-kanban"></i>
+            <h6>No projects found</h6>
+            <p>Get started by creating your first project.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if projects.has_other_pages %}
+    <nav aria-label="Projects pagination" class="mt-3">
+        <ul class="pagination">
+            {% if projects.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ projects.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.priority %}&priority={{ request.GET.priority }}{% endif %}">Previous</a>
+                </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">{{ projects.number }} of {{ projects.paginator.num_pages }}</span>
+            </li>
+
+            {% if projects.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ projects.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.priority %}&priority={{ request.GET.priority }}{% endif %}">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<script>
+function toggleView(viewType) {
+    // Hide all views
+    document.querySelectorAll('.view-content').forEach(view => {
+        view.classList.remove('active');
+    });
+    
+    // Remove active class from all buttons
+    document.querySelectorAll('.view-toggle .btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected view
+    document.getElementById(viewType + '-view').classList.add('active');
+    
+    // Add active class to clicked button
+    event.target.closest('.btn').classList.add('active');
+    
+    // Store preference in localStorage
+    localStorage.setItem('projectViewPreference', viewType);
+}
+
+// Load saved view preference
+document.addEventListener('DOMContentLoaded', function() {
+    const savedView = localStorage.getItem('projectViewPreference') || 'table';
+    if (savedView === 'grid') {
+        toggleView('grid');
+    }
+});
+</script>
+{% endblock %}

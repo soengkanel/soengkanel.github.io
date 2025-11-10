@@ -1,0 +1,419 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Work Schedules" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-calendar-week"></i> {% trans "Work Schedules" %}</h2>
+        <a href="{% url 'attendance:schedule_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> {% trans "Create Schedule" %}
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Schedule Name" %}</th>
+                            <th>{% trans "Type" %}</th>
+                            <th>{% trans "Working Days" %}</th>
+                            <th>{% trans "Total Hours/Week" %}</th>
+                            <th>{% trans "Employees Assigned" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for schedule in schedules %}
+                        <tr>
+                            <td>
+                                <strong>{{ schedule.name }}</strong><br>
+                                {% if schedule.description %}
+                                    <small class="text-muted">{{ schedule.description|truncatechars:50 }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge badge-{% if schedule.schedule_type == 'fixed' %}info{% elif schedule.schedule_type == 'flexible' %}success{% elif schedule.schedule_type == 'shift' %}warning{% else %}secondary{% endif %}">
+                                    {{ schedule.get_schedule_type_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-wrap">
+                                    {% if schedule.monday_enabled %}
+                                        <span class="badge bg-primary me-1 mb-1">M</span>
+                                    {% endif %}
+                                    {% if schedule.tuesday_enabled %}
+                                        <span class="badge bg-primary me-1 mb-1">T</span>
+                                    {% endif %}
+                                    {% if schedule.wednesday_enabled %}
+                                        <span class="badge bg-primary me-1 mb-1">W</span>
+                                    {% endif %}
+                                    {% if schedule.thursday_enabled %}
+                                        <span class="badge bg-primary me-1 mb-1">T</span>
+                                    {% endif %}
+                                    {% if schedule.friday_enabled %}
+                                        <span class="badge bg-primary me-1 mb-1">F</span>
+                                    {% endif %}
+                                    {% if schedule.saturday_enabled %}
+                                        <span class="badge bg-primary me-1 mb-1">S</span>
+                                    {% endif %}
+                                    {% if schedule.sunday_enabled %}
+                                        <span class="badge bg-primary me-1 mb-1">S</span>
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted">
+                                    {{ schedule.get_working_days_count }} {% trans "days/week" %}
+                                </small>
+                            </td>
+                            <td>
+                                <strong>{{ schedule.get_total_weekly_hours|floatformat:1 }}h</strong><br>
+                                <small class="text-muted">
+                                    ~{{ schedule.get_avg_daily_hours|floatformat:1 }}h {% trans "per day" %}
+                                </small>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ schedule.employee_schedules.count }}</span>
+                                {% if schedule.employee_schedules.count > 0 %}
+                                    <br><small class="text-muted">
+                                        {% for assignment in schedule.employee_schedules.all|slice:":3" %}
+                                            {{ assignment.employee.full_name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                        {% if schedule.employee_schedules.count > 3 %}
+                                            <br>{% trans "and" %} {{ schedule.employee_schedules.count|add:"-3" }} {% trans "more..." %}
+                                        {% endif %}
+                                    </small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if schedule.is_active %}
+                                    <span class="badge bg-success">{% trans "Active" %}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{% trans "Inactive" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-outline-info"
+                                            data-bs-toggle="modal" data-bs-target="#scheduleModal{{ schedule.id }}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <a href="{% url 'attendance:schedule_update' schedule.pk %}" class="btn btn-sm btn-outline-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-primary"
+                                            data-bs-toggle="modal" data-bs-target="#assignModal{{ schedule.id }}">
+                                        <i class="fas fa-users"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-success" onclick="copySchedule({{ schedule.id }})">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Schedule Details Modal -->
+                        <div class="modal fade" id="scheduleModal{{ schedule.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Schedule Details" %} - {{ schedule.name }}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <strong>{% trans "Type:" %}</strong> {{ schedule.get_schedule_type_display }}<br>
+                                                <strong>{% trans "Total Weekly Hours:" %}</strong> {{ schedule.get_total_weekly_hours|floatformat:1 }}h<br>
+                                                <strong>{% trans "Status:" %}</strong>
+                                                <span class="badge badge-{% if schedule.is_active %}success{% else %}secondary{% endif %}">
+                                                    {% if schedule.is_active %}{% trans "Active" %}{% else %}{% trans "Inactive" %}{% endif %}
+                                                </span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong>{% trans "Late Grace:" %}</strong> {{ schedule.late_grace_minutes }} {% trans "minutes" %}<br>
+                                                <strong>{% trans "Early Departure Grace:" %}</strong> {{ schedule.early_departure_grace_minutes }} {% trans "minutes" %}<br>
+                                                <strong>{% trans "Break Duration:" %}</strong> {{ schedule.break_duration_minutes }} {% trans "minutes" %}
+                                            </div>
+                                        </div>
+
+                                        {% if schedule.description %}
+                                        <div class="mb-3">
+                                            <strong>{% trans "Description:" %}</strong>
+                                            <p>{{ schedule.description }}</p>
+                                        </div>
+                                        {% endif %}
+
+                                        <h6>{% trans "Weekly Schedule:" %}</h6>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{% trans "Day" %}</th>
+                                                        <th>{% trans "Status" %}</th>
+                                                        <th>{% trans "Start Time" %}</th>
+                                                        <th>{% trans "End Time" %}</th>
+                                                        <th>{% trans "Hours" %}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><strong>{% trans "Monday" %}</strong></td>
+                                                        <td>
+                                                            {% if schedule.monday_enabled %}
+                                                                <span class="badge bg-success">{% trans "Working" %}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">{% trans "Off" %}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ schedule.monday_start|default:"--" }}</td>
+                                                        <td>{{ schedule.monday_end|default:"--" }}</td>
+                                                        <td>
+                                                            {% if schedule.monday_enabled and schedule.monday_start and schedule.monday_end %}
+                                                                {{ schedule.get_monday_hours|floatformat:1 }}h
+                                                            {% else %}
+                                                                --
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>{% trans "Tuesday" %}</strong></td>
+                                                        <td>
+                                                            {% if schedule.tuesday_enabled %}
+                                                                <span class="badge bg-success">{% trans "Working" %}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">{% trans "Off" %}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ schedule.tuesday_start|default:"--" }}</td>
+                                                        <td>{{ schedule.tuesday_end|default:"--" }}</td>
+                                                        <td>
+                                                            {% if schedule.tuesday_enabled and schedule.tuesday_start and schedule.tuesday_end %}
+                                                                {{ schedule.get_tuesday_hours|floatformat:1 }}h
+                                                            {% else %}
+                                                                --
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>{% trans "Wednesday" %}</strong></td>
+                                                        <td>
+                                                            {% if schedule.wednesday_enabled %}
+                                                                <span class="badge bg-success">{% trans "Working" %}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">{% trans "Off" %}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ schedule.wednesday_start|default:"--" }}</td>
+                                                        <td>{{ schedule.wednesday_end|default:"--" }}</td>
+                                                        <td>
+                                                            {% if schedule.wednesday_enabled and schedule.wednesday_start and schedule.wednesday_end %}
+                                                                {{ schedule.get_wednesday_hours|floatformat:1 }}h
+                                                            {% else %}
+                                                                --
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>{% trans "Thursday" %}</strong></td>
+                                                        <td>
+                                                            {% if schedule.thursday_enabled %}
+                                                                <span class="badge bg-success">{% trans "Working" %}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">{% trans "Off" %}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ schedule.thursday_start|default:"--" }}</td>
+                                                        <td>{{ schedule.thursday_end|default:"--" }}</td>
+                                                        <td>
+                                                            {% if schedule.thursday_enabled and schedule.thursday_start and schedule.thursday_end %}
+                                                                {{ schedule.get_thursday_hours|floatformat:1 }}h
+                                                            {% else %}
+                                                                --
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>{% trans "Friday" %}</strong></td>
+                                                        <td>
+                                                            {% if schedule.friday_enabled %}
+                                                                <span class="badge bg-success">{% trans "Working" %}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">{% trans "Off" %}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ schedule.friday_start|default:"--" }}</td>
+                                                        <td>{{ schedule.friday_end|default:"--" }}</td>
+                                                        <td>
+                                                            {% if schedule.friday_enabled and schedule.friday_start and schedule.friday_end %}
+                                                                {{ schedule.get_friday_hours|floatformat:1 }}h
+                                                            {% else %}
+                                                                --
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>{% trans "Saturday" %}</strong></td>
+                                                        <td>
+                                                            {% if schedule.saturday_enabled %}
+                                                                <span class="badge bg-success">{% trans "Working" %}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">{% trans "Off" %}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ schedule.saturday_start|default:"--" }}</td>
+                                                        <td>{{ schedule.saturday_end|default:"--" }}</td>
+                                                        <td>
+                                                            {% if schedule.saturday_enabled and schedule.saturday_start and schedule.saturday_end %}
+                                                                {{ schedule.get_saturday_hours|floatformat:1 }}h
+                                                            {% else %}
+                                                                --
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><strong>{% trans "Sunday" %}</strong></td>
+                                                        <td>
+                                                            {% if schedule.sunday_enabled %}
+                                                                <span class="badge bg-success">{% trans "Working" %}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">{% trans "Off" %}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ schedule.sunday_start|default:"--" }}</td>
+                                                        <td>{{ schedule.sunday_end|default:"--" }}</td>
+                                                        <td>
+                                                            {% if schedule.sunday_enabled and schedule.sunday_start and schedule.sunday_end %}
+                                                                {{ schedule.get_sunday_hours|floatformat:1 }}h
+                                                            {% else %}
+                                                                --
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr class="table-dark">
+                                                        <td colspan="4"><strong>{% trans "Total Weekly Hours" %}</strong></td>
+                                                        <td><strong>{{ schedule.get_total_weekly_hours|floatformat:1 }}h</strong></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-12">
+                                                <h6>{% trans "Settings:" %}</h6>
+                                                <ul class="list-unstyled">
+                                                    <li><i class="fas fa-{% if schedule.flexible_timing %}check text-success{% else %}times text-danger{% endif %}"></i> {% trans "Flexible Timing" %}</li>
+                                                    <li><i class="fas fa-{% if schedule.track_breaks %}check text-success{% else %}times text-danger{% endif %}"></i> {% trans "Track Breaks" %}</li>
+                                                    <li><i class="fas fa-{% if schedule.auto_clock_out %}check text-success{% else %}times text-danger{% endif %}"></i> {% trans "Auto Clock Out" %}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            {% trans "Close" %}
+                                        </button>
+                                        <a href="{% url 'attendance:schedule_update' schedule.pk %}" class="btn btn-primary">
+                                            <i class="fas fa-edit"></i> {% trans "Edit Schedule" %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Assign Employees Modal -->
+                        <div class="modal fade" id="assignModal{{ schedule.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Assign Employees" %} - {{ schedule.name }}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="post" action="{% url 'attendance:schedule_assign' schedule.pk %}">
+                                            {% csrf_token %}
+                                            <div class="mb-3">
+                                                <label class="form-label">{% trans "Select Employees" %}</label>
+                                                <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
+                                                    {% for employee in employees %}
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox"
+                                                               name="employees" value="{{ employee.id }}"
+                                                               id="emp{{ employee.id }}_{{ schedule.id }}"
+>
+                                                        <label class="form-check-label" for="emp{{ employee.id }}_{{ schedule.id }}">
+                                                            {{ employee.full_name }} ({{ employee.employee_id }})
+                                                        </label>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="effective_from_{{ schedule.id }}" class="form-label">{% trans "Effective From" %}</label>
+                                                    <input type="date" name="effective_from" id="effective_from_{{ schedule.id }}" class="form-control" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="effective_to_{{ schedule.id }}" class="form-label">{% trans "Effective To" %}</label>
+                                                    <input type="date" name="effective_to" id="effective_to_{{ schedule.id }}" class="form-control">
+                                                    <small class="form-text text-muted">{% trans "Leave blank for indefinite" %}</small>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                                        <button type="submit" form="assignForm{{ schedule.id }}" class="btn btn-primary">
+                                            <i class="fas fa-check"></i> {% trans "Assign Employees" %}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">
+                                <div class="py-4">
+                                    <i class="fas fa-calendar-week fa-3x text-muted mb-3"></i>
+                                    <p>{% trans "No work schedules found" %}</p>
+                                    <a href="{% url 'attendance:schedule_create' %}" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> {% trans "Create First Schedule" %}
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copySchedule(scheduleId) {
+    if (confirm('{% trans "Create a copy of this schedule?" %}')) {
+        window.location.href = `/attendance/schedules/copy/${scheduleId}/`;
+    }
+}
+
+// Set default effective from date to today
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.querySelectorAll('input[name="effective_from"]').forEach(input => {
+        if (!input.value) {
+            input.value = today;
+        }
+    });
+});
+</script>
+{% endblock %}

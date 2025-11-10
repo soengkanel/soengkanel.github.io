@@ -1,0 +1,721 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Notifications - GuanYu{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Ultra-Minimal Design System - Notifications */
+.page-header {
+    padding: 6px 0;
+    margin-bottom: 12px;
+}
+.page-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+/* Ultra-Minimal search filters */
+.search-filters {
+    background: #f8fafb;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 12px;
+}
+.filter-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 8px;
+    align-items: end;
+}
+.form-label {
+    font-size: 10px !important;
+    margin-bottom: 3px !important;
+    font-weight: 500;
+    color: #374151;
+}
+.form-control, .form-select {
+    font-size: 11px !important;
+    padding: 4px 6px !important;
+    height: auto !important;
+    border-radius: 3px;
+    border: 1px solid #d1d5db;
+    line-height: 1.4;
+    background: white;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+/* Ultra-Minimal Button System */
+.btn-modern {
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 3px;
+    padding: 4px 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.btn-primary-modern {
+    background: #3b82f6;
+    color: white;
+}
+.btn-primary-modern:hover {
+    background: #2563eb;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-secondary-modern {
+    background: #374151;
+    color: white;
+}
+.btn-secondary-modern:hover {
+    background: #1f2937;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-outline-modern {
+    background: white;
+    color: #3b82f6;
+    border: 1px solid #3b82f6;
+}
+.btn-outline-modern:hover {
+    background: #3b82f6;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-danger-modern {
+    background: #ef4444;
+    color: white;
+}
+.btn-danger-modern:hover {
+    background: #dc2626;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-light-modern {
+    background: #f8fafb;
+    color: #374151;
+    border: 1px solid #e2e8f0;
+}
+.btn-light-modern:hover {
+    background: #e2e8f0;
+    color: #1f2937;
+    transform: translateY(-1px);
+}
+
+.btn-sm-modern {
+    font-size: 11px;
+    padding: 4px 8px;
+}
+
+/* Ultra-Minimal stats */
+.stats-row {
+    margin-bottom: 12px;
+}
+.stat-item {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 8px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.stat-number {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+}
+.stat-label {
+    font-size: 10px;
+    color: #6b7280;
+    margin: 2px 0 0 0;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Modern Notification Items */
+.modern-table-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.table {
+    margin: 0;
+    font-size: 12px;
+}
+.table th {
+    font-size: 11px;
+    font-weight: 600;
+    color: #374151;
+    background: #f8fafb;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 8px 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+.table tbody tr:hover {
+    background: #f8fafb;
+}
+
+.notification-row:hover {
+    background: #e6f3ff !important;
+}
+
+/* Notification-specific styles */
+.notification-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notification-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+}
+
+.notification-icon.critical {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+.notification-icon.high {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+.notification-icon.medium {
+    background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+}
+.notification-icon.low {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+.notification-details h6 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+.notification-details p {
+    font-size: 11px;
+    color: #6b7280;
+    margin: 2px 0 0 0;
+}
+
+.notification-unread {
+    background-color: #eff6ff !important;
+}
+
+/* Status badges */
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-unread {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+.status-read {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+.status-dismissed {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.priority-critical {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+.priority-high {
+    background-color: #fed7aa;
+    color: #9a3412;
+}
+.priority-medium {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+.priority-low {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+}
+.empty-state i {
+    font-size: 32px;
+    color: #d1d5db;
+    margin-bottom: 12px;
+}
+.empty-state h6 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+.empty-state p {
+    font-size: 12px;
+    margin-bottom: 16px;
+}
+
+/* Compact Pagination */
+.pagination-compact {
+    margin: 12px 0 0 0;
+    justify-content: center;
+}
+
+.pagination-compact .page-item {
+    margin: 0 1px;
+}
+
+.pagination-compact .page-link {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 8px;
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.pagination-compact .page-link:hover {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+}
+
+.pagination-compact .page-item.active .page-link {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+    font-weight: 600;
+}
+
+.pagination-compact .page-nav {
+    font-size: 10px;
+    padding: 4px 6px;
+    min-width: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .pagination-compact .page-link {
+        font-size: 10px;
+        padding: 3px 6px;
+        min-width: 24px;
+        height: 24px;
+    }
+    .pagination-compact .page-nav {
+        padding: 3px 5px;
+    }
+    .pagination-compact .page-text {
+        display: none;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Compact Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center">
+        <div>
+            <h2>Notifications</h2>
+        </div>
+        <div class="d-flex align-items-center">
+            <a href="#" onclick="markAllRead()" class="btn-modern btn-outline-modern">
+                <i class="bi bi-check-circle"></i>Mark All Read
+            </a>
+            <a href="#" onclick="dismissAll()" class="btn-modern btn-light-modern ms-2">
+                <i class="bi bi-x-circle"></i>Dismiss All
+            </a>
+        </div>
+    </div>
+
+    <!-- Compact Stats -->
+    <div class="row stats-row">
+        <div class="col-3">
+            <div class="stat-item">
+                <div class="stat-number">{{ total_notifications }}</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="stat-item">
+                <div class="stat-number">{{ unread_count }}</div>
+                <div class="stat-label">Unread</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="stat-item">
+                <div class="stat-number">{{ critical_count }}</div>
+                <div class="stat-label">Critical</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="stat-item">
+                <div class="stat-number">{{ page_obj|length }}</div>
+                <div class="stat-label">Current Page</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compact Search and Filters -->
+    <div class="search-filters">
+        <form method="get" class="filter-row">
+            <div>
+                <label for="search" class="form-label">Search Notifications</label>
+                <input type="text" class="form-control" id="search" name="search" 
+                       value="{{ request.GET.search }}" placeholder="Search title, message...">
+            </div>
+            <div>
+                <label for="type" class="form-label">Type</label>
+                <select class="form-select" id="type" name="type">
+                    <option value="">All Types</option>
+                    <option value="probation_ending" {% if request.GET.type == 'probation_ending' %}selected{% endif %}>Probation Ending</option>
+                    <option value="probation_overdue" {% if request.GET.type == 'probation_overdue' %}selected{% endif %}>Probation Overdue</option>
+                    <option value="document_expiring" {% if request.GET.type == 'document_expiring' %}selected{% endif %}>Document Expiring</option>
+                    <option value="document_expired" {% if request.GET.type == 'document_expired' %}selected{% endif %}>Document Expired</option>
+                </select>
+            </div>
+            <div>
+                <label for="priority" class="form-label">Priority</label>
+                <select class="form-select" id="priority" name="priority">
+                    <option value="">All Priorities</option>
+                    <option value="critical" {% if request.GET.priority == 'critical' %}selected{% endif %}>Critical</option>
+                    <option value="high" {% if request.GET.priority == 'high' %}selected{% endif %}>High</option>
+                    <option value="medium" {% if request.GET.priority == 'medium' %}selected{% endif %}>Medium</option>
+                    <option value="low" {% if request.GET.priority == 'low' %}selected{% endif %}>Low</option>
+                </select>
+            </div>
+            <div>
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" name="status">
+                    <option value="">All Status</option>
+                    <option value="unread" {% if request.GET.status == 'unread' %}selected{% endif %}>Unread</option>
+                    <option value="read" {% if request.GET.status == 'read' %}selected{% endif %}>Read</option>
+                    <option value="dismissed" {% if request.GET.status == 'dismissed' %}selected{% endif %}>Dismissed</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit" class="btn-modern btn-outline-modern">
+                    <i class="bi bi-search"></i>Filter
+                </button>
+                                 {% if request.GET %}
+                 <a href="{% url 'notification_list' %}" class="btn-modern btn-light-modern ms-1">
+                     <i class="bi bi-arrow-clockwise"></i>
+                 </a>
+                 {% endif %}
+            </div>
+        </form>
+        {% if request.GET %}
+        <div class="mt-2">
+            <span style="font-size: 11px; color: #6b7280;">{{ page_obj.paginator.count }} notification{{ page_obj.paginator.count|pluralize }} found</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Notifications List -->
+    {% if page_obj %}
+    <div class="modern-table-container">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Notification</th>
+                        <th>Type</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for notification in page_obj %}
+                    <tr class="{% if not notification.is_read %}notification-unread{% endif %} notification-row" 
+                        style="cursor: pointer;" onclick="window.location.href='{% url 'notification_detail' notification.pk %}'">
+                        <td>
+                            <div class="notification-item">
+                                <div class="notification-icon {{ notification.priority }}">
+                                    {% if notification.notification_type == 'probation_ending' or notification.notification_type == 'probation_overdue' %}
+                                        <i class="bi bi-clock"></i>
+                                    {% elif notification.notification_type == 'document_expiring' or notification.notification_type == 'document_expired' %}
+                                        <i class="bi bi-file-earmark"></i>
+                                    {% else %}
+                                        <i class="bi bi-bell"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="notification-details">
+                                    <h6>{{ notification.title|truncatechars:50 }}</h6>
+                                    <p>{{ notification.message|truncatechars:80 }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="notification-details">
+                                <h6>{{ notification.get_notification_type_display }}</h6>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge priority-{{ notification.priority }}">{{ notification.get_priority_display }}</span>
+                        </td>
+                        <td>
+                            {% if not notification.is_read %}
+                                <span class="status-badge status-unread">Unread</span>
+                            {% elif notification.is_dismissed %}
+                                <span class="status-badge status-dismissed">Dismissed</span>
+                            {% else %}
+                                <span class="status-badge status-read">Read</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="notification-details">
+                                <h6>{{ notification.created_at|date:"M d, Y" }}</h6>
+                                <p>{{ notification.created_at|timesince }} ago</p>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a href="{% url 'notification_detail' notification.pk %}" class="btn-modern btn-outline-modern btn-sm-modern" onclick="event.stopPropagation();">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                {% if not notification.is_read %}
+                                <a href="#" onclick="event.stopPropagation(); markAsRead({{ notification.pk }})" class="btn-modern btn-primary-modern btn-sm-modern">
+                                    <i class="bi bi-check"></i>
+                                </a>
+                                {% endif %}
+                                {% if not notification.is_dismissed %}
+                                <a href="#" onclick="event.stopPropagation(); dismissNotification({{ notification.pk }})" class="btn-modern btn-light-modern btn-sm-modern">
+                                    <i class="bi bi-x"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="bi bi-bell-slash"></i>
+        <h6>No Notifications Found</h6>
+        <p>
+            {% if request.GET %}
+                No notifications match your search criteria.
+            {% else %}
+                You're all caught up! No notifications to show.
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- Compact Pagination with Per-Page Selector -->
+    {% if page_obj %}
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <!-- Per-Page Selector -->
+        <div class="d-flex align-items-center">
+            <span style="font-size: 11px; color: #6b7280; margin-right: 8px;">Show:</span>
+            <select class="form-select form-select-sm" style="width: auto; font-size: 11px; padding: 4px 8px;" onchange="changePerPage(this.value)">
+                <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+            </select>
+            <span style="font-size: 11px; color: #6b7280; margin-left: 8px;">per page</span>
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Notifications pagination">
+            <ul class="pagination pagination-compact">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link page-nav" href="?page=1&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <i class="bi bi-chevron-double-left"></i><span class="page-text ms-1">First</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link page-nav" href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <i class="bi bi-chevron-left"></i><span class="page-text ms-1">Prev</span>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link page-nav" href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <span class="page-text me-1">Next</span><i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link page-nav" href="?page={{ page_obj.paginator.num_pages }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <span class="page-text me-1">Last</span><i class="bi bi-chevron-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function markAsRead(notificationId) {
+    fetch(`/notifications/${notificationId}/read/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+function dismissNotification(notificationId) {
+    fetch(`/notifications/${notificationId}/dismiss/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+function markAllRead() {
+    fetch(`/notifications/read-all/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+function dismissAll() {
+    fetch(`/notifications/dismiss-all/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        }
+    });
+}
+
+// Per-page change function
+function changePerPage(perPage) {
+    const url = new URL(window.location);
+    url.searchParams.set('per_page', perPage);
+    url.searchParams.set('page', '1');
+    window.location.href = url.toString();
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LYP Invoice - {{ invoice.invoice_number }}</title>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            body { margin: 0; }
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .invoice-header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .company-name {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .company-subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .invoice-title {
+            font-size: 2em;
+            margin-top: 20px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+            padding-top: 20px;
+        }
+
+        .invoice-body {
+            padding: 40px;
+        }
+
+        .invoice-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .info-section h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .info-item {
+            margin-bottom: 8px;
+            display: flex;
+        }
+
+        .info-label {
+            font-weight: bold;
+            min-width: 120px;
+            color: #34495e;
+        }
+
+        .info-value {
+            color: #2c3e50;
+        }
+
+        .line-items {
+            margin: 40px 0;
+        }
+
+        .line-items h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .items-table th {
+            background: #34495e;
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .items-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .items-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .items-table tr:hover {
+            background-color: #e8f4f8;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .totals-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .totals-table {
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+        }
+
+        .totals-table td {
+            padding: 8px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .totals-table .total-label {
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        .totals-table .total-amount {
+            text-align: right;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .grand-total {
+            background: #2c3e50;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-draft { background: #95a5a6; color: white; }
+        .status-pending { background: #f39c12; color: white; }
+        .status-sent { background: #3498db; color: white; }
+        .status-paid { background: #27ae60; color: white; }
+        .status-overdue { background: #e74c3c; color: white; }
+        .status-cancelled { background: #95a5a6; color: white; }
+
+        .footer-section {
+            background: #ecf0f1;
+            padding: 20px 40px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .print-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+        }
+
+        .overdue-notice {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .invoice-info {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .items-table {
+                font-size: 0.9em;
+            }
+            
+            .items-table th,
+            .items-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">🖨️ Print Invoice</button>
+
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="invoice-header">
+            <div class="company-name">LYP</div>
+            <div class="company-subtitle">Leading Your Path</div>
+            <div class="company-subtitle">Professional Services & Document Processing</div>
+            <div class="invoice-title">INVOICE</div>
+        </div>
+
+        <!-- Body -->
+        <div class="invoice-body">
+            <!-- Invoice Information -->
+            <div class="invoice-info">
+                <div class="info-section">
+                    <h3>Invoice Details</h3>
+                    <div class="info-item">
+                        <span class="info-label">Invoice No:</span>
+                        <span class="info-value">{{ invoice.invoice_number }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Issue Date:</span>
+                        <span class="info-value">{{ invoice.issue_date|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Due Date:</span>
+                        <span class="info-value">{{ invoice.due_date|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="status-badge status-{{ invoice.status }}">{{ invoice.get_status_display }}</span>
+                    </div>
+                    {% if invoice.is_overdue %}
+                        <div class="info-item">
+                            <span class="info-label">Days Overdue:</span>
+                            <span class="info-value" style="color: #e74c3c; font-weight: bold;">{{ invoice.days_overdue }} days</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="info-section">
+                    <h3>Bill To</h3>
+                    <div class="info-item">
+                        <span class="info-label">Client:</span>
+                        <span class="info-value">{{ invoice.get_client_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Type:</span>
+                        <span class="info-value">{{ invoice.get_client_type_display }}</span>
+                    </div>
+                    {% if invoice.client_address %}
+                        <div class="info-item">
+                            <span class="info-label">Address:</span>
+                            <span class="info-value">{{ invoice.client_address|linebreaks }}</span>
+                        </div>
+                    {% endif %}
+                    {% if invoice.client_contact %}
+                        <div class="info-item">
+                            <span class="info-label">Contact:</span>
+                            <span class="info-value">{{ invoice.client_contact }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if invoice.is_overdue %}
+                <div class="overdue-notice">
+                    ⚠️ OVERDUE NOTICE: This invoice is {{ invoice.days_overdue }} days past due. Please remit payment immediately.
+                </div>
+            {% endif %}
+
+            <!-- Line Items -->
+            <div class="line-items">
+                <h3>Services & Items</h3>
+                {% if invoice.line_items.all %}
+                    <table class="items-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-right">Unit Price</th>
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in invoice.line_items.all %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ item.service_item.name }}</strong><br>
+                                        <small style="color: #7f8c8d;">{{ item.description }}</small>
+                                        {% if item.service_item.category %}
+                                            <br><small style="color: #3498db;">{{ item.service_item.category.name }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">{{ item.quantity }}</td>
+                                    <td class="text-right">${{ item.unit_price|floatformat:2 }}</td>
+                                    <td class="text-right"><strong>${{ item.total_amount|floatformat:2 }}</strong></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p style="text-align: center; color: #7f8c8d; font-style: italic; padding: 40px;">
+                        No line items found for this invoice.
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Totals -->
+            <div class="totals-section">
+                <table class="totals-table">
+                    <tr>
+                        <td class="total-label">Subtotal:</td>
+                        <td class="total-amount">${{ invoice.subtotal|floatformat:2 }}</td>
+                    </tr>
+                    {% if invoice.tax_amount > 0 %}
+                        <tr>
+                            <td class="total-label">Tax:</td>
+                            <td class="total-amount">${{ invoice.tax_amount|floatformat:2 }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if invoice.discount_amount > 0 %}
+                        <tr>
+                            <td class="total-label">Discount:</td>
+                            <td class="total-amount">-${{ invoice.discount_amount|floatformat:2 }}</td>
+                        </tr>
+                    {% endif %}
+                    <tr class="grand-total">
+                        <td class="total-label">TOTAL:</td>
+                        <td class="total-amount">${{ invoice.total_amount|floatformat:2 }}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Payment Information -->
+            {% if invoice.payment_date %}
+                <div class="info-section" style="margin-top: 30px;">
+                    <h3>Payment Information</h3>
+                    <div class="info-item">
+                        <span class="info-label">Payment Date:</span>
+                        <span class="info-value">{{ invoice.payment_date|date:"d/m/Y" }}</span>
+                    </div>
+                    {% if invoice.payment_method %}
+                        <div class="info-item">
+                            <span class="info-label">Payment Method:</span>
+                            <span class="info-value">{{ invoice.payment_method }}</span>
+                        </div>
+                    {% endif %}
+                    {% if invoice.payment_reference %}
+                        <div class="info-item">
+                            <span class="info-label">Reference:</span>
+                            <span class="info-value">{{ invoice.payment_reference }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Terms and Notes -->
+            {% if invoice.terms_and_conditions %}
+                <div class="info-section" style="margin-top: 30px;">
+                    <h3>Terms & Conditions</h3>
+                    <p>{{ invoice.terms_and_conditions|linebreaks }}</p>
+                </div>
+            {% endif %}
+
+            {% if invoice.notes %}
+                <div class="info-section" style="margin-top: 30px;">
+                    <h3>Notes</h3>
+                    <p>{{ invoice.notes|linebreaks }}</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-section">
+            <p><strong>LYP - Leading Your Path</strong></p>
+            <p>Professional Document Processing & Services</p>
+            <p>Thank you for choosing LYP for your service needs.</p>
+            <small>Invoice generated on {{ "now"|date:"d/m/Y \a\\t g:i A" }}</small>
+        </div>
+    </div>
+</body>
+</html> 

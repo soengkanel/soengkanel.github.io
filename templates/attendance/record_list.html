@@ -1,0 +1,372 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Attendance Records" %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-clipboard-list"></i> {% trans "Attendance Records" %}</h2>
+        <div class="btn-group">
+            <a href="{% url 'attendance:record_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> {% trans "Add Manual Entry" %}
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3" id="filterForm">
+                <div class="col-md-3">
+                    <label for="employee" class="form-label">{% trans "Employee" %}</label>
+                    <select name="employee" id="employee" class="form-select">
+                        <option value="">{% trans "All Employees" %}</option>
+                        {% for emp in employees %}
+                            <option value="{{ emp.id }}" {% if request.GET.employee == emp.id|stringformat:"s" %}selected{% endif %}>
+                                {{ emp.full_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="date_from" class="form-label">{% trans "From Date" %}</label>
+                    <input type="date" name="date_from" id="date_from" class="form-control" value="{{ request.GET.date_from }}">
+                </div>
+                <div class="col-md-2">
+                    <label for="date_to" class="form-label">{% trans "To Date" %}</label>
+                    <input type="date" name="date_to" id="date_to" class="form-control" value="{{ request.GET.date_to }}">
+                </div>
+                <div class="col-md-2">
+                    <label for="status" class="form-label">{% trans "Status" %}</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">{% trans "All Status" %}</option>
+                        <option value="present" {% if request.GET.status == 'present' %}selected{% endif %}>{% trans "Present" %}</option>
+                        <option value="absent" {% if request.GET.status == 'absent' %}selected{% endif %}>{% trans "Absent" %}</option>
+                        <option value="late" {% if request.GET.status == 'late' %}selected{% endif %}>{% trans "Late" %}</option>
+                        <option value="early_leave" {% if request.GET.status == 'early_leave' %}selected{% endif %}>{% trans "Early Leave" %}</option>
+                        <option value="half_day" {% if request.GET.status == 'half_day' %}selected{% endif %}>{% trans "Half Day" %}</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> {% trans "Filter" %}
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid">
+                        <a href="{% url 'attendance:attendance_list' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Employee" %}</th>
+                            <th>{% trans "Date" %}</th>
+                            <th>{% trans "Schedule" %}</th>
+                            <th>{% trans "Clock In" %}</th>
+                            <th>{% trans "Clock Out" %}</th>
+                            <th>{% trans "Total Hours" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in records %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle me-2">
+                                        {{ record.employee.first_name.0 }}{{ record.employee.last_name.0 }}
+                                    </div>
+                                    <div>
+                                        <strong>{{ record.employee.full_name }}</strong><br>
+                                        <small class="text-muted">{{ record.employee.employee_id }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <strong>{{ record.date|date:"Y-m-d" }}</strong><br>
+                                <small class="text-muted">{{ record.date|date:"l" }}</small>
+                            </td>
+                            <td>
+                                {% if record.schedule %}
+                                    <span class="badge bg-info">{{ record.schedule.name }}</span><br>
+                                    <small class="text-muted">
+                                        {% if record.schedule.get_day_schedule %}
+                                            {{ record.schedule.get_day_schedule.start_time }} - {{ record.schedule.get_day_schedule.end_time }}
+                                        {% endif %}
+                                    </small>
+                                {% else %}
+                                    <span class="text-muted">{% trans "No Schedule" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if record.clock_in %}
+                                    <strong>{{ record.clock_in|time:"H:i" }}</strong>
+                                    {% if record.clock_in_device %}
+                                        <br><small class="text-muted">
+                                            <i class="fas fa-fingerprint"></i> {{ record.clock_in_device.name }}
+                                        </small>
+                                    {% endif %}
+                                    {% if record.late_minutes > 0 %}
+                                        <br><small class="text-warning">
+                                            <i class="fas fa-clock"></i> +{{ record.late_minutes }}min late
+                                        </small>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">{% trans "Not clocked in" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if record.clock_out %}
+                                    <strong>{{ record.clock_out|time:"H:i" }}</strong>
+                                    {% if record.clock_out_device %}
+                                        <br><small class="text-muted">
+                                            <i class="fas fa-fingerprint"></i> {{ record.clock_out_device.name }}
+                                        </small>
+                                    {% endif %}
+                                    {% if record.early_departure_minutes > 0 %}
+                                        <br><small class="text-info">
+                                            <i class="fas fa-clock"></i> -{{ record.early_departure_minutes }}min early
+                                        </small>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">{% trans "Not clocked out" %}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if record.total_hours %}
+                                    <strong>{{ record.total_hours|floatformat:1 }}h</strong>
+                                    {% if record.overtime_hours > 0 %}
+                                        <br><small class="text-success">
+                                            <i class="fas fa-plus"></i> {{ record.overtime_hours|floatformat:1 }}h OT
+                                        </small>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted">--</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge badge-{% if record.status == 'present' %}success{% elif record.status == 'absent' %}danger{% elif record.status == 'late' %}warning{% elif record.status == 'early_leave' %}info{% else %}secondary{% endif %}">
+                                    {{ record.get_status_display }}
+                                </span>
+                                {% if record.is_manual %}
+                                    <br><small class="text-muted">
+                                        <i class="fas fa-hand-paper"></i> Manual
+                                    </small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-outline-info"
+                                            data-bs-toggle="modal" data-bs-target="#recordModal{{ record.id }}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    {% if perms.attendance.change_attendancerecord %}
+                                    <a href="{% url 'attendance:record_update' record.pk %}" class="btn btn-sm btn-outline-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    {% endif %}
+                                    <a href="{% url 'attendance:correction_create' %}?employee={{ record.employee.pk }}&date={{ record.date|date:'Y-m-d' }}"
+                                       class="btn btn-sm btn-outline-secondary" title="{% trans 'Request Correction' %}">
+                                        <i class="fas fa-redo"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Record Details Modal -->
+                        <div class="modal fade" id="recordModal{{ record.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">
+                                            {% trans "Attendance Details" %} - {{ record.employee.full_name }}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <strong>{% trans "Date:" %}</strong> {{ record.date|date:"Y-m-d l" }}<br>
+                                                <strong>{% trans "Status:" %}</strong>
+                                                <span class="badge badge-{% if record.status == 'present' %}success{% elif record.status == 'absent' %}danger{% elif record.status == 'late' %}warning{% else %}secondary{% endif %}">
+                                                    {{ record.get_status_display }}
+                                                </span><br>
+                                                {% if record.schedule %}
+                                                <strong>{% trans "Schedule:" %}</strong> {{ record.schedule.name }}<br>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong>{% trans "Total Hours:" %}</strong> {{ record.total_hours|floatformat:1 }}h<br>
+                                                {% if record.overtime_hours > 0 %}
+                                                <strong>{% trans "Overtime:" %}</strong> {{ record.overtime_hours|floatformat:1 }}h<br>
+                                                {% endif %}
+                                                {% if record.break_duration > 0 %}
+                                                <strong>{% trans "Break Time:" %}</strong> {{ record.break_duration }}min<br>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <hr>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6>{% trans "Clock In" %}</h6>
+                                                {% if record.clock_in %}
+                                                    <strong>{% trans "Time:" %}</strong> {{ record.clock_in|time:"H:i:s" }}<br>
+                                                    {% if record.clock_in_device %}
+                                                    <strong>{% trans "Device:" %}</strong> {{ record.clock_in_device.name }}<br>
+                                                    {% endif %}
+                                                    {% if record.late_minutes > 0 %}
+                                                    <strong>{% trans "Late Minutes:" %}</strong> <span class="text-warning">{{ record.late_minutes }}</span><br>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">{% trans "Not recorded" %}</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>{% trans "Clock Out" %}</h6>
+                                                {% if record.clock_out %}
+                                                    <strong>{% trans "Time:" %}</strong> {{ record.clock_out|time:"H:i:s" }}<br>
+                                                    {% if record.clock_out_device %}
+                                                    <strong>{% trans "Device:" %}</strong> {{ record.clock_out_device.name }}<br>
+                                                    {% endif %}
+                                                    {% if record.early_departure_minutes > 0 %}
+                                                    <strong>{% trans "Early Departure:" %}</strong> <span class="text-info">{{ record.early_departure_minutes }}min</span><br>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-muted">{% trans "Not recorded" %}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        {% if record.notes %}
+                                        <hr>
+                                        <h6>{% trans "Notes:" %}</h6>
+                                        <p class="mb-0">{{ record.notes }}</p>
+                                        {% endif %}
+
+                                        {% if record.is_manual %}
+                                        <hr>
+                                        <div class="alert alert-info mb-0">
+                                            <i class="fas fa-info-circle"></i>
+                                            {% trans "This is a manual attendance entry" %}
+                                            {% if record.approved_by %}
+                                                {% trans "approved by" %} {{ record.approved_by.full_name }}
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            {% trans "Close" %}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center">
+                                <div class="py-4">
+                                    <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                                    <p>{% trans "No attendance records found" %}</p>
+                                    {% if not request.GET %}
+                                    <a href="{% url 'attendance:record_create' %}" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> {% trans "Add Manual Entry" %}
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if records.has_other_pages %}
+            <nav aria-label="Attendance records pagination">
+                <ul class="pagination justify-content-center">
+                    {% if records.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ records.previous_page_number }}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in records.paginator.page_range %}
+                        {% if records.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                        {% elif num > records.number|add:'-3' and num < records.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ num }}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if records.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ records.next_page_number }}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default dates
+    const dateFrom = document.getElementById('date_from');
+    const dateTo = document.getElementById('date_to');
+
+    if (!dateFrom.value) {
+        const firstDayThisMonth = new Date();
+        firstDayThisMonth.setDate(1);
+        dateFrom.value = firstDayThisMonth.toISOString().split('T')[0];
+    }
+
+    if (!dateTo.value) {
+        dateTo.value = new Date().toISOString().split('T')[0];
+    }
+});
+</script>
+{% endblock %}

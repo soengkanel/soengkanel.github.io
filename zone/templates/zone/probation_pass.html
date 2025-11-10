@@ -1,0 +1,188 @@
+{% extends 'zone/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact status badges */
+    .status-badge {
+        padding: 0.125rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .status-active { background: #dcfdf7; color: var(--success-green); }
+    .status-extended { background: #fef3c7; color: var(--warning-orange); }
+    .status-ending { background: #fee2e2; color: var(--danger-red); }
+    .status-completed { background: #e0e7ff; color: var(--primary-blue); }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="bg-white px-5 flex items-center justify-between pt-3">
+        <div>
+          <a href="{% url 'zone:probation_list' %}" class="button-min-default flex items-center space-x-1">
+              <span>
+                  <i class="fa fa-arrow-left"></i>
+              </span>
+              <span>Back</span>
+          </a>
+        </div>
+        <div class="border-b-2 border-green-500 px-2 pb-1">
+          <h1 class="text-lg font-bold text-green-500">{{ title }}</h1>
+          <p class="text-xs text-gray-500 fon-semibold">
+            Pass probation and update worker status to "Passed"
+          </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="row justify-content-center px-5 mt-4">
+                <div class="col-md-12">
+                    <div class="card rounded-xl">
+                        <div class="card-header py-3">
+                            <h5 class="card-title mb-0 font-semibold">
+                                <i class="bi bi-check-circle-fill mr-1 text-green-500"></i> Pass Probation Period
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-success">
+                                <h6><i class="bi bi-check-circle"></i> Confirm Probation Pass</h6>
+                                <p class="mb-0">
+                                    You are about to mark this worker as having <strong>successfully passed</strong> their probation period. This action will:
+                                </p>
+                                <ul class="mt-2 mb-0">
+                                    <li>Set the probation status to "Completed"</li>
+                                    <li><strong>Update the worker status to "Passed"</strong></li>
+                                    <li>Record today's date as the actual end date</li>
+                                    <li>Make this probation period no longer editable</li>
+                                </ul>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Current Probation Details</h6>
+                                    <table class="table table-sm mt-2">
+                                        <tr>
+                                            <td><strong>Worker:</strong></td>
+                                            <td>{{ worker.get_full_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Worker ID:</strong></td>
+                                            <td>{{ worker.worker_id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Current Worker Status:</strong></td>
+                                            <td>
+                                                <span class="badge bg-warning">{{ worker.get_status_display }}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Start Date:</strong></td>
+                                            <td>{{ probation.start_date|date:"d/m/Y" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Scheduled End Date:</strong></td>
+                                            <td>{{ probation.get_end_date|date:"d/m/Y" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Total Duration:</strong></td>
+                                            <td>{{ probation.get_total_duration_days }} days</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Extensions:</strong></td>
+                                            <td>{{ probation.extensions.count }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Current Probation Status:</strong></td>
+                                            <td>
+                                                <span class="status-badge bg-{{ probation.get_status_color }}">
+                                                    {{ probation.get_status_display }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>After Passing Probation</h6>
+                                    <table class="table table-sm m-2">
+                                        <tr>
+                                            <td><strong>Completion Date:</strong></td>
+                                            <td>{{ "today"|date:"d/m/Y" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Processed By:</strong></td>
+                                            <td>{{ request.user.get_full_name|default:request.user.username }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>New Worker Status:</strong></td>
+                                            <td>
+                                                <span class="badge bg-success">Passed</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Days Completed:</strong></td>
+                                            <td>{{ probation.get_days_completed }} days</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Progress:</strong></td>
+                                            <td>{{ probation.get_progress_percentage }}%</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <h6><i class="bi bi-info-circle"></i> Important</h6>
+                                <p class="mb-0">
+                                    This action will mark the worker as having <strong>successfully completed</strong> their probation period. 
+                                    The worker's status will be updated to "Passed" indicating they are now a permanent employee.
+                                    This action cannot be undone.
+                                </p>
+                            </div>
+
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="{% url 'zone:probation_detail' probation.id %}" class="button-min-danger">
+                                       <div class="flex items-center space-x-2">
+                                        <i class="fa fa-x"></i>
+                                        <span>Cancel</span>
+                                       </div>
+                                    </a>
+                                    <button type="submit" class="button-min-primary" style="background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);">
+                                       
+                                        <div class="flex items-center space-x-2">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>Pass Probation</span>
+                                           </div>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

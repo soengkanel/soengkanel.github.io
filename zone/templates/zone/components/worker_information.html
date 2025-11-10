@@ -1,0 +1,322 @@
+<style>
+  /* INPUT (hidden checkbox) */
+input[type="checkbox"].peer {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* SWITCH BACKGROUND */
+.switch-bg {
+  width: 2.75rem;        /* w-11 */
+  height: 1.5rem;         /* h-6 */
+  background-color: #d1d5db; /* bg-gray-300 */
+  border-radius: 9999px;  /* rounded-full */
+  transition: all 0.3s ease-in-out;
+}
+
+input[type="checkbox"]:focus + .switch-bg {
+  outline: none;                   /* peer-focus:outline-none */
+  box-shadow: 0 0 0 2px #3b82f6;   /* peer-focus:ring-2 peer-focus:ring-blue-500 */
+}
+
+input[type="checkbox"]:checked + .switch-bg {
+  background-color: #2563eb; /* peer-checked:bg-blue-600 */
+}
+
+/* SWITCH KNOB */
+.switch-knob {
+  position: absolute;
+  top: 0.125rem;     /* top-0.5 */
+  left: 0.125rem;    /* left-0.5 */
+  width: 1.25rem;    /* w-5 */
+  height: 1.25rem;   /* h-5 */
+  background-color: #ffffff;
+  border-radius: 9999px;  /* rounded-full */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease-in-out;
+}
+
+input[type="checkbox"]:checked + .switch-bg + .switch-knob {
+  transform: translateX(100%);
+}
+</style>
+<div class="rounded-lg border border-gray-200 mt-4">
+  <div class="border-b border-gray-200 py-2 px-3">
+    <h4 class="text-[16px] font-semibold">
+      <i class="fa fa-briefcase me-2"></i>Entry Information
+    </h4>
+  </div>
+  <div class="p-3">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="flex flex-col gap-1">
+        <label for="{{ form.zone.id_for_label }}" class="text-xs font-medium"
+          >Zone <span class="text-red-500">*</span></label
+        >
+        {{ form.zone }} {% if form.zone.errors %}
+        <div class="text-danger">
+          {% for error in form.zone.errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      <div class="flex flex-col gap-1">
+        <label
+          for="{{ form.position.id_for_label }}"
+          class="text-xs font-medium"
+          >Position</label
+        >
+        {{ form.position }} {% if form.position.errors %}
+        <div class="text-danger">
+          {% for error in form.position.errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      <div class="flex flex-col gap-1">
+        <label
+          for="{{ form.building.id_for_label }}"
+          class="text-xs font-medium"
+          >Building <span class="text-red-500">*</span></label
+        >
+        {{ form.building }} {% if form.building.errors %}
+        <div class="text-danger">
+          {% for error in form.building.errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="flex flex-col gap-1" id="floor-field-container">
+        <label for="{{ form.floor.id_for_label }}" class="text-xs font-medium"
+          >Floor <span class="text-red-500">*</span></label
+        >
+        {{ form.floor }} {% if form.floor.errors %}
+        <div class="text-danger">
+          {% for error in form.floor.errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% if is_edit and is_edit == 'edit' %}
+      <div class="flex flex-col gap-1">
+        <label for="{{ form.status.id_for_label }}" class="text-xs font-medium"
+          >Status </label
+        >
+        {{ form.status }} 
+        {% if form.status.errors %}
+        <div class="text-danger">
+          {% for error in form.status.errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="flex flex-col gap-1 hidden">
+        <label for="{{ form.status.id_for_label }}" class="text-xs font-medium"
+          >Status </label
+        >
+        {{ form.status }} 
+        {% if form.status.errors %}
+        <div class="text-danger">
+          {% for error in form.status.errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+      
+      
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const zoneSelect = document.getElementById('{{ form.zone.id_for_label }}');
+    const buildingSelect = document.getElementById('{{ form.building.id_for_label }}');
+    const floorSelect = document.getElementById('{{ form.floor.id_for_label }}');
+    const floorContainer = document.getElementById('floor-field-container');
+    
+    // Zone change handler - populate buildings
+    if (zoneSelect && buildingSelect) {
+        zoneSelect.addEventListener('change', function() {
+            const zoneId = this.value;
+            console.log('Zone changed to:', zoneId);
+            
+            if (zoneId) {
+                // Clear current options
+                buildingSelect.innerHTML = '<option value="">Loading buildings...</option>';
+                buildingSelect.disabled = true;
+                floorSelect.innerHTML = '<option value="">Select Building First</option>';
+                floorSelect.disabled = true;
+                
+                // Show floor field when zone changes (reset to default state)
+                if (floorContainer) {
+                    floorContainer.style.display = 'block';
+                }
+                
+                // Fetch buildings for the selected zone
+                fetch(`/zone/ajax/get-buildings-by-zone/?zone_id=${zoneId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Buildings loaded for zone:', data.buildings);
+                        buildingSelect.innerHTML = '<option value="">Select Building</option>';
+                        
+                        if (data.buildings && data.buildings.length > 0) {
+                            data.buildings.forEach(building => {
+                                const option = document.createElement('option');
+                                option.value = building.id;
+                                option.textContent = building.name;
+                                buildingSelect.appendChild(option);
+                            });
+                            buildingSelect.disabled = false;
+                        } else {
+                            const option = document.createElement('option');
+                            option.value = '';
+                            option.textContent = 'No buildings available for this zone';
+                            option.disabled = true;
+                            buildingSelect.appendChild(option);
+                            buildingSelect.disabled = true;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching buildings:', error);
+                        buildingSelect.innerHTML = '<option value="">Error loading buildings</option>';
+                        buildingSelect.disabled = true;
+                    });
+            } else {
+                // No zone selected
+                console.log('No zone selected - clearing buildings and floors');
+                buildingSelect.innerHTML = '<option value="">Select Zone First</option>';
+                buildingSelect.disabled = true;
+                floorSelect.innerHTML = '<option value="">Select Building First</option>';
+                floorSelect.disabled = true;
+                
+                // Show floor field by default when no zone selected
+                if (floorContainer) {
+                    floorContainer.style.display = 'block';
+                }
+            }
+        });
+    }
+    
+    // Building change handler - populate floors with F0 auto-selection
+    if (buildingSelect && floorSelect) {
+        buildingSelect.addEventListener('change', function() {
+            const buildingId = this.value;
+            console.log('Building changed to:', buildingId);
+            
+            if (buildingId) {
+                // Clear current floor options
+                floorSelect.innerHTML = '<option value="">Loading floors...</option>';
+                floorSelect.disabled = true;
+                
+                // Fetch floors for the selected building
+                fetch(`/zone/ajax/get-floors/${buildingId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Building no_floor status:', data.building_no_floor);
+                        console.log('Available floors:', data.floors);
+                        
+                        // Clear loading option
+                        floorSelect.innerHTML = '<option value="">Select Floor</option>';
+                        
+                        if (data.floors && data.floors.length > 0) {
+                            // Check if building has no_floor = true (building has NO specific floors)
+                            if (data.building_no_floor) {
+                                console.log('No-floor building detected - hiding floor field');
+                                
+                                // Hide the floor field container
+                                if (floorContainer) {
+                                    floorContainer.style.display = 'none';
+                                }
+                                
+                                // Look for F0 floor first
+                                const f0Floor = data.floors.find(floor => floor.name === 'F0');
+                                console.log('F0 floor found:', f0Floor);
+                                
+                                data.floors.forEach(floor => {
+                                    const option = document.createElement('option');
+                                    option.value = floor.id;
+                                    option.textContent = floor.name;
+                                    
+                                    // Auto-select F0 for no-floor buildings
+                                    if (floor.name === 'F0') {
+                                        option.selected = true;
+                                        console.log('F0 auto-selected and hidden:', floor);
+                                    }
+                                    
+                                    floorSelect.appendChild(option);
+                                });
+                                
+                                // If F0 doesn't exist, select the first floor and mark it
+                                if (!f0Floor && data.floors.length > 0) {
+                                    const firstOption = floorSelect.options[1]; // Skip the "Select Floor" option
+                                    if (firstOption) {
+                                        firstOption.selected = true;
+                                        console.log('First floor auto-selected and hidden (F0 not found):', firstOption.textContent);
+                                    }
+                                }
+                                
+                                // Trigger change event if auto-selection occurred
+                                floorSelect.dispatchEvent(new Event('change'));
+                            } else {
+                                console.log('Normal building with floors - showing floor field');
+                                
+                                // Show the floor field container
+                                if (floorContainer) {
+                                    floorContainer.style.display = 'block';
+                                }
+                                
+                                // Normal building with floors - show all options
+                                data.floors.forEach(floor => {
+                                    const option = document.createElement('option');
+                                    option.value = floor.id;
+                                    option.textContent = floor.name;
+                                    floorSelect.appendChild(option);
+                                });
+                            }
+                        } else {
+                            console.log('No floors found for building');
+                            const option = document.createElement('option');
+                            option.value = '';
+                            option.textContent = 'No floors available for this building';
+                            option.disabled = true;
+                            floorSelect.appendChild(option);
+                        }
+                        
+                        floorSelect.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching floors:', error);
+                        floorSelect.innerHTML = '<option value="">Error loading floors</option>';
+                        floorSelect.disabled = true;
+                    });
+            } else {
+                // No building selected
+                console.log('No building selected - clearing floors');
+                floorSelect.innerHTML = '<option value="">Select Building first</option>';
+                floorSelect.disabled = true;
+            }
+        });
+    }
+    
+    // Initialize form state on page load
+    function initializeChainSelects() {
+        // Set initial states
+        if (!zoneSelect.value) {
+            buildingSelect.disabled = true;
+            floorSelect.disabled = true;
+            buildingSelect.innerHTML = '<option value="">Select Zone First</option>';
+            floorSelect.innerHTML = '<option value="">Select Building First</option>';
+        } else {
+            // If zone is already selected (edit mode), trigger zone change to populate buildings
+            zoneSelect.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    // Initialize on page load
+    initializeChainSelects();
+});
+</script>

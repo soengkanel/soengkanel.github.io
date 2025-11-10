@@ -1,0 +1,78 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Upload Document - {{ project.project_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-control { font-size: 11px !important; padding: 4px 6px !important; height: auto !important; border-radius: 3px; border: 1px solid #d1d5db; }
+    .form-select { font-size: 11px !important; padding: 4px 6px !important; height: auto !important; border-radius: 3px; border: 1px solid #d1d5db; }
+    .form-label { font-size: 10px !important; margin-bottom: 3px !important; font-weight: 500; color: #374151; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'project:project_list' %}">Projects</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'project:project_detail' project.id %}">{{ project.project_name }}</a></li>
+                    <li class="breadcrumb-item active">Upload Document</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Upload Document</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="document_name" class="form-label">Document Name *</label>
+                            <input type="text" class="form-control" id="document_name" name="document_name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="document_type" class="form-label">Document Type</label>
+                            <select class="form-select" id="document_type" name="document_type">
+                                <option value="">Select Type</option>
+                                <option value="contract">Contract</option>
+                                <option value="proposal">Proposal</option>
+                                <option value="specification">Specification</option>
+                                <option value="design">Design</option>
+                                <option value="report">Report</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="file_url" class="form-label">File URL *</label>
+                            <input type="url" class="form-control" id="file_url" name="file_url"
+                                   placeholder="https://example.com/document.pdf" required>
+                            <small class="form-text text-muted">Enter the URL of the document</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'project:project_detail' project.id %}?tab=documents" class="button-min-warn">Cancel</a>
+                            <button type="submit" class="button-min-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

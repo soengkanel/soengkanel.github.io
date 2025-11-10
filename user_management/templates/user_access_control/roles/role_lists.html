@@ -1,0 +1,57 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Settings{% endblock %}
+
+{% block extra_css %}
+{% endblock %} 
+{% block content %}
+<main class="">
+    <div class="max-w-4xl mx-auto mt-10 bg-white shadow-md rounded-xl p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-2xl font-bold text-gray-700">Roles</h2>
+          <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+            + Add Role
+          </button>
+        </div>
+      
+        <div class="overflow-x-auto">
+          <table class="min-w-full table-auto border-collapse">
+            <thead>
+              <tr class="bg-gray-100 text-left text-gray-600 text-sm uppercase">
+                <th class="px-6 py-3">#</th>
+                <th class="px-6 py-3">Role Name</th>
+                <th class="px-6 py-3">Description</th>
+                <th class="px-6 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-700 divide-y divide-gray-200">
+              <!-- Example Row -->
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4">1</td>
+                <td class="px-6 py-4 font-semibold">Admin</td>
+                <td class="px-6 py-4">Full access to all modules</td>
+                <td class="px-6 py-4 text-right space-x-2">
+                  <a href="" class="bg-green-400 hover:bg-green-500 text-white px-3 py-1 rounded text-sm">Modules</a>
+                  <button class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-sm">Edit</button>
+                  <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Delete</button>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4">2</td>
+                <td class="px-6 py-4 font-semibold">Manager</td>
+                <td class="px-6 py-4">Manage users and view reports</td>
+                <td class="px-6 py-4 text-right space-x-2">
+                    <a href="{% url 'user_management:user_access_module_list' %}" class="bg-green-400 hover:bg-green-500 text-white px-3 py-1 rounded text-sm">Modules</a>
+                  <button class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-sm">Edit</button>
+                  <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Delete</button>
+                </td>
+              </tr>
+              <!-- Add more rows here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+</main>
+{% endblock %} 

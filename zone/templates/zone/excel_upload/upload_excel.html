@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Excel to JSON Converter</title>
+</head>
+<body>
+    <h1>Upload Excel File</h1>
+    <form method="post" enctype="multipart/form-data" action="/zone/convert/">
+        {% csrf_token %}
+        <input type="file" name="excel_file" accept=".xlsx, .xls">
+        <button type="submit">Convert to JSON</button>
+    </form>
+</body>
+</html>

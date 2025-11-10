@@ -1,0 +1,430 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title|default:"Card Replacement" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Full Width Design */
+.compact-container {
+    width: 100%;
+    padding: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.compact-header {
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.compact-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+/* Compact Card Info */
+.compact-card-info {
+    background: #f8fafb;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.card-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    font-size: 12px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: 10px;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.info-value {
+    font-size: 12px;
+    color: #1f2937;
+    font-weight: 500;
+}
+
+/* Compact Pricing */
+.compact-pricing {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.price-amount {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0369a1;
+    margin: 0;
+    min-width: 60px;
+}
+
+.price-desc {
+    font-size: 11px;
+    color: #475569;
+    margin: 0;
+    flex: 1;
+}
+
+.price-lost {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.price-lost .price-amount {
+    color: #dc2626;
+}
+
+/* Compact Form */
+.compact-form {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.form-row {
+    margin-bottom: 12px;
+}
+
+.form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.form-input, .form-select {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 12px;
+    background: white;
+}
+
+.form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.form-textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+/* Compact Actions */
+.compact-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-compact {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.15s;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #4b5563;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    color: white;
+}
+
+/* Compact Alerts */
+.compact-alert {
+    padding: 8px 12px;
+    border-radius: 3px;
+    font-size: 11px;
+    margin-bottom: 12px;
+}
+
+.alert-warning {
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    color: #92400e;
+}
+
+.alert-info {
+    background: #dbeafe;
+    border: 1px solid #3b82f6;
+    color: #1e40af;
+}
+
+/* Animation */
+.price-update {
+    transition: all 0.2s ease;
+}
+
+.price-pulse {
+    animation: compactPulse 0.3s ease;
+}
+
+@keyframes compactPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .compact-container {
+        padding: 8px;
+    }
+    
+    .card-info-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+    
+    .compact-pricing {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="compact-container">
+    <!-- Compact Header -->
+    <div class="compact-header">
+        <h1 class="compact-title">{{ title|default:"Card Replacement" }}</h1>
+    </div>
+    
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="compact-alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Card Info (Compact) -->
+    {% if replacement.worker_card or replacement.employee_card %}
+    <div class="compact-card-info">
+        <div class="card-info-grid">
+            <div class="info-item">
+                <span class="info-label">Holder</span>
+                <span class="info-value">{{ card_holder_name|default:replacement.card_holder_name }}</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">Type</span>
+                <span class="info-value">
+                    {% if replacement.worker_card %}Worker{% elif replacement.employee_card %}Employee{% endif %}
+                </span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">Card #</span>
+                <span class="info-value">
+                    {% if replacement.worker_card %}{{ replacement.worker_card.card_number|default:"Pending" }}
+                    {% elif replacement.employee_card %}{{ replacement.employee_card.card_number|default:"Pending" }}{% endif %}
+                </span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">Status</span>
+                <span class="info-value">
+                    {% if replacement.worker_card %}{{ replacement.worker_card.get_status_display }}
+                    {% elif replacement.employee_card %}{{ replacement.employee_card.get_status_display }}{% endif %}
+                </span>
+            </div>
+
+            {% if replacement.worker_card %}
+            <div class="info-item">
+                <span class="info-label">Worker ID</span>
+                <span class="info-value">{{ replacement.worker_card.worker.worker_id }}</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">Building</span>
+                <span class="info-value">{{ replacement.worker_card.worker.building|default:"N/A" }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Compact Pricing -->
+    <div class="compact-pricing price-update" id="pricing-display">
+        <h3 class="price-amount" id="price-amount">${{ estimated_charge|default:replacement.replacement_charge|default:"0.00" }}</h3>
+        <p class="price-desc" id="price-desc">Select replacement reason</p>
+    </div>
+
+    <!-- Previous Replacements (Compact) -->
+    {% if existing_replacements and existing_replacements > 0 %}
+    <div class="compact-alert alert-warning">
+        ⚠️ {{ existing_replacements }} previous replacement(s) exist
+    </div>
+    {% endif %}
+
+    <!-- Compact Form -->
+    <div class="compact-form">
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Hidden fields -->
+            {{ form.worker_card }}
+            
+            {{ form.employee_card }}
+            
+            <div class="form-group">
+                <label for="{{ form.reason.id_for_label }}" class="form-label">Replacement Reason</label>
+                <select name="{{ form.reason.name }}" id="{{ form.reason.id_for_label }}" class="form-select">
+                    <option value="">-- Select reason --</option>
+                    {% for value, label in form.reason.field.choices %}
+                        <option value="{{ value }}" {% if form.reason.value == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                {% if form.reason.errors %}
+                    <div style="color: #dc2626; font-size: 10px; margin-top: 2px;">{{ form.reason.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.notes.id_for_label }}" class="form-label">Notes</label>
+                <textarea name="{{ form.notes.name }}" id="{{ form.notes.id_for_label }}" class="form-input form-textarea" placeholder="Additional details...">{{ form.notes.value|default:"" }}</textarea>
+                {% if form.notes.errors %}
+                    <div style="color: #dc2626; font-size: 10px; margin-top: 2px;">{{ form.notes.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="compact-alert" style="background: #fef2f2; border-color: #fecaca; color: #dc2626;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="flex justify-end space-x-3">
+                
+                <a href="{% url 'cards:card_replacement_list' %}" class="button-min-danger">Cancel</a>
+                <button type="submit" class="button-min-primary">
+                    Submit Request
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Minimal JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const reasonSelect = document.getElementById('{{ form.reason.id_for_label }}');
+    const priceAmount = document.getElementById('price-amount');
+    const priceDesc = document.getElementById('price-desc');
+    const pricingDisplay = document.getElementById('pricing-display');
+    
+            const cardType = '{% if replacement.worker_card %}worker{% elif replacement.employee_card %}employee{% else %}unknown{% endif %}';
+    
+    function updatePrice(reason) {
+        let amount = '0.00';
+        let description = 'Select replacement reason';
+        let isLost = false;
+        
+        if (reason) {
+            if (reason === 'lost' || reason === 'stolen') {
+                amount = '10.00';
+                description = 'Lost/stolen card fee';
+                isLost = true;
+            } else {
+                switch (cardType) {
+                    case 'worker':
+                        amount = '2.00';
+                        description = 'Worker card replacement';
+                        break;
+
+                    case 'employee':
+                        amount = '2.00';
+                        description = 'Employee card replacement';
+                        break;
+                }
+            }
+        }
+        
+        priceAmount.classList.add('price-pulse');
+        
+        setTimeout(() => {
+            priceAmount.textContent = '$' + amount;
+            priceDesc.textContent = description;
+            
+            // Update styling for lost cards
+            if (isLost) {
+                pricingDisplay.classList.add('price-lost');
+            } else {
+                pricingDisplay.classList.remove('price-lost');
+            }
+            
+            priceAmount.classList.remove('price-pulse');
+        }, 100);
+    }
+    
+    reasonSelect.addEventListener('change', function() {
+        updatePrice(this.value);
+    });
+    
+    // Initialize
+    if (reasonSelect.value) {
+        updatePrice(reasonSelect.value);
+    }
+});
+</script>
+{% endblock %} 

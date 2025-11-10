@@ -1,0 +1,393 @@
+{% extends 'base/base.html' %}
+{% load static i18n %}
+
+{% block title %}
+    {% if object %}
+        {% trans "Edit Correction Request" %}
+    {% else %}
+        {% trans "Request Attendance Correction" %}
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+<!-- Choices.js for searchable dropdowns -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+<style>
+    /* Choices.js customization to match form style */
+    .choices__inner {
+        min-height: 38px;
+        padding: 6px 8px;
+        font-size: 14px;
+        border-radius: 0.375rem;
+        border: 1px solid #d1d5db;
+    }
+    .choices__inner:focus,
+    .choices.is-focused .choices__inner {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .choices__list--dropdown .choices__item--selectable {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    .choices__list--dropdown {
+        border-color: #d1d5db;
+        border-radius: 0.375rem;
+    }
+    .choices__item--selectable.is-highlighted {
+        background-color: #3b82f6;
+    }
+    .choices[data-type*=select-one] .choices__input {
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            <!-- Employee and Date ---->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.employee.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.employee.label }} *
+                    </label>
+                    {{ form.employee }}
+                    {% if form.employee.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.employee.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.date.label }} *
+                    </label>
+                    {{ form.date }}
+                    {% if form.date.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Correction Type ---->
+            <div class="mb-4">
+                <label for="{{ form.correction_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.correction_type.label }} *
+                </label>
+                {{ form.correction_type }}
+                {% if form.correction_type.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.correction_type.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-1">{% trans "Select the type of correction needed" %}</p>
+            </div>
+
+            <!-- Current Attendance Display ---->
+            <div class="mb-4 bg-blue-50 border border-blue-200 rounded-md p-4" id="current-attendance-card">
+                <h6 class="text-sm font-semibold text-gray-800 mb-3">
+                    <i class="fas fa-info-circle mr-1"></i>{% trans "Current Attendance Record" %}
+                </h6>
+                <div id="current-attendance-info">
+                    <p class="text-gray-500 text-sm">{% trans "Select employee and date to see current attendance data" %}</p>
+                </div>
+            </div>
+
+            <!-- Clock In/Out Correction Fields ---->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.requested_clock_in.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.requested_clock_in.label }}
+                    </label>
+                    {{ form.requested_clock_in }}
+                    {% if form.requested_clock_in.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.requested_clock_in.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-xs text-gray-500 mt-1">{% trans "Requested corrected clock in time" %}</p>
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.requested_clock_out.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.requested_clock_out.label }}
+                    </label>
+                    {{ form.requested_clock_out }}
+                    {% if form.requested_clock_out.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.requested_clock_out.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-xs text-gray-500 mt-1">{% trans "Requested corrected clock out time" %}</p>
+                </div>
+            </div>
+
+            <!-- Reason ---->
+            <div class="mb-4">
+                <label for="{{ form.reason.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.reason.label }} *
+                </label>
+                {{ form.reason }}
+                {% if form.reason.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.reason.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-1">{% trans "Provide detailed explanation for why this correction is needed" %}</p>
+            </div>
+
+            <!-- Supporting Document and Manager ---->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.supporting_document.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.supporting_document.label }}
+                    </label>
+                    {{ form.supporting_document }}
+                    {% if form.supporting_document.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.supporting_document.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-xs text-gray-500 mt-1">{% trans "Upload any supporting documents (doctor's note, travel documents, etc.)" %}</p>
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label for="{{ form.manager.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.manager.label }}
+                    </label>
+                    {{ form.manager }}
+                    {% if form.manager.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.manager.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-xs text-gray-500 mt-1">{% trans "Select approving manager (leave blank for default)" %}</p>
+                </div>
+            </div>
+
+            <!-- Rejection Notice ---->
+            {% if object and object.status == 'rejected' %}
+            <div class="mb-4 bg-red-50 border border-red-200 rounded-md p-4">
+                <div class="flex">
+                    <i class="fas fa-times-circle text-red-500 mt-0.5 mr-3"></i>
+                    <div>
+                        <h6 class="text-sm font-semibold text-red-800 mb-1">{% trans "Previous Rejection Reason" %}</h6>
+                        <p class="text-sm text-red-700 mb-0">{{ object.rejection_reason }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Request Status ---->
+            {% if object %}
+            <div class="mb-4 bg-gray-50 border border-gray-200 rounded-md p-4">
+                <h6 class="text-sm font-semibold text-gray-800 mb-3">
+                    <i class="fas fa-info-circle mr-1"></i>{% trans "Request Status" %}
+                </h6>
+                <div class="grid grid-cols-3 gap-4 mb-3">
+                    <div>
+                        <strong class="text-sm text-gray-700">{% trans "Current Status:" %}</strong><br>
+                        <span class="inline-block mt-1 px-2 py-1 text-xs rounded {% if object.status == 'approved' %}bg-green-100 text-green-800{% elif object.status == 'rejected' %}bg-red-100 text-red-800{% elif object.status == 'pending' %}bg-yellow-100 text-yellow-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ object.get_status_display }}
+                        </span>
+                    </div>
+                    <div>
+                        <strong class="text-sm text-gray-700">{% trans "Requested On:" %}</strong><br>
+                        <span class="text-sm text-gray-600">{{ object.created_at|date:"Y-m-d H:i" }}</span>
+                    </div>
+                    <div>
+                        {% if object.approved_by %}
+                            <strong class="text-sm text-gray-700">{% trans "Approved By:" %}</strong><br>
+                            <span class="text-sm text-gray-600">{{ object.approved_by.full_name }}</span>
+                            <br><small class="text-xs text-gray-500">{{ object.approved_at|date:"Y-m-d H:i" }}</small>
+                        {% elif object.rejected_by %}
+                            <strong class="text-sm text-gray-700">{% trans "Rejected By:" %}</strong><br>
+                            <span class="text-sm text-gray-600">{{ object.rejected_by.full_name }}</span>
+                            <br><small class="text-xs text-gray-500">{{ object.rejected_at|date:"Y-m-d H:i" }}</small>
+                        {% else %}
+                            <strong class="text-sm text-gray-700">{% trans "Pending Review" %}</strong><br>
+                            <small class="text-xs text-gray-500">{% trans "Awaiting manager approval" %}</small>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if object.supporting_document %}
+                <div class="pt-3 border-t border-gray-200">
+                    <strong class="text-sm text-gray-700">{% trans "Supporting Document:" %}</strong><br>
+                    <a href="{{ object.supporting_document.url }}" target="_blank" class="inline-block mt-2 px-3 py-1 text-sm text-blue-700 border border-blue-300 rounded-md hover:bg-blue-50 transition-colors">
+                        <i class="fas fa-download mr-1"></i>{% trans "Download Document" %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Actions ---->
+            <div class="flex justify-between mb-6">
+                <a href="{% url 'attendance:correction_list' %}" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                    <i class="fas fa-arrow-left mr-1"></i>{% trans "Back to Corrections" %}
+                </a>
+
+                <div class="flex gap-2">
+                    {% if not object or object.status == 'draft' or object.status == 'rejected' %}
+                    <button type="submit" name="action" value="save_draft" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-save mr-1"></i>{% trans "Save as Draft" %}
+                    </button>
+                    <button type="submit" name="action" value="submit" class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-paper-plane mr-1"></i>{% trans "Submit Request" %}
+                    </button>
+                    {% else %}
+                    <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-save mr-1"></i>{% trans "Update Request" %}
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+
+        <!-- Manager Approval Section ---->
+        {% if object and object.status == 'pending' and perms.attendance.can_approve_corrections %}
+        <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-md p-4">
+            <h5 class="text-base font-semibold text-yellow-900 mb-3">
+                <i class="fas fa-user-check mr-2"></i>{% trans "Manager Approval" %}
+            </h5>
+            <form method="post" action="{% url 'attendance:correction_approve' object.pk %}">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <label for="approval_comments" class="block text-sm font-medium text-gray-700 mb-1">
+                        {% trans "Approval Comments" %}
+                    </label>
+                    <textarea name="approval_comments" id="approval_comments" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="3" placeholder="{% trans 'Add any comments about this approval/rejection...' %}"></textarea>
+                </div>
+
+                <div class="flex gap-2">
+                    <button type="submit" name="action" value="approve" class="px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700 transition-colors">
+                        <i class="fas fa-check mr-1"></i>{% trans "Approve Request" %}
+                    </button>
+                    <button type="submit" name="action" value="reject" class="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors">
+                        <i class="fas fa-times mr-1"></i>{% trans "Reject Request" %}
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</main>
+
+<!-- Choices.js for searchable dropdowns -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Choices.js for employee and manager dropdowns
+    const employeeSelect = document.getElementById('{{ form.employee.id_for_label }}');
+    const managerSelect = document.getElementById('{{ form.manager.id_for_label }}');
+
+    if (employeeSelect) {
+        new Choices(employeeSelect, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search employee...',
+            itemSelectText: 'Click to select',
+            shouldSort: false,
+            removeItemButton: false,
+            noResultsText: 'No employee found',
+            noChoicesText: 'No employees available',
+        });
+    }
+
+    if (managerSelect) {
+        new Choices(managerSelect, {
+            searchEnabled: true,
+            searchPlaceholderValue: 'Search manager...',
+            itemSelectText: 'Click to select',
+            shouldSort: false,
+            removeItemButton: false,
+            noResultsText: 'No manager found',
+            noChoicesText: 'No managers available',
+        });
+    }
+
+    // Attendance loading and field toggling
+    const dateField = document.getElementById('{{ form.date.id_for_label }}');
+    const currentAttendanceCard = document.getElementById('current-attendance-card');
+    const currentAttendanceInfo = document.getElementById('current-attendance-info');
+    const correctionTypeField = document.getElementById('{{ form.correction_type.id_for_label }}');
+
+    function loadCurrentAttendance() {
+        if (!employeeSelect.value || !dateField.value) {
+            currentAttendanceInfo.innerHTML = '<p class="text-gray-500 text-sm">{% trans "Select employee and date to see current attendance data" %}</p>';
+            return;
+        }
+
+        currentAttendanceInfo.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> <span class="text-sm text-gray-600">{% trans "Loading..." %}</span></div>';
+
+        // Make AJAX request to get current attendance
+        fetch(`/attendance/api/attendance-record/?employee=${employeeSelect.value}&date=${dateField.value}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.record) {
+                const record = data.record;
+                let html = '<div class="grid grid-cols-4 gap-4">';
+                html += '<div><strong class="text-sm text-gray-700">{% trans "Status:" %}</strong><br>';
+                html += `<span class="inline-block mt-1 px-2 py-1 text-xs rounded bg-${getStatusColor(record.status)}-100 text-${getStatusColor(record.status)}-800">${record.status_display}</span></div>`;
+                html += '<div><strong class="text-sm text-gray-700">{% trans "Clock In:" %}</strong><br><span class="text-sm text-gray-600">';
+                html += record.clock_in ? record.clock_in : '<span class="text-gray-400">{% trans "Not recorded" %}</span></span></div>';
+                html += '<div><strong class="text-sm text-gray-700">{% trans "Clock Out:" %}</strong><br><span class="text-sm text-gray-600">';
+                html += record.clock_out ? record.clock_out : '<span class="text-gray-400">{% trans "Not recorded" %}</span></span></div>';
+                html += '<div><strong class="text-sm text-gray-700">{% trans "Total Hours:" %}</strong><br><span class="text-sm text-gray-600">';
+                html += record.total_hours ? record.total_hours + 'h' : '<span class="text-gray-400">{% trans "Calculating..." %}</span></span></div>';
+                html += '</div>';
+
+                if (record.notes) {
+                    html += `<div class="mt-3 pt-3 border-t border-blue-200"><strong class="text-sm text-gray-700">{% trans "Notes:" %}</strong><br><p class="text-sm text-gray-600 mb-0 mt-1">${record.notes}</p></div>`;
+                }
+
+                currentAttendanceInfo.innerHTML = html;
+            } else {
+                currentAttendanceInfo.innerHTML = '<div class="bg-blue-100 border border-blue-300 rounded-md p-3 text-sm text-blue-800"><i class="fas fa-info-circle mr-1"></i>{% trans "No attendance record found for this date" %}</div>';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading attendance:', error);
+            currentAttendanceInfo.innerHTML = '<div class="bg-yellow-100 border border-yellow-300 rounded-md p-3 text-sm text-yellow-800"><i class="fas fa-exclamation-triangle mr-1"></i>{% trans "Could not load attendance data" %}</div>';
+        });
+    }
+
+    function getStatusColor(status) {
+        const colors = {
+            'present': 'green',
+            'absent': 'red',
+            'late': 'yellow',
+            'early_leave': 'blue',
+            'half_day': 'gray'
+        };
+        return colors[status] || 'gray';
+    }
+
+    function toggleCorrectionFields() {
+        const correctionType = correctionTypeField.value;
+        const clockInField = document.getElementById('{{ form.requested_clock_in.id_for_label }}').closest('.col-span-2');
+        const clockOutField = document.getElementById('{{ form.requested_clock_out.id_for_label }}').closest('.col-span-2');
+
+        // Show/hide fields based on correction type
+        if (correctionType === 'clock_in' || correctionType === 'both') {
+            clockInField.style.display = 'block';
+        } else {
+            clockInField.style.display = 'none';
+        }
+
+        if (correctionType === 'clock_out' || correctionType === 'both') {
+            clockOutField.style.display = 'block';
+        } else {
+            clockOutField.style.display = 'none';
+        }
+    }
+
+    // Event listeners
+    if (employeeSelect) employeeSelect.addEventListener('change', loadCurrentAttendance);
+    if (dateField) dateField.addEventListener('change', loadCurrentAttendance);
+    if (correctionTypeField) correctionTypeField.addEventListener('change', toggleCorrectionFields);
+
+    // Initial load
+    loadCurrentAttendance();
+    toggleCorrectionFields();
+});
+</script>
+{% endblock %}

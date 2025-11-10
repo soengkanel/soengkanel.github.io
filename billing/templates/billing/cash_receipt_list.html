@@ -1,0 +1,527 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Cash Receipts{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Minimal compact list design - matching form styles */
+.crl-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.5rem;
+}
+
+.crl-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-bottom: 2px solid #e5e7eb;
+    padding: 0.75rem 0;
+    margin-bottom: 1rem;
+}
+
+.crl-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+/* Stats bar */
+.crl-stats {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.crl-stat {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    flex: 1;
+    text-align: center;
+}
+
+.crl-stat-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #3b82f6;
+    margin-bottom: 0.125rem;
+}
+
+.crl-stat-label {
+    font-size: 0.625rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Search bar */
+.crl-search {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.crl-search-form {
+    display: flex;
+    gap: 0.375rem;
+    align-items: center;
+}
+
+.crl-search-input {
+    flex: 1;
+    font-size: 0.8125rem;
+    padding: 0.375rem 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    transition: border-color 0.15s ease;
+}
+
+.crl-search-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
+}
+
+.crl-search-input::placeholder {
+    color: #9ca3af;
+    font-size: 0.75rem;
+}
+
+/* Buttons */
+.btn-crl {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.375rem 0.75rem;
+    border-radius: 3px;
+    border: none;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+}
+
+.btn-crl-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-crl-primary:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-crl-secondary {
+    background: #fff;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+.btn-crl-secondary:hover {
+    background: #f9fafb;
+    color: #374151;
+}
+
+/* Table */
+.crl-table-wrapper {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.crl-table-header {
+    background: #f9fafb;
+    padding: 0.375rem 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.6875rem;
+    color: #6b7280;
+}
+
+.crl-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.crl-table th {
+    background: #f9fafb;
+    padding: 0.375rem 0.5rem;
+    text-align: left;
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.crl-table td {
+    padding: 0.375rem 0.5rem;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 0.75rem;
+    color: #374151;
+    vertical-align: middle;
+}
+
+.crl-table tbody tr {
+    transition: background 0.15s;
+}
+
+.crl-table tbody tr:hover {
+    background: #f9fafb;
+    cursor: pointer;
+}
+
+.crl-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Cell content */
+.crl-receipt-no {
+    font-weight: 600;
+    color: #2563eb;
+    font-family: monospace;
+    font-size: 0.7rem;
+}
+
+.crl-from {
+    color: #111827;
+    font-weight: 500;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.crl-amount {
+    font-weight: 700;
+    color: #059669;
+    font-family: monospace;
+    font-size: 0.8rem;
+}
+
+.crl-date {
+    color: #6b7280;
+    font-size: 0.7rem;
+    white-space: nowrap;
+}
+
+.crl-method {
+    display: inline-block;
+    padding: 0.125rem 0.375rem;
+    background: #f3f4f6;
+    color: #6b7280;
+    border-radius: 3px;
+    font-size: 0.625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.crl-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.btn-crl-action {
+    padding: 0.125rem 0.25rem;
+    font-size: 0.625rem;
+    background: transparent;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-crl-action:hover {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+/* Empty state */
+.crl-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.crl-empty-icon {
+    font-size: 2rem;
+    color: #d1d5db;
+    margin-bottom: 0.5rem;
+}
+
+.crl-empty h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 0.25rem 0;
+}
+
+.crl-empty p {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0 0 1rem 0;
+}
+
+/* Pagination */
+.crl-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+}
+
+.crl-page-btn {
+    padding: 0.25rem 0.5rem;
+    background: #f9fafb;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+    border-radius: 3px;
+    text-decoration: none;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+
+.crl-page-btn:hover {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.crl-page-info {
+    font-size: 0.6875rem;
+    color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .crl-container {
+        padding: 0.25rem;
+    }
+    
+    .crl-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+    }
+    
+    .crl-stats {
+        display: none;
+    }
+    
+    .crl-table {
+        font-size: 0.65rem;
+    }
+    
+    .crl-table th,
+    .crl-table td {
+        padding: 0.25rem;
+    }
+    
+    .hide-mobile {
+        display: none;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="crl-container">
+    <!-- Header -->
+    <div class="crl-header">
+        <h1 class="crl-title">Cash Receipts</h1>
+        <a href="{% url 'billing:cash_receipt_create' %}" class="button-min-primary">
+            <div>
+                <i class="fa fa-plus me-1"></i> New Receipt
+            </div>
+        </a>
+    </div>
+
+    <!-- Stats (optional - can be hidden) -->
+    {% if receipts.paginator.count %}
+    <div class="crl-stats">
+        <div class="crl-stat">
+            <div class="crl-stat-value">{{ receipts.paginator.count }}</div>
+            <div class="crl-stat-label">Total</div>
+        </div>
+        <div class="crl-stat">
+            <div class="crl-stat-value">${{ total_amount|floatformat:0|default:"0" }}</div>
+            <div class="crl-stat-label">Received</div>
+        </div>
+        <div class="crl-stat">
+            <div class="crl-stat-value">{{ this_month_count|default:"0" }}</div>
+            <div class="crl-stat-label">This Month</div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Search -->
+    <div class="crl-search">
+        <form method="get" class="crl-search-form">
+            <input type="text" name="search" value="{{ search }}"
+                   placeholder="Search receipt #, payer, amount..."
+                   class="crl-search-input">
+            <button type="submit" class="button-min-primary">
+                <div>
+                    <i class="fa fa-search me-1"></i> Search
+                </div>
+            </button>
+            {% if search %}
+            <a href="{% url 'billing:cash_receipt_list' %}" class="button-min-default">
+                <i class="bi bi-x"></i> Clear
+            </a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="crl-table-wrapper">
+        {% if receipts.paginator.count %}
+        <div class="crl-table-header">
+            Showing {{ receipts.start_index }}-{{ receipts.end_index }} of {{ receipts.paginator.count }}
+        </div>
+        {% endif %}
+        
+        <table class="crl-table">
+            <thead>
+                <tr>
+                    <th style="width: 15%">Receipt #</th>
+                    <th style="width: 30%">From</th>
+                    <th style="width: 15%">Amount</th>
+                    <th style="width: 15%">Date</th>
+                    <th style="width: 10%" class="hide-mobile">Method</th>
+                    <th style="width: 15%">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for receipt in receipts %}
+                <tr onclick="window.location.href='{% url 'billing:cash_receipt_detail' receipt.id %}'">
+                    <td>
+                        <span class="crl-receipt-no">#{{ receipt.receipt_number|default:receipt.id }}</span>
+                    </td>
+                    <td>
+                        <span class="crl-from" title="{{ receipt.received_from }}">
+                            {{ receipt.received_from|truncatechars:30 }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="crl-amount">${{ receipt.amount_usd|floatformat:2 }}</span>
+                    </td>
+                    <td>
+                        <span class="crl-date">{{ receipt.date|date:"d/m/Y" }}</span>
+                    </td>
+                    <td class="hide-mobile">
+                        <span class="crl-method">{{ receipt.get_payment_method_display|default:"Cash" }}</span>
+                    </td>
+                    <td onclick="event.stopPropagation()">
+                        <div class="crl-actions">
+                            <a href="{% url 'billing:cash_receipt_detail' receipt.id %}" 
+                               class="button-min-primary px-2 py-1" title="View">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{% url 'billing:cash_receipt_print' receipt.id %}" 
+                               class="button-min-default py-1 px-2" title="Print" target="_blank">
+                                <i class="bi bi-printer"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="crl-empty">
+                        <div class="crl-empty-icon">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+                        <h3>No Receipts Found</h3>
+                        {% if search %}
+                        <p>No receipts match "{{ search }}"</p>
+                        <a href="{% url 'billing:cash_receipt_list' %}" class="btn-crl btn-crl-secondary">
+                            Show All
+                        </a>
+                        {% else %}
+                        <p>Start by creating your first receipt</p>
+                        <div class="flex justify-center w-full">
+                            <a href="{% url 'billing:cash_receipt_create' %}" class="button-min-primary">
+                                <div>
+                                    <i class="fa fa-plus me-1"></i> Create Receipt
+                                </div>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if receipts.has_other_pages %}
+    <div class="crl-pagination">
+        {% if receipts.has_previous %}
+        <a href="?page={{ receipts.previous_page_number }}{% if search %}&search={{ search }}{% endif %}"
+           class="crl-page-btn">
+            <i class="bi bi-chevron-left"></i> Prev
+        </a>
+        {% endif %}
+        
+        <span class="crl-page-info">
+            Page {{ receipts.number }} of {{ receipts.paginator.num_pages }}
+        </span>
+        
+        {% if receipts.has_next %}
+        <a href="?page={{ receipts.next_page_number }}{% if search %}&search={{ search }}{% endif %}"
+           class="crl-page-btn">
+            Next <i class="bi bi-chevron-right"></i>
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-focus search on page load if no search active
+    const searchInput = document.querySelector('.crl-search-input');
+    if (searchInput && !searchInput.value) {
+        searchInput.focus();
+    }
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl/Cmd + K for search
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            searchInput.focus();
+            searchInput.select();
+        }
+        
+        // Ctrl/Cmd + N for new receipt
+        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+            e.preventDefault();
+            window.location.href = '{% url "billing:cash_receipt_create" %}';
+        }
+    });
+});
+</script>
+{% endblock %}

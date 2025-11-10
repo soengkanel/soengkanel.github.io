@@ -1,0 +1,953 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Import Workers - Zone Management{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    .import-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+        color: white;
+        padding: 24px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+    }
+
+    .page-header h1 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0 0 4px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .page-header p {
+        font-size: 13px;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .card {
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .template-download {
+        background: #F0F9FF;
+        border: 1px solid #BAE6FD;
+        border-radius: 6px;
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .template-info h6 {
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0 0 4px 0;
+        color: #1E40AF;
+    }
+
+    .template-info p {
+        font-size: 12px;
+        color: #6B7280;
+        margin: 0;
+    }
+
+    .upload-zone {
+        border: 2px dashed #D1D5DB;
+        border-radius: 8px;
+        padding: 32px;
+        text-align: center;
+        background: #F9FAFB;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        margin-bottom: 20px;
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+        border-color: #4F46E5;
+        background: #F5F3FF;
+    }
+
+    .upload-icon {
+        width: 48px;
+        height: 48px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+        color: #4F46E5;
+        font-size: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .upload-text h6 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin: 0 0 4px 0;
+    }
+
+    .upload-text p {
+        font-size: 11px;
+        color: #9CA3AF;
+        margin: 0;
+    }
+
+    .file-selected {
+        background: #ECFDF5;
+        border-color: #10B981;
+        padding: 12px 16px;
+        border-radius: 6px;
+        display: none;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+    .file-selected i {
+        color: #059669;
+        font-size: 16px;
+    }
+
+    .file-selected span {
+        font-size: 13px;
+        color: #065F46;
+        font-weight: 500;
+    }
+
+    .options-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .option-item {
+        background: #F9FAFB;
+        border: 1px solid #E5E7EB;
+        border-radius: 6px;
+        padding: 12px;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        transition: all 0.2s ease;
+    }
+
+    .option-item:hover {
+        background: #F3F4F6;
+    }
+
+    .option-item input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        margin-top: 2px;
+    }
+
+    .option-content h6 {
+        font-size: 12px;
+        font-weight: 600;
+        color: #374151;
+        margin: 0 0 2px 0;
+    }
+
+    .option-content p {
+        font-size: 10px;
+        color: #6B7280;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .badge {
+        background: #DBEAFE;
+        color: #1E40AF;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 9px;
+        font-weight: 500;
+        margin-left: 4px;
+    }
+
+    .badge.success {
+        background: #D1FAE5;
+        color: #065F46;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #6B7280;
+        border: 1px solid #D1D5DB;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-secondary:hover {
+        background: #F9FAFB;
+    }
+
+    .form-control {
+        display: none !important;
+    }
+
+    .quick-guide {
+        background: #FFFBEB;
+        border: 1px solid #FCD34D;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+
+    .quick-guide h6 {
+        font-size: 12px;
+        font-weight: 600;
+        color: #92400E;
+        margin: 0 0 6px 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .quick-guide ol {
+        font-size: 11px;
+        color: #78350F;
+        margin: 0;
+        padding-left: 16px;
+    }
+
+    .quick-guide li {
+        margin-bottom: 2px;
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.95);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid #E5E7EB;
+        border-top-color: #4F46E5;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 12px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+        text-align: center;
+    }
+
+    .loading-text h6 {
+        font-size: 14px;
+        color: #374151;
+        margin: 0 0 4px 0;
+    }
+
+    .loading-text p {
+        font-size: 11px;
+        color: #9CA3AF;
+        margin: 0;
+    }
+
+    /* Validation Results Styles */
+    .validation-summary {
+        margin-bottom: 20px;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .summary-item {
+        background: #F9FAFB;
+        border: 1px solid #E5E7EB;
+        border-radius: 6px;
+        padding: 12px;
+        text-align: center;
+    }
+
+    .summary-item.success {
+        background: #ECFDF5;
+        border-color: #10B981;
+    }
+
+    .summary-item.warning {
+        background: #FFFBEB;
+        border-color: #F59E0B;
+    }
+
+    .summary-item.error {
+        background: #FEF2F2;
+        border-color: #EF4444;
+    }
+
+    .summary-number {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1F2937;
+    }
+
+    .summary-label {
+        font-size: 11px;
+        color: #6B7280;
+        margin-top: 2px;
+    }
+
+    .validation-section {
+        margin-bottom: 20px;
+    }
+
+    .validation-section h6 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .validation-items {
+        background: #F9FAFB;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    .validation-item {
+        padding: 8px 12px;
+        border-bottom: 1px solid #E5E7EB;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .validation-item:last-child {
+        border-bottom: none;
+    }
+
+    .validation-item.error {
+        background: #FEF2F2;
+        color: #DC2626;
+    }
+
+    .validation-item.warning {
+        background: #FFFBEB;
+        color: #D97706;
+    }
+
+    .row-details {
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid #E5E7EB;
+        border-radius: 6px;
+    }
+
+    .row-detail {
+        padding: 12px;
+        border-bottom: 1px solid #E5E7EB;
+    }
+
+    .row-detail:last-child {
+        border-bottom: none;
+    }
+
+    .row-detail.invalid {
+        background: #FEF2F2;
+        border-left: 3px solid #EF4444;
+    }
+
+    .row-detail.duplicate {
+        background: #FFFBEB;
+        border-left: 3px solid #F59E0B;
+    }
+
+    .row-detail.valid {
+        background: #ECFDF5;
+        border-left: 3px solid #10B981;
+    }
+
+    .row-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .row-number {
+        font-weight: 600;
+        font-size: 12px;
+        color: #374151;
+    }
+
+    .row-status {
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .row-data {
+        margin-bottom: 8px;
+    }
+
+    .worker-info {
+        font-size: 13px;
+        margin-bottom: 4px;
+    }
+
+    .job-info {
+        font-size: 11px;
+        color: #6B7280;
+    }
+
+    .row-errors, .row-warnings {
+        margin-top: 8px;
+    }
+
+    .error-item, .warning-item {
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 4px;
+    }
+
+    .error-item {
+        color: #DC2626;
+    }
+
+    .warning-item {
+        color: #D97706;
+    }
+
+    .import-decision {
+        padding: 16px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .import-decision.success {
+        background: #ECFDF5;
+        border: 1px solid #10B981;
+    }
+
+    .import-decision.error {
+        background: #FEF2F2;
+        border: 1px solid #EF4444;
+    }
+
+    .decision-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .decision-content i {
+        font-size: 20px;
+    }
+
+    .import-decision.success .decision-content i {
+        color: #059669;
+    }
+
+    .import-decision.error .decision-content i {
+        color: #DC2626;
+    }
+
+    .decision-content h6 {
+        margin: 0 0 2px 0;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .decision-content p {
+        margin: 0;
+        font-size: 12px;
+        color: #6B7280;
+    }
+
+    @media (max-width: 768px) {
+        .options-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .template-download {
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .summary-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .import-decision {
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="import-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1>
+                    <i class="bi bi-upload"></i>
+                    Import Workers
+                </h1>
+                <p>Upload Excel file with embedded document images</p>
+            </div>
+            <a href="{% url 'zone:worker_list' %}" class="btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <!-- Template Download -->
+    <div class="template-download">
+        <div class="template-info">
+            <h6><i class="bi bi-file-earmark-excel"></i> Excel Template</h6>
+            <p>Download template with required fields and sample data</p>
+        </div>
+        <a href="{{ template_url }}" class="btn-primary" download="worker_template.xlsx">
+            <i class="bi bi-download"></i> Download
+        </a>
+    </div>
+
+    <!-- Quick Guide -->
+    <div class="quick-guide">
+        <h6><i class="bi bi-lightbulb"></i> Quick Steps</h6>
+        <ol>
+            <li>Download Excel template above</li>
+            <li>Fill worker data (columns A-M)</li>
+            <li>Insert document images in cells (columns N, O, P, Q)</li>
+            <li>Upload completed file below</li>
+        </ol>
+    </div>
+
+    <!-- Upload Form -->
+    <div class="card">
+        <form method="post" enctype="multipart/form-data" id="import-form">
+            {% csrf_token %}
+            
+            <!-- File Upload -->
+            <div class="upload-zone" id="upload-zone">
+                <div class="upload-icon">
+                    <i class="bi bi-cloud-upload"></i>
+                </div>
+                <div class="upload-text">
+                    <h6>Drop Excel file here or click to browse</h6>
+                    <p>Supports .xlsx and .xls (max 100MB)</p>
+                </div>
+                {{ form.excel_file }}
+            </div>
+
+            <!-- File Selected Indicator -->
+            <div class="file-selected" id="file-selected">
+                <i class="bi bi-check-circle"></i>
+                <span id="file-name"></span>
+            </div>
+
+            <!-- Options -->
+            <div class="options-grid">
+                <div class="option-item">
+                    {{ form.process_photos }}
+                    <div class="option-content">
+                        <h6>{{ form.process_photos.label }} <span class="badge">OCR</span></h6>
+                        <p>Extract document data automatically</p>
+                    </div>
+                </div>
+
+                <div class="option-item">
+                    {{ form.skip_duplicates }}
+                    <div class="option-content">
+                        <h6>{{ form.skip_duplicates.label }}</h6>
+                        <p>Skip workers that already exist</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-end gap-2">
+                <button type="button" class="btn-secondary" onclick="window.location.href='{% url 'zone:worker_list' %}'">
+                    Cancel
+                </button>
+                <button type="submit" name="preview" value="1" class="btn-secondary" id="preview-btn">
+                    <i class="bi bi-eye"></i> Preview & Validate
+                </button>
+                {% if not validation_results %}
+                <button type="button" class="btn-primary" id="submit-btn" disabled style="opacity: 0.5; cursor: not-allowed;" 
+                        title="Please validate the file first">
+                    <i class="bi bi-upload"></i> Import Workers
+                </button>
+                {% else %}
+                <button type="submit" class="btn-primary" id="submit-btn">
+                    <i class="bi bi-upload"></i> Import Workers
+                </button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- Validation Results -->
+    {% if validation_results %}
+    <div class="card">
+        <!-- Compact Validation Status -->
+        <div style="background: white; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div style="font-size: 14px; font-weight: 600; color: #374151;">
+                    {% if validation_results.invalid_rows == 0 and validation_results.duplicates|length == 0 %}
+                        ✅ Ready to Import
+                    {% elif validation_results.invalid_rows > 0 %}
+                        ❌ {{ validation_results.invalid_rows }} Error{{ validation_results.invalid_rows|pluralize }}
+                    {% else %}
+                        ⚠️ {{ validation_results.duplicates|length }} Duplicate{{ validation_results.duplicates|length|pluralize }}
+                    {% endif %}
+                </div>
+                <div style="font-size: 12px; color: #6b7280;">
+                    {{ validation_results.total_rows }} total • {{ validation_results.will_import }} will import
+                </div>
+            </div>
+            {% if validation_results.invalid_rows == 0 %}
+            <div style="display: flex; justify-content: end;">
+                <button type="submit" form="import-form" class="btn-primary" style="font-size: 13px; padding: 8px 16px;">
+                    <i class="bi bi-upload"></i> Import {{ validation_results.will_import }} Worker{{ validation_results.will_import|pluralize }}
+                </button>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Errors List -->
+        {% if validation_results.errors %}
+        <div style="background: #FEF2F2; border: 1px solid #EF4444; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+            <div style="font-size: 13px; font-weight: 600; color: #DC2626; margin-bottom: 8px;">
+                ❌ {{ validation_results.errors|length }} Error{{ validation_results.errors|length|pluralize }}:
+            </div>
+            {% for error in validation_results.errors %}
+                <div style="font-size: 12px; color: #374151; margin-bottom: 4px; padding-left: 16px;">
+                    • {{ error }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Duplicates List -->
+        {% if validation_results.duplicates|length > 0 %}
+        <div style="background: #FEF3C7; border: 1px solid #F59E0B; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+            <div style="font-size: 13px; font-weight: 600; color: #D97706; margin-bottom: 8px;">
+                ⚠️ {{ validation_results.duplicates|length }} Duplicate{{ validation_results.duplicates|length|pluralize }} (will be skipped):
+            </div>
+            {% for row in validation_results.rows_data %}
+                {% if row.is_duplicate %}
+                <div style="font-size: 12px; color: #374151; margin-bottom: 4px; padding-left: 16px;">
+                    • Row {{ row.row_number }}: {{ row.data.first_name }} {{ row.data.last_name }}
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Warnings -->
+        {% if validation_results.warnings %}
+        <div class="validation-section warning-section">
+            <h6><i class="bi bi-exclamation-triangle"></i> Warnings ({{ validation_results.warnings|length }})</h6>
+            <div class="validation-items">
+                {% for warning in validation_results.warnings %}
+                <div class="validation-item warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    {{ warning }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+
+        <!-- Row Details (Collapsible) -->
+        <div class="validation-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; padding: 12px; background: #F8FAFC; border-radius: 8px; border: 1px solid #E2E8F0; margin-bottom: 12px; transition: background-color 0.2s ease;" onclick="toggleRowDetails()" onmouseover="this.style.backgroundColor='#F1F5F9'" onmouseout="this.style.backgroundColor='#F8FAFC'">
+                <h6 style="margin: 0; display: flex; align-items: center; gap: 8px;"><i class="bi bi-list-check"></i> Detailed Row Information ({{ validation_results.total_rows }} rows)</h6>
+                <i class="bi bi-chevron-down" id="row-details-chevron" style="color: #64748B; transition: transform 0.3s ease;"></i>
+            </div>
+            <div class="row-details" id="row-details-content" style="display: none;">
+                {% for row in validation_results.rows_data %}
+                <div class="row-detail {% if not row.is_valid %}invalid{% elif row.is_duplicate %}duplicate{% else %}valid{% endif %}">
+                    <div class="row-header">
+                        <span class="row-number">Row {{ row.row_number }}</span>
+                        <span class="row-status">
+                            {% if not row.is_valid %}
+                                <i class="bi bi-x-circle text-danger"></i> Invalid
+                            {% elif row.is_duplicate %}
+                                {% if row.duplicate_info.match_type == 'exact' %}
+                                    <i class="bi bi-person-x-fill text-danger"></i> Exact Duplicate
+                                {% elif row.duplicate_info.match_type == 'strong' %}
+                                    <i class="bi bi-person-x text-danger"></i> Likely Duplicate
+                                {% else %}
+                                    <i class="bi bi-person-dash text-warning"></i> Possible Duplicate
+                                {% endif %}
+                            {% else %}
+                                <i class="bi bi-check-circle text-success"></i> Valid
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    {% if row.data %}
+                    <div class="row-data">
+                        <div class="worker-info">
+                            <strong>{{ row.data.first_name }} {{ row.data.last_name }}</strong>
+                            {% if row.data.sex %}- {{ row.data.sex }}{% endif %}
+                            {% if row.data.nationality %}- {{ row.data.nationality }}{% endif %}
+                        </div>
+                        {% if row.data.position or row.data.department %}
+                        <div class="job-info">
+                            {% if row.data.position %}Position: {{ row.data.position }}{% endif %}
+                            {% if row.data.department %}Department: {{ row.data.department }}{% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    {% if row.errors %}
+                    <div class="row-errors">
+                        {% for error in row.errors %}
+                        <div class="error-item">
+                            <i class="bi bi-x-circle"></i> {{ error }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    {% if row.warnings %}
+                    <div class="row-warnings">
+                        {% for warning in row.warnings %}
+                        <div class="warning-item">
+                            <i class="bi bi-exclamation-triangle"></i> {{ warning }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
+</div>
+
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading-overlay">
+    <div class="loading-text">
+        <div class="spinner"></div>
+        <h6>Processing Import...</h6>
+        <p>Extracting images and running OCR</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadZone = document.getElementById('upload-zone');
+    const fileInput = document.getElementById('{{ form.excel_file.id_for_label }}');
+    const fileSelected = document.getElementById('file-selected');
+    const fileName = document.getElementById('file-name');
+    const submitBtn = document.getElementById('submit-btn');
+    const importForm = document.getElementById('import-form');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    // Click to upload
+    uploadZone.addEventListener('click', function() {
+        fileInput.click();
+    });
+
+    // Drag and drop
+    uploadZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadZone.classList.add('dragover');
+    });
+
+    uploadZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadZone.classList.remove('dragover');
+    });
+
+    uploadZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadZone.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (validateFile(file)) {
+                fileInput.files = files;
+                showFileSelected(file);
+            }
+        }
+    });
+
+    // File selection
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file && validateFile(file)) {
+            showFileSelected(file);
+        }
+    });
+
+    function validateFile(file) {
+        if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+            alert('Please select an Excel file (.xlsx or .xls)');
+            return false;
+        }
+        
+        if (file.size > 100 * 1024 * 1024) {
+            alert('File size too large. Maximum size is 100MB.');
+            return false;
+        }
+        
+        return true;
+    }
+
+    function showFileSelected(file) {
+        fileName.textContent = file.name + ' (' + formatFileSize(file.size) + ')';
+        fileSelected.style.display = 'flex';
+        uploadZone.style.display = 'none';
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' bytes';
+        else if (bytes < 1048576) return Math.round(bytes / 1024) + ' KB';
+        else return Math.round(bytes / 1048576) + ' MB';
+    }
+
+    // Form submission
+    importForm.addEventListener('submit', function(e) {
+        if (!fileInput.files || fileInput.files.length === 0) {
+            e.preventDefault();
+            alert('Please select an Excel file to import');
+            return;
+        }
+        
+        // Show loading with different text based on button clicked
+        const isPreview = e.submitter && e.submitter.name === 'preview';
+        loadingOverlay.style.display = 'flex';
+        
+        if (isPreview) {
+            document.querySelector('.loading-text h6').textContent = 'Validating File...';
+            document.querySelector('.loading-text p').textContent = 'Checking data and requirements';
+            document.getElementById('preview-btn').disabled = true;
+            document.getElementById('preview-btn').innerHTML = '<i class="bi bi-hourglass-split"></i> Validating...';
+        } else {
+            document.querySelector('.loading-text h6').textContent = 'Processing Import...';
+            document.querySelector('.loading-text p').textContent = 'Extracting images and running OCR';
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+        }
+    });
+
+    // Reset file selection
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('#file-selected')) {
+            fileInput.value = '';
+            fileSelected.style.display = 'none';
+            uploadZone.style.display = 'block';
+        }
+    });
+});
+
+// Toggle row details visibility
+function toggleRowDetails() {
+    const content = document.getElementById('row-details-content');
+    const chevron = document.getElementById('row-details-chevron');
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        chevron.style.transform = 'rotate(180deg)';
+    } else {
+        content.style.display = 'none';
+        chevron.style.transform = 'rotate(0deg)';
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Government Receipt - {{ receipt.receipt_number }}</title>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            body { margin: 0; }
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .receipt-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border: 3px solid #17a2b8;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .receipt-header {
+            background: linear-gradient(135deg, #17a2b8, #138496);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .receipt-header::before {
+            content: "🏛️";
+            font-size: 3em;
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            opacity: 0.3;
+        }
+
+        .receipt-type {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .company-name {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .company-subtitle {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .receipt-body {
+            padding: 30px;
+        }
+
+        .receipt-number {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #17a2b8;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #e8f4f8;
+            border-radius: 5px;
+        }
+
+        .receipt-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .info-section h3 {
+            color: #17a2b8;
+            border-bottom: 2px solid #17a2b8;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .info-item {
+            margin-bottom: 8px;
+            display: flex;
+        }
+
+        .info-label {
+            font-weight: bold;
+            min-width: 100px;
+            color: #495057;
+        }
+
+        .info-value {
+            color: #212529;
+        }
+
+        .amount-section {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 30px 0;
+            border: 2px solid #17a2b8;
+        }
+
+        .amount-label {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #17a2b8;
+            margin-bottom: 10px;
+        }
+
+        .amount-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #138496;
+        }
+
+        .payment-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .government-seal {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: #17a2b8;
+            color: white;
+            border-radius: 50px;
+            font-weight: bold;
+        }
+
+        .footer-section {
+            background: #6c757d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .print-button:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(23, 162, 184, 0.4);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-issued { background: #28a745; color: white; }
+        .status-delivered { background: #17a2b8; color: white; }
+        .status-cancelled { background: #dc3545; color: white; }
+
+        @media (max-width: 768px) {
+            .receipt-info {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">🖨️ Print Receipt</button>
+
+    <div class="receipt-container">
+        <!-- Header -->
+        <div class="receipt-header">
+            <div class="receipt-type">Government Receipt</div>
+            <div class="company-name">LYP</div>
+            <div class="company-subtitle">Official Government Services Receipt</div>
+        </div>
+
+        <!-- Body -->
+        <div class="receipt-body">
+            <!-- Receipt Number -->
+            <div class="receipt-number">
+                Receipt No: {{ receipt.receipt_number }}
+            </div>
+
+            <!-- Receipt Information -->
+            <div class="receipt-info">
+                <div class="info-section">
+                    <h3>Receipt Details</h3>
+                    <div class="info-item">
+                        <span class="info-label">Date:</span>
+                        <span class="info-value">{{ receipt.payment_date|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="status-badge status-{{ receipt.status }}">{{ receipt.get_status_display }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Invoice:</span>
+                        <span class="info-value">{{ receipt.invoice.invoice_number }}</span>
+                    </div>
+                    {% if receipt.payment_reference %}
+                        <div class="info-item">
+                            <span class="info-label">Reference:</span>
+                            <span class="info-value">{{ receipt.payment_reference }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="info-section">
+                    <h3>Payment Information</h3>
+                    <div class="info-item">
+                        <span class="info-label">Method:</span>
+                        <span class="info-value">{{ receipt.payment_method }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Received By:</span>
+                        <span class="info-value">{{ receipt.received_by }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Received From:</span>
+                        <span class="info-value">{{ receipt.received_from }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Amount Section -->
+            <div class="amount-section">
+                <div class="amount-label">Amount Received</div>
+                <div class="amount-value">${{ receipt.amount_paid|floatformat:2 }}</div>
+            </div>
+
+            <!-- Service Details -->
+            {% if receipt.invoice.line_items.all %}
+                <div class="payment-details">
+                    <h3 style="color: #17a2b8; margin-top: 0;">Services Provided</h3>
+                    {% for item in receipt.invoice.line_items.all %}
+                        <div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 5px;">
+                            <strong>{{ item.service_item.name }}</strong>
+                            <br><small>{{ item.description }}</small>
+                            <span style="float: right; font-weight: bold;">${{ item.total_amount|floatformat:2 }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Government Seal -->
+            <div class="government-seal">
+                🏛️ OFFICIAL GOVERNMENT RECEIPT 🏛️
+                <br><small>This receipt is valid for government processing</small>
+            </div>
+
+            <!-- Notes -->
+            {% if receipt.notes %}
+                <div class="payment-details">
+                    <h3 style="color: #17a2b8; margin-top: 0;">Notes</h3>
+                    <p>{{ receipt.notes|linebreaks }}</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-section">
+            <p><strong>LYP - Leading Your Path</strong></p>
+            <p>Authorized Government Service Provider</p>
+            <small>Receipt issued on {{ "now"|date:"d/m/Y \a\\t g:i A" }}</small>
+        </div>
+    </div>
+</body>
+</html> 

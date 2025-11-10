@@ -1,0 +1,3243 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Zone Management{% endblock %}
+
+{% block extra_head %}
+<!-- Include enhanced UI/UX components -->
+{% include 'partials/form_enhancements.html' %}
+{% include 'partials/modal.html' %}
+{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<!-- Inline validation styles -->
+<link rel="stylesheet" href="{% static 'css/inline-validation.css' %}">
+<style>
+/* Compact Design System - Worker Form */
+.page-header {
+    padding: 8px 0;
+    margin-bottom: 12px;
+}
+.page-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+}
+.page-header p {
+    font-size: 11px;
+    color: #666;
+    margin: 0;
+}
+
+/* Compact Form Sections */
+.form-section {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.form-section:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+}
+
+.form-section h4 {
+    color: #1f2937;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #667eea;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-section h4 i {
+    color: #667eea;
+    font-size: 14px;
+}
+.required-field {
+    color: #ef4444;
+}
+
+/* Compact Form Controls */
+.form-label {
+    font-size: 10px !important;
+    margin-bottom: 3px !important;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.form-control, .form-select {
+    font-size: 11px !important;
+    padding: 6px 8px !important;
+    height: auto !important;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    line-height: 1.4;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+    outline: none;
+    background: #f8fafc;
+}
+
+.form-control:hover:not(:focus), .form-select:hover:not(:focus) {
+    border-color: #9ca3af;
+    background: #f9fafb;
+}
+
+/* Disabled field styling - for status field */
+.form-control:disabled, .form-select:disabled {
+    background-color: #f3f4f6 !important;
+    color: #6b7280 !important;
+    cursor: not-allowed !important;
+    opacity: 0.8 !important;
+    border-color: #d1d5db !important;
+    border-style: dashed !important;
+}
+
+.form-control:disabled + .form-text,
+.form-select:disabled + .form-text {
+    color: #ef4444 !important;
+    font-style: italic;
+    font-size: 10px !important;
+    margin-top: 2px;
+}
+
+/* Compact Grid System */
+.row.g-1 {
+    --bs-gutter-x: 0.15rem;
+    --bs-gutter-y: 0.15rem;
+}
+
+/* Compact Button System */
+.btn-modern {
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 4px;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+/* Primary Button - Purple Theme */
+.btn-primary-modern {
+    padding: 7px 18px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    border-radius: 10px;
+    border: 1px solid rgba(3, 97, 190, 0.15);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 400;
+    background: linear-gradient(180deg, #4B91F7 0%, #367AF6 100%);
+    background-origin: border-box;
+    box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+.btn-primary-modern:hover {
+    background: linear-gradient(180deg, #4188f3 0%, #3074f4 100%);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Light Button */
+.btn-light-modern {
+    background: #f8fafb;
+    color: #374151;
+    border: 1px solid #e2e8f0;
+}
+.btn-light-modern:hover {
+    background: #e2e8f0;
+    color: #1f2937;
+    transform: translateY(-1px);
+}
+
+/* Outline Button - White with Blue Border */
+.btn-outline-modern {
+    background: white;
+    color: #3b82f6;
+    border: 1px solid #3b82f6;
+}
+.btn-outline-modern:hover {
+    background: #3b82f6;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Compact Submit Area */
+.submit-buttons {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Compact Page Header */
+.page-header {
+    color: white;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25);
+}
+
+.page-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: white;
+}
+
+.page-header p {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 2px 0 0 0;
+}
+
+/* Form section hover effect */
+.form-section:hover {
+    background-color: #f1f5f9;
+}
+
+/* Textarea styling */
+textarea.form-control {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-check-input {
+    margin-top: 0.125rem;
+}
+.form-check-label {
+    font-size: 11px;
+    margin-left: 0.25rem;
+}
+.form-text {
+    font-size: 10px;
+    margin-top: 2px;
+    color: #6b7280;
+}
+
+/* Compact Document Management */
+.document-form {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+    border-left: 3px solid #667eea;
+}
+
+.document-form:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.document-form h5 {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.document-form h5::before {
+    content: '\F287';
+    font-family: 'bootstrap-icons';
+    color: #667eea;
+    font-size: 12px;
+}
+.delete-checkbox {
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    border-radius: 4px;
+    padding: 3px 6px;
+    margin-top: 4px;
+}
+.delete-checkbox input {
+    font-size: 10px;
+}
+.delete-checkbox label {
+    font-size: 10px;
+    margin-left: 4px;
+    color: #92400e;
+}
+
+.add-document-btn {
+    border: 1px dashed #d1d5db;
+    background: transparent;
+    color: #6b7280;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    text-align: center;
+}
+.add-document-btn:hover {
+    border-color: #9ca3af;
+    color: #374151;
+    background: #f9fafb;
+}
+
+/* Remove Document Button */
+.remove-document-btn {
+    background: linear-gradient(180deg, #f04949 0%, #eb3939 100%);
+    background-origin: border-box;
+    box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(3, 97, 190, 0.15);
+    border-radius: 10px;
+    padding: 6px 11px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.remove-document-btn:hover {
+    background: linear-gradient(180deg, #f53131 0%, #f72b2b 100%);
+    transform: translateY(-1px);
+}
+
+/* Status badges - consistent with list view */
+.status-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+.status-active { background: #dcfce7; color: #166534; }
+.status-inactive { background: #f3f4f6; color: #374151; }
+.status-on_leave { background: #fef3c7; color: #92400e; }
+.status-terminated { background: #fee2e2; color: #991b1b; }
+
+/* Error messages */
+.text-danger {
+    font-size: 10px;
+    color: #ef4444;
+    margin-top: 2px;
+}
+
+/* Alert styling */
+.alert {
+    font-size: 11px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+/* OCR Scanner Styles */
+.ocr-scanner-section {
+    background: #ffffff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    margin-bottom: var(--space-6);
+}
+
+.ocr-scanner-section h4 {
+    color: var(--black);
+    border-bottom-color: var(--gray-200);
+}
+
+/* Document Type Selection - Compact */
+.compact-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--black);
+    white-space: nowrap;
+}
+
+.document-type-tabs-compact {
+    display: flex;
+    gap: var(--space-1);
+    background: var(--gray-50);
+    padding: var(--space-1);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+}
+
+.document-type-tab-compact {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: var(--radius-lg);
+    background: transparent;
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.document-type-tab-compact:hover {
+    background: var(--gray-100);
+    color: var(--black);
+}
+
+.document-type-tab-compact.active {
+    {% comment %} background: var(--primary);
+    color: var(--black);
+    box-shadow: var(--shadow-sm); {% endcomment %}
+    background: linear-gradient(180deg, #4B91F7 0%, #367AF6 100%);
+    background-origin: border-box;
+    box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(3, 97, 190, 0.15);
+    color: white;
+}
+
+.document-type-tab-compact i {
+    font-size: var(--text-sm);
+}
+
+.passport-drop-zone {
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--white);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.passport-drop-zone:hover {
+    border-color: var(--primary);
+    background: var(--gray-50);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.drop-zone-content {
+    text-align: center;
+}
+
+.drop-zone-content i {
+    font-size: 3rem;
+    color: var(--gray-400);
+    margin-bottom: var(--space-5);
+}
+
+.drop-zone-content h5 {
+    color: var(--black);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+}
+
+.drop-zone-content p {
+    color: var(--gray-500);
+    font-size: var(--text-base);
+    margin-bottom: var(--space-4);
+}
+
+.image-preview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: var(--gray-50);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-preview:hover .image-overlay {
+    opacity: 1;
+}
+
+.overlay-content {
+    text-align: center;
+    color: white;
+}
+
+.overlay-content i {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.remove-image {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.processing-status {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-2) var(--space-5);
+    border-radius: 10px;
+    font-size: var(--text-sm);
+    color: var(--gray-500);
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+}
+
+.status-item.active {
+    color: var(--primary-dark);
+    background: var(--primary-light);
+    border-color: var(--primary);
+}
+
+.status-item.completed {
+    color: var(--success);
+    background: var(--success-light);
+    border-color: var(--success);
+}
+
+.status-item i {
+    font-size: 14px;
+}
+
+.extraction-preview {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: var(--space-6);
+    height: 100%;
+}
+
+.extraction-content {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.no-data-state {
+    text-align: center;
+    color: var(--gray-400);
+}
+
+.no-data-state i {
+    font-size: 2rem;
+    margin-bottom: var(--space-5);
+}
+
+.no-data-state p {
+    margin: 0;
+    font-size: var(--text-base);
+}
+
+.extracted-fields {
+    width: 100%;
+}
+
+.field-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--space-1);
+    display: block;
+}
+
+.field-value {
+    font-size: var(--text-sm);
+    color: var(--black);
+    background: var(--gray-50);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    margin-bottom: var(--space-4);
+    font-weight: 500;
+}
+
+.apply-actions {
+    border-top: 1px solid var(--gray-200);
+    padding-top: var(--space-5);
+}
+
+/* Compact Responsive Design */
+@media (max-width: 768px) {
+    .application-form-section,
+    .form-section {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .application-photo-section {
+        position: static;
+        margin-top: 8px;
+        padding: 8px;
+    }
+    
+    .application-photo-upload {
+        min-height: 100px;
+        padding: 8px;
+    }
+    
+    .application-photo-current,
+    .application-photo-preview {
+        width: 70px;
+        height: 85px;
+    }
+    
+    /* Mobile camera styles */
+    .camera-video {
+        max-width: 140px;
+        height: 105px;
+    }
+    
+    .camera-controls {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    
+    .camera-btn {
+        padding: 3px 6px;
+        font-size: 8px;
+    }
+    
+    .mode-btn {
+        padding: 3px 6px;
+        font-size: 8px;
+    }
+    
+    .photo-mode-toggle {
+        margin-bottom: 6px;
+    }
+    
+    .camera-status {
+        font-size: 7px;
+    }
+    
+    .camera-error {
+        font-size: 8px;
+        padding: 3px 5px;
+    }
+    
+    .page-header {
+        padding: 10px 12px;
+        margin-bottom: 8px;
+    }
+    
+    .row.g-1 > * {
+        margin-bottom: 6px;
+    }
+    
+    .submit-buttons {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
+    }
+    
+    .submit-buttons .btn-modern {
+        width: 100%;
+        justify-content: center;
+        padding: 8px 12px;
+        font-size: 11px;
+    }
+    
+    .form-section h4 {
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+    
+    .document-form {
+        padding: 8px;
+    }
+    
+    .placeholder-content i {
+        font-size: 20px;
+    }
+    
+    .placeholder-content span {
+        font-size: 10px;
+    }
+    
+    .placeholder-content small {
+        font-size: 8px;
+    }
+}
+
+/* Compact Application Form Styling */
+.application-form-section {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.application-form-section h4 {
+    color: #1f2937;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #3b82f6;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Enhanced Photo Section with Camera Support */
+.application-photo-section {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    height: fit-content;
+    position: sticky;
+    top: 10px;
+}
+
+.photo-section-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 10px;
+    display: block;
+    text-align: center;
+}
+
+/* Photo capture mode toggle buttons */
+.photo-mode-toggle {
+    display: flex;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.mode-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+.mode-btn:hover:not(.active) {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.application-photo-upload {
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 16px;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 10px;
+    min-height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.application-photo-upload:hover {
+    border-color: #667eea;
+    background: #eff6ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+/* Camera container */
+.camera-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.camera-container.active {
+    display: flex;
+}
+
+.camera-video {
+    width: 100%;
+    max-width: 200px;
+    height: 150px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid #e5e7eb;
+    background: #f3f4f6;
+}
+
+.camera-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.camera-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.camera-btn-capture {
+    background: #10b981;
+    color: white;
+}
+
+.camera-btn-capture:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.camera-btn-stop {
+    background: #ef4444;
+    color: white;
+}
+
+.camera-btn-stop:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.camera-btn-start {
+    background: #667eea;
+    color: white;
+}
+
+.camera-btn-start:hover {
+    background: #5b67d8;
+    transform: translateY(-1px);
+}
+
+.camera-status {
+    font-size: 11px;
+    color: #6b7280;
+    margin-top: 6px;
+    text-align: center;
+}
+
+.camera-error {
+    color: #ef4444;
+    font-size: 11px;
+    padding: 6px 10px;
+    background: #fee2e2;
+    border-radius: 6px;
+    margin-top: 6px;
+    text-align: center;
+}
+
+.application-photo-current,
+.application-photo-preview {
+    width: 100px;
+    height: 120px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 2px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.application-photo-current:hover,
+.application-photo-preview:hover {
+    border-color: #667eea;
+    transform: scale(1.02);
+}
+
+.photo-placeholder {
+    transition: all 0.3s ease;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-placeholder:hover {
+    opacity: 0.8;
+    transform: scale(1.02);
+}
+
+.placeholder-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #6b7280;
+}
+
+.placeholder-content i {
+    font-size: 28px;
+    color: #9ca3af;
+    margin-bottom: 6px;
+}
+
+.placeholder-content span {
+    font-weight: 600;
+    color: #374151;
+    font-size: 13px;
+}
+
+.placeholder-content small {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.photo-requirements {
+    text-align: center;
+    padding: 6px;
+    background: #f1f5f9;
+    border-radius: 6px;
+    margin-top: 6px;
+}
+
+.photo-requirements small {
+    font-size: 10px;
+    line-height: 1.2;
+    color: #64748b;
+}
+
+.current-photo-display {
+    position: relative;
+    display: inline-block;
+}
+
+.photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    gap: 4px;
+}
+
+.current-photo-display:hover .photo-overlay,
+.photo-preview:hover .photo-overlay {
+    opacity: 1;
+}
+
+.photo-overlay i {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.photo-overlay small {
+    font-size: 10px;
+    font-weight: 500;
+}
+
+/* Photo preview animation */
+.photo-preview {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Hide the actual file input */
+input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+/* File input styling */
+input[type="file"] {
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+}
+
+/* Dark mode styles */
+[data-bs-theme="dark"] .form-section {
+    background-color: #2d2d2d !important;
+    border-color: #404040 !important;
+    color: #e0e0e0 !important;
+}
+[data-bs-theme="dark"] .form-section h4 {
+    color: #ffffff !important;
+    border-bottom-color: #404040 !important;
+}
+[data-bs-theme="dark"] .document-form {
+    background-color: #1a1a1a !important;
+    border-color: #404040 !important;
+}
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+    background-color: #2d2d2d !important;
+    border-color: #404040 !important;
+    color: #ffffff !important;
+}
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+    background-color: #2d2d2d !important;
+    border-color: #667eea !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25) !important;
+}
+
+.page-header {
+    padding: 10px 12px;
+    margin-bottom: 8px;
+}
+
+.page-header h2 {
+    font-size: 14px;
+}
+
+.page-header p {
+    font-size: 10px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+   
+    <!-- Application Header -->
+    <div class="bg-white px-2 flex items-center justify-between pt-3">
+        <div>
+          <a href="{% url 'zone:worker_list' %}" class="button-min-default flex items-center space-x-1">
+              <span>
+                  <i class="fa fa-arrow-left"></i>
+              </span>
+              <span>Back</span>
+          </a>
+        </div>
+        <div class="border-b-2 border-blue-500 px-2 pb-1 center">
+          <h1 class="text-lg font-bold text-blue-500">{{ title }}</h1>
+          
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <form method="post" enctype="multipart/form-data" novalidate id="workerForm">
+                {% csrf_token %}
+                
+                <!-- OCR Document Scanner -->
+                <div class="rounded-lg border border-gray-200">
+                    <div class="border-b border-gray-200 py-2 px-3 flex items-center justify-between">
+                        <h4><i class="bi bi-upc-scan me-2"></i>OCR Document Scanner</h4>
+                        <button type="button" class="button-min-primary py-1 px-2" id="rescan-btn">
+                            <div class="flex items-center gap-2">
+                                <i class="bi bi-arrow-clockwise"></i>
+                                <span>Rescan Document</span>
+                            </div>
+                        </button>
+                    </div>
+                        
+                    <div class="grid grid-cols-2 gap-3 mt-3 px-3 pb-3">
+                        <div class="p-3 border border-gray-200 rounded-lg">
+                            <h4><i class="fa fa-file-image me-2"></i>Scan Document Image</h4>
+                            <div id="defaultImg" class="mt-3 p-2 rounded bg-gray-100">
+                                <div class="flex items-center justify-center py-4">
+                                    <i class="bi bi-image text-4xl text-gray-500"></i>
+                                </div>
+                            </div>
+                            <div id="previewImg" class="mt-3 p-2 rounded bg-gray-100" style="display: none;">
+                                <img id="imageWhite" class="w-full h-full object-contain rounded-lg"/>
+                            </div>
+                        </div>
+                            
+                        <div class="p-3 border border-gray-200 rounded-lg">
+                            <h4><i class="fa fa-list-check me-2"></i>Extracted Data Preview</h4>
+                            <div class="mt-3 p-2 space-y-2" id="textExtractedDefault">
+                                <div class="p-1 rounded bg-gray-100 w-full"></div>
+                                <div class="p-1 rounded bg-gray-100 w-full"></div>
+                                <div class="p-1 rounded bg-gray-100 w-full"></div>
+                                <div class="p-1 rounded bg-gray-100 w-full"></div>
+                                <div class="p-1 rounded bg-gray-100 w-full"></div>
+                                <div class="p-1 rounded bg-gray-100 w-full"></div>
+                            </div>
+                            <div class="mt-3 p-2 rounded space-y-2" id="textExtractedBlock">
+                               <div class="w-full flex gap-2 text-xs">
+                                    
+                               </div>
+                        </div>
+                    </div>
+                    </div>
+                
+                <!-- Personal Information -->
+                <div class="form-section application-form-section">
+                    <h4><i class="bi bi-person me-2"></i>Personal Information</h4>
+                    
+                    <div class="row g-1">
+                        <!-- Left Column - Form Fields -->
+                        <div class="col-md-8 col-lg-9">
+                            <!-- Basic Name Information -->
+                            <div class="row g-1">
+                                <div class="col-md-4">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                        <i class="bi bi-person text-muted me-1"></i>
+                                        First Name <span class="required-field">*</span>
+                                    </label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.first_name.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                        <i class="bi bi-person text-muted me-1"></i>
+                                        Last Name <span class="required-field">*</span>
+                                    </label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.last_name.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{ form.nickname.id_for_label }}" class="form-label">
+                                        <i class="bi bi-chat-quote text-muted me-1"></i>
+                                        Nickname
+                                    </label>
+                                    {{ form.nickname }}
+                                    {% if form.nickname.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.nickname.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Personal Details -->
+                            <div class="row g-1 mt-1">
+                                <div class="col-md-3">
+                                    <label for="{{ form.sex.id_for_label }}" class="form-label">
+                                        <i class="bi bi-gender-ambiguous text-muted me-1"></i>
+                                        Gender <span class="required-field">*</span>
+                                    </label>
+                                    {{ form.sex }}
+                                    {% if form.sex.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.sex.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{ form.dob.id_for_label }}" class="form-label">
+                                        <i class="bi bi-calendar text-muted me-1"></i>
+                                        Date of Birth <span class="required-field">*</span>
+                                    </label>
+                                    {{ form.dob }}
+                                    {% if form.dob.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.dob.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="{{ form.nationality.id_for_label }}" class="form-label">
+                                        <i class="bi bi-flag text-muted me-1"></i>
+                                        Nationality <span class="required-field">*</span>
+                                    </label>
+                                    {{ form.nationality }}
+                                    {% if form.nationality.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.nationality.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-3">
+                                    <div id="age-display" class="form-label text-info">
+                                        <i class="bi bi-clock text-muted me-1"></i>
+                                        <span>Age: <span id="calculated-age">--</span> years</span>
+                                    </div>
+                                    <div class="form-text">Calculated from birth date</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Contact Information -->
+                            <div class="row g-1 mt-1">
+                                <div class="col-md-12">
+                                    <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+                                        <i class="bi bi-telephone text-muted me-1"></i>
+                                        Phone Number <span class="required-field">*</span>
+                                    </label>
+                                    {{ form.phone_number }}
+                                    {% if form.phone_number.errors %}
+                                        <div class="text-danger">
+                                            {% for error in form.phone_number.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-text">Format: +85581123456 or 081123456</div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <!-- Right Column - Enhanced Photo Upload -->
+                        <div class="col-md-4 col-lg-3">
+                            <div class="application-photo-section">
+                                <label class="form-label photo-section-label">
+                                    <i class="bi bi-camera me-1"></i>Worker Photo <span class="required-field">*</span>
+                                </label>
+                                <div class="photo-mode-toggle">
+                                    <button type="button" class="mode-btn active" id="file-mode-btn" onclick="switchToFile()">
+                                        <i class="bi bi-upload"></i> File
+                                    </button>
+                                    <button type="button" class="mode-btn" id="camera-mode-btn" onclick="switchToCamera()">
+                                        <i class="bi bi-camera"></i> Camera
+                                    </button>
+                                </div>
+                                
+                                <!-- File Upload Mode -->
+                                <div class="application-photo-upload" id="file-upload-area" onclick="document.getElementById('{{ form.photo.id_for_label }}').click();" style="display: block;">
+                                    {% if worker and worker.photo %}
+                                        <div class="current-photo-display">
+                                            <img src="{% url 'zone:serve_worker_photo' worker.id %}" alt="Current photo" class="application-photo-current">
+                                            <div class="photo-overlay">
+                                                <i class="bi bi-pencil-fill"></i>
+                                                <small>Click to change</small>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="photo-placeholder" id="photo-placeholder">
+                                            <div class="placeholder-content">
+                                                <i class="bi bi-person-plus-fill"></i>
+                                                <span>Upload Photo</span>
+                                                <small>Click here</small>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <div class="photo-preview" id="photo-preview" style="display: none;">
+                                        <img id="photo-preview-img" class="application-photo-preview">
+                                        <div class="photo-overlay">
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                            <small>Photo selected</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Camera Mode -->
+                                <div class="application-photo-upload" id="camera-upload-area" style="display: none;">
+                                    {% if worker and worker.photo %}
+                                        <!-- Show current photo in camera mode too -->
+                                        <div class="current-photo-display" id="camera-current-photo">
+                                            <img src="{% url 'zone:serve_worker_photo' worker.id %}" alt="Current photo" class="application-photo-current">
+                                            <div class="photo-overlay">
+                                                <i class="bi bi-camera-fill"></i>
+                                                <small>Current photo - Use camera to replace</small>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="camera-container active" id="camera-container">
+                                        <video id="camera-video" class="camera-video" autoplay muted playsinline style="display: none;"></video>
+                                        <canvas id="camera-canvas" style="display: none;"></canvas>
+                                        
+                                        <div class="camera-controls" id="camera-controls">
+                                            <button type="button" class="camera-btn camera-btn-start" id="start-camera-btn" onclick="startCamera()">
+                                                <i class="bi bi-camera-video"></i> 
+                                                {% if worker and worker.photo %}Replace Photo{% else %}Start Camera{% endif %}
+                                            </button>
+                                            <button type="button" class="camera-btn camera-btn-capture" id="capture-btn" onclick="capturePhoto()" style="display: none;">
+                                                <i class="bi bi-camera"></i> Capture
+                                            </button>
+                                            <button type="button" class="camera-btn camera-btn-stop" id="stop-camera-btn" onclick="stopCamera()" style="display: none;">
+                                                <i class="bi bi-camera-video-off"></i> Stop
+                                            </button>
+                                            <button type="button" class="camera-btn camera-btn-start" id="retake-camera-btn" onclick="startCamera()" style="display: none;">
+                                                <i class="bi bi-arrow-clockwise"></i> Retake Photo
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="camera-status" id="camera-status">
+                                            {% if worker and worker.photo %}Click "Replace Photo" to take a new photo{% else %}Click "Start Camera" to begin{% endif %}
+                                        </div>
+                                        <div class="camera-error" id="camera-error" style="display: none;"></div>
+                                        
+                                        <!-- Captured photo preview -->
+                                        <div class="photo-preview" id="camera-photo-preview" style="display: none;">
+                                            <img id="camera-photo-preview-img" class="application-photo-preview">
+                                            <div class="photo-overlay">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                                <small>Photo captured</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="photo-requirements">
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        JPG, PNG, GIF, BMP<br>
+                                        Max size: 5MB<br>
+                                        Professional headshot preferred
+                                    </small>
+                                </div>
+                                
+                                <!-- Hide the default Django file widget since we have our custom photo display -->
+                                <div style="display: none;">
+                                    {{ form.photo }}
+                                </div>
+                                {% if form.photo.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.photo.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <!-- Identification -->
+                <div class="form-section">
+                    <h4><i class="bi bi-card-text me-2"></i>Identification</h4>
+                    <div class="row g-1">
+                        <div class="col-md-3">
+                            <label for="{{ form.worker_id.id_for_label }}" class="form-label">
+                                ID
+                            </label>
+                            {{ form.worker_id }}
+                            {% if form.worker_id.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.worker_id.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Auto-generated if left empty</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Information -->
+                <div class="form-section">
+                    <h4><i class="bi bi-briefcase me-2"></i>Work Information</h4>
+                    <div class="row g-1">
+                        <div class="col-md-4">
+                            <label for="{{ form.zone.id_for_label }}" class="form-label">
+                                Zone <span class="required-field">*</span>
+                            </label>
+                            {{ form.zone }}
+                            {% if form.zone.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.zone.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.position.id_for_label }}" class="form-label">
+                                Position
+                            </label>
+                            {{ form.position }}
+                            {% if form.position.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.position.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row g-1 mt-1">
+                        <div class="col-md-4">
+                            <label for="{{ form.building.id_for_label }}" class="form-label">
+                                Building
+                            </label>
+                            {{ form.building }}
+                            {% if form.building.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.building.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.floor.id_for_label }}" class="form-label">
+                                Floor
+                            </label>
+                            {{ form.floor }}
+                            {% if form.floor.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.floor.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">
+                                Status
+                                {% if worker %}
+                                <span class="badge bg-warning text-dark ms-1" style="font-size: 8px;">
+                                    <i class="bi bi-lock-fill"></i> Read-Only
+                                </span>
+                                {% endif %}
+                            </label>
+                            {{ form.status }}
+                            {% if form.status.help_text %}
+                                <small class="form-text text-muted d-block mt-1">
+                                    <i class="bi bi-info-circle"></i> {{ form.status.help_text }}
+                                </small>
+                            {% endif %}
+                            {% if form.status.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.status.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- VIP Status Row -->
+                    <div class="row g-1 mt-2">
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                {{ form.is_vip }}
+                                <label class="form-check-label" for="{{ form.is_vip.id_for_label }}">
+                                    <i class="bi bi-star text-muted me-1"></i>
+                                    VIP Worker
+                                </label>
+                                {% if form.is_vip.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.is_vip.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Documents Section -->
+                <div class="form-section">
+                    <h4><i class="bi bi-file-earmark-text me-2"></i>Documents</h4>
+                    
+                    <div id="document-formset">
+                        {{ formset.management_form }}
+                        {% for form_doc in formset %}
+                            <div class="document-form border-l-4 border-blue-500" data-form-idx="{{ forloop.counter0 }}">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5>Document #{{ forloop.counter }}</h5>
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% if formset.can_delete and form_doc.instance.pk %}
+                                            <div class="delete-checkbox">
+                                                {{ form_doc.DELETE }}
+                                                <label for="{{ form_doc.DELETE.id_for_label }}" class="form-check-label">
+                                                    Delete this document
+                                                </label>
+                                            </div>
+                                        {% endif %}
+                                        <button type="button" class="remove-document-btn" onclick="removeDocumentForm(this)" {% if form_doc.instance.pk %}style="display: none;"{% endif %}>
+                                            <i class="bi bi-trash"></i>Remove
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                {% for hidden in form_doc.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                                
+                                <div class="row g-1">
+                                    <div class="col-md-3">
+                                        <label for="{{ form_doc.document_type.id_for_label }}" class="form-label">
+                                            Document Type
+                                        </label>
+                                        {{ form_doc.document_type }}
+                                        {% if form_doc.document_type.errors %}
+                                            <div class="text-danger">
+                                                {% for error in form_doc.document_type.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="{{ form_doc.document_number.id_for_label }}" class="form-label">
+                                            Document Number
+                                        </label>
+                                        {{ form_doc.document_number }}
+                                        {% if form_doc.document_number.errors %}
+                                            <div class="text-danger">
+                                                {% for error in form_doc.document_number.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="{{ form_doc.issue_date.id_for_label }}" class="form-label">
+                                            Issue Date
+                                        </label>
+                                        {{ form_doc.issue_date }}
+                                        {% if form_doc.issue_date.errors %}
+                                            <div class="text-danger">
+                                                {% for error in form_doc.issue_date.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="{{ form_doc.expiry_date.id_for_label }}" class="form-label">
+                                            Expiry Date
+                                        </label>
+                                        {{ form_doc.expiry_date }}
+                                        {% if form_doc.expiry_date.errors %}
+                                            <div class="text-danger">
+                                                {% for error in form_doc.expiry_date.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="row g-1 mt-1">
+                                    <div class="col-md-4">
+                                        <label for="{{ form_doc.issuing_authority.id_for_label }}" class="form-label">
+                                            Issuing Authority
+                                        </label>
+                                        {{ form_doc.issuing_authority }}
+                                        {% if form_doc.issuing_authority.errors %}
+                                            <div class="text-danger">
+                                                {% for error in form_doc.issuing_authority.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="{{ form_doc.document_file.id_for_label }}" class="form-label">
+                                            Document File
+                                        </label>
+                                        {{ form_doc.document_file }}
+                                        {% if form_doc.document_file.errors %}
+                                            <div class="text-danger">
+                                                {% for error in form_doc.document_file.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="{{ form_doc.notes.id_for_label }}" class="form-label">
+                                            Notes
+                                        </label>
+                                        {{ form_doc.notes }}
+                                        {% if form_doc.notes.errors %}
+                                            <div class="text-danger">
+                                                {% for error in form_doc.notes.errors %}{{ error }}{% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <button type="button" class="add-document-btn" id="add-document-btn">
+                        <i class="bi bi-plus-circle me-1"></i> Add Another Document
+                    </button>
+                </div>
+
+
+                <!-- Display Form Errors -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if formset.non_form_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in formset.non_form_errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Submit Buttons -->
+                <div class="d-flex justify-content-center gap-3 submit-buttons">
+                    <a href="{% url 'zone:worker_list' %}" class="button-min-default" 
+                       aria-label="Cancel and return to worker list">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn-modern btn-primary-modern" id="submitBtn"
+                            aria-label="Save worker information">
+                        <i class="bi bi-check-circle me-1"></i>{{ submit_text }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Zone and Building data for JavaScript -->
+{{ zones_data|json_script:"zones-data" }}
+{{ buildings_data|json_script:"buildings-data" }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get form elements
+    const zoneSelect = document.getElementById('{{ form.zone.id_for_label }}');
+    const buildingSelect = document.getElementById('{{ form.building.id_for_label }}');
+    const floorSelect = document.getElementById('{{ form.floor.id_for_label }}');
+
+    // Get data for chain selects
+    const zonesData = JSON.parse(document.getElementById('zones-data').textContent);
+    const buildingsData = JSON.parse(document.getElementById('buildings-data').textContent);
+
+    // Zone change handler for building updates
+    if (zoneSelect && buildingSelect) {
+        zoneSelect.addEventListener('change', function() {
+            const zoneId = this.value;
+            updateBuildingOptions(zoneId);
+            // Clear floor options when zone changes
+            clearFloorOptions();
+        });
+    }
+
+    // Building change handler for floor updates
+    if (buildingSelect && floorSelect) {
+        buildingSelect.addEventListener('change', function() {
+            const buildingId = this.value;
+            updateFloorOptions(buildingId);
+        });
+    }
+
+    function updateBuildingOptions(zoneId) {
+        if (zoneId) {
+            // Show loading state
+            buildingSelect.innerHTML = '<option value="">Loading buildings...</option>';
+            buildingSelect.disabled = true;
+            
+            // Use AJAX to get fresh building data to ensure consistency
+            fetch('/zone/ajax/get-buildings-by-zone/?zone_id=' + zoneId)
+                .then(response => response.json())
+                .then(data => {
+                    buildingSelect.innerHTML = '<option value="">Select Building</option>';
+                    
+                    if (data.buildings && data.buildings.length > 0) {
+                        data.buildings.forEach(building => {
+                            const option = document.createElement('option');
+                            option.value = building.id;
+                            option.textContent = building.name;
+                            buildingSelect.appendChild(option);
+                        });
+                        buildingSelect.disabled = false;
+                    } else {
+                        const option = document.createElement('option');
+                        option.value = '';
+                        option.textContent = 'No buildings available for this zone';
+                        option.disabled = true;
+                        buildingSelect.appendChild(option);
+                        buildingSelect.disabled = true;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching buildings:', error);
+                    // Fallback to static data if AJAX fails
+                    const filteredBuildings = buildingsData.filter(function(building) {
+                        return building.zone_id && building.zone_id.toString() === zoneId;
+                    });
+                    
+                    buildingSelect.innerHTML = '<option value="">Select Building</option>';
+                    filteredBuildings.forEach(building => {
+                        const option = document.createElement('option');
+                        option.value = building.id;
+                        option.textContent = building.name;
+                        buildingSelect.appendChild(option);
+                    });
+                    buildingSelect.disabled = filteredBuildings.length === 0;
+                });
+        } else {
+            // Clear building options if no zone selected
+            buildingSelect.innerHTML = '<option value="">Select Zone First</option>';
+            buildingSelect.disabled = true;
+        }
+        
+        // Clear floor options when building options change
+        clearFloorOptions();
+    }
+
+    function updateFloorOptions(buildingId) {
+        if (buildingId) {
+            // Show loading state
+            floorSelect.innerHTML = '<option value="">Loading floors...</option>';
+            floorSelect.disabled = true;
+            
+            fetch('{% url "zone:get_floors_by_building" %}?building_id=' + buildingId)
+                .then(response => response.json())
+                .then(data => {
+                    floorSelect.innerHTML = '<option value="">Select Floor</option>';
+                    
+                    if (data.floors && data.floors.length > 0) {
+                        console.log('Building no_floor status:', data.building_no_floor);
+                        console.log('Available floors:', data.floors);
+                        
+                        // Check if building has no_floor = true (building has NO specific floors)
+                        if (data.building_no_floor) {
+                            // Look for F0 floor first
+                            const f0Floor = data.floors.find(floor => floor.name === 'F0');
+                            console.log('F0 floor found:', f0Floor);
+                            
+                            data.floors.forEach(floor => {
+                                const option = document.createElement('option');
+                                option.value = floor.id;
+                                option.textContent = floor.name;
+                                
+                                // Auto-select F0 for no-floor buildings
+                                if (floor.name === 'F0') {
+                                    option.selected = true;
+                                    option.style.fontWeight = 'bold';
+                                    option.style.color = '#dc3545';
+                                    option.title = 'Auto-selected for no-floor building';
+                                    console.log('F0 auto-selected:', floor);
+                                }
+                                
+                                floorSelect.appendChild(option);
+                            });
+                            
+                            // If F0 doesn't exist, select the first floor and mark it
+                            if (!f0Floor && data.floors.length > 0) {
+                                const firstOption = floorSelect.options[1]; // Skip the "Select Floor" option
+                                if (firstOption) {
+                                    firstOption.selected = true;
+                                    firstOption.style.fontWeight = 'bold';
+                                    firstOption.style.color = '#dc3545';
+                                    firstOption.title = 'Auto-selected (F0 not found) for no-floor building';
+                                    console.log('First floor auto-selected (F0 not found):', firstOption.textContent);
+                                }
+                            }
+                            
+                            // Trigger change event if auto-selection occurred
+                            floorSelect.dispatchEvent(new Event('change'));
+                        } else {
+                            // Normal building with floors - show all options
+                            data.floors.forEach(floor => {
+                                const option = document.createElement('option');
+                                option.value = floor.id;
+                                option.textContent = floor.name;
+                                floorSelect.appendChild(option);
+                            });
+                        }
+                        floorSelect.disabled = false;
+                    } else {
+                        const option = document.createElement('option');
+                        option.value = '';
+                        option.textContent = 'No floors available for this building';
+                        option.disabled = true;
+                        floorSelect.appendChild(option);
+                        floorSelect.disabled = true;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching floors:', error);
+                    floorSelect.innerHTML = '<option value="">Error loading floors</option>';
+                    floorSelect.disabled = true;
+                });
+        } else {
+            clearFloorOptions();
+        }
+    }
+
+    function clearFloorOptions() {
+        floorSelect.innerHTML = '<option value="">Select Building First</option>';
+        floorSelect.disabled = true;
+    }
+
+    // Initialize chain selects
+    function initializeChainSelects() {
+        // Set initial states
+        if (!zoneSelect.value) {
+            buildingSelect.disabled = true;
+            floorSelect.disabled = true;
+            buildingSelect.innerHTML = '<option value="">Select Zone First</option>';
+            floorSelect.innerHTML = '<option value="">Select Building First</option>';
+        }
+        
+        {% if worker %}
+        // Initialize for editing existing worker
+        if (zoneSelect.value) {
+            updateBuildingOptions(zoneSelect.value);
+            // Set building value after options are populated
+            setTimeout(function() {
+                buildingSelect.value = '{{ worker.building.id|default:"" }}';
+                if (buildingSelect.value) {
+                    updateFloorOptions(buildingSelect.value);
+                    // Set floor value after options are populated
+                    setTimeout(function() {
+                        floorSelect.value = '{{ worker.floor.id|default:"" }}';
+                    }, 100);
+                }
+            }, 100);
+        }
+        {% endif %}
+    }
+    
+    // Initialize the chain selects on page load
+    initializeChainSelects();
+
+    // Document formset management
+    const addDocumentBtn = document.getElementById('add-document-btn');
+    const documentFormset = document.getElementById('document-formset');
+    
+    // Store the original template form
+    let documentTemplate = null;
+    if (documentFormset) {
+        const existingForm = document.querySelector('.document-form');
+        if (existingForm) {
+            documentTemplate = existingForm.cloneNode(true);
+        }
+    }
+    
+    if (addDocumentBtn && documentFormset) {
+        let formIdx = parseInt(document.querySelector('#id_documents-TOTAL_FORMS').value);
+        
+        addDocumentBtn.addEventListener('click', function() {
+            let emptyForm;
+            
+            // Check if we have existing forms to clone from
+            const existingForm = document.querySelector('.document-form');
+            if (existingForm) {
+                emptyForm = existingForm.cloneNode(true);
+            } else if (documentTemplate) {
+                // Use stored template if no existing forms
+                emptyForm = documentTemplate.cloneNode(true);
+            } else {
+                // Create new form from scratch if no template exists
+                emptyForm = createNewDocumentForm(formIdx);
+            }
+            
+            emptyForm.dataset.formIdx = formIdx;
+            
+            // Update form indexes
+            const formIdxRegex = new RegExp('documents-\\d+-', 'g');
+            emptyForm.innerHTML = emptyForm.innerHTML.replace(formIdxRegex, 'documents-' + formIdx + '-');
+            
+            // Clear values
+            emptyForm.querySelectorAll('input, select, textarea').forEach(function(input) {
+                if (input.type !== 'hidden') {
+                    input.value = '';
+                }
+            });
+            
+            // Update form title and numbering
+            emptyForm.querySelector('h5').textContent = 'Document #' + (formIdx + 1);
+            
+            // Show remove button for new forms (hide delete checkbox)
+            const deleteCheckbox = emptyForm.querySelector('.delete-checkbox');
+            const removeBtn = emptyForm.querySelector('.remove-document-btn');
+            if (deleteCheckbox) {
+                deleteCheckbox.style.display = 'none';
+            }
+            if (removeBtn) {
+                removeBtn.style.display = 'inline-flex';
+            }
+            
+            // Insert before the add button
+            addDocumentBtn.parentNode.insertBefore(emptyForm, addDocumentBtn);
+            
+            // Update total forms count
+            formIdx++;
+            document.querySelector('#id_documents-TOTAL_FORMS').value = formIdx;
+            
+            // Update document numbers for all forms
+            updateDocumentNumbers();
+        });
+    }
+
+    // Photo preview functionality
+    const photoInput = document.getElementById('{{ form.photo.id_for_label }}');
+    
+    if (photoInput) {
+        photoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const placeholder = document.getElementById('photo-placeholder');
+            const preview = document.getElementById('photo-preview');
+            const previewImg = document.getElementById('photo-preview-img');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    if (placeholder) placeholder.style.display = 'none';
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.style.display = 'none';
+                if (placeholder) placeholder.style.display = 'block';
+            }
+        });
+    }
+
+    // Auto-resize textareas
+    document.querySelectorAll('textarea').forEach(function(textarea) {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+        
+        // Initial resize
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    });
+
+    // Date field improvements
+    document.querySelectorAll('input[type="date"]').forEach(function(input) {
+        input.addEventListener('change', function() {
+            if (this.value) {
+                this.classList.add('has-value');
+            } else {
+                this.classList.remove('has-value');
+            }
+        });
+        
+        // Initial check
+        if (input.value) {
+            input.classList.add('has-value');
+        }
+    });
+});
+
+// Function to remove a document form
+function removeDocumentForm(button) {
+    const documentForm = button.closest('.document-form');
+    if (documentForm) {
+        documentForm.remove();
+        
+        // Update total forms count
+        const totalForms = document.querySelector('#id_documents-TOTAL_FORMS');
+        totalForms.value = parseInt(totalForms.value) - 1;
+        
+        // Update document numbers for remaining forms
+        updateDocumentNumbers();
+    }
+}
+
+// Function to update document numbers
+function updateDocumentNumbers() {
+    const documentForms = document.querySelectorAll('.document-form');
+    documentForms.forEach((form, index) => {
+        const title = form.querySelector('h5');
+        if (title) {
+            title.textContent = 'Document #' + (index + 1);
+        }
+    });
+}
+
+// Function to create a new document form from scratch
+function createNewDocumentForm(formIdx) {
+    const formHtml = `
+        <div class="document-form" data-form-idx="${formIdx}">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5>Document #${formIdx + 1}</h5>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="delete-checkbox" style="display: none;">
+                        <input type="checkbox" name="documents-${formIdx}-DELETE" id="id_documents-${formIdx}-DELETE">
+                        <label for="id_documents-${formIdx}-DELETE" class="form-check-label">
+                            Delete this document
+                        </label>
+                    </div>
+                    <button type="button" class="remove-document-btn" onclick="removeDocumentForm(this)">
+                        <i class="bi bi-trash"></i>Remove
+                    </button>
+                </div>
+            </div>
+            
+            <input type="hidden" name="documents-${formIdx}-id" id="id_documents-${formIdx}-id">
+            
+            <div class="row g-1">
+                <div class="col-md-3">
+                    <label for="id_documents-${formIdx}-document_type" class="form-label">
+                        Document Type
+                    </label>
+                    <select name="documents-${formIdx}-document_type" class="form-select" id="id_documents-${formIdx}-document_type">
+                        <option value="">---------</option>
+                        <option value="passport">Passport</option>
+                        <option value="id_card">ID Card</option>
+                        <option value="driving_license">Driving License</option>
+                        <option value="work_permit">Work Permit</option>
+                        <option value="visa">Visa</option>
+                        <option value="certificate">Certificate</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="id_documents-${formIdx}-document_number" class="form-label">
+                        Document Number
+                    </label>
+                    <input type="text" name="documents-${formIdx}-document_number" class="form-control" id="id_documents-${formIdx}-document_number">
+                </div>
+                <div class="col-md-3">
+                    <label for="id_documents-${formIdx}-issue_date" class="form-label">
+                        Issue Date
+                    </label>
+                    <input type="date" name="documents-${formIdx}-issue_date" class="form-control" id="id_documents-${formIdx}-issue_date">
+                </div>
+                <div class="col-md-3">
+                    <label for="id_documents-${formIdx}-expiry_date" class="form-label">
+                        Expiry Date
+                    </label>
+                    <input type="date" name="documents-${formIdx}-expiry_date" class="form-control" id="id_documents-${formIdx}-expiry_date">
+                </div>
+            </div>
+            <div class="row g-1 mt-1">
+                <div class="col-md-4">
+                    <label for="id_documents-${formIdx}-issuing_authority" class="form-label">
+                        Issuing Authority
+                    </label>
+                    <input type="text" name="documents-${formIdx}-issuing_authority" class="form-control" id="id_documents-${formIdx}-issuing_authority">
+                </div>
+                <div class="col-md-4">
+                    <label for="id_documents-${formIdx}-document_file" class="form-label">
+                        Document File
+                    </label>
+                    <input type="file" name="documents-${formIdx}-document_file" class="form-control" id="id_documents-${formIdx}-document_file">
+                </div>
+                <div class="col-md-4">
+                    <label for="id_documents-${formIdx}-notes" class="form-label">
+                        Notes
+                    </label>
+                    <textarea name="documents-${formIdx}-notes" class="form-control" id="id_documents-${formIdx}-notes" rows="1"></textarea>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = formHtml;
+    return tempDiv.firstElementChild;
+}
+
+// Camera and Photo Upload Functionality
+let currentStream = null;
+let capturedPhotoBlob = null;
+
+// Switch to camera mode
+function switchToCamera() {
+    // Update toggle buttons
+    document.getElementById('camera-mode-btn').classList.add('active');
+    document.getElementById('file-mode-btn').classList.remove('active');
+    
+    // Show/hide appropriate sections
+    document.getElementById('camera-upload-area').style.display = 'flex';
+    document.getElementById('file-upload-area').style.display = 'none';
+    
+    // Clear any file input selection from file mode
+    const photoInput = document.getElementById('{{ form.photo.id_for_label }}');
+    if (photoInput && !capturedPhotoBlob) {
+        photoInput.value = '';
+    }
+    
+    // Reset camera UI based on whether we have a captured photo
+    if (capturedPhotoBlob) {
+        document.getElementById('camera-status').textContent = 'Photo captured - Click "Retake Photo" to take a new photo';
+        document.getElementById('camera-photo-preview').style.display = 'block';
+        document.getElementById('start-camera-btn').style.display = 'none';
+        document.getElementById('retake-camera-btn').style.display = 'inline-flex';
+    } else {
+        document.getElementById('camera-status').textContent = 'Click "Start Camera" to begin';
+        document.getElementById('camera-photo-preview').style.display = 'none';
+        document.getElementById('start-camera-btn').style.display = 'inline-flex';
+        document.getElementById('retake-camera-btn').style.display = 'none';
+    }
+    
+    // Always hide these buttons when switching to camera mode
+    document.getElementById('capture-btn').style.display = 'none';
+    document.getElementById('stop-camera-btn').style.display = 'none';
+    
+    hideError();
+}
+
+// Switch to file upload mode
+function switchToFile() {
+    // Update toggle buttons
+    document.getElementById('file-mode-btn').classList.add('active');
+    document.getElementById('camera-mode-btn').classList.remove('active');
+    
+    // Show/hide appropriate sections
+    document.getElementById('file-upload-area').style.display = 'flex';
+    document.getElementById('camera-upload-area').style.display = 'none';
+    
+    // Stop camera if running
+    stopCamera();
+    
+    // Clear captured photo when switching to file mode
+    clearCapturedPhoto();
+    
+    // Show file preview if there was a file selected
+    const photoInput = document.getElementById('{{ form.photo.id_for_label }}');
+    if (photoInput && photoInput.files && photoInput.files.length > 0) {
+        // Trigger the existing file preview functionality
+        photoInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    
+    hideError();
+}
+
+// Clear captured photo
+function clearCapturedPhoto() {
+    capturedPhotoBlob = null;
+    document.getElementById('camera-photo-preview').style.display = 'none';
+    
+    // Reset button states
+    document.getElementById('start-camera-btn').style.display = 'inline-flex';
+    document.getElementById('retake-camera-btn').style.display = 'none';
+    document.getElementById('capture-btn').style.display = 'none';
+    document.getElementById('stop-camera-btn').style.display = 'none';
+    
+    // Clear the photo input if it contains a captured photo
+    const photoInput = document.getElementById('{{ form.photo.id_for_label }}');
+    if (photoInput) {
+        photoInput.value = '';
+    }
+}
+
+// Start camera stream
+async function startCamera() {
+    try {
+        hideError();
+        
+        // Check if mediaDevices API is available (requires secure context)
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            console.log('Current URL:', window.location.href);
+            console.log('Protocol:', window.location.protocol);
+            console.log('Hostname:', window.location.hostname);
+            
+            let helpMessage = 'Camera access is blocked. ';
+            if (window.location.hostname === 'kk.lyp') {
+                helpMessage += 'To use camera, access this page via http://localhost:8000 instead of http://kk.lyp:8000';
+            } else {
+                helpMessage += 'Camera requires HTTPS or localhost. Please use file upload instead.';
+            }
+            throw new Error(helpMessage);
+        }
+        
+        updateCameraStatus('Requesting camera access...');
+        
+        // Hide captured photo preview when starting new session (don't clear the input yet)
+        document.getElementById('camera-photo-preview').style.display = 'none';
+        
+        const constraints = {
+            video: {
+                width: { ideal: 640 },
+                height: { ideal: 480 },
+                facingMode: 'user' // Front-facing camera
+            }
+        };
+        
+        currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+        
+        const video = document.getElementById('camera-video');
+        video.srcObject = currentStream;
+        video.style.display = 'block';
+        
+        // Update UI
+        document.getElementById('start-camera-btn').style.display = 'none';
+        document.getElementById('capture-btn').style.display = 'inline-flex';
+        document.getElementById('stop-camera-btn').style.display = 'inline-flex';
+        
+        updateCameraStatus('Camera ready - Click "Capture" to take photo');
+        
+    } catch (error) {
+        console.error('Error accessing camera:', error);
+        let errorMessage = '';
+        
+        if (error.message) {
+            errorMessage = error.message;
+        } else if (error.name === 'NotAllowedError') {
+            errorMessage = 'Camera access denied. Please allow camera access when prompted and try again.';
+        } else if (error.name === 'NotFoundError') {
+            errorMessage = 'No camera found on this device.';
+        } else if (error.name === 'NotSupportedError') {
+            errorMessage = 'Camera not supported in this browser.';
+        } else if (error.name === 'NotReadableError') {
+            errorMessage = 'Camera is being used by another application.';
+        } else {
+            errorMessage = 'Camera access failed. Please check your camera settings.';
+        }
+        
+        showError(errorMessage);
+        updateCameraStatus('Camera unavailable');
+    }
+}
+
+// Stop camera stream
+function stopCamera() {
+    if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop());
+        currentStream = null;
+    }
+    
+    const video = document.getElementById('camera-video');
+    video.style.display = 'none';
+    video.srcObject = null;
+    
+    // Update UI based on whether we have a captured photo
+    if (!capturedPhotoBlob) {
+        // No photo captured - show start button
+        document.getElementById('start-camera-btn').style.display = 'inline-flex';
+        document.getElementById('retake-camera-btn').style.display = 'none';
+        document.getElementById('camera-photo-preview').style.display = 'none';
+        updateCameraStatus('Camera stopped - Click "Start Camera" to begin');
+    } else {
+        // Photo captured - show retake button
+        document.getElementById('start-camera-btn').style.display = 'none';
+        document.getElementById('retake-camera-btn').style.display = 'inline-flex';
+        updateCameraStatus('Photo captured - Click "Retake Photo" to take a new photo');
+    }
+    
+    // Always hide capture and stop buttons
+    document.getElementById('capture-btn').style.display = 'none';
+    document.getElementById('stop-camera-btn').style.display = 'none';
+    
+    hideError();
+}
+
+// Capture photo from camera
+function capturePhoto() {
+    const video = document.getElementById('camera-video');
+    const canvas = document.getElementById('camera-canvas');
+    const context = canvas.getContext('2d');
+    
+    // Set canvas dimensions to match video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    // Draw video frame to canvas
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Convert canvas to blob
+    canvas.toBlob(function(blob) {
+        capturedPhotoBlob = blob;
+        
+        // Show preview
+        const preview = document.getElementById('camera-photo-preview');
+        const previewImg = document.getElementById('camera-photo-preview-img');
+        
+        const url = URL.createObjectURL(blob);
+        previewImg.src = url;
+        preview.style.display = 'block';
+        
+        // Create a file object and set it to the input
+        const file = new File([blob], 'camera-photo.jpg', { type: 'image/jpeg' });
+        
+        // Create a new FileList with the captured photo
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        
+        const photoInput = document.getElementById('{{ form.photo.id_for_label }}');
+        photoInput.files = dataTransfer.files;
+        
+        // Trigger change event for form validation
+        photoInput.dispatchEvent(new Event('change', { bubbles: true }));
+        
+        updateCameraStatus('Photo captured successfully!');
+        
+        // Stop camera after capture but keep the photo visible
+        setTimeout(() => {
+            stopCamera();
+        }, 1500);
+        
+    }, 'image/jpeg', 0.9);
+}
+
+// Helper functions
+function updateCameraStatus(message) {
+    document.getElementById('camera-status').textContent = message;
+}
+
+function showError(message) {
+    const errorElement = document.getElementById('camera-error');
+    errorElement.textContent = message;
+    errorElement.style.display = 'block';
+}
+
+function hideError() {
+    document.getElementById('camera-error').style.display = 'none';
+}
+
+// Calculate age from date of birth
+function calculateAge(dateOfBirth) {
+    if (!dateOfBirth) return null;
+    
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    
+    return age;
+}
+
+// Update age display when date of birth changes
+function updateAgeDisplay() {
+    const dobInput = document.getElementById('{{ form.dob.id_for_label }}');
+    const ageDisplay = document.getElementById('calculated-age');
+    
+    if (dobInput && ageDisplay) {
+        const age = calculateAge(dobInput.value);
+        if (age !== null && age >= 0) {
+            ageDisplay.textContent = age;
+            ageDisplay.parentElement.style.color = age >= 18 ? '#10b981' : '#ef4444';
+        } else {
+            ageDisplay.textContent = '--';
+            ageDisplay.parentElement.style.color = '#6b7280';
+        }
+    }
+}
+
+
+// Validate phone number format
+function validatePhoneNumber(phoneNumber) {
+    // Remove spaces, dashes, parentheses for validation
+    const cleanPhone = phoneNumber.replace(/[\s\-\(\)]/g, '');
+    
+    // Simplified Cambodia phone validation
+    if (cleanPhone.startsWith('+855')) {
+        // International format: +855 + 8-10 digits
+        const numberPart = cleanPhone.substring(4);
+        return numberPart.length >= 8 && numberPart.length <= 10 && /^\d+$/.test(numberPart);
+    } else if (cleanPhone.startsWith('0')) {
+        // Local format: 0 + 8-10 digits
+        const numberPart = cleanPhone.substring(1);
+        return numberPart.length >= 8 && numberPart.length <= 10 && /^\d+$/.test(numberPart);
+    }
+    
+    return false;
+}
+
+// Format phone number as user types (without auto-converting format)
+function formatPhoneNumber(input) {
+    // Just clean the input without changing format
+    let value = input.value;
+    
+    // Validate and show feedback
+    const isValid = validatePhoneNumber(value);
+    input.classList.toggle('is-valid', isValid && value.length > 0);
+    input.classList.toggle('is-invalid', !isValid && value.length > 0);
+}
+
+// Enhanced form validation
+function validatePersonalInformation() {
+    let isValid = true;
+    const errors = [];
+    
+    // Check required fields
+    const requiredFields = [
+        { id: '{{ form.first_name.id_for_label }}', name: 'First Name' },
+        { id: '{{ form.last_name.id_for_label }}', name: 'Last Name' },
+        { id: '{{ form.sex.id_for_label }}', name: 'Gender' },
+        { id: '{{ form.dob.id_for_label }}', name: 'Date of Birth' },
+        { id: '{{ form.nationality.id_for_label }}', name: 'Nationality' },
+        { id: '{{ form.phone_number.id_for_label }}', name: 'Phone Number' }
+    ];
+    
+    requiredFields.forEach(field => {
+        const input = document.getElementById(field.id);
+        if (input && !input.value.trim()) {
+            errors.push(`${field.name} is required`);
+            input.classList.add('is-invalid');
+            isValid = false;
+        } else if (input) {
+            input.classList.remove('is-invalid');
+        }
+    });
+    
+    // Check age requirement
+    const dobInput = document.getElementById('{{ form.dob.id_for_label }}');
+    if (dobInput && dobInput.value) {
+        const age = calculateAge(dobInput.value);
+        if (age < 16) {
+            errors.push('Worker must be at least 16 years old');
+            dobInput.classList.add('is-invalid');
+            isValid = false;
+        }
+    }
+    
+    // Check phone number format
+    const phoneInput = document.getElementById('{{ form.phone_number.id_for_label }}');
+    if (phoneInput && phoneInput.value && !validatePhoneNumber(phoneInput.value)) {
+        errors.push('Phone number format is invalid');
+        phoneInput.classList.add('is-invalid');
+        isValid = false;
+    }
+    
+    // Check photo requirement
+    const photoInput = document.getElementById('{{ form.photo.id_for_label }}');
+    if (photoInput && (!photoInput.files || photoInput.files.length === 0) && !capturedPhotoBlob) {
+        errors.push('Worker photo is required');
+        isValid = false;
+    }
+    
+    return { isValid, errors };
+}
+
+// Check camera support on page load
+document.addEventListener('DOMContentLoaded', function() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showError('Camera not supported in this browser');
+        // Default to file upload mode if camera not supported
+        switchToFile();
+    }
+    
+    // Set up event listeners
+    const dobInput = document.getElementById('{{ form.dob.id_for_label }}');
+    if (dobInput) {
+        dobInput.addEventListener('change', updateAgeDisplay);
+        updateAgeDisplay(); // Initial calculation
+    }
+    
+    
+    const phoneInput = document.getElementById('{{ form.phone_number.id_for_label }}');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            formatPhoneNumber(this);
+        });
+    }
+    
+    
+    // Enhanced form submission with UI feedback
+    const form = document.querySelector('form');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (form && submitBtn) {
+        form.addEventListener('submit', function(e) {
+            const validation = validatePersonalInformation();
+            if (!validation.isValid) {
+                e.preventDefault();
+                
+                // Show toast error instead of alert
+                toast.error('Please fix the following errors:\n' + validation.errors.join('\n'));
+                
+                // Highlight first invalid field
+                const firstInvalidField = form.querySelector('.is-invalid');
+                if (firstInvalidField) {
+                    firstInvalidField.focus();
+                    firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                
+                return false;
+            }
+            
+            // Show loading state
+            setButtonLoading(submitBtn, true);
+            loading.show();
+            
+            // Show success message (will be enhanced by server response)
+            toast.info('Saving worker information...');
+        });
+    }
+    
+    // Success feedback will be handled by page refresh
+    
+    // File input change handler for photo preview
+    const photoInput = document.getElementById('{{ form.photo.id_for_label }}');
+    if (photoInput) {
+        photoInput.addEventListener('change', function() {
+            const file = this.files[0];
+            const preview = document.getElementById('photo-preview');
+            const previewImg = document.getElementById('photo-preview-img');
+            const placeholder = document.getElementById('photo-placeholder');
+            
+            if (file && preview && previewImg) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                    if (placeholder) {
+                        placeholder.style.display = 'none';
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    // Initialize OCR components
+    initializeOCR();
+});
+
+// OCR Passport Scanner Functions
+function initializeOCR() {
+    const dropZone = document.getElementById('passportDropZone');
+    const fileInput = document.getElementById('passportInput');
+    
+    // Drag and drop handlers
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropZone.style.borderColor = '#667eea';
+        dropZone.style.background = '#f7fafc';
+    });
+    
+    dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dropZone.style.borderColor = '#cbd5e0';
+        dropZone.style.background = '#ffffff';
+    });
+    
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropZone.style.borderColor = '#cbd5e0';
+        dropZone.style.background = '#ffffff';
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFileUpload(files[0]);
+        }
+    });
+}
+
+function handlePassportUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        handleFileUpload(file);
+    }
+}
+
+function handleFileUpload(file) {
+    // Validate file
+    if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+        toast.error('Please upload an image or PDF file');
+        return;
+    }
+    
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        toast.error('File size must be less than 10MB');
+        return;
+    }
+    
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const dropContent = document.getElementById('dropZoneContent');
+        
+        previewImg.src = e.target.result;
+        preview.style.display = 'block';
+        dropContent.style.display = 'none';
+        
+        // Enable process button
+        document.getElementById('processBtn').disabled = false;
+        
+        // Update status
+        updateOCRStatus('uploading');
+        setTimeout(() => {
+            updateOCRStatus('waiting');
+        }, 1000);
+    };
+    reader.readAsDataURL(file);
+}
+
+function removePassportImage() {
+    // Reset UI
+    document.getElementById('imagePreview').style.display = 'none';
+    document.getElementById('dropZoneContent').style.display = 'block';
+    document.getElementById('passportInput').value = '';
+    document.getElementById('processBtn').disabled = true;
+    
+    // Clear extracted data
+    hideExtractedData();
+    updateOCRStatus('waiting');
+}
+
+function processPassport() {
+    const fileInput = document.getElementById('passportInput');
+    if (!fileInput.files || fileInput.files.length === 0) {
+        toast.error('Please upload a passport image first');
+        return;
+    }
+    
+    // Show processing status
+    updateOCRStatus('processing');
+    
+    // Simulate OCR processing (replace with actual API call)
+    setTimeout(() => {
+        // Mock extracted data
+        extractedData = {
+            firstName: 'YOHANES BAPTISTA',
+            lastName: 'JALU',
+            dateOfBirth: '1982-05-25',
+            gender: 'M',
+            nationality: 'IDN',
+            passportNumber: 'X1377022',
+            expiryDate: '2027-08-11',
+            issuingCountry: 'IDN'
+        };
+        
+        displayExtractedData(extractedData);
+        updateOCRStatus('completed');
+        toast.success('Passport data extracted successfully!');
+    }, 3000);
+}
+
+function updateOCRStatus(status) {
+    const statusItems = document.querySelectorAll('.status-item');
+    statusItems.forEach(item => item.classList.remove('active', 'completed'));
+    
+    switch(status) {
+        case 'waiting':
+            document.querySelector('.status-item.waiting').classList.add('active');
+            break;
+        case 'uploading':
+            document.querySelector('.status-item.uploading').classList.add('active');
+            break;
+        case 'processing':
+            document.querySelector('.status-item.processing').classList.add('active');
+            break;
+        case 'completed':
+            document.querySelector('.status-item.completed').classList.add('completed');
+            break;
+    }
+}
+
+function displayExtractedData(data) {
+    // Show extracted fields
+    document.getElementById('noDataState').style.display = 'none';
+    document.getElementById('extractedFields').style.display = 'block';
+    
+    // Populate fields
+    document.getElementById('extractedFirstName').textContent = data.firstName || '-';
+    document.getElementById('extractedLastName').textContent = data.lastName || '-';
+    document.getElementById('extractedDOB').textContent = data.dateOfBirth || '-';
+    document.getElementById('extractedGender').textContent = data.gender === 'M' ? 'Male' : data.gender === 'F' ? 'Female' : '-';
+    document.getElementById('extractedNationality').textContent = data.nationality || '-';
+    document.getElementById('extractedPassportNo').textContent = data.passportNumber || '-';
+    document.getElementById('extractedExpiry').textContent = data.expiryDate || '-';
+    document.getElementById('extractedCountry').textContent = data.issuingCountry || '-';
+}
+
+function hideExtractedData() {
+    document.getElementById('noDataState').style.display = 'block';
+    document.getElementById('extractedFields').style.display = 'none';
+    extractedData = null;
+}
+
+function applyToForm() {
+    if (!extractedData) {
+        toast.error('No extracted data available');
+        return;
+    }
+    
+    // Apply data to form fields
+    if (extractedData.firstName) {
+        const firstNameInput = document.getElementById('{{ form.first_name.id_for_label }}');
+        if (firstNameInput) firstNameInput.value = extractedData.firstName;
+    }
+    
+    if (extractedData.lastName) {
+        const lastNameInput = document.getElementById('{{ form.last_name.id_for_label }}');
+        if (lastNameInput) lastNameInput.value = extractedData.lastName;
+    }
+    
+    if (extractedData.dateOfBirth) {
+        const dobInput = document.getElementById('{{ form.dob.id_for_label }}');
+        if (dobInput) {
+            dobInput.value = extractedData.dateOfBirth;
+            updateAgeDisplay();
+        }
+    }
+    
+    if (extractedData.gender) {
+        const genderInput = document.getElementById('{{ form.sex.id_for_label }}');
+        if (genderInput) genderInput.value = extractedData.gender;
+    }
+    
+    if (extractedData.nationality) {
+        const nationalityInput = document.getElementById('{{ form.nationality.id_for_label }}');
+        if (nationalityInput) {
+            // Map country code to nationality options
+            const nationalityMapping = {
+                'IDN': 'ID',
+                'THA': 'TH',
+                'VNM': 'VN',
+                'KHM': 'KH',
+                'MYS': 'MY',
+                'MMR': 'MM',
+                'LAO': 'LA',
+                'SGP': 'SG',
+                'BRN': 'BN'
+            };
+            const mappedNationality = nationalityMapping[extractedData.nationality] || extractedData.nationality;
+            nationalityInput.value = mappedNationality;
+        }
+    }
+    
+    
+    toast.success('Data applied to form successfully!');
+    
+    // Scroll to personal information section
+    document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function editBeforeApply() {
+    if (!extractedData) {
+        toast.error('No extracted data available');
+        return;
+    }
+    
+    // Make fields editable
+    const fields = document.querySelectorAll('#extractedFields .field-value');
+    fields.forEach(field => {
+        field.style.background = '#ffffff';
+        field.contentEditable = true;
+        field.style.cursor = 'text';
+        field.addEventListener('blur', function() {
+            // Update extracted data when field is edited
+            const fieldId = this.id;
+            const value = this.textContent;
+            
+            switch(fieldId) {
+                case 'extractedFirstName':
+                    extractedData.firstName = value;
+                    break;
+                case 'extractedLastName':
+                    extractedData.lastName = value;
+                    break;
+                case 'extractedDOB':
+                    extractedData.dateOfBirth = value;
+                    break;
+                case 'extractedGender':
+                    extractedData.gender = value === 'Male' ? 'M' : value === 'Female' ? 'F' : value;
+                    break;
+                case 'extractedNationality':
+                    extractedData.nationality = value;
+                    break;
+                case 'extractedPassportNo':
+                    extractedData.passportNumber = value;
+                    break;
+                case 'extractedExpiry':
+                    extractedData.expiryDate = value;
+                    break;
+                case 'extractedCountry':
+                    extractedData.issuingCountry = value;
+                    break;
+            }
+        });
+    });
+    
+    toast.info('Fields are now editable. Click outside to save changes.');
+}
+
+function clearOCR() {
+    // Reset everything
+    removePassportImage();
+    hideExtractedData();
+    extractedData = null;
+    
+    // Reset status
+    updateOCRStatus('waiting');
+    
+    toast.info('OCR scanner reset');
+}
+// OCR Document Scanner Functions
+let extractedData = null;
+let currentDocumentType = 'passport';
+
+function selectDocumentType(type) {
+    currentDocumentType = type;
+    
+    // Update tab appearance
+    document.querySelectorAll('.document-type-tab-compact').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelector(`[data-type="${type}"]`).classList.add('active');
+    
+    // Update drop zone content
+    const dropZoneIcon = document.getElementById('dropZoneIcon');
+    const dropZoneTitle = document.getElementById('dropZoneTitle');
+    
+    const config = {
+        passport: {
+            icon: 'bi-passport',
+            title: 'Drop passport image here'
+        },
+        visa: {
+            icon: 'bi-card-text',
+            title: 'Drop visa image here'
+        },
+        work_permit: {
+            icon: 'bi-briefcase',
+            title: 'Drop work permit image here'
+        }
+    };
+    
+    dropZoneIcon.className = `bi ${config[type].icon}`;
+    dropZoneTitle.textContent = config[type].title;
+    
+    // Hide all document fields and show the relevant one
+    document.querySelectorAll('.document-fields').forEach(field => {
+        field.style.display = 'none';
+    });
+    
+    // Clear any existing data
+    if (extractedData) {
+        hideExtractedData();
+        extractedData = null;
+    }
+    
+    toast.info(`Switched to ${type.replace('_', ' ')} mode`);
+}
+
+function initializeOCR() {
+    const dropZone = document.getElementById('passportDropZone');
+    
+    if (dropZone) {
+        // Drag and drop handlers
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = '#667eea';
+            dropZone.style.background = '#f7fafc';
+        });
+        
+        dropZone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = '#cbd5e0';
+            dropZone.style.background = '#ffffff';
+        });
+        
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dropZone.style.borderColor = '#cbd5e0';
+            dropZone.style.background = '#ffffff';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+    }
+}
+
+function handlePassportUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        handleFileUpload(file);
+    }
+}
+
+function handleFileUpload(file) {
+    // Validate file
+    if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+        toast.error('Please upload an image or PDF file');
+        return;
+    }
+    
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        toast.error('File size must be less than 10MB');
+        return;
+    }
+    
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const dropContent = document.getElementById('dropZoneContent');
+        
+        if (preview && previewImg && dropContent) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+            dropContent.style.display = 'none';
+        }
+        
+        // Enable process button
+        const processBtn = document.getElementById('processBtn');
+        if (processBtn) processBtn.disabled = false;
+        
+        // Update status
+        updateOCRStatus('uploading');
+        setTimeout(() => {
+            updateOCRStatus('waiting');
+        }, 1000);
+    };
+    reader.readAsDataURL(file);
+}
+
+function removePassportImage() {
+    // Reset UI
+    const preview = document.getElementById('imagePreview');
+    const dropContent = document.getElementById('dropZoneContent');
+    const input = document.getElementById('passportInput');
+    const processBtn = document.getElementById('processBtn');
+    
+    if (preview) preview.style.display = 'none';
+    if (dropContent) dropContent.style.display = 'block';
+    if (input) input.value = '';
+    if (processBtn) processBtn.disabled = true;
+    
+    // Clear extracted data
+    hideExtractedData();
+    updateOCRStatus('waiting');
+}
+
+function processPassport() {
+    const fileInput = document.getElementById('passportInput');
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        toast.error(`Please upload a ${currentDocumentType.replace('_', ' ')} image first`);
+        return;
+    }
+    
+    // Show processing status
+    updateOCRStatus('processing');
+    
+    // Simulate OCR processing (replace with actual API call)
+    setTimeout(() => {
+        // Mock extracted data based on document type
+        const mockData = {
+            passport: {
+                firstName: 'YOHANES BAPTISTA',
+                lastName: 'JALU',
+                dateOfBirth: '1982-05-25',
+                gender: 'M',
+                nationality: 'IDN',
+                passportNumber: 'X1377022',
+                expiryDate: '2027-08-11',
+                issuingCountry: 'IDN'
+            },
+            visa: {
+                firstName: 'YOHANES BAPTISTA',
+                lastName: 'JALU',
+                visaType: 'BUSINESS VISA',
+                visaNumber: 'B201234567',
+                issueDate: '2023-06-15',
+                expiryDate: '2024-06-14',
+                entries: 'MULTIPLE',
+                issuingCountry: 'THA'
+            },
+            work_permit: {
+                firstName: 'YOHANES BAPTISTA',
+                lastName: 'JALU',
+                permitNumber: 'WP2024001234',
+                permitType: 'SKILLED WORKER',
+                issueDate: '2024-01-15',
+                expiryDate: '2026-01-14',
+                employer: 'ABC COMPANY LTD',
+                jobPosition: 'SOFTWARE ENGINEER'
+            }
+        };
+        
+        extractedData = mockData[currentDocumentType];
+        
+        displayExtractedData(extractedData);
+        updateOCRStatus('completed');
+        toast.success(`${currentDocumentType.replace('_', ' ').toUpperCase()} data extracted successfully!`);
+    }, 3000);
+}
+
+function updateOCRStatus(status) {
+    const statusItems = document.querySelectorAll('.status-item');
+    statusItems.forEach(item => item.classList.remove('active', 'completed'));
+    
+    switch(status) {
+        case 'waiting':
+            const waiting = document.querySelector('.status-item.waiting');
+            if (waiting) waiting.classList.add('active');
+            break;
+        case 'uploading':
+            const uploading = document.querySelector('.status-item.uploading');
+            if (uploading) uploading.classList.add('active');
+            break;
+        case 'processing':
+            const processing = document.querySelector('.status-item.processing');
+            if (processing) processing.classList.add('active');
+            break;
+        case 'completed':
+            const completed = document.querySelector('.status-item.completed');
+            if (completed) completed.classList.add('completed');
+            break;
+    }
+}
+
+function displayExtractedData(data) {
+    // Show extracted fields
+    const noDataState = document.getElementById('noDataState');
+    const extractedFields = document.getElementById('extractedFields');
+    
+    if (noDataState) noDataState.style.display = 'none';
+    if (extractedFields) extractedFields.style.display = 'block';
+    
+    // Hide all document fields first
+    document.querySelectorAll('.document-fields').forEach(field => {
+        field.style.display = 'none';
+    });
+    
+    // Show and populate fields based on document type
+    if (currentDocumentType === 'passport') {
+        document.getElementById('passportFields').style.display = 'block';
+        const fields = {
+            'extractedFirstName': data.firstName,
+            'extractedLastName': data.lastName,
+            'extractedDOB': data.dateOfBirth,
+            'extractedGender': data.gender === 'M' ? 'Male' : data.gender === 'F' ? 'Female' : '-',
+            'extractedNationality': data.nationality,
+            'extractedPassportNo': data.passportNumber,
+            'extractedExpiry': data.expiryDate,
+            'extractedCountry': data.issuingCountry
+        };
+        Object.keys(fields).forEach(fieldId => {
+            const element = document.getElementById(fieldId);
+            if (element) element.textContent = fields[fieldId] || '-';
+        });
+    } else if (currentDocumentType === 'visa') {
+        document.getElementById('visaFields').style.display = 'block';
+        const fields = {
+            'extractedVisaFirstName': data.firstName,
+            'extractedVisaLastName': data.lastName,
+            'extractedVisaType': data.visaType,
+            'extractedVisaNumber': data.visaNumber,
+            'extractedVisaIssueDate': data.issueDate,
+            'extractedVisaExpiry': data.expiryDate,
+            'extractedVisaEntries': data.entries,
+            'extractedVisaCountry': data.issuingCountry
+        };
+        Object.keys(fields).forEach(fieldId => {
+            const element = document.getElementById(fieldId);
+            if (element) element.textContent = fields[fieldId] || '-';
+        });
+    } else if (currentDocumentType === 'work_permit') {
+        document.getElementById('workPermitFields').style.display = 'block';
+        const fields = {
+            'extractedWPFirstName': data.firstName,
+            'extractedWPLastName': data.lastName,
+            'extractedPermitNumber': data.permitNumber,
+            'extractedPermitType': data.permitType,
+            'extractedWPIssueDate': data.issueDate,
+            'extractedWPExpiry': data.expiryDate,
+            'extractedEmployer': data.employer,
+            'extractedJobPosition': data.jobPosition
+        };
+        Object.keys(fields).forEach(fieldId => {
+            const element = document.getElementById(fieldId);
+            if (element) element.textContent = fields[fieldId] || '-';
+        });
+    }
+}
+
+function hideExtractedData() {
+    const noDataState = document.getElementById('noDataState');
+    const extractedFields = document.getElementById('extractedFields');
+    
+    if (noDataState) noDataState.style.display = 'block';
+    if (extractedFields) extractedFields.style.display = 'none';
+    extractedData = null;
+}
+
+function applyToForm() {
+    if (!extractedData) {
+        toast.error('No extracted data available');
+        return;
+    }
+    
+    if (currentDocumentType === 'passport') {
+        // Apply passport data to personal information fields
+        const formFields = {
+            '{{ form.first_name.id_for_label }}': extractedData.firstName,
+            '{{ form.last_name.id_for_label }}': extractedData.lastName,
+            '{{ form.dob.id_for_label }}': extractedData.dateOfBirth,
+            '{{ form.sex.id_for_label }}': extractedData.gender
+        };
+        
+        Object.keys(formFields).forEach(fieldId => {
+            const input = document.getElementById(fieldId);
+            if (input && formFields[fieldId]) {
+                input.value = formFields[fieldId];
+            }
+        });
+        
+        // Handle nationality mapping
+        if (extractedData.nationality) {
+            const nationalityInput = document.getElementById('{{ form.nationality.id_for_label }}');
+            if (nationalityInput) {
+                const nationalityMapping = {
+                    'IDN': 'ID', 'THA': 'TH', 'VNM': 'VN', 'KHM': 'KH',
+                    'MYS': 'MY', 'MMR': 'MM', 'LAO': 'LA', 'SGP': 'SG', 'BRN': 'BN'
+                };
+                const mappedNationality = nationalityMapping[extractedData.nationality] || extractedData.nationality;
+                nationalityInput.value = mappedNationality;
+            }
+        }
+        
+        // Update age
+        updateAgeDisplay();
+        
+        toast.success('Passport data applied to personal information form!');
+        
+        // Scroll to personal information section
+        document.querySelector('.application-form-section').scrollIntoView({ behavior: 'smooth' });
+        
+    } else if (currentDocumentType === 'visa' || currentDocumentType === 'work_permit') {
+        // Apply name data to personal information if empty
+        const firstNameInput = document.getElementById('{{ form.first_name.id_for_label }}');
+        const lastNameInput = document.getElementById('{{ form.last_name.id_for_label }}');
+        
+        if (firstNameInput && !firstNameInput.value && extractedData.firstName) {
+            firstNameInput.value = extractedData.firstName;
+        }
+        if (lastNameInput && !lastNameInput.value && extractedData.lastName) {
+            lastNameInput.value = extractedData.lastName;
+        }
+        
+        
+        toast.success(`${currentDocumentType.replace('_', ' ').toUpperCase()} data applied! Please add this document in the Documents section below.`);
+        
+        // Scroll to documents section
+        const documentsSection = document.querySelector('.documents-section');
+        if (documentsSection) {
+            documentsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+}
+
+function editBeforeApply() {
+    if (!extractedData) {
+        toast.error('No extracted data available');
+        return;
+    }
+    
+    // Make fields editable for the current document type
+    const currentFieldsSelector = currentDocumentType === 'passport' ? '#passportFields .field-value' :
+                                  currentDocumentType === 'visa' ? '#visaFields .field-value' :
+                                  '#workPermitFields .field-value';
+    
+    const fields = document.querySelectorAll(currentFieldsSelector);
+    fields.forEach(field => {
+        field.style.background = '#ffffff';
+        field.contentEditable = true;
+        field.style.cursor = 'text';
+        field.style.border = '1px solid #667eea';
+        field.style.borderRadius = '4px';
+        field.style.padding = '4px 6px';
+    });
+    
+    toast.info(`${currentDocumentType.replace('_', ' ').toUpperCase()} fields are now editable. Click outside to save changes.`);
+}
+
+function clearOCR() {
+    // Reset everything
+    removePassportImage();
+    hideExtractedData();
+    extractedData = null;
+    
+    // Reset status
+    updateOCRStatus('waiting');
+    
+    toast.info('OCR scanner reset');
+}
+
+// Initialize OCR on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initializeOCR();
+    
+    // Handle photo display logic for editing workers
+    {% if worker and worker.photo %}
+    // If editing a worker with a photo, show file upload mode by default
+    const fileUploadArea = document.getElementById('file-upload-area');
+    const cameraUploadArea = document.getElementById('camera-upload-area');
+    
+    if (fileUploadArea && cameraUploadArea) {
+        fileUploadArea.style.display = 'flex';
+        cameraUploadArea.style.display = 'none';
+    }
+    {% endif %}
+});
+</script>
+
+<!-- Inline validation for better UX -->
+<script src="{% static 'js/worker_inline_validation.js' %}"></script>
+
+{% endblock %} 

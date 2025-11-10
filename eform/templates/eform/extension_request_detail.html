@@ -1,0 +1,222 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Extension Request #{{ extension_request.request_number }}{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+body { font-family: Arial, sans-serif; font-size: 14px; }
+.container { max-width: 700px; margin: 20px auto; padding: 15px; }
+.header { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #ddd; }
+.title { margin: 0; font-size: 20px; }
+.actions { margin-top: 10px; }
+.actions a { margin-right: 10px; padding: 5px 10px; background: #f5f5f5; text-decoration: none; color: #333; border: 1px solid #ccc; }
+.actions a:hover { background: #e5e5e5; }
+.section { margin-bottom: 15px; }
+.section h3 { margin: 0 0 8px 0; font-size: 16px; color: #555; border-bottom: 1px solid #eee; padding-bottom: 3px; }
+.field { margin: 5px 0; display: flex; }
+.field-label { width: 150px; font-weight: bold; color: #666; }
+.field-value { flex: 1; }
+.photo { width: 60px; height: 75px; border: 1px solid #ddd; margin-bottom: 10px; object-fit: cover; }
+.photo-placeholder { 
+    width: 60px; 
+    height: 75px; 
+    border: 1px solid #ddd; 
+    margin-bottom: 10px; 
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    flex-direction: column;
+    gap: 3px;
+}
+.photo-placeholder i {
+    font-size: 18px;
+    opacity: 0.6;
+}
+.photo-placeholder span {
+    font-size: 8px;
+    font-weight: 500;
+}
+.status { padding: 2px 6px; font-size: 11px; font-weight: bold; border-radius: 3px; }
+.status-pending { background: #fffbf0; color: #8a6d3b; }
+.status-approved { background: #f0fff4; color: #3c763d; }
+.status-rejected { background: #fff5f5; color: #a94442; }
+#main-content {
+    transition: none !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1 class="title">Extension Request #{{ extension_request.request_number }}</h1>
+        <p>Status: <span class="status status-{{ extension_request.status|lower }}">{{ extension_request.get_status_display }}</span> | Created: {{ extension_request.created_at|date:"d/m/Y" }}</p>
+        <div class="actions">
+            <a href="{% url 'eform:extension_requests_list' %}">← Back</a>
+            <a href="{% url 'eform:print_extension_form' extension_request.worker.id %}">Print</a>
+            <a href="{% url 'eform:extension_edit_form' extension_request.worker.id %}">Edit</a>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Worker Information</h3>
+        {% if worker.professional_photo %}
+            <img src="{{ worker.professional_photo.url }}" alt="Photo" class="photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+            <div class="photo-placeholder" style="display: none;">
+                <i class="bi bi-person"></i>
+                <span>No Photo</span>
+            </div>
+        {% else %}
+            <div class="photo-placeholder">
+                <i class="bi bi-person"></i>
+                <span>No Photo</span>
+            </div>
+        {% endif %}
+        <div class="field">
+            <span class="field-label">Name:</span>
+            <span class="field-value">{{ worker.get_full_name }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Position:</span>
+            <span class="field-value">{{ worker.position.name|default:"Not specified" }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Building:</span>
+            <span class="field-value">{{ worker.building.name|default:"Not specified" }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Date of Birth:</span>
+            <span class="field-value">{{ worker.dob|date:"d/m/Y"|default:"Not provided" }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Nationality:</span>
+            <span class="field-value">{{ worker.get_nationality_display|default:"Not provided" }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Gender:</span>
+            <span class="field-value">{{ worker.get_sex_display|default:"Not provided" }}</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Extension Details</h3>
+        <div class="field">
+            <span class="field-label">Duration:</span>
+            <span class="field-value">
+                {% if extension_request.extension_duration == 30 %}
+                    1 month
+                {% elif extension_request.extension_duration == 90 %}
+                    3 months
+                {% elif extension_request.extension_duration == 180 %}
+                    6 months
+                {% elif extension_request.extension_duration == 360 or extension_request.extension_duration == 365 %}
+                    12 months
+                {% elif extension_request.extension_duration == 720 or extension_request.extension_duration == 730 %}
+                    24 months
+                {% else %}
+                    {{ extension_request.extension_duration }} days
+                {% endif %}
+            </span>
+        </div>
+        <div class="field">
+            <span class="field-label">Reason:</span>
+            <span class="field-value">{{ extension_request.get_extension_reason_display|default:"Not specified" }}</span>
+        </div>
+        {% if extension_request.extension_reason == "other" and extension_request.other_reason_text %}
+        <div class="field">
+            <span class="field-label">Other Reason:</span>
+            <span class="field-value">{{ extension_request.other_reason_text }}</span>
+        </div>
+        {% endif %}
+        <div class="field">
+            <span class="field-label">Entry Date:</span>
+            <span class="field-value">{{ extension_request.entry_date|date:"d/m/Y"|default:"Not provided" }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Address:</span>
+            <span class="field-value">{{ extension_request.address_name|default:"Not provided" }}</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Passport Information</h3>
+        <div class="field">
+            <span class="field-label">Passport Number:</span>
+            <span class="field-value">{{ extension_request.passport_number|default:"Not provided" }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Issued Date:</span>
+            <span class="field-value">{{ extension_request.passport_issued_date|date:"d/m/Y"|default:"Not provided" }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Expiry Date:</span>
+            <span class="field-value">{{ extension_request.passport_expiry_date|date:"d/m/Y"|default:"Not provided" }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Current Visa:</span>
+            <span class="field-value">{{ extension_request.current_visa_number|default:"Not provided" }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Visa Expiry:</span>
+            <span class="field-value">{{ extension_request.current_visa_expiry|date:"d/m/Y"|default:"Not provided" }}</span>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Work Permit</h3>
+        <div class="field">
+            <span class="field-label">Permit Number:</span>
+            <span class="field-value">{{ extension_request.work_permit_number|default:"Not provided" }}</span>
+        </div>
+        <div class="field">
+            <span class="field-label">Expiry Date:</span>
+            <span class="field-value">{{ extension_request.work_permit_expiry|date:"d/m/Y"|default:"Not provided" }}</span>
+        </div>
+    </div>
+
+    {% if extension_request.additional_details %}
+    <div class="section">
+        <h3>Additional Details</h3>
+        <p>{{ extension_request.additional_details }}</p>
+    </div>
+    {% endif %}
+
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle image load errors for extension request photos
+    document.querySelectorAll('img.photo').forEach(function(img) {
+        img.addEventListener('error', function() {
+            console.log('Extension request photo failed to load:', this.src);
+            
+            // Hide the broken image and show placeholder
+            this.style.display = 'none';
+            let placeholder = this.nextElementSibling;
+            if (placeholder && placeholder.classList.contains('photo-placeholder')) {
+                placeholder.style.display = 'flex';
+            }
+        });
+        
+        // Also check if image loads successfully but is corrupted
+        img.addEventListener('load', function() {
+            if (this.naturalWidth === 0 || this.naturalHeight === 0) {
+                this.style.display = 'none';
+                let placeholder = this.nextElementSibling;
+                if (placeholder && placeholder.classList.contains('photo-placeholder')) {
+                    placeholder.style.display = 'flex';
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %} 

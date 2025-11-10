@@ -1,0 +1,374 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Goal Detail{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Clean Goal Detail Design */
+    .goal-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .clean-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    /* Header Card */
+    .goal-header {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .goal-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 8px;
+    }
+
+    .goal-meta {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        font-size: 12px;
+        color: #6b7280;
+    }
+
+    .goal-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* Progress Display */
+    .progress-large {
+        text-align: center;
+        padding: 16px;
+        background: #f9fafb;
+        border-radius: 6px;
+    }
+
+    .progress-number {
+        font-size: 48px;
+        font-weight: 700;
+        color: #3b82f6;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .progress-bar-large {
+        width: 100%;
+        max-width: 300px;
+        height: 12px;
+        background: #e5e7eb;
+        border-radius: 6px;
+        overflow: hidden;
+        margin: 0 auto 8px;
+    }
+
+    .progress-bar-fill-large {
+        height: 100%;
+        background: #3b82f6;
+        border-radius: 6px;
+        transition: width 0.3s;
+    }
+
+    .progress-label {
+        font-size: 11px;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    /* Section Title */
+    .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    /* Info Grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .info-label {
+        font-size: 11px;
+        font-weight: 500;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .info-value {
+        font-size: 13px;
+        color: #111827;
+        font-weight: 500;
+    }
+
+    /* Description Box */
+    .description-box {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 12px;
+        font-size: 13px;
+        color: #374151;
+        line-height: 1.6;
+    }
+
+    /* Status Badge */
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .status-completed {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .status-in_progress {
+        background: #dbeafe;
+        color: #3b82f6;
+    }
+
+    .status-not_started {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    .status-cancelled {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    /* Priority Badge */
+    .priority-high {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .priority-medium {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .priority-low {
+        background: #e0e7ff;
+        color: #4f46e5;
+    }
+
+    /* Back Button */
+    .btn-back {
+        background: white;
+        border: 1px solid #d1d5db;
+        color: #374151;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+        border-color: #9ca3af;
+        color: #111827;
+        text-decoration: none;
+    }
+
+    /* Timeline Indicator */
+    .timeline-indicator {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 4px;
+    }
+
+    .overdue {
+        color: #dc2626;
+        font-weight: 500;
+    }
+
+    .on-track {
+        color: #16a34a;
+        font-weight: 500;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .goal-meta {
+            flex-direction: column;
+            gap: 8px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <div class="goal-container">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="mb-0" style="font-weight: 600; color: #111827;">Goal Details</h5>
+                <small class="text-muted">Track your progress</small>
+            </div>
+            <a href="{% url 'employee_portal:performance' %}" class="btn-back">
+                <i class="bi bi-arrow-left me-1"></i>Back
+            </a>
+        </div>
+
+        <!-- Goal Header -->
+        <div class="goal-header">
+            <div class="goal-title">{{ goal.title }}</div>
+            <div class="goal-meta">
+                <div class="goal-meta-item">
+                    <i class="bi bi-flag"></i>
+                    <span class="status-badge priority-{{ goal.priority }}">
+                        {{ goal.get_priority_display }} Priority
+                    </span>
+                </div>
+                <div class="goal-meta-item">
+                    <i class="bi bi-calendar"></i>
+                    <span>Started: {{ goal.start_date|date:"M d, Y" }}</span>
+                </div>
+                <div class="goal-meta-item">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>Target: {{ goal.target_date|date:"M d, Y" }}</span>
+                </div>
+                <div class="goal-meta-item">
+                    <span class="status-badge status-{{ goal.status }}">
+                        {{ goal.get_status_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="clean-card">
+            <div class="progress-large">
+                <div class="progress-number">{{ goal.progress }}<span style="font-size: 24px; color: #6b7280;">%</span></div>
+                <div class="progress-bar-large">
+                    <div class="progress-bar-fill-large" style="width: {{ goal.progress }}%;"></div>
+                </div>
+                <div class="progress-label">Progress</div>
+                {% if goal.completion_date %}
+                <div style="font-size: 12px; color: #16a34a; margin-top: 8px;">
+                    <i class="bi bi-check-circle-fill"></i> Completed on {{ goal.completion_date|date:"M d, Y" }}
+                </div>
+                {% elif goal.status != 'cancelled' %}
+                    {% now "Y-m-d" as today %}
+                    {% if goal.target_date|date:"Y-m-d" < today %}
+                    <div class="timeline-indicator overdue">
+                        <i class="bi bi-exclamation-circle"></i> Overdue
+                    </div>
+                    {% else %}
+                    <div class="timeline-indicator on-track">
+                        <i class="bi bi-clock"></i> On track
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Goal Details -->
+        <div class="clean-card">
+            <h6 class="section-title">Goal Information</h6>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Priority</div>
+                    <div class="info-value">
+                        <span class="status-badge priority-{{ goal.priority }}">
+                            {{ goal.get_priority_display }}
+                        </span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Status</div>
+                    <div class="info-value">
+                        <span class="status-badge status-{{ goal.status }}">
+                            {{ goal.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Start Date</div>
+                    <div class="info-value">{{ goal.start_date|date:"M d, Y" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Target Date</div>
+                    <div class="info-value">{{ goal.target_date|date:"M d, Y" }}</div>
+                </div>
+                {% if goal.completion_date %}
+                <div class="info-item">
+                    <div class="info-label">Completion Date</div>
+                    <div class="info-value">{{ goal.completion_date|date:"M d, Y" }}</div>
+                </div>
+                {% endif %}
+                <div class="info-item">
+                    <div class="info-label">Created By</div>
+                    <div class="info-value">{{ goal.created_by.get_full_name|default:goal.created_by.username }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="clean-card">
+            <h6 class="section-title">Description</h6>
+            <div class="description-box">
+                {{ goal.description }}
+            </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="clean-card">
+            <h6 class="section-title">Timeline</h6>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Created</div>
+                    <div class="info-value" style="font-size: 12px; color: #6b7280;">
+                        {{ goal.created_at|date:"M d, Y H:i" }}
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Last Updated</div>
+                    <div class="info-value" style="font-size: 12px; color: #6b7280;">
+                        {{ goal.updated_at|date:"M d, Y H:i" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

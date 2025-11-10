@@ -1,0 +1,847 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Employee ID Cards{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Ultra-Minimal Design System - Employee ID Cards */
+:root {
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --secondary: #374151;
+    --secondary-dark: #1f2937;
+    --light-gray: #6b7280;
+    --lighter-gray: #9ca3af;
+    --bg-light: #f8fafb;
+    --border-color: #e2e8f0;
+    --white: #ffffff;
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+}
+
+/* Global Reset */
+*, *:focus, *:active, *:hover {
+    outline: none !important;
+}
+
+/* Ultra-Minimal Container */
+.page-container {
+    padding: 12px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Ultra-Minimal Page Header */
+.page-header {
+    padding: 6px 0;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.page-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+/* Ultra-Compact Statistics */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.rounded-xl bg-white border px-3 py-2 shadow-sm text-center {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 8px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.rounded-xl bg-white border px-3 py-2 shadow-sm text-center:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 2px 0;
+}
+
+.stat-label {
+    font-size: 10px;
+    color: var(--light-gray);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Ultra-Minimal Table Container */
+.table-container {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.table-header {
+    background: var(--bg-light);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.table-controls select {
+    font-size: 11px;
+    padding: 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--white);
+}
+
+/* Ultra-Minimal Search Section */
+.search-section {
+    background: var(--bg-light);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.search-form {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.search-input {
+    flex: 1;
+    max-width: 200px;
+    padding: 4px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 11px;
+    font-family: inherit;
+    background: var(--white);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.btn-search {
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-search:hover {
+    background: var(--primary-dark);
+}
+
+/* Ultra-Minimal Bulk Actions */
+.bulk-actions {
+    background: #c2e2ff;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border-color);
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--white);
+}
+
+.bulk-actions.show {
+    display: flex;
+}
+
+.selected-count {
+    font-weight: 600;
+    color: var(--white);
+}
+
+.bulk-btn {
+    padding: 4px 7px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.bulk-btn.print {
+    background: linear-gradient(180deg, #4B91F7 0%, #367AF6 100%);
+    background-origin: border-box;
+    box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+    color: var(--white);
+}
+
+.bulk-btn.print:hover {
+    background: linear-gradient(180deg, #4188f3 0%, #3074f4 100%);
+}
+
+.bulk-btn.cancel {
+    background-color: #dc3545;
+    border: 1px solid #dc3545;
+    border-radius: 11px;
+    box-shadow: rgba(213, 217, 217, .5) 0 2px 5px 0;
+    color: white;
+    cursor: pointer;
+}
+
+.bulk-btn.cancel:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+/* Ultra-Compact Table */
+.table-compact {
+    width: 100%;
+    margin: 0;
+    font-size: 11px;
+    border-collapse: collapse;
+}
+
+.table-compact thead th {
+    background: var(--bg-light);
+    border-bottom: 1px solid var(--border-color);
+    padding: 6px 8px;
+    text-align: left;
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table-compact tbody td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.table-compact tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-compact tbody tr:hover {
+    background: var(--bg-light);
+}
+
+/* Ultra-Minimal Employee Info */
+.worker-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.worker-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border-color);
+}
+
+.worker-avatar-placeholder {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 10px;
+}
+
+.worker-details h6 {
+    font-size: 12px;
+    font-weight: 600;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.worker-details p {
+    font-size: 10px;
+    color: var(--light-gray);
+    margin: 0;
+}
+
+/* Ultra-Minimal Status Badges */
+.badge-compact {
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-success {
+    background: rgba(5, 150, 105, 0.1);
+    color: var(--success);
+}
+
+.badge-warning {
+    background: rgba(217, 119, 6, 0.1);
+    color: var(--warning);
+}
+
+.badge-danger {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--danger);
+}
+
+.badge-secondary {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--light-gray);
+}
+
+/* Ultra-Minimal Action Buttons */
+.btn-action {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 9px;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+}
+
+.btn-action.view {
+    background: var(--primary);
+    color: var(--white);
+    border-color: var(--primary);
+}
+
+.btn-action.view:hover {
+    background: var(--primary-dark);
+    color: var(--white);
+}
+
+.btn-action.edit {
+    background: var(--warning);
+    color: var(--white);
+    border-color: var(--warning);
+}
+
+.btn-action.edit:hover {
+    background: #b45309;
+    color: var(--white);
+}
+
+.btn-action.print {
+    background: var(--success);
+    color: var(--white);
+    border-color: var(--success);
+}
+
+.btn-action.print:hover {
+    background: #047857;
+    color: var(--white);
+}
+
+.btn-action.replacement {
+    background: rgba(255, 193, 7, 0.1);
+    color: var(--warning);
+    border-color: rgba(255, 193, 7, 0.2);
+}
+
+.btn-action.replacement:hover {
+    background: var(--warning);
+    color: var(--dark);
+}
+
+/* Ultra-Minimal Compact Buttons */
+.btn-compact {
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 4px 8px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    line-height: 1;
+}
+
+.btn-primary-compact {
+    background: var(--primary);
+    color: var(--white);
+}
+
+.btn-primary-compact:hover {
+    background: var(--primary-dark);
+    color: var(--white);
+    text-decoration: none;
+}
+
+.btn-secondary-compact {
+    background: var(--secondary);
+    color: var(--white);
+}
+
+.btn-secondary-compact:hover {
+    background: var(--secondary-dark);
+    color: var(--white);
+    text-decoration: none;
+}
+
+/* Ultra-Minimal Responsive Design */
+@media (max-width: 768px) {
+    .page-container {
+        padding: 8px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+    }
+    
+    .search-form {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .search-input {
+        max-width: none;
+    }
+    
+    .page-actions {
+        flex-direction: column;
+        gap: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-container {
+        padding: 6px;
+    }
+    
+    .page-header {
+        padding: 4px 0;
+        margin-bottom: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+    
+    .page-title {
+        font-size: 14px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 3px;
+    }
+    
+    .rounded-xl bg-white border px-3 py-2 shadow-sm text-center {
+        padding: 6px;
+    }
+    
+    .worker-avatar,
+    .worker-avatar-placeholder {
+        width: 20px;
+        height: 20px;
+        font-size: 9px;
+    }
+    
+    .btn-action {
+        width: 18px;
+        height: 18px;
+        font-size: 8px;
+    }
+}
+
+/* Focus states for accessibility */
+.btn-compact:focus,
+.btn-action:focus,
+.search-input:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container shadow-none">
+    <!-- Ultra-Minimal Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center pb-3">
+        <div>
+           <div class="flex items-center space-x-1">
+            <a href="{% url 'cards:id_cards_dashboard' %}" class="flex items-center space-x-1 text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                  </svg>                  
+                <span>Back</span>
+            </a>
+            <div>/</div>     
+            <h2 class="text-lg font-semibold">Employee ID Cards</h2>
+           </div>
+            
+            
+        </div>
+        <div class="d-flex align-items-center space-x-3">
+            
+            <!--<a href="{% url 'cards:employee_id_card_batch_create' %}" class="button-min-default space-x-1">
+                <i class="fas fa-layer-group"></i>
+                <span class="font-medium">Batch Create</span>
+            </a>-->
+            <a href="{% url 'cards:employee_id_card_create' %}" class="button-min-primary">
+                <div class="space-x-1">
+                    <i class="fas fa-plus"></i>
+                    <span class="font-medium"> New Card</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Ultra-Compact Statistics -->
+    <div class="stats-grid">
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-number">{{ stats.total_cards }}</div>
+            <div class="stat-label">Total Cards</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-number">{{ stats.active_cards }}</div>
+            <div class="stat-label">Active</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-number">{{ stats.expired_cards }}</div>
+            <div class="stat-label">Expired</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-number">{{ stats.pending_cards }}</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-number">{{ stats.approved_cards }}</div>
+            <div class="stat-label">Approved</div>
+        </div>
+    </div>
+
+    <!-- Ultra-Minimal Table Container -->
+    <div class="table-container">
+        <!-- Table Header -->
+        <div class="table-header">
+            <h3 class="table-title">
+                <i class="fas fa-list"></i>
+                ID Cards List
+            </h3>
+            <div class="table-controls rounded-lg">
+                <select onchange="changePerPage(this.value)">
+                    <option value="25" {% if request.GET.per_page == "25" %}selected{% endif %}>25 per page</option>
+                    <option value="50" {% if request.GET.per_page == "50" %}selected{% endif %}>50 per page</option>
+                    <option value="100" {% if request.GET.per_page == "100" %}selected{% endif %}>100 per page</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Ultra-Minimal Search Section -->
+        <div class="search-section">
+            <form method="get" class="search-form">
+                <input type="text" name="search" value="{{ request.GET.search }}" 
+                       placeholder="Search by name, ID, or phone..." class="search-input">
+                <select name="status" class="search-input" style="max-width: 100px;">
+                    <option value="">All Status</option>
+                    <option value="active" {% if request.GET.status == "active" %}selected{% endif %}>Active</option>
+                    <option value="expired" {% if request.GET.status == "expired" %}selected{% endif %}>Expired</option>
+                    <option value="suspended" {% if request.GET.status == "suspended" %}selected{% endif %}>Suspended</option>
+                </select>
+                <button type="submit" class="button-min-primary py-1 px-2">
+                    <div class="flex items-center space-x-2">
+                     <i class="fas fa-search"></i>
+                     <span>Search</span>
+                    </div>
+                 </button>
+                {% if request.GET.search or request.GET.status %}
+               
+                
+                <a  href="{% url 'cards:employee_id_card_list' %}" class="button-min-default flex items-center py-1" style=" height:30px">
+                    <div class="flex items-center space-x-2" style="margin-top:2px;">
+                        <i class="fas fa-times"></i>
+                        <span>Clear</span>
+                    </div>
+                </a>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Ultra-Minimal Bulk Actions -->
+        <div class="bulk-actions" id="bulkActions">
+            <span class="text-blue-900 font-semibold">
+                <span id="selectedCount">0</span> cards selected
+            </span>
+            <a href="#" class="bulk-btn print" onclick="printSelected()">
+                <i class="fas fa-print"></i>
+                Print Selected
+            </a>
+            <button class="bulk-btn cancel" onclick="clearSelection()">
+                <i class="fas fa-times"></i>
+                Clear Selection
+            </button>
+        </div>
+
+        <!-- Ultra-Compact Table -->
+        {% if page_obj %}
+        <table class="table-compact">
+            <thead>
+                <tr>
+                    <th width="20">
+                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                    </th>
+                    <th width="30">Photo</th>
+                    <th>Employee Details</th>
+                    <th width="80">ID Card</th>
+                    <th width="60">No. Printed</th>
+                    <th width="70">Last Batch</th>
+                    <th width="80">Issue Date</th>
+                    <th width="80">Expiry Date</th>
+                    <th width="80">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for card in page_obj %}
+                <tr>
+                    <td>
+                        <input type="checkbox" class="card-checkbox" value="{{ card.id }}" 
+                               onchange="updateBulkActions()">
+                    </td>
+                    <td>
+                        {% if card.employee.photo %}
+                            <img src="{{ card.employee.photo_url }}" alt="{{ card.employee.full_name }}" class="worker-avatar">
+                        {% else %}
+                            <div class="worker-avatar-placeholder">
+                                {{ card.employee.full_name|first|upper }}
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="worker-info">
+                            <div class="worker-details">
+                                <h6>{{ card.employee.full_name }}</h6>
+                                <p>
+                                    Employee ID: {{ card.employee.employee_id }}
+                                    {% if card.employee.department %} • {{ card.employee.department.name }}{% endif %}
+                                    {% if card.employee.position %} • {{ card.employee.position.name }}{% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        {% if card.card_number %}
+                            <code>{{ card.card_number }}</code>
+                        {% else %}
+                            <span style="color: #9ca3af; font-style: italic;">Not assigned</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span style="font-size: 12px; font-weight: 600; color: #374151; text-align: center; display: block;">
+                            {{ card.print_count }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if card.latest_batch_display %}
+                            <span style="font-size: 10px; background: #f1f5f9; color: #475569; padding: 2px 4px; border-radius: 2px; display: inline-block; max-width: 65px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ card.latest_batch_display }}">
+                                {{ card.latest_batch_display }}
+                            </span>
+                        {% else %}
+                            <span style="color: #9ca3af; font-style: italic; font-size: 10px;">—</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ card.issue_date|date:"d/m/Y"|default:"—" }}</td>
+                    <td>{{ card.expiry_date|date:"d/m/Y"|default:"—" }}</td>
+                    <td>
+                        <div style="display: flex; gap: 2px;">
+                            
+                            <a href="{% url 'cards:employee_id_card_detail' card.pk %}"
+                               class="btn-sm-modern button-min-default py-1 px-2" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{% url 'cards:employee_id_card_update' card.pk %}"
+                               class="btn-sm-modern button-min-default py-1 px-2" title="Edit Card">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% if card.status == 'approved' or card.status == 'printed' or card.status == 'delivered' or card.status == 'active' %}
+                                <a href="{% url 'cards:employee_id_card_print_preview' %}?cards={{ card.pk }}" 
+                                    class="button-min-primary px-2 py-1" title="Print Card" target="_blank">
+                                    <div><i class="fas fa-print"></i></div>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="text-align: center; padding: 24px; color: #6b7280;">
+            <i class="fas fa-id-card" style="font-size: 24px; margin-bottom: 8px; opacity: 0.5;"></i>
+            <h6 style="margin: 0 0 4px 0; font-size: 13px;">No Employee ID Cards Found</h6>
+            <p style="margin: 0; font-size: 11px;">
+                {% if request.GET.search or request.GET.status %}
+                    No cards match your search criteria.
+                {% else %}
+                    Get started by creating your first worker ID card.
+                {% endif %}
+            </p>
+           
+            <a href="{% url 'cards:employee_id_card_create' %}" class="btn-compact button-min-primary rounded-lg py-2 mt-2">
+                <div class="space-x-1">
+                    <i class="fas fa-plus"></i>
+                    <span class="font-medium"> New Employee ID Card</span>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Ultra-Minimal Pagination -->
+    {% if page_obj and page_obj.paginator.num_pages > 1 %}
+    <div style="display: flex; justify-content: center; margin-top: 12px;">
+        <nav style="font-size: 11px;">
+            <ul style="display: flex; list-style: none; margin: 0; padding: 0; gap: 3px;">
+                {% if page_obj.has_previous %}
+                    <li>
+                        <a href="?page=1&per_page={{ per_page }}&{{ request.GET.urlencode }}" 
+                           style="padding: 4px 6px; border: 1px solid #e2e8f0; border-radius: 3px; text-decoration: none; color: #374151; background: white;">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&{{ request.GET.urlencode }}" 
+                           style="padding: 4px 6px; border: 1px solid #e2e8f0; border-radius: 3px; text-decoration: none; color: #374151; background: white;">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                <li style="padding: 4px 8px; background: #3b82f6; color: white; border-radius: 3px; font-weight: 600;">
+                    {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </li>
+                
+                {% if page_obj.has_next %}
+                    <li>
+                        <a href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&{{ request.GET.urlencode }}" 
+                           style="padding: 4px 6px; border: 1px solid #e2e8f0; border-radius: 3px; text-decoration: none; color: #374151; background: white;">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="?page={{ page_obj.paginator.num_pages }}&per_page={{ per_page }}&{{ request.GET.urlencode }}" 
+                           style="padding: 4px 6px; border: 1px solid #e2e8f0; border-radius: 3px; text-decoration: none; color: #374151; background: white;">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+// Ultra-Minimal JavaScript for interactions
+function changePerPage(value) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('per_page', value);
+    url.searchParams.set('page', '1');
+    window.location.href = url.toString();
+}
+
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.card-checkbox');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAll.checked;
+    });
+    updateBulkActions();
+}
+
+function updateBulkActions() {
+    const checkboxes = document.querySelectorAll('.card-checkbox:checked');
+    const bulkActions = document.getElementById('bulkActions');
+    const selectedCount = document.getElementById('selectedCount');
+    
+    selectedCount.textContent = checkboxes.length;
+    
+    if (checkboxes.length > 0) {
+        bulkActions.classList.add('show');
+    } else {
+        bulkActions.classList.remove('show');
+    }
+}
+
+function printSelected() {
+    const checkboxes = document.querySelectorAll('.card-checkbox:checked');
+    const cardIds = Array.from(checkboxes).map(cb => cb.value);
+    
+    if (cardIds.length > 0) {
+        const url = "{% url 'cards:employee_id_card_print_preview' %}?cards=" + cardIds.join(',');
+        window.open(url, '_blank');
+    }
+}
+
+function clearSelection() {
+    const checkboxes = document.querySelectorAll('.card-checkbox');
+    const selectAll = document.getElementById('selectAll');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    selectAll.checked = false;
+    
+    updateBulkActions();
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    updateBulkActions();
+});
+</script>
+{% endblock %} 

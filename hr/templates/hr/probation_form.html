@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-page {
+        padding: 12px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        padding: 12px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .form-header h4 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .form-body {
+        padding: 16px;
+    }
+
+    .form-section {
+        margin-bottom: 16px;
+    }
+
+    .section-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-size: 11px;
+        color: #374151;
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 6px 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 70px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-group-full {
+        grid-column: 1 / -1;
+    }
+
+    .error-text {
+        color: #dc2626;
+        font-size: 10px;
+        margin-top: 3px;
+    }
+
+    .help-text {
+        color: #6b7280;
+        font-size: 10px;
+        margin-top: 2px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        padding-top: 12px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .btn-primary {
+        background: #3b82f6;
+        color: white;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 4px;
+        font-size: 11px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-primary:hover {
+        background: #2563eb;
+    }
+
+    .btn-secondary {
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        padding: 7px 16px;
+        border-radius: 4px;
+        font-size: 11px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-secondary:hover {
+        background: #e5e7eb;
+    }
+
+    .required-field::after {
+        content: ' *';
+        color: #dc2626;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-header">
+            <h4>
+                <i class="bi bi-hourglass-split"></i>
+                {{ title }}
+            </h4>
+        </div>
+
+        <div class="form-body">
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- Employee Selection -->
+                <div class="form-section">
+                    <div class="section-title">Employee Information</div>
+                    <div class="form-grid">
+                        <div class="form-group form-group-full">
+                            <label class="required-field">Employee</label>
+                            {% include 'components/employee_autocomplete.html' with field_id='employee' field_name='employee' employees=employees %}
+                            <span class="help-text">Only employees without active probation are shown</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Probation Period -->
+                <div class="form-section">
+                    <div class="section-title">Probation Period</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="required-field">Start Date</label>
+                            <input type="date" name="start_date" id="start_date" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required-field">End Date</label>
+                            <input type="date" name="original_end_date" id="original_end_date" required>
+                            <span class="help-text">Suggested 90-day period</span>
+                        </div>
+
+                        <div class="form-group form-group-full">
+                            <label class="required-field">Employment Status</label>
+                            <select name="employment_status" id="employment_status" required>
+                                <option value="active" selected>Active</option>
+                                <option value="on_leave">On Leave</option>
+                                <option value="suspended">Suspended</option>
+                                <option value="terminated">Terminated</option>
+                            </select>
+                            <span class="help-text">Employee's employment status (single source of truth)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evaluation Notes -->
+                <div class="form-section">
+                    <div class="section-title">Evaluation Notes</div>
+                    <div class="form-grid">
+                        <div class="form-group form-group-full">
+                            <label>Initial Notes</label>
+                            <textarea name="evaluation_notes" id="evaluation_notes" placeholder="Enter initial notes or expectations for this probation period"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <a href="{% url 'hr:probation_list' %}" class="btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn-primary">
+                        <i class="bi bi-check-circle"></i> Create Probation Period
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set minimum date for end_date based on start_date
+    document.getElementById('start_date').addEventListener('change', function() {
+        const startDate = new Date(this.value);
+        const endDateInput = document.getElementById('original_end_date');
+
+        // Set minimum end date to one day after start date
+        startDate.setDate(startDate.getDate() + 1);
+        const minEndDate = startDate.toISOString().split('T')[0];
+        endDateInput.min = minEndDate;
+
+        // Suggest 90 days probation period
+        startDate.setDate(startDate.getDate() + 89); // +89 because we already added 1
+        const suggestedEndDate = startDate.toISOString().split('T')[0];
+        if (!endDateInput.value) {
+            endDateInput.value = suggestedEndDate;
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,315 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ candidate.full_name }} - Candidate Profile{% endblock %}
+
+{% block extra_css %}
+<style>
+    .candidate-header {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .candidate-name {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .info-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .section-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #1e293b;
+        border-bottom: 2px solid #3b82f6;
+        padding-bottom: 6px;
+    }
+
+    .info-row {
+        display: flex;
+        margin-bottom: 8px;
+        font-size: 12px;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #64748b;
+        min-width: 150px;
+    }
+
+    .info-value {
+        color: #1e293b;
+    }
+
+    .timeline-item {
+        border-left: 2px solid #e2e8f0;
+        padding-left: 16px;
+        padding-bottom: 16px;
+        position: relative;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -6px;
+        top: 0;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #3b82f6;
+    }
+
+    .timeline-date {
+        font-size: 10px;
+        color: #64748b;
+    }
+
+    .timeline-content {
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .action-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'recruitment:candidate_list' %}">Candidates</a></li>
+            <li class="breadcrumb-item active">{{ candidate.full_name }}</li>
+        </ol>
+    </nav>
+
+    <!-- Candidate Header -->
+    <div class="candidate-header">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h1 class="candidate-name">{{ candidate.full_name }}</h1>
+                <div class="mb-2" style="font-size: 13px; color: #64748b;">
+                    <i class="bi bi-briefcase"></i> {{ candidate.job_posting.title }}<br>
+                    <i class="bi bi-envelope"></i> {{ candidate.email }} |
+                    <i class="bi bi-telephone"></i> {{ candidate.phone }}
+                </div>
+                <div>
+                    {% if candidate.application_status == 'applied' %}
+                    <span class="badge bg-secondary">{{ candidate.get_application_status_display }}</span>
+                    {% elif candidate.application_status == 'screening' %}
+                    <span class="badge bg-info">{{ candidate.get_application_status_display }}</span>
+                    {% elif candidate.application_status == 'interview_scheduled' or candidate.application_status == 'interviewing' %}
+                    <span class="badge bg-warning text-dark">{{ candidate.get_application_status_display }}</span>
+                    {% elif candidate.application_status == 'offer_extended' or candidate.application_status == 'offer_accepted' %}
+                    <span class="badge bg-success">{{ candidate.get_application_status_display }}</span>
+                    {% elif candidate.application_status == 'hired' %}
+                    <span class="badge bg-primary">{{ candidate.get_application_status_display }}</span>
+                    {% elif candidate.application_status == 'rejected' %}
+                    <span class="badge bg-danger">{{ candidate.get_application_status_display }}</span>
+                    {% else %}
+                    <span class="badge bg-light text-dark">{{ candidate.get_application_status_display }}</span>
+                    {% endif %}
+
+                    <small class="text-muted">Applied: {{ candidate.applied_date|date:"M d, Y" }}</small>
+                </div>
+            </div>
+            <div>
+                <a href="{% url 'recruitment:candidate_update_status' candidate.pk %}" class="btn btn-primary action-btn">
+                    <i class="bi bi-arrow-repeat"></i> Update Status
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-8">
+            <!-- Candidate Information -->
+            <div class="info-card">
+                <h3 class="section-title">Candidate Information</h3>
+                <div class="info-row">
+                    <div class="info-label">Full Name:</div>
+                    <div class="info-value">{{ candidate.full_name }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Email:</div>
+                    <div class="info-value">{{ candidate.email }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Phone:</div>
+                    <div class="info-value">{{ candidate.phone }}</div>
+                </div>
+                {% if candidate.address %}
+                <div class="info-row">
+                    <div class="info-label">Address:</div>
+                    <div class="info-value">{{ candidate.address }}</div>
+                </div>
+                {% endif %}
+                {% if candidate.expected_salary %}
+                <div class="info-row">
+                    <div class="info-label">Expected Salary:</div>
+                    <div class="info-value">${{ candidate.expected_salary|floatformat:0 }}</div>
+                </div>
+                {% endif %}
+                {% if candidate.notice_period %}
+                <div class="info-row">
+                    <div class="info-label">Notice Period:</div>
+                    <div class="info-value">{{ candidate.notice_period }}</div>
+                </div>
+                {% endif %}
+                {% if candidate.availability_date %}
+                <div class="info-row">
+                    <div class="info-label">Availability:</div>
+                    <div class="info-value">{{ candidate.availability_date|date:"M d, Y" }}</div>
+                </div>
+                {% endif %}
+                {% if candidate.resume %}
+                <div class="info-row">
+                    <div class="info-label">Resume:</div>
+                    <div class="info-value"><a href="{{ candidate.resume.url }}" target="_blank"><i class="bi bi-file-earmark-pdf"></i> View Resume</a></div>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if candidate.cover_letter %}
+            <div class="info-card">
+                <h3 class="section-title">Cover Letter</h3>
+                <p style="white-space: pre-wrap; font-size: 12px;">{{ candidate.cover_letter }}</p>
+            </div>
+            {% endif %}
+
+            {% if candidate.notes %}
+            <div class="info-card">
+                <h3 class="section-title">Internal Notes</h3>
+                <p style="white-space: pre-wrap; font-size: 12px;">{{ candidate.notes }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Interviews -->
+            <div class="info-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="section-title mb-0">Interviews ({{ interviews.count }})</h3>
+                    <a href="{% url 'recruitment:interview_schedule' candidate.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-plus"></i> Schedule Interview
+                    </a>
+                </div>
+                {% for interview in interviews %}
+                <div class="timeline-item">
+                    <div class="timeline-date">{{ interview.scheduled_date|date:"M d, Y H:i" }}</div>
+                    <div class="timeline-content">
+                        <strong>{{ interview.get_interview_type_display }}</strong>
+                        <span class="badge badge-sm
+                            {% if interview.status == 'completed' %}bg-success
+                            {% elif interview.status == 'scheduled' %}bg-warning text-dark
+                            {% else %}bg-secondary{% endif %}">
+                            {{ interview.get_status_display }}
+                        </span>
+                        {% if interview.interviewer %}
+                        <br><small>Interviewer: {{ interview.interviewer.get_full_name }}</small>
+                        {% endif %}
+                        {% if interview.rating %}
+                        <br><small>Rating: {{ interview.rating }}/5</small>
+                        {% endif %}
+                        {% if interview.status == 'scheduled' %}
+                        <br><a href="{% url 'recruitment:interview_complete' interview.pk %}" class="btn btn-xs btn-success mt-1">Complete Interview</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted" style="font-size: 12px;">No interviews scheduled yet</p>
+                {% endfor %}
+            </div>
+
+            <!-- Offers -->
+            <div class="info-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="section-title mb-0">Offers ({{ offers.count }})</h3>
+                    <a href="{% url 'recruitment:offer_create' candidate.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-plus"></i> Create Offer
+                    </a>
+                </div>
+                {% for offer in offers %}
+                <div class="timeline-item">
+                    <div class="timeline-date">{{ offer.created_at|date:"M d, Y" }}</div>
+                    <div class="timeline-content">
+                        <strong>{{ offer.position_offered.title }}</strong>
+                        <span class="badge badge-sm
+                            {% if offer.status == 'accepted' %}bg-success
+                            {% elif offer.status == 'sent' %}bg-info
+                            {% elif offer.status == 'rejected' %}bg-danger
+                            {% else %}bg-secondary{% endif %}">
+                            {{ offer.get_status_display }}
+                        </span>
+                        <br><small>Salary: ${{ offer.salary|floatformat:0 }} {{ offer.currency }}</small>
+                        <br><small>Start Date: {{ offer.start_date|date:"M d, Y" }}</small>
+                        {% if offer.status != 'accepted' and offer.status != 'rejected' %}
+                        <br><a href="{% url 'recruitment:offer_update_status' offer.pk %}" class="btn btn-xs btn-primary mt-1">Update Status</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted" style="font-size: 12px;">No offers yet</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-4">
+            <!-- Quick Actions -->
+            <div class="info-card">
+                <h3 class="section-title">Quick Actions</h3>
+                {% if candidate.application_status == 'offer_accepted' %}
+                <a href="{% url 'recruitment:candidate_hire' candidate.pk %}" class="btn btn-success w-100 mb-2">
+                    <i class="bi bi-person-check"></i> Hire Candidate
+                </a>
+                {% endif %}
+                <a href="{% url 'recruitment:candidate_update_status' candidate.pk %}" class="btn btn-primary w-100 mb-2">
+                    <i class="bi bi-arrow-repeat"></i> Update Status
+                </a>
+                <a href="{% url 'recruitment:interview_schedule' candidate.pk %}" class="btn btn-outline-primary w-100 mb-2">
+                    <i class="bi bi-calendar-plus"></i> Schedule Interview
+                </a>
+                <a href="{% url 'recruitment:offer_create' candidate.pk %}" class="btn btn-outline-success w-100 mb-2">
+                    <i class="bi bi-envelope-plus"></i> Create Offer
+                </a>
+            </div>
+
+            <!-- Status History -->
+            <div class="info-card">
+                <h3 class="section-title">Status History</h3>
+                {% for history in status_history %}
+                <div class="timeline-item">
+                    <div class="timeline-date">{{ history.timestamp|date:"M d, Y H:i" }}</div>
+                    <div class="timeline-content">
+                        <strong>{{ history.old_status|default:"New" }}</strong> → <strong>{{ history.new_status }}</strong>
+                        {% if history.changed_by %}
+                        <br><small>By: {{ history.changed_by.get_full_name }}</small>
+                        {% endif %}
+                        {% if history.reason %}
+                        <br><small>{{ history.reason }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted" style="font-size: 12px;">No status changes yet</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

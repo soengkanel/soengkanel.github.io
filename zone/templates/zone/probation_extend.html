@@ -1,0 +1,381 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Extend Probation - {{ probation.worker.get_full_name }}{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.back-link {
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.back-link:hover {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 20px 0;
+}
+
+.worker-info {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.worker-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 8px 0;
+}
+
+.worker-meta {
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.status-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-probation { background: #dbeafe; color: #1d4ed8; }
+.status-extended { background: #fef3c7; color: #d97706; }
+
+.days-remaining {
+    font-size: 14px;
+    color: #374151;
+}
+
+.form-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.extension-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.extension-option input {
+    display: none;
+}
+
+.extension-btn {
+    padding: 12px 8px;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.extension-btn:hover {
+    border-color: #3b82f6;
+}
+
+.extension-option input:checked + .extension-btn {
+    border-color: #3b82f6;
+    background: #f0f7ff;
+    color: #1d4ed8;
+}
+
+.extension-number {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.extension-text {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.form-textarea {
+    min-height: 80px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.form-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.btn {
+    padding: 10px 16px;
+    border: 1px solid;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-outline {
+    background: white;
+    border-color: #d1d5db;
+    color: #6b7280;
+}
+
+.btn-outline:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+    color: #374151;
+    text-decoration: none;
+}
+
+/* Custom days input */
+.custom-days {
+    display: none;
+    margin-top: 12px;
+}
+
+.custom-days.show {
+    display: block;
+}
+
+.custom-days input {
+    width: 100px;
+}
+
+@media (max-width: 768px) {
+    .extension-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="{% url 'zone:probation_list' %}" class="back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to Probation List
+    </a>
+
+    <h1 class="page-title">Extend Probation</h1>
+
+    <!-- Worker Info -->
+    <div class="worker-info">
+        <div class="worker-name">{{ probation.worker.get_full_name }}</div>
+        <div class="worker-meta">{{ probation.worker.worker_id|default:"No ID" }} • {{ probation.worker.position.name|default:"No Position" }}</div>
+        <div class="worker-meta">{{ probation.start_date|date:"d/m/Y" }} → {{ probation.get_end_date|date:"d/m/Y" }}</div>
+        
+        <div class="status-line">
+            <span class="status-badge status-{{ probation.worker.status }}">{{ probation.worker.get_status_display }}</span>
+            <span class="days-remaining">
+                {% with days=probation.calculated_days_remaining %}
+                    {% if days < 0 %}{{ days|add:"-1"|stringformat:"d"|slice:"1:" }} days overdue
+                    {% elif days == 0 %}Ends today
+                    {% else %}{{ days }} days left{% endif %}
+                {% endwith %}
+            </span>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-card">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label class="form-label">Extension Duration</label>
+                <div class="extension-options">
+                    <label class="extension-option">
+                        <input type="radio" name="extension_duration_days" value="7" {% if not form.extension_duration_days.value or form.extension_duration_days.value == 7 %}checked{% endif %}>
+                        <div class="extension-btn">
+                            <div class="extension-number">7</div>
+                            <div class="extension-text">Days</div>
+                        </div>
+                    </label>
+                    
+                    <label class="extension-option">
+                        <input type="radio" name="extension_duration_days" value="15" {% if form.extension_duration_days.value == 15 %}checked{% endif %}>
+                        <div class="extension-btn">
+                            <div class="extension-number">15</div>
+                            <div class="extension-text">Days</div>
+                        </div>
+                    </label>
+                    
+                    <label class="extension-option">
+                        <input type="radio" name="extension_duration_days" value="30" {% if form.extension_duration_days.value == 30 %}checked{% endif %}>
+                        <div class="extension-btn">
+                            <div class="extension-number">30</div>
+                            <div class="extension-text">Days</div>
+                        </div>
+                    </label>
+                    
+                    <label class="extension-option">
+                        <input type="radio" name="extension_duration_days" id="customRadio" value="">
+                        <div class="extension-btn">
+                            <div class="extension-number">?</div>
+                            <div class="extension-text">Custom</div>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="custom-days" id="customDays">
+                    <input type="number" name="custom_extension_days" id="customDaysInput" class="form-control" placeholder="Days (1-90)" min="1" max="90">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="reason" class="form-label">Reason</label>
+                <textarea name="reason" id="reason" class="form-control form-textarea" placeholder="Why does this probation need to be extended?" required>{{ form.reason.value|default:"" }}</textarea>
+            </div>
+            
+            {% if user_is_manager %}
+            <!-- Hidden approved_by field for manager extensions -->
+            <input type="hidden" name="approved_by" value="{{ user.id }}">
+            {% endif %}
+
+            <div class="form-actions">
+                <a href="{% url 'zone:probation_list' %}" class="btn btn-outline">Cancel</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-clock"></i>
+                    Extend Probation
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const customRadio = document.getElementById('customRadio');
+    const customDays = document.getElementById('customDays');
+    const customDaysInput = document.getElementById('customDaysInput');
+    const radios = document.querySelectorAll('input[name="extension_duration_days"]');
+    
+    function toggleCustom() {
+        if (customRadio.checked) {
+            customDays.classList.add('show');
+            customDaysInput.required = true;
+        } else {
+            customDays.classList.remove('show');
+            customDaysInput.required = false;
+        }
+    }
+    
+    // Handle custom input changes
+    customDaysInput.addEventListener('input', function() {
+        if (this.value) {
+            customRadio.value = this.value;
+        }
+    });
+    
+    // Handle form submission to ensure custom value is set
+    document.querySelector('form').addEventListener('submit', function(e) {
+        if (customRadio.checked && customDaysInput.value) {
+            customRadio.value = customDaysInput.value;
+        }
+    });
+    
+    radios.forEach(radio => {
+        radio.addEventListener('change', toggleCustom);
+    });
+    
+    toggleCustom();
+    
+    // Remove toasts
+    document.querySelectorAll('.toast, .alert:not(.worker-info)').forEach(el => el.remove());
+});
+</script>
+{% endblock %}

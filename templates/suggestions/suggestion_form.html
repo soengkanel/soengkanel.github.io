@@ -1,0 +1,130 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{% if is_edit %}Edit{% else %}Submit{% endif %} Suggestion{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+                <p class="text-sm text-red-600 font-medium">Please correct the errors below:</p>
+                {{ form.errors }}
+            </div>
+            {% endif %}
+
+            <!-- Title -->
+            <div class="mb-4">
+                <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.title.label }} <span class="text-red-500">*</span>
+                </label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.title.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Type and Category -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="{{ form.suggestion_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.suggestion_type.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.suggestion_type }}
+                    {% if form.suggestion_type.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.suggestion_type.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.category.label }}
+                    </label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.category.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Affected Department -->
+            <div class="mb-4">
+                <label for="{{ form.affected_department.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.affected_department.label }}
+                </label>
+                {{ form.affected_department }}
+                {% if form.affected_department.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.affected_department.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-1">Which department is this suggestion related to?</p>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.description.label }} <span class="text-red-500">*</span>
+                </label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.description.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Expected Outcome -->
+            <div class="mb-4">
+                <label for="{{ form.expected_outcome.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.expected_outcome.label }}
+                </label>
+                {{ form.expected_outcome }}
+                {% if form.expected_outcome.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.expected_outcome.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-1">What positive changes do you expect from this suggestion?</p>
+            </div>
+
+            <!-- Attachment -->
+            <div class="mb-4">
+                <label for="{{ form.attachment.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.attachment.label }}
+                </label>
+                {{ form.attachment }}
+                {% if form.attachment.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.attachment.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-1">Upload supporting documents, images, or files (optional)</p>
+            </div>
+
+            <!-- Privacy -->
+            <div class="mb-6">
+                <div class="flex items-center">
+                    {{ form.is_anonymous }}
+                    <label for="{{ form.is_anonymous.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                        {{ form.is_anonymous.label }}
+                    </label>
+                </div>
+                <p class="text-xs text-gray-500 mt-1 ml-6">Your identity will be hidden from other employees, but visible to management.</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3">
+                <a href="{% url 'suggestions:my_suggestions' %}"
+                   class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                    <i class="bi bi-{% if is_edit %}check{% else %}send{% endif %}-circle"></i>
+                    {% if is_edit %}Update Suggestion{% else %}Submit Suggestion{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}

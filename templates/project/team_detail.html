@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ team.team_name }} - Team Details{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'project:team_list' %}">Teams</a></li>
+                    <li class="breadcrumb-item active">{{ team.team_name }}</li>
+                </ol>
+            </nav>
+            <h2 class="fw-bold text-dark-emphasis mb-1">{{ team.team_name }}</h2>
+            <div class="d-flex align-items-center gap-3">
+                <span class="badge bg-light text-dark">{{ team.team_code }}</span>
+                <span class="status-badge status-{{ team.status }}">{{ team.get_status_display }}</span>
+                <span class="badge bg-light text-dark">
+                    <i class="bi bi-tag"></i> {{ team.get_team_type_display }}
+                </span>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'project:team_edit' team.id %}" class="btn-outline-modern">
+                <i class="bi bi-pencil"></i> Edit Team
+            </a>
+            <a href="{% url 'project:team_projects' team.id %}" class="btn-light-modern">
+                <i class="bi bi-folder"></i> Projects
+            </a>
+            <button type="button" class="btn-danger-modern" onclick="confirmDelete()">
+                <i class="bi bi-trash"></i> Archive
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Team Info -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Team Information</h5>
+                </div>
+                <div class="card-body">
+                    {% if team.description %}
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Description</label>
+                        <p class="mb-0">{{ team.description }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if team.team_lead %}
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Team Lead</label>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm me-2">
+                                {{ team.team_lead.first_name|first|upper }}
+                            </div>
+                            <div>
+                                <div class="fw-medium">{{ team.team_lead.full_name }}</div>
+                                <div class="text-muted small">{{ team.team_lead.job_title|default:"Team Lead" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if team.manager %}
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Manager</label>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm me-2">
+                                {{ team.manager.first_name|first|upper }}
+                            </div>
+                            <div>
+                                <div class="fw-medium">{{ team.manager.full_name }}</div>
+                                <div class="text-muted small">{{ team.manager.job_title|default:"Manager" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if team.department %}
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Department</label>
+                        <p class="mb-0">{{ team.department.name }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Created</label>
+                        <p class="mb-0">{{ team.created_at|date:"M d, Y" }} by {{ team.created_by.get_full_name|default:team.created_by.username }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Stats -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Team Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <div class="text-muted small">Total Members</div>
+                            <div class="h4 mb-0">{{ stats.total_members }}</div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="text-muted small">Available Slots</div>
+                            <div class="h4 mb-0">{{ stats.available_slots }}</div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="text-muted small">Full Time</div>
+                            <div class="h4 mb-0">{{ stats.full_time_members }}</div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="text-muted small">Part Time</div>
+                            <div class="h4 mb-0">{{ stats.part_time_members }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Capacity -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-muted">Team Capacity</span>
+                            <span class="small">{{ stats.total_members }}/{{ team.max_members }}</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: {% widthratio stats.total_members team.max_members 100 %}%">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Average Allocation -->
+                    <div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small text-muted">Avg. Allocation</span>
+                            <span class="small">{{ stats.avg_allocation|floatformat:1 }}%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" role="progressbar"
+                                 style="width: {{ stats.avg_allocation }}%">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Members -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Team Members ({{ stats.total_members }})</h5>
+                    {% if not team.is_full %}
+                    <button type="button" class="btn-primary-modern btn-sm" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+                        <i class="bi bi-plus-circle"></i> Add Member
+                    </button>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    {% if members %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Member</th>
+                                    <th>Role</th>
+                                    <th>Availability</th>
+                                    <th>Allocation</th>
+                                    <th>Start Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="members-table">
+                                {% for member in members %}
+                                {% include 'project/partials/team_member_row.html' with member=member team=team %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-person-plus display-4 text-muted"></i>
+                        <h5 class="mt-3">No Team Members</h5>
+                        <p class="text-muted">Start building your team by adding members.</p>
+                        <button type="button" class="btn-primary-modern" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+                            <i class="bi bi-plus-circle"></i> Add First Member
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Member Modal -->
+<div class="modal fade" id="addMemberModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Team Member</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form hx-post="{% url 'project:team_member_add' team.id %}"
+                  hx-target="#members-table"
+                  hx-swap="beforeend"
+                  hx-on::after-request="this.reset(); bootstrap.Modal.getInstance(document.getElementById('addMemberModal')).hide();">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label class="form-label">Employee *</label>
+                            <select name="employee_id" class="form-select" required>
+                                <option value="">Select employee</option>
+                                {% for employee in potential_members %}
+                                <option value="{{ employee.id }}">{{ employee.full_name }} - {{ employee.job_title|default:"" }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Role</label>
+                            <select name="role" class="form-select">
+                                {% for value, label in role_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Availability</label>
+                            <select name="availability" class="form-select">
+                                {% for value, label in availability_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Allocation %</label>
+                            <input type="number" name="allocation_percentage" class="form-control" value="100" min="1" max="100">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Hourly Rate</label>
+                            <input type="number" name="hourly_rate" class="form-control" step="0.01" placeholder="Optional">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-light-modern" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-primary-modern">Add Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Archive Team</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to archive this team? This action will:</p>
+                <ul class="small">
+                    <li>Set team status to archived</li>
+                    <li>Deactivate all team members</li>
+                    <li>Team can be reactivated later</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-light-modern" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="{% url 'project:team_delete' team.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn-danger-modern">Archive Team</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDelete() {
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+</script>
+
+<style>
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-inactive {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-archived {
+    background-color: #f3f4f6;
+    color: #6b7280;
+}
+</style>
+{% endblock %}

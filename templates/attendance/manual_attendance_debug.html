@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Manual Attendance</title>
+</head>
+<body>
+    <h1>Debug Manual Attendance Page</h1>
+    <p>This is a simple test template to verify template loading works.</p>
+    <p>If you can see this, the template system is working.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

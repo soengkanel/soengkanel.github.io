@@ -1,0 +1,272 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Edit Probation{% endblock %}
+
+{% block main_class %}col-md-8 ms-sm-auto col-lg-8{% endblock %}
+
+{% block extra_css %}
+<style>
+.page-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+.worker-card {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.worker-name {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 4px;
+}
+
+.worker-meta {
+    color: #6c757d;
+    font-size: 13px;
+}
+
+.form-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 20px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 4px;
+}
+
+.form-control, .form-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.text-danger {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.text-muted {
+    color: #6c757d;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.btn-secondary {
+    background: white;
+    color: #6c757d;
+    border-color: #ced4da;
+}
+
+.btn:hover {
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-secondary:hover {
+    background: #f8f9fa;
+}
+
+.form-actions {
+    border-top: 1px solid #e9ecef;
+    padding-top: 16px;
+    margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center my-3">
+        <h1 class="page-title">Edit Probation</h1>
+       
+    </div>
+
+    <!-- Worker Info -->
+    <div class="worker-card">
+        <div class="worker-name">{{ worker.get_full_name }}</div>
+        <div class="worker-meta">
+            ID: {{ worker.worker_id|default:"N/A" }} • 
+            {{ worker.position.name|default:"No Position" }} • 
+            {{ worker.zone.name|default:"No Zone" }}
+        </div>
+    </div>
+
+    <!-- Edit Form -->
+    <div class="form-card">
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Dates -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.start_date.id_for_label }}" class="form-label">
+                        Start Date
+                        {% if form.start_date.field.required %}<span class="text-danger">*</span>{% endif %}
+                    </label>
+                    {{ form.start_date }}
+                    {% if form.start_date.errors %}
+                        {% for error in form.start_date.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.original_end_date.id_for_label }}" class="form-label">
+                        End Date
+                        {% if form.original_end_date.field.required %}<span class="text-danger">*</span>{% endif %}
+                    </label>
+                    {{ form.original_end_date }}
+                    {% if form.original_end_date.errors %}
+                        {% for error in form.original_end_date.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Status and Actual End -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.worker_status.id_for_label }}" class="form-label">
+                        Worker Status
+                        {% if not user_is_manager %}<span class="text-muted">(Read Only)</span>{% endif %}
+                    </label>
+                    {% if user_is_manager %}
+                        {{ form.worker_status }}
+                    {% else %}
+                        <input type="text" class="form-control" value="{{ probation.worker.status|default:'N/A' }}" disabled readonly>
+                        <input type="hidden" name="{{ form.worker_status.name }}" value="{{ form.worker_status.value }}">
+                    {% endif %}
+                    {% if form.worker_status.errors %}
+                        {% for error in form.worker_status.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    {% if form.worker_status.help_text %}
+                        <div class="text-muted">{{ form.worker_status.help_text }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.actual_end_date.id_for_label }}" class="form-label">
+                        Actual End Date
+                    </label>
+                    {{ form.actual_end_date }}
+                    {% if form.actual_end_date.errors %}
+                        {% for error in form.actual_end_date.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="text-muted">Leave empty if ongoing</div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-group">
+                <label for="{{ form.evaluation_notes.id_for_label }}" class="form-label">
+                    Notes
+                </label>
+                {{ form.evaluation_notes }}
+                {% if form.evaluation_notes.errors %}
+                    {% for error in form.evaluation_notes.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+                <div class="text-muted">Optional evaluation notes</div>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Actions -->
+            <div class="flex justify-end items-center space-x-3">
+                <a href="{% url 'zone:probation_list' %}" class="button-min-danger">
+                    Cancel
+                </a>
+                <button type="submit" class="button-min-primary">
+                   Save
+                </button>
+                
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

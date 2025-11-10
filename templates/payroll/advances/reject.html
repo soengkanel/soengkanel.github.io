@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* Compact Variables */
+    .form-control { font-size: 11px !important; padding: 4px 6px !important; height: auto !important; border-radius: 3px; border: 1px solid #d1d5db; }
+</style>
+{% endblock %}
+
+{% block title %}Reject Salary Advance{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Reject Salary Advance</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        You are about to reject this salary advance request.
+                    </div>
+
+                    <div class="card bg-light mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ advance.employee.get_full_name }}</h6>
+                            <p class="card-text mb-2">
+                                <strong>Amount:</strong> KHR {{ advance.amount|floatformat:0 }}<br>
+                                <strong>Request Date:</strong> {{ advance.request_date|date:"M d, Y" }}<br>
+                                <strong>Repayment Method:</strong> {{ advance.get_repayment_method_display }}
+                                {% if advance.repayment_method == 'INSTALLMENTS' %}
+                                    ({{ advance.installment_months }} months)
+                                {% endif %}
+                            </p>
+                            <div class="mt-2">
+                                <strong>Reason:</strong>
+                                <p class="mb-0"><small>{{ advance.reason }}</small></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Reason for Rejection <span class="text-danger">*</span></label>
+                            <textarea name="remarks" class="form-control" rows="3" required placeholder="Please provide a reason for rejecting this advance..."></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'payroll:salary_advance_detail' advance.id %}" class="button-min-warn py-1">
+                                Cancel
+                            </a>
+                            <button type="submit" class="button-min-danger py-1">
+                                <div>
+                                    <i class="fas fa-times me-2"></i>Reject
+                                </div>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

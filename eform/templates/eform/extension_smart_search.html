@@ -1,0 +1,809 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Extension of Stay Application - Smart Search{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Extension Smart Search - Ultra Compact Design */
+:root {
+    --primary: #87CEEB;
+    --black: #000000;
+    --white: #FFFFFF;
+    --gray-50: #F9FAFB;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-300: #D1D5DB;
+    --gray-400: #9CA3AF;
+    --gray-500: #6B7280;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-800: #1F2937;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --info: #3B82F6;
+    --purple: #8B5CF6;
+}
+
+/* Main Container */
+.extension-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 8px;
+    background: var(--gray-50);
+}
+
+/* Header - Compact */
+.extension-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    border-radius: 4px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.extension-icon {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--purple), var(--info));
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 16px;
+}
+
+.extension-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.extension-subtitle {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin: 2px 0 0 0;
+}
+
+.btn-compact {
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    color: var(--gray-700);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    text-decoration: none;
+    transition: all 0.2s;
+    border-radius: 4px;
+}
+
+.btn-compact:hover {
+    background: var(--gray-50);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.btn-compact.primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--black);
+}
+
+/* Stats Section - Ultra Compact */
+.quick-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.stat-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    padding: 6px 8px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat-number {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.stat-label {
+    font-size: 8px;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin: 1px 0 0 0;
+}
+
+.stat-card.urgent .stat-number { color: var(--danger); }
+.stat-card.warning .stat-number { color: var(--warning); }
+.stat-card.success .stat-number { color: var(--success); }
+
+/* Smart Search - Compact */
+.smart-search-section {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    border-radius: 4px;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.smart-search-input {
+    flex: 1;
+    position: relative;
+    max-width: 400px;
+}
+
+.search-field {
+    width: 100%;
+    padding: 6px 30px 6px 8px;
+    border: 1px solid var(--gray-300);
+    font-size: 12px;
+    background: var(--white);
+    color: var(--gray-800);
+    transition: all 0.2s;
+    border-radius: 4px;
+}
+
+.search-field:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-400);
+    font-size: 12px;
+}
+
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border: 1px solid var(--gray-300);
+    border-top: none;
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    border-radius: 0 0 4px 4px;
+}
+
+.suggestion-item {
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 11px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.suggestion-item:hover {
+    background: var(--gray-50);
+}
+
+.suggestion-text {
+    font-weight: 500;
+}
+
+.suggestion-details {
+    font-size: 9px;
+    color: var(--gray-500);
+}
+
+/* Filter Row */
+.filter-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.filter-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--gray-700);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.filter-select {
+    padding: 4px 6px;
+    border: 1px solid var(--gray-300);
+    font-size: 11px;
+    background: var(--white);
+    color: var(--gray-800);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.1);
+}
+
+/* Worker Grid */
+.workers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+/* Worker Card - Ultra Compact */
+.worker-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.worker-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-color: var(--primary);
+}
+
+.worker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+}
+
+.worker-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.worker-id {
+    font-size: 9px;
+    color: var(--gray-500);
+    background: var(--gray-100);
+    padding: 1px 4px;
+    border-radius: 6px;
+}
+
+.worker-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    font-size: 10px;
+    margin-bottom: 6px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.detail-label {
+    font-weight: 500;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    font-size: 8px;
+    letter-spacing: 0.3px;
+}
+
+.detail-value {
+    color: var(--gray-800);
+    font-weight: 500;
+}
+
+.detail-value.urgent { color: var(--danger); }
+.detail-value.warning { color: var(--warning); }
+
+.worker-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 6px;
+    border-top: 1px solid var(--gray-100);
+}
+
+.status-badge {
+    font-size: 8px;
+    padding: 1px 4px;
+    border-radius: 6px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-badge.active { background: #D1FAE5; color: #065F46; }
+.status-badge.inactive { background: #FEE2E2; color: #991B1B; }
+
+.select-btn {
+    padding: 3px 8px;
+    font-size: 9px;
+    background: var(--primary);
+    border: 1px solid var(--primary);
+    color: var(--black);
+    border-radius: 4px;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.select-btn:hover {
+    background: var(--gray-700);
+    border-color: var(--gray-700);
+    color: var(--white);
+}
+
+/* Pagination - Compact */
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.pagination-compact {
+    display: flex;
+    gap: 2px;
+}
+
+.page-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+    border: 1px solid var(--gray-300);
+    background: var(--white);
+    color: var(--gray-700);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.page-btn:hover,
+.page-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--black);
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray-500);
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: var(--gray-400);
+}
+
+/* Notification */
+.notification-bar {
+    background: linear-gradient(90deg, var(--info), var(--purple));
+    color: var(--white);
+    padding: 6px 12px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 4px;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.notification-close {
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.notification-close:hover {
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .workers-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    
+    .quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .extension-container {
+        padding: 4px;
+    }
+    
+    .extension-header {
+        flex-direction: column;
+        gap: 6px;
+        align-items: stretch;
+    }
+    
+    .search-container {
+        flex-direction: column;
+    }
+    
+    .filter-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .workers-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .worker-details {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="extension-container">
+    <!-- Header -->
+    <div class="extension-header">
+        <div class="header-content">
+            <div class="extension-icon">
+                <i class="bi bi-calendar-plus"></i>
+            </div>
+            <div class="header-info">
+                <h1 class="extension-title">Extension of Stay Application</h1>
+                <p class="extension-subtitle">Smart search & worker selection</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'eform:operations_dashboard' %}" class="btn-compact">
+                <i class="bi bi-house"></i>
+                Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Smart Notification -->
+    {% if expiring_soon > 0 or expired_permits > 0 %}
+    <div class="notification-bar">
+        <div class="notification-content">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>
+                {% if expired_permits > 0 %}{{ expired_permits }} permit{{ expired_permits|pluralize }} expired, {% endif %}
+                {% if expiring_soon > 0 %}{{ expiring_soon }} expiring within 30 days{% endif %}
+                - Priority action needed!
+            </span>
+        </div>
+        <div class="notification-close">
+            <i class="bi bi-x"></i>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Stats -->
+    <div class="quick-stats">
+        <div class="stat-card">
+            <div class="stat-number">{{ active_workers }}</div>
+            <div class="stat-label">Active Workers</div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-number">{{ expiring_soon }}</div>
+            <div class="stat-label">Expiring Soon</div>
+        </div>
+        <div class="stat-card urgent">
+            <div class="stat-number">{{ expired_permits }}</div>
+            <div class="stat-label">Expired</div>
+        </div>
+        <div class="stat-card success">
+            <div class="stat-number">{{ total_applications }}</div>
+            <div class="stat-label">Applications</div>
+        </div>
+    </div>
+
+    <!-- Smart Search -->
+    <div class="smart-search-section">
+        <form method="get" id="searchForm">
+            <div class="search-container">
+                <div class="smart-search-input">
+                    <input type="text" class="search-field" name="search" 
+                           placeholder="Smart search: name, ID, passport, permit..." 
+                           value="{{ search_query }}" id="smartSearch" autocomplete="off">
+                    <div class="search-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <div class="search-suggestions" id="searchSuggestions">
+                        <!-- Dynamic suggestions -->
+                    </div>
+                </div>
+                <button type="submit" class="btn-compact primary">
+                    <i class="bi bi-search"></i>
+                    Search
+                </button>
+            </div>
+            
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label class="filter-label">Position</label>
+                    <select name="position" class="filter-select" onchange="this.form.submit()">
+                        <option value="">All Positions</option>
+                        {% for position in positions %}
+                        <option value="{{ position.id }}" {% if position.id|stringformat:"s" == position_filter %}selected{% endif %}>
+                            {{ position.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Building</label>
+                    <select name="building" class="filter-select" onchange="this.form.submit()">
+                        <option value="">All Buildings</option>
+                        {% for building in buildings %}
+                        <option value="{{ building.id }}" {% if building.id|stringformat:"s" == building_filter %}selected{% endif %}>
+                            {{ building.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Nationality</label>
+                    <select name="nationality" class="filter-select" onchange="this.form.submit()">
+                        <option value="">All Nationalities</option>
+                        {% for code, name in nationality_choices %}
+                        <option value="{{ code }}" {% if code == nationality_filter %}selected{% endif %}>
+                            {{ name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Agent</label>
+                    <select name="agent" class="filter-select" onchange="this.form.submit()">
+                        <option value="">All Agents</option>
+                        {% for agent in agents %}
+                        <option value="{{ agent.id }}" {% if agent.id|stringformat:"s" == agent_filter %}selected{% endif %}>
+                            {{ agent.user.get_full_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Workers Grid -->
+    {% if page_obj %}
+        <div class="workers-grid">
+            {% for worker in page_obj %}
+            <div class="worker-card">
+                <div class="worker-header">
+                    <h4 class="worker-name">{{ worker.get_full_name }}</h4>
+                    <span class="worker-id">{{ worker.worker_id|default:"Not set" }}</span>
+                </div>
+                
+                <div class="worker-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Position</span>
+                        <span class="detail-value">{{ worker.position.name|default:"Not set" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Building</span>
+                        <span class="detail-value">{{ worker.building.name|default:"Not set" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Nationality</span>
+                        <span class="detail-value">{{ worker.get_nationality_display|default:"Not set" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Permit Expiry</span>
+                        {% if worker.work_permit_expiry %}
+                            {% if worker.work_permit_expiry < today %}
+                                <span class="detail-value urgent">{{ worker.work_permit_expiry }} (Expired)</span>
+                            {% elif worker.work_permit_expiry <= expiry_warning_date %}
+                                <span class="detail-value warning">{{ worker.work_permit_expiry }} (Soon)</span>
+                            {% else %}
+                                <span class="detail-value">{{ worker.work_permit_expiry }}</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="detail-value">Not set</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="worker-status">
+                    <span class="status-badge {{ worker.status }}">{{ worker.get_status_display }}</span>
+                    <a href="?worker_id={{ worker.id }}" class="select-btn">
+                        <i class="bi bi-printer"></i>
+                        Print
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination-wrapper">
+            <div class="pagination-compact">
+                {% if page_obj.has_previous %}
+                    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if position_filter %}position={{ position_filter }}&{% endif %}{% if building_filter %}building={{ building_filter }}&{% endif %}{% if nationality_filter %}nationality={{ nationality_filter }}&{% endif %}{% if agent_filter %}agent={{ agent_filter }}&{% endif %}page=1" class="page-btn">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </a>
+                    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if position_filter %}position={{ position_filter }}&{% endif %}{% if building_filter %}building={{ building_filter }}&{% endif %}{% if nationality_filter %}nationality={{ nationality_filter }}&{% endif %}{% if agent_filter %}agent={{ agent_filter }}&{% endif %}page={{ page_obj.previous_page_number }}" class="page-btn">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                {% endif %}
+                
+                <span class="page-btn active">
+                    {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+                
+                {% if page_obj.has_next %}
+                    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if position_filter %}position={{ position_filter }}&{% endif %}{% if building_filter %}building={{ building_filter }}&{% endif %}{% if nationality_filter %}nationality={{ nationality_filter }}&{% endif %}{% if agent_filter %}agent={{ agent_filter }}&{% endif %}page={{ page_obj.next_page_number }}" class="page-btn">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if position_filter %}position={{ position_filter }}&{% endif %}{% if building_filter %}building={{ building_filter }}&{% endif %}{% if nationality_filter %}nationality={{ nationality_filter }}&{% endif %}{% if agent_filter %}agent={{ agent_filter }}&{% endif %}page={{ page_obj.paginator.num_pages }}" class="page-btn">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <i class="bi bi-person-x"></i>
+            <h3>No Records Found</h3>
+            <p>Try adjusting your search criteria or filters.</p>
+        </div>
+    {% endif %}
+</div>
+
+{{ suggestions|json_script:"suggestions-data" }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Smart Search Implementation
+    const searchInput = document.getElementById('smartSearch');
+    const suggestionsContainer = document.getElementById('searchSuggestions');
+    
+    // Get suggestions from backend data
+    const suggestions = JSON.parse(document.getElementById('suggestions-data').textContent);
+    
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        
+        if (query.length >= 2) {
+            const matches = suggestions.filter(item => 
+                item.text.toLowerCase().includes(query) ||
+                item.details.toLowerCase().includes(query)
+            );
+            
+            displaySuggestions(matches);
+        } else {
+            hideSuggestions();
+        }
+    });
+    
+    function displaySuggestions(matches) {
+        if (matches.length === 0) {
+            hideSuggestions();
+            return;
+        }
+        
+        suggestionsContainer.innerHTML = matches.map(match => `
+            <div class="suggestion-item" onclick="selectSuggestion('${match.text}', ${match.worker_id})">
+                <div>
+                    <div class="suggestion-text">${match.text}</div>
+                    <div class="suggestion-details">${match.details}</div>
+                </div>
+                <span class="suggestion-type">${match.type}</span>
+            </div>
+        `).join('');
+        
+        suggestionsContainer.style.display = 'block';
+    }
+    
+    function hideSuggestions() {
+        suggestionsContainer.style.display = 'none';
+    }
+    
+    // Close suggestions when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!searchInput.contains(event.target) && !suggestionsContainer.contains(event.target)) {
+            hideSuggestions();
+        }
+    });
+    
+    // Notification close
+    const notificationClose = document.querySelector('.notification-close');
+    if (notificationClose) {
+        notificationClose.addEventListener('click', function() {
+            document.querySelector('.notification-bar').style.display = 'none';
+        });
+    }
+    
+    // Stat card clicks for filtering
+    document.querySelectorAll('.stat-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const label = this.querySelector('.stat-label').textContent.toLowerCase();
+            
+            // Navigate to filtered view based on stat clicked
+            if (label.includes('expiring')) {
+                console.log('Filter by expiring permits');
+            } else if (label.includes('expired')) {
+                console.log('Filter by expired permits');
+            }
+        });
+    });
+});
+
+function selectSuggestion(suggestion, workerId) {
+    document.getElementById('smartSearch').value = suggestion;
+    document.getElementById('searchSuggestions').style.display = 'none';
+    
+    // Redirect to extension form for this worker
+    window.location.href = `?worker_id=${workerId}`;
+}
+</script>
+{% endblock %} 

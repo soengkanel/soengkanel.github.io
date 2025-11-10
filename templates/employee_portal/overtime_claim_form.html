@@ -1,0 +1,121 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Submit Overtime Claim{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-md">
+                <p class="text-sm text-red-600 font-medium">Please correct the errors below:</p>
+                {{ form.errors }}
+            </div>
+            {% endif %}
+
+            <!-- Work Date, Start Time, End Time -->
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="col-span-3 md:col-span-1">
+                    <label for="{{ form.work_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.work_date.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.work_date }}
+                    {% if form.work_date.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.work_date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-3 md:col-span-1">
+                    <label for="{{ form.start_time.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.start_time.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.start_time }}
+                    {% if form.start_time.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.start_time.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="col-span-3 md:col-span-1">
+                    <label for="{{ form.end_time.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ form.end_time.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.end_time }}
+                    {% if form.end_time.errors %}
+                    <p class="text-xs text-red-600 mt-1">{{ form.end_time.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Project Name -->
+            <div class="mb-4">
+                <label for="{{ form.project_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.project_name.label }}
+                </label>
+                {{ form.project_name }}
+                {% if form.project_name.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.project_name.errors.0 }}</p>
+                {% endif %}
+                <p class="text-xs text-gray-500 mt-1">Project or task name (optional)</p>
+            </div>
+
+            <!-- Reason -->
+            <div class="mb-4">
+                <label for="{{ form.reason.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    {{ form.reason.label }} <span class="text-red-500">*</span>
+                </label>
+                {{ form.reason }}
+                {% if form.reason.errors %}
+                <p class="text-xs text-red-600 mt-1">{{ form.reason.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Work Type Checkboxes -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Work Type</label>
+
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        {{ form.is_weekend }}
+                        <label for="{{ form.is_weekend.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                            {{ form.is_weekend.label }}
+                        </label>
+                    </div>
+
+                    <div class="flex items-center">
+                        {{ form.is_holiday }}
+                        <label for="{{ form.is_holiday.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                            {{ form.is_holiday.label }}
+                        </label>
+                    </div>
+
+                    <div class="flex items-center">
+                        {{ form.is_emergency }}
+                        <label for="{{ form.is_emergency.id_for_label }}" class="ml-2 text-sm text-gray-700">
+                            {{ form.is_emergency.label }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3">
+                <a href="{% url 'employee_portal:overtime_claim_list' %}"
+                   class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                    <i class="bi bi-check-circle"></i> Submit Claim
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,306 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Permissions: {{ user_assignment.full_name }} - User Management{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+/* User Permissions - Employee Table Style */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 8px;
+}
+
+.header {
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.header h1 {
+    color: #374151;
+    font-size: 16px;
+    margin-bottom: 2px;
+    font-weight: 600;
+}
+
+.header p {
+    color: #6b7280;
+    font-size: 11px;
+}
+
+.nav-buttons {
+    margin-bottom: 12px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 3px 6px;
+    margin: 1px;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 9px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-secondary {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.info-card {
+    background: #fff;
+    padding: 12px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 16px;
+}
+
+.info-card h3 {
+    color: #374151;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 13px;
+}
+
+.user-role {
+    color: #6b7280;
+    font-size: 11px;
+    margin: 2px 0 0 0;
+}
+
+.role-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background-color: #dcfce7;
+    color: #166534;
+    margin-left: 4px;
+}
+
+.superuser-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    color: white;
+}
+
+.no-role {
+    color: #6b7280;
+    font-style: italic;
+    font-size: 11px;
+}
+
+.permissions-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.permissions-table {
+    margin: 0;
+    font-size: 12px;
+}
+
+.permissions-table th {
+    font-size: 11px;
+    font-weight: 600;
+    color: #374151;
+    background: #f8fafb;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 8px 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.permissions-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.permissions-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.permissions-table tbody tr:hover {
+    background: #f8fafb;
+}
+
+.model-name {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 13px;
+    margin: 0;
+}
+
+.app-name {
+    font-size: 11px;
+    color: #6b7280;
+    margin: 2px 0 0 0;
+}
+
+.has-perm {
+    color: #16a34a;
+    font-weight: 500;
+}
+
+.no-perm {
+    color: #dc2626;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="flex justify-between py-2">
+           <div>
+            <h1 class="text-lg font-medium">Permissions: <strong>{{ user_assignment.full_name }}</strong></h1>
+            <p class="text-gray-500">User effective permissions</p>
+           </div>
+           <div class="nav-buttons">
+           
+            {% if user_assignment.role.name != "Manager" and not user.is_superuser%}
+            <a href="{% url 'user_management:user_edit' user_assignment.user.id %}" class="button-min-primary">Edit</a>
+            {% else %}
+                {% if user.id == user_assignment.user.id and not user.is_superuser %}
+                <a href="{% url 'user_management:user_edit' user_assignment.user.id %}" class="button-min-primary">Edit</a>
+                {% endif %}
+            {% endif %}
+            {% if user.is_superuser %}
+                <a href="{% url 'user_management:user_edit' user_assignment.user.id %}" class="button-min-primary">Edit</a>
+            {%endif%}
+        </div>
+        </div>
+
+        
+
+        <div class="info-card">
+            <h3>User Information</h3>
+            <div class="user-info">
+                <div>
+                    <div class="user-name">{{ user_assignment.full_name }}</div>
+                    <div class="user-role">{{ user_assignment.user.email|default:user_assignment.user.username }}</div>
+                </div>
+                <div>
+                    {% if is_superuser %}
+                        <span class="superuser-badge">SUPERUSER</span>
+                        {% if user_assignment.role %}
+                            <span class="role-badge">{{ user_assignment.role.name }}</span>
+                        {% endif %}
+                    {% elif user_assignment.role %}
+                        <span class="role-badge">{{ user_assignment.role.name }}</span>
+                    {% else %}
+                        <span class="no-role">No Role</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        {% if is_superuser %}
+        <div class="info-card superuser-info">
+            <h3>⚠️ Superuser Account</h3>
+            <p style="color: #dc2626; font-size: 11px; margin: 4px 0;">
+                This account has <strong>ALL system permissions</strong> regardless of role assignments. 
+                The table below shows all available permissions that this user can access.
+            </p>
+        </div>
+        {% endif %}
+
+        {% if permissions %}
+        <div class="permissions-container">
+            <table class="permissions-table w-full">
+                <thead>
+                    <tr>
+                        <th style="width: 200px;">Model</th>
+                        <th style="width: 60px;">Add</th>
+                        <th style="width: 60px;">View</th>
+                        <th style="width: 60px;">Change</th>
+                        <th style="width: 60px;">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for perm in permissions %}
+                    <tr>
+                        <td>
+                            <div class="model-name">{{ perm.model_name }}</div>
+                            <div class="app-name">{{ perm.app_name }}</div>
+                        </td>
+                        <td>
+                            {% if perm.has_add %}
+                                <span class="has-perm">✓</span>
+                            {% else %}
+                                <span class="no-perm">✗</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if perm.has_view %}
+                                <span class="has-perm">✓</span>
+                            {% else %}
+                                <span class="no-perm">✗</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if perm.has_change %}
+                                <span class="has-perm">✓</span>
+                            {% else %}
+                                <span class="no-perm">✗</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if perm.has_delete %}
+                                <span class="has-perm">✓</span>
+                            {% else %}
+                                <span class="no-perm">✗</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="info-card">
+            <p style="text-align: center; color: #666; font-size: 11px;">No permissions found</p>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %} 

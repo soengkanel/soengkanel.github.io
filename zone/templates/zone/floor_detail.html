@@ -1,0 +1,490 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ floor.name }} - Floor Details{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+/* Floor Detail - Employee Table Style */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8px;
+}
+
+.page-header {
+    background: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.floor-title-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.floor-number-large {
+    background: #dcfce7;
+    color: #166534;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.page-header h1 {
+    color: #374151;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.page-subtitle {
+    color: #6b7280;
+    font-size: 11px;
+    margin: 2px 0 0 0;
+}
+
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-inactive {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.stat-card {
+    background: white;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+}
+
+.stat-label {
+    color: #6b7280;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.info-card {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.info-card h5 {
+    color: #374151;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+    
+.table-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.table {
+    margin: 0;
+    font-size: 12px;
+}
+
+.table th {
+    font-size: 11px;
+    font-weight: 600;
+    color: #374151;
+    background: #f8fafb;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 8px 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background: #f8fafb;
+}
+
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #166534;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.building-link {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 3px 8px;
+    background: #eff6ff;
+    border-radius: 12px;
+    font-size: 11px;
+    transition: all 0.15s ease;
+}
+
+.building-link:hover {
+    background: #3b82f6;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-modern {
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    font-size: 9px;
+    margin: 0 1px;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.btn-outline-modern {
+    background: transparent;
+    border-color: #d1d5db;
+    color: #6b7280;
+}
+
+.btn-outline-modern:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.btn-light-modern {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #64748b;
+}
+
+.btn-light-modern:hover {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.btn-compact {
+    display: inline-block;
+    padding: 3px 6px;
+    margin: 1px;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 9px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-light-compact {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.btn-light-compact:hover {
+    background: #f1f5f9;
+    color: #475569;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container px-3">
+    <!-- Floor Header -->
+    <div class="flex justify-between py-3 border-b mb-3">
+        <div class="d-flex align-items-center gap-2">
+            <div class="floor-title-section">
+                <div class="floor-number-large">{{ floor.floor_number }}</div>
+                <div>
+                    <h1>{{ floor.name }}</h1>
+                    <p class="page-subtitle">
+                        <i class="bi bi-building" style="font-size: 9px;"></i>
+                        {{ floor.building.name }}
+                    </p>
+                </div>
+            </div>
+            <span class="status-badge {% if floor.is_active %}status-active{% else %}status-inactive{% endif %}">
+                {% if floor.is_active %}Active{% else %}Inactive{% endif %}
+            </span>
+        </div>
+        <div class="flex space-x-3">
+            <a href="{% url 'zone:floor_edit' floor.id %}" class="button-min-default flex" title="Edit Floor">
+                <div class="flex iteme-center space-x-1">
+                    <span class="bi bi-pencil"></span>
+                    <span>Edit</span>
+                </div>
+            </a>
+            <a href="{% url 'zone:building_detail' floor.building.id %}" class="button-min-primary" title="View Building">
+               
+                <div class="flex iteme-center space-x-1">
+                    <span class="bi bi-building"></span>
+                    <span>Buildings</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.total_zones }}</div>
+            <div class="stat-label">Assigned Zones</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.active_zones }}</div>
+            <div class="stat-label">Active Zones</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.total_workers }}</div>
+            <div class="stat-label">Total Workers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.active_workers }}</div>
+            <div class="stat-label">Active Workers</div>
+        </div>
+    </div>
+
+    <!-- Floor Information -->
+    <div class="info-card px-0 pt-0">
+        <div class="py-1 bg-gray-100 px-2 pt-2 rounded-t-lg">
+            <h5><i class="bi bi-info-circle" style="font-size: 10px;"></i> Floor Information</h5>
+        </div>
+        <div class="row p-3">
+            <div class="col-md-6 space-y-3">
+                <p style="font-size: 11px; margin-bottom: 4px;"><strong>Building:</strong> 
+                    <a href="{% url 'zone:building_detail' floor.building.id %}" class="building-link">
+                        <i class="bi bi-building" style="font-size: 9px;"></i>{{ floor.building.name }}
+                    </a>
+                </p>
+                <p style="font-size: 11px; margin-bottom: 4px;"><strong>Floor Number:</strong> {{ floor.floor_number }}</p>
+                <p style="font-size: 11px; margin-bottom: 4px;"><strong>Created:</strong> {{ floor.created_at|date:"d/m/Y g:i A" }}</p>
+                {% if floor.created_by %}
+                    <p style="font-size: 11px; margin-bottom: 4px;"><strong>Created By:</strong> {{ floor.created_by.get_full_name|default:floor.created_by.username }}</p>
+                {% endif %}
+            </div>
+            <div class="col-md-6 space-y-3">
+                <p style="font-size: 11px; margin-bottom: 4px;"><strong>Last Updated:</strong> {{ floor.updated_at|date:"d/m/Y g:i A" }}</p>
+                <p style="font-size: 11px; margin-bottom: 4px;"><strong>Status:</strong> 
+                    <span class="status-badge {% if floor.is_active %}status-active{% else %}status-inactive{% endif %}">
+                        {% if floor.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </p>
+            </div>
+        </div>
+        {% if floor.description %}
+            <div style="margin-top: 8px;">
+                <strong style="font-size: 11px;">Description:</strong>
+                <p style="margin-top: 4px; font-size: 11px;">{{ floor.description }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Zones -->
+    {% if zones %}
+    <div class="table-container">
+        <div class="d-flex justify-content-between align-items-center px-2 py-1 bg-gray-100 border-b">
+            <h5 class="mb-0" style="font-size: 12px; font-weight: 600;"><i class="bi bi-person-badge" style="font-size: 10px;"></i> Zones ({{ zones.count }})</h5>
+            
+            <a href="{% url 'zone:zone_list' %}?floor={{ floor.id }}" class="button-min-default py-1" title="View All Zones">
+                <i class="bi bi-arrow-right" style="font-size: 9px;"></i>
+            </a>
+        </div>
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Zone</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for zone in zones %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar me-2">
+                                {{ zone.name|first|upper }}
+                            </div>
+                            <div>
+                                <div style="font-weight: 500; font-size: 11px;">{{ zone.name }}</div>
+                                <small class="text-muted" style="font-size: 10px;">
+                                    {% if zone.created_by %}
+                                        Created by {{ zone.created_by.get_full_name|default:zone.created_by.username }}
+                                    {% else %}
+                                        Created by System
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size: 11px;">
+                        {% if zone.phone_number %}
+                            <i class="bi bi-telephone" style="font-size: 9px;"></i> {{ zone.phone_number }}
+                        {% else %}
+                            <span class="text-muted">No phone</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="status-badge {% if zone.is_active %}status-active{% else %}status-inactive{% endif %}">
+                            {% if zone.is_active %}Active{% else %}Inactive{% endif %}
+                        </span>
+                    </td>
+                    <td style="font-size: 11px;">
+                        <div>{{ zone.created_at|date:"d/m/Y" }}</div>
+                        <small class="text-muted" style="font-size: 10px;">{{ zone.created_at|date:"g:i A" }}</small>
+                    </td>
+                    <td>
+                        <div class="flex w-full">
+                            <a href="{% url 'zone:zone_detail' zone.id %}" class="button-min-primary px-2" title="View Zone">
+                                <i class="fa fa-eye" style="font-size: 9px;"></i>
+                            </a>
+                        <div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="info-card">
+        <div class="text-center py-3">
+            <i class="bi bi-person-badge" style="font-size: 18px; color: #6c757d;"></i>
+            <h5 class="mt-2 text-muted" style="font-size: 12px;">No Zones Assigned</h5>
+            <p class="text-muted" style="font-size: 11px;">No zones are currently assigned to this floor.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Workers -->
+    {% if workers %}
+    <div class="table-container">
+        <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+            <h5 class="mb-0" style="font-size: 12px; font-weight: 600;"><i class="bi bi-briefcase" style="font-size: 10px;"></i> Workers ({{ workers.count }})</h5>
+            <a href="{% url 'zone:worker_list' %}?floor={{ floor.id }}" class="btn btn-light-compact" title="View All Workers">
+                <i class="bi bi-arrow-right" style="font-size: 9px;"></i>
+            </a>
+        </div>
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Worker</th>
+                    <th>Zone</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for worker in workers %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar me-2">
+                                {{ worker.first_name|first|upper }}
+                            </div>
+                            <div>
+                                <div style="font-weight: 500; font-size: 11px;">{{ worker.get_full_name }}</div>
+                                <small class="text-muted" style="font-size: 10px;">{{ worker.worker_id }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size: 11px;">
+                        <a href="{% url 'zone:zone_detail' worker.zone.id %}" class="text-decoration-none">
+                            {{ worker.zone.name }}
+                        </a>
+                    </td>
+                    <td>
+                        <span class="status-badge {% if worker.status == 'active' %}status-active{% else %}status-inactive{% endif %}">
+                            {% if worker.status == 'active' %}Active{% else %}{{ worker.get_status_display }}{% endif %}
+                        </span>
+                    </td>
+                    <td style="font-size: 11px;">
+                        <div>{{ worker.date_joined|date:"d/m/Y" }}</div>
+                        <small class="text-muted" style="font-size: 10px;">Join Time: {{ worker.created_at|date:"g:i A" }}</small>
+                    </td>
+                    <td>
+                        <a href="{% url 'zone:worker_detail' worker.id %}" class="btn-modern btn-outline-modern" title="View Worker">
+                            <i class="bi bi-eye" style="font-size: 9px;"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="info-card">
+        <div class="text-center py-3">
+            <i class="bi bi-briefcase" style="font-size: 18px; color: #6c757d;"></i>
+            <h5 class="mt-2 text-muted" style="font-size: 12px;">No Workers Assigned</h5>
+            <p class="text-muted" style="font-size: 11px;">No workers are currently assigned to this floor.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

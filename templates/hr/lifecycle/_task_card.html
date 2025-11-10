@@ -1,0 +1,91 @@
+{% load i18n %}
+
+<div class="task-card task-{{ task.status }}{% if task.is_overdue and task.status != 'completed' %} task-overdue{% endif %}">
+    <div class="task-header">
+        <div>
+            <h4 class="task-title">
+                {{ task.title }}
+                <span class="priority-{{ task.priority }}">
+                    {% if task.priority == 'critical' %}⚠️{% elif task.priority == 'high' %}🔴{% elif task.priority == 'medium' %}🟡{% else %}🟢{% endif %}
+                </span>
+            </h4>
+        </div>
+        <div>
+            <span class="badge bg-{% if task.status == 'completed' %}success{% elif task.status == 'in_progress' %}primary{% else %}secondary{% endif %}">
+                {{ task.get_status_display }}
+            </span>
+        </div>
+    </div>
+
+    {% if task.description %}
+        <div class="task-description">{{ task.description }}</div>
+    {% endif %}
+
+    <div class="task-meta">
+        <div>
+            <strong>{% trans "Type:" %}</strong> {{ task.get_task_type_display }}
+        </div>
+        <div>
+            <strong>{% trans "Due:" %}</strong> {{ task.due_date|date:"M d, Y" }}
+            {% if task.is_overdue and task.status != 'completed' %}
+                <span class="text-danger">({% trans "Overdue" %})</span>
+            {% endif %}
+        </div>
+        {% if task.estimated_hours %}
+            <div>
+                <strong>{% trans "Est. Hours:" %}</strong> {{ task.estimated_hours }}
+            </div>
+        {% endif %}
+        {% if task.assigned_to %}
+            <div>
+                <strong>{% trans "Assigned:" %}</strong> {{ task.assigned_to.get_full_name }}
+            </div>
+        {% endif %}
+    </div>
+
+    {% if task.completion_date %}
+        <div class="task-meta mt-2">
+            <div>
+                <strong>{% trans "Completed:" %}</strong> {{ task.completion_date|date:"M d, Y" }}
+            </div>
+            {% if task.actual_hours %}
+                <div>
+                    <strong>{% trans "Actual Hours:" %}</strong> {{ task.actual_hours }}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if task.completion_notes %}
+        <div class="mt-2">
+            <small class="text-muted">
+                <strong>{% trans "Notes:" %}</strong> {{ task.completion_notes }}
+            </small>
+        </div>
+    {% endif %}
+
+    <div class="task-actions">
+        {% if task.status == 'pending' %}
+            <form method="post" action="{% url 'hr:onboarding_task_update_status' task.pk %}" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="in_progress">
+                <button type="submit" class="btn btn-sm btn-primary">{% trans "Start Task" %}</button>
+            </form>
+        {% endif %}
+
+        {% if task.status == 'in_progress' %}
+            <a href="{% url 'hr:onboarding_task_complete' task.pk %}" class="btn btn-sm btn-success">
+                {% trans "Complete Task" %}
+            </a>
+            <form method="post" action="{% url 'hr:onboarding_task_update_status' task.pk %}" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="pending">
+                <button type="submit" class="btn btn-sm btn-secondary">{% trans "Move to Pending" %}</button>
+            </form>
+        {% endif %}
+
+        {% if task.status == 'completed' %}
+            <span class="text-success">✓ {% trans "Completed" %}</span>
+        {% endif %}
+    </div>
+</div>

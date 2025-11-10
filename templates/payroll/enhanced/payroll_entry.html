@@ -1,0 +1,672 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payroll Entry - {{ period.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .period-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .employee-row {
+        border: 1px solid #e0e6ed;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        background: #fff;
+        transition: all 0.2s;
+    }
+
+    .employee-row:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .employee-row.selected {
+        border-color: #007bff;
+        background: #f8f9ff;
+    }
+
+    .employee-row.calculated {
+        border-color: #28a745;
+        background: #f8fff9;
+    }
+
+    .employee-row.error {
+        border-color: #dc3545;
+        background: #fff8f8;
+    }
+
+    .employee-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .salary-component {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 8px;
+        margin: 2px 0;
+        font-size: 0.85rem;
+    }
+
+    .component-earning { border-left: 3px solid #28a745; }
+    .component-deduction { border-left: 3px solid #dc3545; }
+    .component-employer { border-left: 3px solid #007bff; }
+
+    .amount-input {
+        text-align: right;
+        font-weight: 600;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 4px 8px;
+        width: 100px;
+        font-size: 0.9rem;
+    }
+
+    .total-display {
+        font-size: 1.1rem;
+        font-weight: bold;
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-align: center;
+    }
+
+    .gross-total { background: #d4edda; color: #155724; }
+    .deduction-total { background: #f8d7da; color: #721c24; }
+    .net-total { background: #cce5ff; color: #004085; }
+
+    .bulk-actions {
+        position: sticky;
+        top: 20px;
+        background: white;
+        border: 1px solid #e0e6ed;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .progress-summary {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .validation-message {
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+    }
+
+    .validation-error {
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+    .validation-warning {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+    }
+
+    .validation-success {
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        color: #155724;
+    }
+
+    .calculation-loader {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .employee-checkbox {
+        transform: scale(1.2);
+        margin-right: 8px;
+    }
+
+    .structure-info {
+        font-size: 0.8rem;
+        color: #6c757d;
+        background: #e9ecef;
+        padding: 3px 8px;
+        border-radius: 4px;
+        display: inline-block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Period Header -->
+    <div class="period-header">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h1 class="h2 mb-2">{{ period.name }}</h1>
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <span class="badge bg-white text-dark">{{ period.start_date|date:"M d, Y" }} - {{ period.end_date|date:"M d, Y" }}</span>
+                    <span class="badge bg-white text-dark">{{ period.get_status_display }}</span>
+                    <span class="badge bg-white text-dark">Payment: {{ period.payment_date|date:"M d, Y" }}</span>
+                </div>
+                <p class="mb-0 opacity-75">ERPNext-style bulk payroll processing with formula-based calculations</p>
+            </div>
+            <div class="text-end">
+                <div class="mb-2">
+                    <span class="h4">{{ employees.count }}</span>
+                    <div class="small">Employees</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Employee List -->
+        <div class="col-lg-8">
+            <!-- Progress Summary -->
+            <div class="progress-summary">
+                <div class="row g-3 text-center">
+                    <div class="col-3">
+                        <div class="h5 mb-1 text-primary" id="total-employees">{{ employees.count }}</div>
+                        <small class="text-muted">Total</small>
+                    </div>
+                    <div class="col-3">
+                        <div class="h5 mb-1 text-success" id="calculated-count">0</div>
+                        <small class="text-muted">Calculated</small>
+                    </div>
+                    <div class="col-3">
+                        <div class="h5 mb-1 text-warning" id="pending-count">{{ employees.count }}</div>
+                        <small class="text-muted">Pending</small>
+                    </div>
+                    <div class="col-3">
+                        <div class="h5 mb-1 text-danger" id="error-count">0</div>
+                        <small class="text-muted">Errors</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validation Messages -->
+            <div id="validation-messages"></div>
+
+            <!-- Calculation Loader -->
+            <div class="calculation-loader" id="calculation-loader">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Calculating...</span>
+                </div>
+                <div class="mt-2">Processing payroll calculations...</div>
+                <div class="progress mt-3" style="height: 8px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" id="calc-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Employee Payroll List -->
+            <div id="employee-list">
+                {% for employee in employees %}
+                <div class="employee-row" id="employee-{{ employee.id }}" data-employee-id="{{ employee.id }}">
+                    <div class="p-3">
+                        <!-- Employee Header -->
+                        <div class="d-flex align-items-center mb-3">
+                            <input type="checkbox" class="employee-checkbox form-check-input" id="emp-{{ employee.id }}" value="{{ employee.id }}">
+                            <div class="employee-avatar me-3">
+                                {{ employee.first_name|first }}{{ employee.last_name|first }}
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{ employee.get_full_name }}</h6>
+                                <div class="small text-muted">{{ employee.employee_id }}{% if employee.department %} • {{ employee.department }}{% endif %}</div>
+                                {% if employee.active_salary_assignment %}
+                                <div class="structure-info mt-1">{{ employee.active_salary_assignment.structure.name }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="text-end">
+                                <button class="btn btn-sm btn-outline-primary" onclick="toggleEmployeeDetails({{ employee.id }})">
+                                    <i class="fas fa-chevron-down" id="toggle-icon-{{ employee.id }}"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Salary Summary -->
+                        <div class="row g-2 mb-3" id="summary-{{ employee.id }}">
+                            <div class="col-4">
+                                <div class="total-display gross-total">
+                                    <div class="small">Gross Salary</div>
+                                    <div id="gross-{{ employee.id }}">--</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="total-display deduction-total">
+                                    <div class="small">Deductions</div>
+                                    <div id="deductions-{{ employee.id }}">--</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="total-display net-total">
+                                    <div class="small">Net Salary</div>
+                                    <div id="net-{{ employee.id }}">--</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Components (Initially Hidden) -->
+                        <div class="collapse" id="details-{{ employee.id }}">
+                            <div class="row g-2" id="components-{{ employee.id }}">
+                                <!-- Components will be loaded here -->
+                            </div>
+
+                            <div class="mt-3 pt-3 border-top">
+                                <div class="row g-2">
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Working Days</label>
+                                        <input type="number" class="form-control form-control-sm" id="working-days-{{ employee.id }}" value="30" min="0" max="31" onchange="recalculateEmployee({{ employee.id }})">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Present Days</label>
+                                        <input type="number" class="form-control form-control-sm" id="present-days-{{ employee.id }}" value="30" min="0" max="31" onchange="recalculateEmployee({{ employee.id }})">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label small">Overtime Hours</label>
+                                        <input type="number" class="form-control form-control-sm" id="overtime-hours-{{ employee.id }}" value="0" min="0" step="0.5" onchange="recalculateEmployee({{ employee.id }})">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Bulk Actions Panel -->
+        <div class="col-lg-4">
+            <div class="bulk-actions">
+                <h5 class="mb-3">Bulk Actions</h5>
+
+                <!-- Selection Actions -->
+                <div class="mb-4">
+                    <h6 class="text-muted">Selection</h6>
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="selectAllEmployees()">
+                            Select All
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="selectNoneEmployees()">
+                            Select None
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onclick="invertSelection()">
+                            Invert
+                        </button>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">Selected: <span id="selected-count">0</span> employees</small>
+                    </div>
+                </div>
+
+                <!-- Calculation Actions -->
+                <div class="mb-4">
+                    <h6 class="text-muted">Calculation</h6>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary" onclick="calculateSelected()">
+                            <i class="fas fa-calculator me-2"></i>Calculate Selected
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" onclick="calculateAll()">
+                            <i class="fas fa-calculator me-2"></i>Calculate All
+                        </button>
+                        <button type="button" class="btn btn-outline-warning" onclick="recalculateAll()">
+                            <i class="fas fa-redo me-2"></i>Recalculate All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Validation & Submit -->
+                <div class="mb-4">
+                    <h6 class="text-muted">Validation & Submit</h6>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-info" onclick="validatePayroll()">
+                            <i class="fas fa-check-circle me-2"></i>Validate Payroll
+                        </button>
+                        <button type="button" class="btn btn-success" id="submit-payroll" onclick="submitPayroll()" disabled>
+                            <i class="fas fa-save me-2"></i>Submit Payroll
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Adjustments -->
+                <div class="mb-4">
+                    <h6 class="text-muted">Quick Adjustments</h6>
+                    <div class="row g-2">
+                        <div class="col-12">
+                            <label class="form-label small">Working Days (All)</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="bulk-working-days" value="30" min="0" max="31">
+                                <button class="btn btn-outline-secondary" onclick="applyBulkWorkingDays()">Apply</button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small">Present Days (All)</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="bulk-present-days" value="30" min="0" max="31">
+                                <button class="btn btn-outline-secondary" onclick="applyBulkPresentDays()">Apply</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="card border-0 bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title">Payroll Summary</h6>
+                        <div class="row g-2 small">
+                            <div class="col-6">Total Gross:</div>
+                            <div class="col-6 text-end fw-bold" id="total-gross">$0</div>
+                            <div class="col-6">Total Deductions:</div>
+                            <div class="col-6 text-end fw-bold" id="total-deductions">$0</div>
+                            <div class="col-12"><hr class="my-1"></div>
+                            <div class="col-6">Total Net:</div>
+                            <div class="col-6 text-end fw-bold text-success" id="total-net">$0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let calculatedEmployees = new Set();
+let validationResults = {};
+
+// Selection management
+function selectAllEmployees() {
+    document.querySelectorAll('.employee-checkbox').forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    updateSelectedCount();
+}
+
+function selectNoneEmployees() {
+    document.querySelectorAll('.employee-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    updateSelectedCount();
+}
+
+function invertSelection() {
+    document.querySelectorAll('.employee-checkbox').forEach(checkbox => {
+        checkbox.checked = !checkbox.checked;
+    });
+    updateSelectedCount();
+}
+
+function updateSelectedCount() {
+    const selected = document.querySelectorAll('.employee-checkbox:checked').length;
+    document.getElementById('selected-count').textContent = selected;
+}
+
+// Employee details toggle
+function toggleEmployeeDetails(employeeId) {
+    const details = document.getElementById(`details-${employeeId}`);
+    const icon = document.getElementById(`toggle-icon-${employeeId}`);
+
+    if (details.classList.contains('show')) {
+        details.classList.remove('show');
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+    } else {
+        details.classList.add('show');
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+
+        // Load components if not loaded
+        loadEmployeeComponents(employeeId);
+    }
+}
+
+function loadEmployeeComponents(employeeId) {
+    const componentsContainer = document.getElementById(`components-${employeeId}`);
+
+    if (componentsContainer.children.length > 0) {
+        return; // Already loaded
+    }
+
+    fetch(`{% url 'payroll_enhanced:ajax_get_employee_components' 0 %}`.replace('0', employeeId))
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayEmployeeComponents(employeeId, data.components);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading components:', error);
+        });
+}
+
+function displayEmployeeComponents(employeeId, components) {
+    const container = document.getElementById(`components-${employeeId}`);
+
+    container.innerHTML = components.map(component => `
+        <div class="col-md-6">
+            <div class="salary-component component-${component.type}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="small fw-medium">${component.name}</span>
+                    <input type="number" class="amount-input"
+                           id="component-${employeeId}-${component.id}"
+                           value="${component.calculated_amount || 0}"
+                           step="0.01"
+                           onchange="updateComponentAmount(${employeeId}, ${component.id})">
+                </div>
+                ${component.formula ? `<div class="small text-muted mt-1">Formula: ${component.formula}</div>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Calculation functions
+function calculateSelected() {
+    const selectedEmployees = Array.from(document.querySelectorAll('.employee-checkbox:checked'))
+        .map(checkbox => parseInt(checkbox.value));
+
+    if (selectedEmployees.length === 0) {
+        addValidationMessage('Please select at least one employee to calculate.', 'warning');
+        return;
+    }
+
+    calculateEmployees(selectedEmployees);
+}
+
+function calculateAll() {
+    const allEmployees = Array.from(document.querySelectorAll('.employee-checkbox'))
+        .map(checkbox => parseInt(checkbox.value));
+
+    calculateEmployees(allEmployees);
+}
+
+function calculateEmployees(employeeIds) {
+    showCalculationLoader();
+
+    const progressBar = document.getElementById('calc-progress');
+    let processed = 0;
+    const total = employeeIds.length;
+
+    // Process employees in batches
+    const batchSize = 5;
+    const batches = [];
+    for (let i = 0; i < employeeIds.length; i += batchSize) {
+        batches.push(employeeIds.slice(i, i + batchSize));
+    }
+
+    processBatches(batches, 0, progressBar, total);
+}
+
+function processBatches(batches, currentBatch, progressBar, total) {
+    if (currentBatch >= batches.length) {
+        hideCalculationLoader();
+        updateSummaryStatistics();
+        return;
+    }
+
+    const batch = batches[currentBatch];
+    const promises = batch.map(employeeId => calculateEmployee(employeeId));
+
+    Promise.allSettled(promises).then(results => {
+        const processed = (currentBatch + 1) * batch.length;
+        const progress = Math.min((processed / total) * 100, 100);
+        progressBar.style.width = `${progress}%`;
+
+        // Process next batch after a short delay
+        setTimeout(() => {
+            processBatches(batches, currentBatch + 1, progressBar, total);
+        }, 100);
+    });
+}
+
+async function calculateEmployee(employeeId) {
+    try {
+        const response = await fetch('{% url "payroll_enhanced:ajax_calculate_employee" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: JSON.stringify({
+                employee_id: employeeId,
+                period_id: {{ period.id }},
+                working_days: document.getElementById(`working-days-${employeeId}`)?.value || 30,
+                present_days: document.getElementById(`present-days-${employeeId}`)?.value || 30,
+                overtime_hours: document.getElementById(`overtime-hours-${employeeId}`)?.value || 0
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            updateEmployeeDisplay(employeeId, data.results);
+            markEmployeeCalculated(employeeId);
+        } else {
+            markEmployeeError(employeeId, data.error);
+        }
+
+    } catch (error) {
+        console.error(`Error calculating employee ${employeeId}:`, error);
+        markEmployeeError(employeeId, 'Calculation failed');
+    }
+}
+
+function updateEmployeeDisplay(employeeId, results) {
+    document.getElementById(`gross-${employeeId}`).textContent = `$${results.gross_salary.toLocaleString()}`;
+    document.getElementById(`deductions-${employeeId}`).textContent = `$${results.total_deductions.toLocaleString()}`;
+    document.getElementById(`net-${employeeId}`).textContent = `$${results.net_salary.toLocaleString()}`;
+
+    // Update component amounts if details are expanded
+    if (results.components) {
+        results.components.forEach(component => {
+            const input = document.getElementById(`component-${employeeId}-${component.id}`);
+            if (input) {
+                input.value = component.amount;
+            }
+        });
+    }
+}
+
+function markEmployeeCalculated(employeeId) {
+    const row = document.getElementById(`employee-${employeeId}`);
+    row.classList.remove('error');
+    row.classList.add('calculated');
+
+    calculatedEmployees.add(employeeId);
+    updateProgressSummary();
+}
+
+function markEmployeeError(employeeId, error) {
+    const row = document.getElementById(`employee-${employeeId}`);
+    row.classList.remove('calculated');
+    row.classList.add('error');
+
+    addValidationMessage(`Employee ${employeeId}: ${error}`, 'error');
+    updateProgressSummary();
+}
+
+function updateProgressSummary() {
+    const total = document.querySelectorAll('.employee-checkbox').length;
+    const calculated = calculatedEmployees.size;
+    const errors = document.querySelectorAll('.employee-row.error').length;
+    const pending = total - calculated - errors;
+
+    document.getElementById('calculated-count').textContent = calculated;
+    document.getElementById('error-count').textContent = errors;
+    document.getElementById('pending-count').textContent = Math.max(0, pending);
+}
+
+function addValidationMessage(message, type) {
+    const container = document.getElementById('validation-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `validation-message validation-${type}`;
+    messageDiv.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+            <span>${message}</span>
+            <button type="button" class="btn-close btn-close-sm" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>
+    `;
+    container.appendChild(messageDiv);
+
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+        if (messageDiv.parentElement) {
+            messageDiv.remove();
+        }
+    }, 10000);
+}
+
+function showCalculationLoader() {
+    document.getElementById('calculation-loader').style.display = 'block';
+}
+
+function hideCalculationLoader() {
+    document.getElementById('calculation-loader').style.display = 'none';
+}
+
+// Bulk adjustments
+function applyBulkWorkingDays() {
+    const days = document.getElementById('bulk-working-days').value;
+    document.querySelectorAll('[id^="working-days-"]').forEach(input => {
+        input.value = days;
+    });
+    addValidationMessage(`Applied ${days} working days to all employees. Recalculate to apply changes.`, 'success');
+}
+
+function applyBulkPresentDays() {
+    const days = document.getElementById('bulk-present-days').value;
+    document.querySelectorAll('[id^="present-days-"]').forEach(input => {
+        input.value = days;
+    });
+    addValidationMessage(`Applied ${days} present days to all employees. Recalculate to apply changes.`, 'success');
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Update selected count on checkbox change
+    document.querySelectorAll('.employee-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', updateSelectedCount);
+    });
+
+    // Initialize
+    updateSelectedCount();
+    updateProgressSummary();
+});
+</script>
+
+<!-- Add CSRF token -->
+{% csrf_token %}
+{% endblock %}

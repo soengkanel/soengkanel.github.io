@@ -1,0 +1,3030 @@
+{
+  "Workers": {
+    "data": [
+      [
+        {
+          "row": 1,
+          "column": 1,
+          "column_letter": "A",
+          "value": "NO",
+          "cell_reference": "A1",
+          "matrix_reference": "1x1",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "column_letter": "B",
+          "value": "PHOTO",
+          "cell_reference": "B1",
+          "matrix_reference": "1x2",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "column_letter": "C",
+          "value": "NAME",
+          "cell_reference": "C1",
+          "matrix_reference": "1x3",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 4,
+          "column_letter": "D",
+          "value": "SEX",
+          "cell_reference": "D1",
+          "matrix_reference": "1x4",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 5,
+          "column_letter": "E",
+          "value": "DOB",
+          "cell_reference": "E1",
+          "matrix_reference": "1x5",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 6,
+          "column_letter": "F",
+          "value": "NATIONALITY",
+          "cell_reference": "F1",
+          "matrix_reference": "1x6",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 7,
+          "column_letter": "G",
+          "value": "BUILDING",
+          "cell_reference": "G1",
+          "matrix_reference": "1x7",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 8,
+          "column_letter": "H",
+          "value": "POSITION",
+          "cell_reference": "H1",
+          "matrix_reference": "1x8",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 9,
+          "column_letter": "I",
+          "value": "JOINEDDATE",
+          "cell_reference": "I1",
+          "matrix_reference": "1x9",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 10,
+          "column_letter": "J",
+          "value": "RESIGNEDDATE",
+          "cell_reference": "J1",
+          "matrix_reference": "1x10",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 11,
+          "column_letter": "K",
+          "value": "IDKH/PASSPORT",
+          "cell_reference": "K1",
+          "matrix_reference": "1x11",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 12,
+          "column_letter": "L",
+          "value": "DOCUMENT NO",
+          "cell_reference": "L1",
+          "matrix_reference": "1x12",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 13,
+          "column_letter": "M",
+          "value": "IDKH/PASSPORT_DATE",
+          "cell_reference": "M1",
+          "matrix_reference": "1x13",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 14,
+          "column_letter": "N",
+          "value": "WORKINGPERMIT",
+          "cell_reference": "N1",
+          "matrix_reference": "1x14",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 15,
+          "column_letter": "O",
+          "value": "WORKINGPERMIT_DATE",
+          "cell_reference": "O1",
+          "matrix_reference": "1x15",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 16,
+          "column_letter": "P",
+          "value": "VISA",
+          "cell_reference": "P1",
+          "matrix_reference": "1x16",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 17,
+          "column_letter": "Q",
+          "value": "VISA_DATE",
+          "cell_reference": "Q1",
+          "matrix_reference": "1x17",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 2,
+          "column": 1,
+          "column_letter": "A",
+          "value": 1,
+          "cell_reference": "A2",
+          "matrix_reference": "2x1",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "column_letter": "B",
+          "value": "#VALUE!",
+          "cell_reference": "B2",
+          "matrix_reference": "2x2",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\2x2.png",
+            "filename": "2x2.png",
+            "original": "image1.png",
+            "matrix_position": "2x2"
+          }
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "column_letter": "C",
+          "value": "LUC HAN QUAN",
+          "cell_reference": "C2",
+          "matrix_reference": "2x3",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 4,
+          "column_letter": "D",
+          "value": "M",
+          "cell_reference": "D2",
+          "matrix_reference": "2x4",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 5,
+          "column_letter": "E",
+          "value": "1997-03-07 00:00:00",
+          "cell_reference": "E2",
+          "matrix_reference": "2x5",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 6,
+          "column_letter": "F",
+          "value": "VIETNAMESE",
+          "cell_reference": "F2",
+          "matrix_reference": "2x6",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 7,
+          "column_letter": "G",
+          "value": "3H-B14-F1",
+          "cell_reference": "G2",
+          "matrix_reference": "2x7",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 8,
+          "column_letter": "H",
+          "value": "STAFF",
+          "cell_reference": "H2",
+          "matrix_reference": "2x8",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 9,
+          "column_letter": "I",
+          "value": "2025-08-14 00:00:00",
+          "cell_reference": "I2",
+          "matrix_reference": "2x9",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 10,
+          "column_letter": "J",
+          "value": null,
+          "cell_reference": "J2",
+          "matrix_reference": "2x10",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 11,
+          "column_letter": "K",
+          "value": "#VALUE!",
+          "cell_reference": "K2",
+          "matrix_reference": "2x11",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\2x11.png",
+            "filename": "2x11.png",
+            "original": "image2.png",
+            "matrix_position": "2x11"
+          }
+        },
+        {
+          "row": 2,
+          "column": 12,
+          "column_letter": "L",
+          "value": "C622044061",
+          "cell_reference": "L2",
+          "matrix_reference": "2x12",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 13,
+          "column_letter": "M",
+          "value": "14/11/2018-14/11/2028",
+          "cell_reference": "M2",
+          "matrix_reference": "2x13",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 14,
+          "column_letter": "N",
+          "value": "#VALUE!",
+          "cell_reference": "N2",
+          "matrix_reference": "2x14",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 15,
+          "column_letter": "O",
+          "value": "14/11/2018-14/11/2028",
+          "cell_reference": "O2",
+          "matrix_reference": "2x15",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 16,
+          "column_letter": "P",
+          "value": "#VALUE!",
+          "cell_reference": "P2",
+          "matrix_reference": "2x16",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\2x16.png",
+            "filename": "2x16.png",
+            "original": "image4.png",
+            "matrix_position": "2x16"
+          }
+        },
+        {
+          "row": 2,
+          "column": 17,
+          "column_letter": "Q",
+          "value": "14/11/2018-14/11/2028",
+          "cell_reference": "Q2",
+          "matrix_reference": "2x17",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 3,
+          "column": 1,
+          "column_letter": "A",
+          "value": 2,
+          "cell_reference": "A3",
+          "matrix_reference": "3x1",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "column_letter": "B",
+          "value": "#VALUE!",
+          "cell_reference": "B3",
+          "matrix_reference": "3x2",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\3x2.png",
+            "filename": "3x2.png",
+            "original": "image5.png",
+            "matrix_position": "3x2"
+          }
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "column_letter": "C",
+          "value": "CHHIM LIM SREANG",
+          "cell_reference": "C3",
+          "matrix_reference": "3x3",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 4,
+          "column_letter": "D",
+          "value": "F",
+          "cell_reference": "D3",
+          "matrix_reference": "3x4",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 5,
+          "column_letter": "E",
+          "value": "1986-05-02 00:00:00",
+          "cell_reference": "E3",
+          "matrix_reference": "3x5",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 6,
+          "column_letter": "F",
+          "value": "CAMBODIAN",
+          "cell_reference": "F3",
+          "matrix_reference": "3x6",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 7,
+          "column_letter": "G",
+          "value": "3H-B14-F1",
+          "cell_reference": "G3",
+          "matrix_reference": "3x7",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 8,
+          "column_letter": "H",
+          "value": "STAFF",
+          "cell_reference": "H3",
+          "matrix_reference": "3x8",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 9,
+          "column_letter": "I",
+          "value": "2025-08-14 00:00:00",
+          "cell_reference": "I3",
+          "matrix_reference": "3x9",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 10,
+          "column_letter": "J",
+          "value": null,
+          "cell_reference": "J3",
+          "matrix_reference": "3x10",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 11,
+          "column_letter": "K",
+          "value": "#VALUE!",
+          "cell_reference": "K3",
+          "matrix_reference": "3x11",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\3x11.png",
+            "filename": "3x11.png",
+            "original": "image6.png",
+            "matrix_position": "3x11"
+          }
+        },
+        {
+          "row": 3,
+          "column": 12,
+          "column_letter": "L",
+          "value": 20910738,
+          "cell_reference": "L3",
+          "matrix_reference": "3x12",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 13,
+          "column_letter": "M",
+          "value": "14/11/2018-14/11/2028",
+          "cell_reference": "M3",
+          "matrix_reference": "3x13",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 14,
+          "column_letter": "N",
+          "value": "#VALUE!",
+          "cell_reference": "N3",
+          "matrix_reference": "3x14",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\3x14.jpeg",
+            "filename": "3x14.jpeg",
+            "original": "image3.jpeg",
+            "matrix_position": "3x14"
+          }
+        },
+        {
+          "row": 3,
+          "column": 15,
+          "column_letter": "O",
+          "value": "14/11/2018-14/11/2028",
+          "cell_reference": "O3",
+          "matrix_reference": "3x15",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 16,
+          "column_letter": "P",
+          "value": null,
+          "cell_reference": "P3",
+          "matrix_reference": "3x16",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 17,
+          "column_letter": "Q",
+          "value": null,
+          "cell_reference": "Q3",
+          "matrix_reference": "3x17",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 4,
+          "column": 1,
+          "column_letter": "A",
+          "value": 3,
+          "cell_reference": "A4",
+          "matrix_reference": "4x1",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 2,
+          "column_letter": "B",
+          "value": "#VALUE!",
+          "cell_reference": "B4",
+          "matrix_reference": "4x2",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\4x2.png",
+            "filename": "4x2.png",
+            "original": "image7.png",
+            "matrix_position": "4x2"
+          }
+        },
+        {
+          "row": 4,
+          "column": 3,
+          "column_letter": "C",
+          "value": "SOENG KANEL",
+          "cell_reference": "C4",
+          "matrix_reference": "4x3",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 4,
+          "column_letter": "D",
+          "value": "M",
+          "cell_reference": "D4",
+          "matrix_reference": "4x4",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 5,
+          "column_letter": "E",
+          "value": "1982-12-10 00:00:00",
+          "cell_reference": "E4",
+          "matrix_reference": "4x5",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 6,
+          "column_letter": "F",
+          "value": "INDONESIA",
+          "cell_reference": "F4",
+          "matrix_reference": "4x6",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 7,
+          "column_letter": "G",
+          "value": "3H-B12-F11",
+          "cell_reference": "G4",
+          "matrix_reference": "4x7",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 8,
+          "column_letter": "H",
+          "value": "STAFF",
+          "cell_reference": "H4",
+          "matrix_reference": "4x8",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 9,
+          "column_letter": "I",
+          "value": "2025-08-14 00:00:00",
+          "cell_reference": "I4",
+          "matrix_reference": "4x9",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 10,
+          "column_letter": "J",
+          "value": null,
+          "cell_reference": "J4",
+          "matrix_reference": "4x10",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 11,
+          "column_letter": "K",
+          "value": "#VALUE!",
+          "cell_reference": "K4",
+          "matrix_reference": "4x11",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 12,
+          "column_letter": "L",
+          "value": "X13777022",
+          "cell_reference": "L4",
+          "matrix_reference": "4x12",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 13,
+          "column_letter": "M",
+          "value": "14/11/2018-14/11/2028",
+          "cell_reference": "M4",
+          "matrix_reference": "4x13",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 14,
+          "column_letter": "N",
+          "value": "#VALUE!",
+          "cell_reference": "N4",
+          "matrix_reference": "4x14",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\4x14.jpeg",
+            "filename": "4x14.jpeg",
+            "original": "image8.jpeg",
+            "matrix_position": "4x14"
+          }
+        },
+        {
+          "row": 4,
+          "column": 15,
+          "column_letter": "O",
+          "value": "14/11/2018-14/11/2028",
+          "cell_reference": "O4",
+          "matrix_reference": "4x15",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 16,
+          "column_letter": "P",
+          "value": "#VALUE!",
+          "cell_reference": "P4",
+          "matrix_reference": "4x16",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\4x16.jpeg",
+            "filename": "4x16.jpeg",
+            "original": "image9.jpeg",
+            "matrix_position": "4x16"
+          }
+        },
+        {
+          "row": 4,
+          "column": 17,
+          "column_letter": "Q",
+          "value": "14/11/2018-14/11/2028",
+          "cell_reference": "Q4",
+          "matrix_reference": "4x17",
+          "has_image": false
+        }
+      ]
+    ],
+    "images": [
+      {
+        "matrix_position": "2x2",
+        "cell": "B2",
+        "row": 2,
+        "column": 2,
+        "column_letter": "B",
+        "image_path": "extracted_final\\images\\2x2.png",
+        "filename": "2x2.png",
+        "original_image": "image1.png"
+      },
+      {
+        "matrix_position": "2x11",
+        "cell": "K2",
+        "row": 2,
+        "column": 11,
+        "column_letter": "K",
+        "image_path": "extracted_final\\images\\2x11.png",
+        "filename": "2x11.png",
+        "original_image": "image2.png"
+      },
+      {
+        "matrix_position": "2x16",
+        "cell": "P2",
+        "row": 2,
+        "column": 16,
+        "column_letter": "P",
+        "image_path": "extracted_final\\images\\2x16.png",
+        "filename": "2x16.png",
+        "original_image": "image4.png"
+      },
+      {
+        "matrix_position": "3x2",
+        "cell": "B3",
+        "row": 3,
+        "column": 2,
+        "column_letter": "B",
+        "image_path": "extracted_final\\images\\3x2.png",
+        "filename": "3x2.png",
+        "original_image": "image5.png"
+      },
+      {
+        "matrix_position": "3x11",
+        "cell": "K3",
+        "row": 3,
+        "column": 11,
+        "column_letter": "K",
+        "image_path": "extracted_final\\images\\3x11.png",
+        "filename": "3x11.png",
+        "original_image": "image6.png"
+      },
+      {
+        "matrix_position": "3x14",
+        "cell": "N3",
+        "row": 3,
+        "column": 14,
+        "column_letter": "N",
+        "image_path": "extracted_final\\images\\3x14.jpeg",
+        "filename": "3x14.jpeg",
+        "original_image": "image3.jpeg"
+      },
+      {
+        "matrix_position": "4x2",
+        "cell": "B4",
+        "row": 4,
+        "column": 2,
+        "column_letter": "B",
+        "image_path": "extracted_final\\images\\4x2.png",
+        "filename": "4x2.png",
+        "original_image": "image7.png"
+      },
+      {
+        "matrix_position": "4x14",
+        "cell": "N4",
+        "row": 4,
+        "column": 14,
+        "column_letter": "N",
+        "image_path": "extracted_final\\images\\4x14.jpeg",
+        "filename": "4x14.jpeg",
+        "original_image": "image8.jpeg"
+      },
+      {
+        "matrix_position": "4x16",
+        "cell": "P4",
+        "row": 4,
+        "column": 16,
+        "column_letter": "P",
+        "image_path": "extracted_final\\images\\4x16.jpeg",
+        "filename": "4x16.jpeg",
+        "original_image": "image9.jpeg"
+      }
+    ],
+    "merged_cells": []
+  },
+  "Instructions": {
+    "data": [
+      [
+        {
+          "row": 1,
+          "column": 1,
+          "column_letter": "A",
+          "value": "Field",
+          "cell_reference": "A1",
+          "matrix_reference": "1x1",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Section",
+          "cell_reference": "B1",
+          "matrix_reference": "1x2",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 3,
+          "column_letter": "C",
+          "value": "Required",
+          "cell_reference": "C1",
+          "matrix_reference": "1x3",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Description",
+          "cell_reference": "D1",
+          "matrix_reference": "1x4",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 5,
+          "column_letter": "E",
+          "value": "Format/Values",
+          "cell_reference": "E1",
+          "matrix_reference": "1x5",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 6,
+          "column_letter": "F",
+          "value": "Example",
+          "cell_reference": "F1",
+          "matrix_reference": "1x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 2,
+          "column": 1,
+          "column_letter": "A",
+          "value": "NO",
+          "cell_reference": "A2",
+          "matrix_reference": "2x1",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Reference",
+          "cell_reference": "B2",
+          "matrix_reference": "2x2",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\2x2.png",
+            "filename": "2x2.png",
+            "original": "image1.png",
+            "matrix_position": "2x2"
+          }
+        },
+        {
+          "row": 2,
+          "column": 3,
+          "column_letter": "C",
+          "value": "No",
+          "cell_reference": "C2",
+          "matrix_reference": "2x3",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Row number (for reference)",
+          "cell_reference": "D2",
+          "matrix_reference": "2x4",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 5,
+          "column_letter": "E",
+          "value": "Sequential number",
+          "cell_reference": "E2",
+          "matrix_reference": "2x5",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 6,
+          "column_letter": "F",
+          "value": "1",
+          "cell_reference": "F2",
+          "matrix_reference": "2x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 3,
+          "column": 1,
+          "column_letter": "A",
+          "value": "NAME",
+          "cell_reference": "A3",
+          "matrix_reference": "3x1",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Personal Info",
+          "cell_reference": "B3",
+          "matrix_reference": "3x2",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\3x2.png",
+            "filename": "3x2.png",
+            "original": "image5.png",
+            "matrix_position": "3x2"
+          }
+        },
+        {
+          "row": 3,
+          "column": 3,
+          "column_letter": "C",
+          "value": "Yes",
+          "cell_reference": "C3",
+          "matrix_reference": "3x3",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Full name (will be split into first/last)",
+          "cell_reference": "D3",
+          "matrix_reference": "3x4",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 5,
+          "column_letter": "E",
+          "value": "Full name (e.g., John Smith)",
+          "cell_reference": "E3",
+          "matrix_reference": "3x5",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 6,
+          "column_letter": "F",
+          "value": "John Smith",
+          "cell_reference": "F3",
+          "matrix_reference": "3x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 4,
+          "column": 1,
+          "column_letter": "A",
+          "value": "SEX",
+          "cell_reference": "A4",
+          "matrix_reference": "4x1",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Personal Info",
+          "cell_reference": "B4",
+          "matrix_reference": "4x2",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\4x2.png",
+            "filename": "4x2.png",
+            "original": "image7.png",
+            "matrix_position": "4x2"
+          }
+        },
+        {
+          "row": 4,
+          "column": 3,
+          "column_letter": "C",
+          "value": "Yes",
+          "cell_reference": "C4",
+          "matrix_reference": "4x3",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Gender",
+          "cell_reference": "D4",
+          "matrix_reference": "4x4",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 5,
+          "column_letter": "E",
+          "value": "M (Male), F (Female), O (Other)",
+          "cell_reference": "E4",
+          "matrix_reference": "4x5",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 6,
+          "column_letter": "F",
+          "value": "M",
+          "cell_reference": "F4",
+          "matrix_reference": "4x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 5,
+          "column": 1,
+          "column_letter": "A",
+          "value": "DOB",
+          "cell_reference": "A5",
+          "matrix_reference": "5x1",
+          "has_image": false
+        },
+        {
+          "row": 5,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Personal Info",
+          "cell_reference": "B5",
+          "matrix_reference": "5x2",
+          "has_image": false
+        },
+        {
+          "row": 5,
+          "column": 3,
+          "column_letter": "C",
+          "value": "Yes",
+          "cell_reference": "C5",
+          "matrix_reference": "5x3",
+          "has_image": false
+        },
+        {
+          "row": 5,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Date of Birth",
+          "cell_reference": "D5",
+          "matrix_reference": "5x4",
+          "has_image": false
+        },
+        {
+          "row": 5,
+          "column": 5,
+          "column_letter": "E",
+          "value": "YYYY-MM-DD (e.g., 1990-05-15)",
+          "cell_reference": "E5",
+          "matrix_reference": "5x5",
+          "has_image": false
+        },
+        {
+          "row": 5,
+          "column": 6,
+          "column_letter": "F",
+          "value": "1990-05-15",
+          "cell_reference": "F5",
+          "matrix_reference": "5x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 6,
+          "column": 1,
+          "column_letter": "A",
+          "value": "NATIONALITY",
+          "cell_reference": "A6",
+          "matrix_reference": "6x1",
+          "has_image": false
+        },
+        {
+          "row": 6,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Personal Info",
+          "cell_reference": "B6",
+          "matrix_reference": "6x2",
+          "has_image": false
+        },
+        {
+          "row": 6,
+          "column": 3,
+          "column_letter": "C",
+          "value": "Yes",
+          "cell_reference": "C6",
+          "matrix_reference": "6x3",
+          "has_image": false
+        },
+        {
+          "row": 6,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Worker nationality",
+          "cell_reference": "D6",
+          "matrix_reference": "6x4",
+          "has_image": false
+        },
+        {
+          "row": 6,
+          "column": 5,
+          "column_letter": "E",
+          "value": "KH, TH, VN, ID, MY, PH, MM, LA, SG, BN, CH, JP, KR, IN, PK, BD, LK, NP, BT, MV, OTHER",
+          "cell_reference": "E6",
+          "matrix_reference": "6x5",
+          "has_image": false
+        },
+        {
+          "row": 6,
+          "column": 6,
+          "column_letter": "F",
+          "value": "KH",
+          "cell_reference": "F6",
+          "matrix_reference": "6x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 7,
+          "column": 1,
+          "column_letter": "A",
+          "value": "PHONE_NUMBER",
+          "cell_reference": "A7",
+          "matrix_reference": "7x1",
+          "has_image": false
+        },
+        {
+          "row": 7,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Personal Info",
+          "cell_reference": "B7",
+          "matrix_reference": "7x2",
+          "has_image": false
+        },
+        {
+          "row": 7,
+          "column": 3,
+          "column_letter": "C",
+          "value": "Yes",
+          "cell_reference": "C7",
+          "matrix_reference": "7x3",
+          "has_image": false
+        },
+        {
+          "row": 7,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Contact phone number",
+          "cell_reference": "D7",
+          "matrix_reference": "7x4",
+          "has_image": false
+        },
+        {
+          "row": 7,
+          "column": 5,
+          "column_letter": "E",
+          "value": "+855XXXXXXXXX format",
+          "cell_reference": "E7",
+          "matrix_reference": "7x5",
+          "has_image": false
+        },
+        {
+          "row": 7,
+          "column": 6,
+          "column_letter": "F",
+          "value": "+855123456789",
+          "cell_reference": "F7",
+          "matrix_reference": "7x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 8,
+          "column": 1,
+          "column_letter": "A",
+          "value": "ZONE_NAME",
+          "cell_reference": "A8",
+          "matrix_reference": "8x1",
+          "has_image": false
+        },
+        {
+          "row": 8,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Location",
+          "cell_reference": "B8",
+          "matrix_reference": "8x2",
+          "has_image": false
+        },
+        {
+          "row": 8,
+          "column": 3,
+          "column_letter": "C",
+          "value": "Yes",
+          "cell_reference": "C8",
+          "matrix_reference": "8x3",
+          "has_image": false
+        },
+        {
+          "row": 8,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Zone assignment",
+          "cell_reference": "D8",
+          "matrix_reference": "8x4",
+          "has_image": false
+        },
+        {
+          "row": 8,
+          "column": 5,
+          "column_letter": "E",
+          "value": "Must match existing zone in system",
+          "cell_reference": "E8",
+          "matrix_reference": "8x5",
+          "has_image": false
+        },
+        {
+          "row": 8,
+          "column": 6,
+          "column_letter": "F",
+          "value": "Zone A",
+          "cell_reference": "F8",
+          "matrix_reference": "8x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 9,
+          "column": 1,
+          "column_letter": "A",
+          "value": "BUILDINGNAME",
+          "cell_reference": "A9",
+          "matrix_reference": "9x1",
+          "has_image": false
+        },
+        {
+          "row": 9,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Location",
+          "cell_reference": "B9",
+          "matrix_reference": "9x2",
+          "has_image": false
+        },
+        {
+          "row": 9,
+          "column": 3,
+          "column_letter": "C",
+          "value": "Yes",
+          "cell_reference": "C9",
+          "matrix_reference": "9x3",
+          "has_image": false
+        },
+        {
+          "row": 9,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Building assignment",
+          "cell_reference": "D9",
+          "matrix_reference": "9x4",
+          "has_image": false
+        },
+        {
+          "row": 9,
+          "column": 5,
+          "column_letter": "E",
+          "value": "Must match existing building in system",
+          "cell_reference": "E9",
+          "matrix_reference": "9x5",
+          "has_image": false
+        },
+        {
+          "row": 9,
+          "column": 6,
+          "column_letter": "F",
+          "value": "Building 1",
+          "cell_reference": "F9",
+          "matrix_reference": "9x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 10,
+          "column": 1,
+          "column_letter": "A",
+          "value": "BUILDINGNO",
+          "cell_reference": "A10",
+          "matrix_reference": "10x1",
+          "has_image": false
+        },
+        {
+          "row": 10,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Location",
+          "cell_reference": "B10",
+          "matrix_reference": "10x2",
+          "has_image": false
+        },
+        {
+          "row": 10,
+          "column": 3,
+          "column_letter": "C",
+          "value": "No",
+          "cell_reference": "C10",
+          "matrix_reference": "10x3",
+          "has_image": false
+        },
+        {
+          "row": 10,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Building code",
+          "cell_reference": "D10",
+          "matrix_reference": "10x4",
+          "has_image": false
+        },
+        {
+          "row": 10,
+          "column": 5,
+          "column_letter": "E",
+          "value": "Building code (e.g., B001)",
+          "cell_reference": "E10",
+          "matrix_reference": "10x5",
+          "has_image": false
+        },
+        {
+          "row": 10,
+          "column": 6,
+          "column_letter": "F",
+          "value": "B001",
+          "cell_reference": "F10",
+          "matrix_reference": "10x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 11,
+          "column": 1,
+          "column_letter": "A",
+          "value": "POSITION",
+          "cell_reference": "A11",
+          "matrix_reference": "11x1",
+          "has_image": false
+        },
+        {
+          "row": 11,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Job Info",
+          "cell_reference": "B11",
+          "matrix_reference": "11x2",
+          "has_image": false
+        },
+        {
+          "row": 11,
+          "column": 3,
+          "column_letter": "C",
+          "value": "No",
+          "cell_reference": "C11",
+          "matrix_reference": "11x3",
+          "has_image": false
+        },
+        {
+          "row": 11,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Job position",
+          "cell_reference": "D11",
+          "matrix_reference": "11x4",
+          "has_image": false
+        },
+        {
+          "row": 11,
+          "column": 5,
+          "column_letter": "E",
+          "value": "Text (e.g., Security Guard, Cleaner)",
+          "cell_reference": "E11",
+          "matrix_reference": "11x5",
+          "has_image": false
+        },
+        {
+          "row": 11,
+          "column": 6,
+          "column_letter": "F",
+          "value": "Security Guard",
+          "cell_reference": "F11",
+          "matrix_reference": "11x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 12,
+          "column": 1,
+          "column_letter": "A",
+          "value": "JOINEDDATE",
+          "cell_reference": "A12",
+          "matrix_reference": "12x1",
+          "has_image": false
+        },
+        {
+          "row": 12,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Job Info",
+          "cell_reference": "B12",
+          "matrix_reference": "12x2",
+          "has_image": false
+        },
+        {
+          "row": 12,
+          "column": 3,
+          "column_letter": "C",
+          "value": "No",
+          "cell_reference": "C12",
+          "matrix_reference": "12x3",
+          "has_image": false
+        },
+        {
+          "row": 12,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Date joined company",
+          "cell_reference": "D12",
+          "matrix_reference": "12x4",
+          "has_image": false
+        },
+        {
+          "row": 12,
+          "column": 5,
+          "column_letter": "E",
+          "value": "YYYY-MM-DD (e.g., 2023-01-15)",
+          "cell_reference": "E12",
+          "matrix_reference": "12x5",
+          "has_image": false
+        },
+        {
+          "row": 12,
+          "column": 6,
+          "column_letter": "F",
+          "value": "2023-01-15",
+          "cell_reference": "F12",
+          "matrix_reference": "12x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 13,
+          "column": 1,
+          "column_letter": "A",
+          "value": "RESIGNEDDATE",
+          "cell_reference": "A13",
+          "matrix_reference": "13x1",
+          "has_image": false
+        },
+        {
+          "row": 13,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Job Info",
+          "cell_reference": "B13",
+          "matrix_reference": "13x2",
+          "has_image": false
+        },
+        {
+          "row": 13,
+          "column": 3,
+          "column_letter": "C",
+          "value": "No",
+          "cell_reference": "C13",
+          "matrix_reference": "13x3",
+          "has_image": false
+        },
+        {
+          "row": 13,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Date resigned (if applicable)",
+          "cell_reference": "D13",
+          "matrix_reference": "13x4",
+          "has_image": false
+        },
+        {
+          "row": 13,
+          "column": 5,
+          "column_letter": "E",
+          "value": "YYYY-MM-DD or leave empty",
+          "cell_reference": "E13",
+          "matrix_reference": "13x5",
+          "has_image": false
+        },
+        {
+          "row": 13,
+          "column": 6,
+          "column_letter": "F",
+          "value": null,
+          "cell_reference": "F13",
+          "matrix_reference": "13x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 14,
+          "column": 1,
+          "column_letter": "A",
+          "value": "ACTIVE/NOACTIVE",
+          "cell_reference": "A14",
+          "matrix_reference": "14x1",
+          "has_image": false
+        },
+        {
+          "row": 14,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Job Info",
+          "cell_reference": "B14",
+          "matrix_reference": "14x2",
+          "has_image": false
+        },
+        {
+          "row": 14,
+          "column": 3,
+          "column_letter": "C",
+          "value": "No",
+          "cell_reference": "C14",
+          "matrix_reference": "14x3",
+          "has_image": false
+        },
+        {
+          "row": 14,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Worker status",
+          "cell_reference": "D14",
+          "matrix_reference": "14x4",
+          "has_image": false
+        },
+        {
+          "row": 14,
+          "column": 5,
+          "column_letter": "E",
+          "value": "ACTIVE or NOACTIVE",
+          "cell_reference": "E14",
+          "matrix_reference": "14x5",
+          "has_image": false
+        },
+        {
+          "row": 14,
+          "column": 6,
+          "column_letter": "F",
+          "value": "ACTIVE",
+          "cell_reference": "F14",
+          "matrix_reference": "14x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 15,
+          "column": 1,
+          "column_letter": "A",
+          "value": "IDKH/PASSPORT",
+          "cell_reference": "A15",
+          "matrix_reference": "15x1",
+          "has_image": false
+        },
+        {
+          "row": 15,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Documents",
+          "cell_reference": "B15",
+          "matrix_reference": "15x2",
+          "has_image": false
+        },
+        {
+          "row": 15,
+          "column": 3,
+          "column_letter": "C",
+          "value": "No",
+          "cell_reference": "C15",
+          "matrix_reference": "15x3",
+          "has_image": false
+        },
+        {
+          "row": 15,
+          "column": 4,
+          "column_letter": "D",
+          "value": "ID card or passport photo filename",
+          "cell_reference": "D15",
+          "matrix_reference": "15x4",
+          "has_image": false
+        },
+        {
+          "row": 15,
+          "column": 5,
+          "column_letter": "E",
+          "value": "Photo filename (e.g., id_john_smith.jpg)",
+          "cell_reference": "E15",
+          "matrix_reference": "15x5",
+          "has_image": false
+        },
+        {
+          "row": 15,
+          "column": 6,
+          "column_letter": "F",
+          "value": "id_john_smith.jpg",
+          "cell_reference": "F15",
+          "matrix_reference": "15x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 16,
+          "column": 1,
+          "column_letter": "A",
+          "value": "WORKINGPERMIT",
+          "cell_reference": "A16",
+          "matrix_reference": "16x1",
+          "has_image": false
+        },
+        {
+          "row": 16,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Documents",
+          "cell_reference": "B16",
+          "matrix_reference": "16x2",
+          "has_image": false
+        },
+        {
+          "row": 16,
+          "column": 3,
+          "column_letter": "C",
+          "value": "No",
+          "cell_reference": "C16",
+          "matrix_reference": "16x3",
+          "has_image": false
+        },
+        {
+          "row": 16,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Work permit photo filename",
+          "cell_reference": "D16",
+          "matrix_reference": "16x4",
+          "has_image": false
+        },
+        {
+          "row": 16,
+          "column": 5,
+          "column_letter": "E",
+          "value": "Photo filename (e.g., wp_john_smith.jpg)",
+          "cell_reference": "E16",
+          "matrix_reference": "16x5",
+          "has_image": false
+        },
+        {
+          "row": 16,
+          "column": 6,
+          "column_letter": "F",
+          "value": "wp_john_smith.jpg",
+          "cell_reference": "F16",
+          "matrix_reference": "16x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 17,
+          "column": 1,
+          "column_letter": "A",
+          "value": "VISA",
+          "cell_reference": "A17",
+          "matrix_reference": "17x1",
+          "has_image": false
+        },
+        {
+          "row": 17,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Documents",
+          "cell_reference": "B17",
+          "matrix_reference": "17x2",
+          "has_image": false
+        },
+        {
+          "row": 17,
+          "column": 3,
+          "column_letter": "C",
+          "value": "No",
+          "cell_reference": "C17",
+          "matrix_reference": "17x3",
+          "has_image": false
+        },
+        {
+          "row": 17,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Visa photo filename",
+          "cell_reference": "D17",
+          "matrix_reference": "17x4",
+          "has_image": false
+        },
+        {
+          "row": 17,
+          "column": 5,
+          "column_letter": "E",
+          "value": "Photo filename (e.g., visa_john_smith.jpg)",
+          "cell_reference": "E17",
+          "matrix_reference": "17x5",
+          "has_image": false
+        },
+        {
+          "row": 17,
+          "column": 6,
+          "column_letter": "F",
+          "value": "visa_john_smith.jpg",
+          "cell_reference": "F17",
+          "matrix_reference": "17x6",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 18,
+          "column": 1,
+          "column_letter": "A",
+          "value": "PHOTO",
+          "cell_reference": "A18",
+          "matrix_reference": "18x1",
+          "has_image": false
+        },
+        {
+          "row": 18,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Photo",
+          "cell_reference": "B18",
+          "matrix_reference": "18x2",
+          "has_image": false
+        },
+        {
+          "row": 18,
+          "column": 3,
+          "column_letter": "C",
+          "value": "No",
+          "cell_reference": "C18",
+          "matrix_reference": "18x3",
+          "has_image": false
+        },
+        {
+          "row": 18,
+          "column": 4,
+          "column_letter": "D",
+          "value": "Worker photo filename",
+          "cell_reference": "D18",
+          "matrix_reference": "18x4",
+          "has_image": false
+        },
+        {
+          "row": 18,
+          "column": 5,
+          "column_letter": "E",
+          "value": "Photo filename (e.g., john_smith.jpg)",
+          "cell_reference": "E18",
+          "matrix_reference": "18x5",
+          "has_image": false
+        },
+        {
+          "row": 18,
+          "column": 6,
+          "column_letter": "F",
+          "value": "john_smith.jpg",
+          "cell_reference": "F18",
+          "matrix_reference": "18x6",
+          "has_image": false
+        }
+      ]
+    ],
+    "images": [
+      {
+        "matrix_position": "2x2",
+        "cell": "B2",
+        "row": 2,
+        "column": 2,
+        "column_letter": "B",
+        "image_path": "extracted_final\\images\\2x2.png",
+        "filename": "2x2.png",
+        "original_image": "image1.png"
+      },
+      {
+        "matrix_position": "3x2",
+        "cell": "B3",
+        "row": 3,
+        "column": 2,
+        "column_letter": "B",
+        "image_path": "extracted_final\\images\\3x2.png",
+        "filename": "3x2.png",
+        "original_image": "image5.png"
+      },
+      {
+        "matrix_position": "4x2",
+        "cell": "B4",
+        "row": 4,
+        "column": 2,
+        "column_letter": "B",
+        "image_path": "extracted_final\\images\\4x2.png",
+        "filename": "4x2.png",
+        "original_image": "image7.png"
+      }
+    ],
+    "merged_cells": []
+  },
+  "Nationality Codes": {
+    "data": [
+      [
+        {
+          "row": 1,
+          "column": 1,
+          "column_letter": "A",
+          "value": "Code",
+          "cell_reference": "A1",
+          "matrix_reference": "1x1",
+          "has_image": false
+        },
+        {
+          "row": 1,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Country",
+          "cell_reference": "B1",
+          "matrix_reference": "1x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 2,
+          "column": 1,
+          "column_letter": "A",
+          "value": "KH",
+          "cell_reference": "A2",
+          "matrix_reference": "2x1",
+          "has_image": false
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Cambodian",
+          "cell_reference": "B2",
+          "matrix_reference": "2x2",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\2x2.png",
+            "filename": "2x2.png",
+            "original": "image1.png",
+            "matrix_position": "2x2"
+          }
+        }
+      ],
+      [
+        {
+          "row": 3,
+          "column": 1,
+          "column_letter": "A",
+          "value": "TH",
+          "cell_reference": "A3",
+          "matrix_reference": "3x1",
+          "has_image": false
+        },
+        {
+          "row": 3,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Thai",
+          "cell_reference": "B3",
+          "matrix_reference": "3x2",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\3x2.png",
+            "filename": "3x2.png",
+            "original": "image5.png",
+            "matrix_position": "3x2"
+          }
+        }
+      ],
+      [
+        {
+          "row": 4,
+          "column": 1,
+          "column_letter": "A",
+          "value": "VN",
+          "cell_reference": "A4",
+          "matrix_reference": "4x1",
+          "has_image": false
+        },
+        {
+          "row": 4,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Vietnamese",
+          "cell_reference": "B4",
+          "matrix_reference": "4x2",
+          "has_image": true,
+          "image": {
+            "path": "extracted_final\\images\\4x2.png",
+            "filename": "4x2.png",
+            "original": "image7.png",
+            "matrix_position": "4x2"
+          }
+        }
+      ],
+      [
+        {
+          "row": 5,
+          "column": 1,
+          "column_letter": "A",
+          "value": "ID",
+          "cell_reference": "A5",
+          "matrix_reference": "5x1",
+          "has_image": false
+        },
+        {
+          "row": 5,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Indonesian",
+          "cell_reference": "B5",
+          "matrix_reference": "5x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 6,
+          "column": 1,
+          "column_letter": "A",
+          "value": "MY",
+          "cell_reference": "A6",
+          "matrix_reference": "6x1",
+          "has_image": false
+        },
+        {
+          "row": 6,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Malaysian",
+          "cell_reference": "B6",
+          "matrix_reference": "6x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 7,
+          "column": 1,
+          "column_letter": "A",
+          "value": "PH",
+          "cell_reference": "A7",
+          "matrix_reference": "7x1",
+          "has_image": false
+        },
+        {
+          "row": 7,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Filipino",
+          "cell_reference": "B7",
+          "matrix_reference": "7x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 8,
+          "column": 1,
+          "column_letter": "A",
+          "value": "MM",
+          "cell_reference": "A8",
+          "matrix_reference": "8x1",
+          "has_image": false
+        },
+        {
+          "row": 8,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Myanmar",
+          "cell_reference": "B8",
+          "matrix_reference": "8x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 9,
+          "column": 1,
+          "column_letter": "A",
+          "value": "LA",
+          "cell_reference": "A9",
+          "matrix_reference": "9x1",
+          "has_image": false
+        },
+        {
+          "row": 9,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Laotian",
+          "cell_reference": "B9",
+          "matrix_reference": "9x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 10,
+          "column": 1,
+          "column_letter": "A",
+          "value": "SG",
+          "cell_reference": "A10",
+          "matrix_reference": "10x1",
+          "has_image": false
+        },
+        {
+          "row": 10,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Singaporean",
+          "cell_reference": "B10",
+          "matrix_reference": "10x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 11,
+          "column": 1,
+          "column_letter": "A",
+          "value": "BN",
+          "cell_reference": "A11",
+          "matrix_reference": "11x1",
+          "has_image": false
+        },
+        {
+          "row": 11,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Bruneian",
+          "cell_reference": "B11",
+          "matrix_reference": "11x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 12,
+          "column": 1,
+          "column_letter": "A",
+          "value": "CH",
+          "cell_reference": "A12",
+          "matrix_reference": "12x1",
+          "has_image": false
+        },
+        {
+          "row": 12,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Chinese",
+          "cell_reference": "B12",
+          "matrix_reference": "12x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 13,
+          "column": 1,
+          "column_letter": "A",
+          "value": "JP",
+          "cell_reference": "A13",
+          "matrix_reference": "13x1",
+          "has_image": false
+        },
+        {
+          "row": 13,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Japanese",
+          "cell_reference": "B13",
+          "matrix_reference": "13x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 14,
+          "column": 1,
+          "column_letter": "A",
+          "value": "KR",
+          "cell_reference": "A14",
+          "matrix_reference": "14x1",
+          "has_image": false
+        },
+        {
+          "row": 14,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Korean",
+          "cell_reference": "B14",
+          "matrix_reference": "14x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 15,
+          "column": 1,
+          "column_letter": "A",
+          "value": "IN",
+          "cell_reference": "A15",
+          "matrix_reference": "15x1",
+          "has_image": false
+        },
+        {
+          "row": 15,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Indian",
+          "cell_reference": "B15",
+          "matrix_reference": "15x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 16,
+          "column": 1,
+          "column_letter": "A",
+          "value": "PK",
+          "cell_reference": "A16",
+          "matrix_reference": "16x1",
+          "has_image": false
+        },
+        {
+          "row": 16,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Pakistani",
+          "cell_reference": "B16",
+          "matrix_reference": "16x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 17,
+          "column": 1,
+          "column_letter": "A",
+          "value": "BD",
+          "cell_reference": "A17",
+          "matrix_reference": "17x1",
+          "has_image": false
+        },
+        {
+          "row": 17,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Bangladeshi",
+          "cell_reference": "B17",
+          "matrix_reference": "17x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 18,
+          "column": 1,
+          "column_letter": "A",
+          "value": "LK",
+          "cell_reference": "A18",
+          "matrix_reference": "18x1",
+          "has_image": false
+        },
+        {
+          "row": 18,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Sri Lankan",
+          "cell_reference": "B18",
+          "matrix_reference": "18x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 19,
+          "column": 1,
+          "column_letter": "A",
+          "value": "NP",
+          "cell_reference": "A19",
+          "matrix_reference": "19x1",
+          "has_image": false
+        },
+        {
+          "row": 19,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Nepalese",
+          "cell_reference": "B19",
+          "matrix_reference": "19x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 20,
+          "column": 1,
+          "column_letter": "A",
+          "value": "BT",
+          "cell_reference": "A20",
+          "matrix_reference": "20x1",
+          "has_image": false
+        },
+        {
+          "row": 20,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Bhutanese",
+          "cell_reference": "B20",
+          "matrix_reference": "20x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 21,
+          "column": 1,
+          "column_letter": "A",
+          "value": "MV",
+          "cell_reference": "A21",
+          "matrix_reference": "21x1",
+          "has_image": false
+        },
+        {
+          "row": 21,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Maldivian",
+          "cell_reference": "B21",
+          "matrix_reference": "21x2",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 22,
+          "column": 1,
+          "column_letter": "A",
+          "value": "OTHER",
+          "cell_reference": "A22",
+          "matrix_reference": "22x1",
+          "has_image": false
+        },
+        {
+          "row": 22,
+          "column": 2,
+          "column_letter": "B",
+          "value": "Other",
+          "cell_reference": "B22",
+          "matrix_reference": "22x2",
+          "has_image": false
+        }
+      ]
+    ],
+    "images": [
+      {
+        "matrix_position": "2x2",
+        "cell": "B2",
+        "row": 2,
+        "column": 2,
+        "column_letter": "B",
+        "image_path": "extracted_final\\images\\2x2.png",
+        "filename": "2x2.png",
+        "original_image": "image1.png"
+      },
+      {
+        "matrix_position": "3x2",
+        "cell": "B3",
+        "row": 3,
+        "column": 2,
+        "column_letter": "B",
+        "image_path": "extracted_final\\images\\3x2.png",
+        "filename": "3x2.png",
+        "original_image": "image5.png"
+      },
+      {
+        "matrix_position": "4x2",
+        "cell": "B4",
+        "row": 4,
+        "column": 2,
+        "column_letter": "B",
+        "image_path": "extracted_final\\images\\4x2.png",
+        "filename": "4x2.png",
+        "original_image": "image7.png"
+      }
+    ],
+    "merged_cells": []
+  },
+  "Summary": {
+    "data": [
+      [
+        {
+          "row": 1,
+          "column": 1,
+          "column_letter": "A",
+          "value": "EXCEL IMPORT TEMPLATE - WORKER RECORDS",
+          "cell_reference": "A1",
+          "matrix_reference": "1x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 2,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A2",
+          "matrix_reference": "2x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 3,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A3",
+          "matrix_reference": "3x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 4,
+          "column": 1,
+          "column_letter": "A",
+          "value": "COLUMN ORGANIZATION (Logical Data Entry Order):",
+          "cell_reference": "A4",
+          "matrix_reference": "4x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 5,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A5",
+          "matrix_reference": "5x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 6,
+          "column": 1,
+          "column_letter": "A",
+          "value": "1. REFERENCE:",
+          "cell_reference": "A6",
+          "matrix_reference": "6x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 7,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column A: NO - Row number",
+          "cell_reference": "A7",
+          "matrix_reference": "7x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 8,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A8",
+          "matrix_reference": "8x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 9,
+          "column": 1,
+          "column_letter": "A",
+          "value": "2. PERSONAL INFORMATION (All Required):",
+          "cell_reference": "A9",
+          "matrix_reference": "9x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 10,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column B: NAME - Full name",
+          "cell_reference": "A10",
+          "matrix_reference": "10x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 11,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column C: SEX - Gender (M/F/O)",
+          "cell_reference": "A11",
+          "matrix_reference": "11x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 12,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column D: DOB - Date of Birth",
+          "cell_reference": "A12",
+          "matrix_reference": "12x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 13,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column E: NATIONALITY - Country code",
+          "cell_reference": "A13",
+          "matrix_reference": "13x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 14,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column F: PHONE_NUMBER - Contact number",
+          "cell_reference": "A14",
+          "matrix_reference": "14x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 15,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A15",
+          "matrix_reference": "15x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 16,
+          "column": 1,
+          "column_letter": "A",
+          "value": "3. WORK LOCATION (Required):",
+          "cell_reference": "A16",
+          "matrix_reference": "16x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 17,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column G: ZONE_NAME - Zone assignment",
+          "cell_reference": "A17",
+          "matrix_reference": "17x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 18,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column H: BUILDINGNAME - Building assignment",
+          "cell_reference": "A18",
+          "matrix_reference": "18x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 19,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column I: BUILDINGNO - Building code (optional)",
+          "cell_reference": "A19",
+          "matrix_reference": "19x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 20,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A20",
+          "matrix_reference": "20x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 21,
+          "column": 1,
+          "column_letter": "A",
+          "value": "4. JOB INFORMATION (Optional):",
+          "cell_reference": "A21",
+          "matrix_reference": "21x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 22,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column J: POSITION - Job role",
+          "cell_reference": "A22",
+          "matrix_reference": "22x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 23,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column K: JOINEDDATE - Date joined",
+          "cell_reference": "A23",
+          "matrix_reference": "23x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 24,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column L: RESIGNEDDATE - Date resigned",
+          "cell_reference": "A24",
+          "matrix_reference": "24x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 25,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column M: ACTIVE/NOACTIVE - Status",
+          "cell_reference": "A25",
+          "matrix_reference": "25x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 26,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A26",
+          "matrix_reference": "26x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 27,
+          "column": 1,
+          "column_letter": "A",
+          "value": "5. DOCUMENTS (Optional - Photo filenames):",
+          "cell_reference": "A27",
+          "matrix_reference": "27x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 28,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column N: IDKH/PASSPORT - ID/Passport photo filename",
+          "cell_reference": "A28",
+          "matrix_reference": "28x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 29,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column O: WORKINGPERMIT - Work permit photo filename",
+          "cell_reference": "A29",
+          "matrix_reference": "29x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 30,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column P: VISA - Visa photo filename",
+          "cell_reference": "A30",
+          "matrix_reference": "30x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 31,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A31",
+          "matrix_reference": "31x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 32,
+          "column": 1,
+          "column_letter": "A",
+          "value": "6. PHOTO (Optional):",
+          "cell_reference": "A32",
+          "matrix_reference": "32x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 33,
+          "column": 1,
+          "column_letter": "A",
+          "value": "   • Column Q: PHOTO - Photo filename",
+          "cell_reference": "A33",
+          "matrix_reference": "33x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 34,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A34",
+          "matrix_reference": "34x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 35,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A35",
+          "matrix_reference": "35x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 36,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A36",
+          "matrix_reference": "36x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 37,
+          "column": 1,
+          "column_letter": "A",
+          "value": "REQUIRED FIELDS CHECKLIST:",
+          "cell_reference": "A37",
+          "matrix_reference": "37x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 38,
+          "column": 1,
+          "column_letter": "A",
+          "value": "☑ NAME (Column B)",
+          "cell_reference": "A38",
+          "matrix_reference": "38x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 39,
+          "column": 1,
+          "column_letter": "A",
+          "value": "☑ SEX (Column C)",
+          "cell_reference": "A39",
+          "matrix_reference": "39x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 40,
+          "column": 1,
+          "column_letter": "A",
+          "value": "☑ DOB (Column D)",
+          "cell_reference": "A40",
+          "matrix_reference": "40x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 41,
+          "column": 1,
+          "column_letter": "A",
+          "value": "☑ NATIONALITY (Column E)",
+          "cell_reference": "A41",
+          "matrix_reference": "41x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 42,
+          "column": 1,
+          "column_letter": "A",
+          "value": "☑ PHONE_NUMBER (Column F)",
+          "cell_reference": "A42",
+          "matrix_reference": "42x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 43,
+          "column": 1,
+          "column_letter": "A",
+          "value": "☑ ZONE_NAME (Column G)",
+          "cell_reference": "A43",
+          "matrix_reference": "43x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 44,
+          "column": 1,
+          "column_letter": "A",
+          "value": "☑ BUILDINGNAME (Column H)",
+          "cell_reference": "A44",
+          "matrix_reference": "44x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 45,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A45",
+          "matrix_reference": "45x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 46,
+          "column": 1,
+          "column_letter": "A",
+          "value": "IMPORTANT NOTES:",
+          "cell_reference": "A46",
+          "matrix_reference": "46x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 47,
+          "column": 1,
+          "column_letter": "A",
+          "value": "1. Fill in data from left to right for best workflow",
+          "cell_reference": "A47",
+          "matrix_reference": "47x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 48,
+          "column": 1,
+          "column_letter": "A",
+          "value": "2. Required fields are in the first 8 columns for easy access",
+          "cell_reference": "A48",
+          "matrix_reference": "48x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 49,
+          "column": 1,
+          "column_letter": "A",
+          "value": "3. Building and Zone names must match exactly with system records",
+          "cell_reference": "A49",
+          "matrix_reference": "49x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 50,
+          "column": 1,
+          "column_letter": "A",
+          "value": "4. ALL photos must be uploaded separately - only include filenames in Excel",
+          "cell_reference": "A50",
+          "matrix_reference": "50x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 51,
+          "column": 1,
+          "column_letter": "A",
+          "value": "5. Document columns (N, O, P) need PHOTO FILENAMES of the documents",
+          "cell_reference": "A51",
+          "matrix_reference": "51x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 52,
+          "column": 1,
+          "column_letter": "A",
+          "value": "6. Photo column (Q) needs PHOTO FILENAME of the worker's portrait",
+          "cell_reference": "A52",
+          "matrix_reference": "52x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 53,
+          "column": 1,
+          "column_letter": "A",
+          "value": "7. Recommended photo naming: id_[name].jpg, wp_[name].jpg, visa_[name].jpg",
+          "cell_reference": "A53",
+          "matrix_reference": "53x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 54,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A54",
+          "matrix_reference": "54x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 55,
+          "column": 1,
+          "column_letter": "A",
+          "value": "DATA VALIDATION:",
+          "cell_reference": "A55",
+          "matrix_reference": "55x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 56,
+          "column": 1,
+          "column_letter": "A",
+          "value": "• Dates: YYYY-MM-DD format",
+          "cell_reference": "A56",
+          "matrix_reference": "56x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 57,
+          "column": 1,
+          "column_letter": "A",
+          "value": "• Phone: +855XXXXXXXXX format",
+          "cell_reference": "A57",
+          "matrix_reference": "57x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 58,
+          "column": 1,
+          "column_letter": "A",
+          "value": "• Nationality: Use codes from Nationality Codes sheet",
+          "cell_reference": "A58",
+          "matrix_reference": "58x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 59,
+          "column": 1,
+          "column_letter": "A",
+          "value": "• Sex: M, F, or O only",
+          "cell_reference": "A59",
+          "matrix_reference": "59x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 60,
+          "column": 1,
+          "column_letter": "A",
+          "value": "• Status: ACTIVE or NOACTIVE only",
+          "cell_reference": "A60",
+          "matrix_reference": "60x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 61,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A61",
+          "matrix_reference": "61x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 62,
+          "column": 1,
+          "column_letter": "A",
+          "value": null,
+          "cell_reference": "A62",
+          "matrix_reference": "62x1",
+          "has_image": false
+        }
+      ],
+      [
+        {
+          "row": 63,
+          "column": 1,
+          "column_letter": "A",
+          "value": "Generated on: 2025-08-12 11:53:30",
+          "cell_reference": "A63",
+          "matrix_reference": "63x1",
+          "has_image": false
+        }
+      ]
+    ],
+    "images": [],
+    "merged_cells": []
+  }
+}

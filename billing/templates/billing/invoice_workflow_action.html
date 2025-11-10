@@ -1,0 +1,184 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-file-earmark-text"></i>
+                        {{ title }}
+                    </h4>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Invoice Summary -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Invoice Details</h6>
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>Invoice Number:</strong></td>
+                                    <td>{{ invoice.invoice_number }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Client:</strong></td>
+                                    <td>{{ invoice.get_client_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Amount:</strong></td>
+                                    <td>${{ invoice.total_amount|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Current Status:</strong></td>
+                                    <td>
+                                        <span class="badge badge-{{ invoice.status|lower }}">
+                                            {{ invoice.get_status_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Issue Date:</strong></td>
+                                    <td>{{ invoice.issue_date|date:"d/m/Y" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Due Date:</strong></td>
+                                    <td>{{ invoice.due_date|date:"d/m/Y" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            {% if invoice.notes %}
+                            <h6 class="text-muted">Notes</h6>
+                            <p class="text-truncate" title="{{ invoice.notes }}">
+                                {{ invoice.notes|truncatewords:15 }}
+                            </p>
+                            {% endif %}
+                            
+                            {% if invoice.created_by %}
+                            <h6 class="text-muted mt-3">Created By</h6>
+                            <p>{{ invoice.created_by.get_full_name|default:invoice.created_by.username }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Action Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if action == 'submit' %}
+                            <div class="alert alert-info">
+                                <h5><i class="bi bi-info-circle"></i> Submit for Approval</h5>
+                                <p>This will submit the invoice for approval. Once submitted, you will not be able to edit the invoice until it is approved or rejected.</p>
+                            </div>
+                            
+                        {% elif action == 'approve' %}
+                            <div class="alert alert-success">
+                                <h5><i class="bi bi-check-circle"></i> Approve Invoice</h5>
+                                <p>This will approve the invoice. After approval, the invoice can be sent to the client for payment.</p>
+                                {% if invoice.created_by == user %}
+                                <p><strong>Note:</strong> You are approving your own invoice.</p>
+                                {% else %}
+                                <p><strong>Note:</strong> You are approving an invoice created by <strong>{{ invoice.created_by.get_full_name|default:invoice.created_by.username }}</strong>.</p>
+                                {% endif %}
+                            </div>
+                            
+                        {% elif action == 'reject' %}
+                            <div class="alert alert-warning">
+                                <h5><i class="bi bi-exclamation-triangle"></i> Reject Invoice</h5>
+                                <p>This will reject the invoice and return it to draft status. The creator will be able to make changes and resubmit.</p>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="rejection_reason" class="form-label">
+                                    <strong>Reason for Rejection <span class="text-danger">*</span></strong>
+                                </label>
+                                <textarea 
+                                    class="form-control" 
+                                    id="rejection_reason" 
+                                    name="rejection_reason" 
+                                    rows="3" 
+                                    required
+                                    placeholder="Please provide a clear reason for rejecting this invoice..."
+                                ></textarea>
+                                <small class="text-muted">This reason will be visible to the invoice creator.</small>
+                            </div>
+                            
+                        {% elif action == 'send_to_client' %}
+                            <div class="alert alert-primary">
+                                <h5><i class="bi bi-send"></i> Send to Client</h5>
+                                <p>This will change the invoice status to "Pending Payment" and make it available for client payment collection.</p>
+                            </div>
+                            
+                        {% elif action == 'cancel' %}
+                            <div class="alert alert-danger">
+                                <h5><i class="bi bi-x-circle"></i> Cancel Invoice</h5>
+                                <p>This will permanently cancel the invoice. This action cannot be undone.</p>
+                                <p><strong>Warning:</strong> Only cancel if the invoice is no longer required.</p>
+                            </div>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'billing:invoice_detail' invoice.id %}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            
+                            <button type="submit" class="btn btn-{% if action == 'reject' or action == 'cancel' %}danger{% elif action == 'approve' %}success{% else %}primary{% endif %}">
+                                <i class="bi bi-{% if action == 'submit' %}send{% elif action == 'approve' %}check-circle{% elif action == 'reject' %}x-circle{% elif action == 'send_to_client' %}send{% elif action == 'cancel' %}trash{% endif %}"></i>
+                                {% if action == 'submit' %}Submit for Approval
+                                {% elif action == 'approve' %}Approve Invoice
+                                {% elif action == 'reject' %}Reject Invoice  
+                                {% elif action == 'send_to_client' %}Send to Client
+                                {% elif action == 'cancel' %}Cancel Invoice
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.badge-draft {
+    background-color: #6c757d;
+}
+
+.badge-pending_approval {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-approved {
+    background-color: #28a745;
+}
+
+.badge-pending {
+    background-color: #17a2b8;
+}
+
+.badge-paid {
+    background-color: #007bff;
+}
+
+.badge-overdue {
+    background-color: #dc3545;
+}
+
+.badge-rejected {
+    background-color: #dc3545;
+}
+
+.badge-cancelled {
+    background-color: #6c757d;
+}
+</style>
+{% endblock %}

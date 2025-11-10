@@ -1,0 +1,702 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">Profile</h1>
+                <span class="page-subtitle">{{ user.get_full_name|default:user.username }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <!-- Profile Overview Card -->
+        <div class="card">
+            <div class="card-body">
+                <div class="profile-overview">
+            <div class="profile-photo-section">
+                <div class="profile-photo-wrapper">
+                    <img src="{{ role_assignment.profile_photo_url }}" 
+                         alt="Profile" 
+                         class="profile-photo-main">
+                    <div class="photo-status">
+                        {% if role_assignment.has_profile_photo %}
+                            <span class="status-indicator active"></span>
+                        {% else %}
+                            <span class="status-indicator"></span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-info-section">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Username</span>
+                        <span class="info-value">{{ user.username }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ user.email|default:"Not set" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Name</span>
+                        <span class="info-value">{{ user.get_full_name|default:"Not set" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Role</span>
+                        <span class="info-value">
+                            {% if role_assignment.role %}
+                                <span class="role-badge">{{ role_assignment.role.name }}</span>
+                            {% else %}
+                                <span class="role-badge inactive">No Role</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Section -->
+        <div class="card">
+            <div class="card-body">
+                <div class="status-section">
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-icon">
+                        {% if user.is_active %}
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                        {% else %}
+                            <i class="bi bi-x-circle-fill text-danger"></i>
+                        {% endif %}
+                    </div>
+                    <div class="status-content">
+                        <span class="status-label">Account</span>
+                        <span class="status-value">{{ user.is_active|yesno:"Active,Inactive" }}</span>
+                    </div>
+                </div>
+                
+                <div class="status-item">
+                    <div class="status-icon">
+                        {% if user.is_staff %}
+                            <i class="bi bi-shield-check-fill text-info"></i>
+                        {% else %}
+                            <i class="bi bi-person-fill text-secondary"></i>
+                        {% endif %}
+                    </div>
+                    <div class="status-content">
+                        <span class="status-label">Access</span>
+                        <span class="status-value">{{ user.is_staff|yesno:"Staff,User" }}</span>
+                    </div>
+                </div>
+                
+                <div class="status-item">
+                    <div class="status-icon">
+                        <i class="bi bi-calendar-fill text-primary"></i>
+                    </div>
+                    <div class="status-content">
+                        <span class="status-label">Joined</span>
+                        <span class="status-value">{{ user.date_joined|date:"d/m/Y" }}</span>
+                    </div>
+                </div>
+                
+                <div class="status-item">
+                    <div class="status-icon">
+                        <i class="bi bi-clock-fill text-muted"></i>
+                    </div>
+                    <div class="status-content">
+                        <span class="status-label">Last Login</span>
+                        <span class="status-value">
+                            {% if user.last_login %}
+                                {{ user.last_login|date:"d/m/Y" }}
+                            {% else %}
+                                Never
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Permissions Section -->
+        <div class="card">
+            <div class="card-body">
+                <div class="permissions-section">
+            <div class="section-header">
+                <h3 class="section-title">Permissions</h3>
+                {% if permission_source == 'superuser' %}
+                    <div class="superuser-badge">
+                        <i class="bi bi-shield-fill"></i>
+                        <span>SUPERUSER - All {{ total_system_permissions }} permissions</span>
+                    </div>
+                {% elif permission_source == 'role_superuser' %}
+                    <div class="role-superuser-info">
+                        <span class="section-count">{{ permissions|length }}</span>
+                        <span class="superuser-note">+ All system permissions (Superuser)</span>
+                    </div>
+                {% elif permission_source == 'role' %}
+                    <span class="section-count">{{ permissions|length }}</span>
+                {% else %}
+                    <span class="section-count">0</span>
+                {% endif %}
+            </div>
+            
+            {% if permission_source == 'superuser' %}
+                <div class="superuser-info">
+                    <div class="info-card">
+                        <i class="bi bi-shield-check-fill superuser-icon"></i>
+                        <div class="info-content">
+                            <h4>Superuser Account</h4>
+                            <p>This account has <strong>all system permissions</strong> regardless of role assignments. 
+                               Superusers can access all features and perform any action in the system.</p>
+                            {% if role_assignment.role %}
+                                <p><strong>Assigned Role:</strong> {{ role_assignment.role.name }} ({{ permissions|length }} specific permissions)</p>
+                            {% else %}
+                                <p><strong>No specific role assigned</strong> - permissions come from superuser status</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% elif permission_source == 'role_superuser' %}
+                <div class="role-superuser-info">
+                    <div class="info-card">
+                        <i class="bi bi-shield-check-fill superuser-icon"></i>
+                        <div class="info-content">
+                            <h4>Superuser with Role: {{ role_assignment.role.name }}</h4>
+                            <p>This account has <strong>all system permissions</strong> as a superuser, 
+                               plus the following role-specific permissions:</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="permissions-grid">
+                    {% for permission in permissions %}
+                    <div class="permission-item">
+                        <i class="bi bi-check-circle permission-icon"></i>
+                        <span class="permission-name">{{ permission.name }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% elif permission_source == 'role' and permissions %}
+                <div class="permissions-grid">
+                    {% for permission in permissions %}
+                    <div class="permission-item">
+                        <i class="bi bi-check-circle permission-icon"></i>
+                        <span class="permission-name">{{ permission.name }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% elif permission_source == 'none' %}
+                <div class="no-permissions">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <p>No permissions assigned. Contact an administrator to assign a role.</p>
+                </div>
+            {% endif %}
+            
+            {% if direct_permissions_count > 0 %}
+                <div class="direct-permissions-note">
+                    <i class="bi bi-info-circle"></i>
+                    <span>{{ direct_permissions_count }} direct permission{{ direct_permissions_count|pluralize }} also assigned</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-body">
+                <div class="actions-section">
+                    <div class="compact-action-buttons">
+                        <a href="{% url 'user_management:user_edit' user.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-gear"></i>
+                            Settings
+                        </a>
+                        <a href="{% url 'user_management:password_change' %}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-lock"></i>
+                            Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Page Layout Styles */
+.page-header {
+    background: #fff;
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.page-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 0.5rem;
+    padding-right: 1rem;
+}
+
+.page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: #111827;
+    line-height: 1.2;
+}
+
+.page-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 400;
+}
+
+.page-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Profile Overview */
+.profile-overview {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.profile-photo-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-photo-main {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f0f0f0;
+}
+
+.photo-status {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    border: 2px solid white;
+    display: block;
+}
+
+.status-indicator.active {
+    background: #10b981;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.info-value {
+    font-size: 0.875rem;
+    color: #111827;
+    font-weight: 500;
+}
+
+.role-badge {
+    background: #87CEEB;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.role-badge.inactive {
+    background: #9ca3af;
+}
+
+/* Status Section */
+.status-section {
+    /* Removed background and padding since it's now in a card */
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.status-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.status-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.status-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.status-value {
+    font-size: 0.875rem;
+    color: #111827;
+    font-weight: 500;
+}
+
+/* Permissions Section */
+.permissions-section {
+    /* Removed border since it's now in a separate card */
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.section-count {
+    background: #e5e7eb;
+    color: #6b7280;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Superuser Styles */
+.superuser-badge {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.role-superuser-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.superuser-note {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.info-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.superuser-icon {
+    color: #dc2626;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.info-content h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.info-content p {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.875rem;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.info-content p:last-child {
+    margin-bottom: 0;
+}
+
+.no-permissions {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+}
+
+.no-permissions i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.direct-permissions-note {
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #1d4ed8;
+}
+
+.permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 0.5rem;
+}
+
+.permission-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #f9fafb;
+    border-radius: 4px;
+}
+
+.permission-icon {
+    color: #10b981;
+    font-size: 0.875rem;
+}
+
+.permission-name {
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+/* Actions Section */
+.actions-section {
+    /* Removed border since it's now in a separate card */
+}
+
+/* Compact Action Buttons - New Inline Style */
+.compact-action-buttons {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.compact-action-buttons .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.compact-action-buttons .btn i {
+    font-size: 1rem;
+}
+
+/* Legacy Action Buttons - Kept for backward compatibility */
+.action-buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #374151;
+    transition: all 0.2s ease;
+    flex: 1;
+    max-width: 120px;
+}
+
+.action-btn:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #111827;
+    transform: translateY(-1px);
+}
+
+.action-btn i {
+    font-size: 1.25rem;
+}
+
+.action-btn span {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Dark Mode */
+
+[data-bs-theme="dark"] .info-value,
+[data-bs-theme="dark"] .status-value,
+[data-bs-theme="dark"] .section-title {
+    color: var(--dark-text-primary);
+}
+
+[data-bs-theme="dark"] .info-label,
+[data-bs-theme="dark"] .status-label {
+    color: var(--dark-text-tertiary);
+}
+
+[data-bs-theme="dark"] .status-section {
+    background: var(--dark-bg-tertiary);
+}
+
+[data-bs-theme="dark"] .permission-item {
+    background: var(--dark-bg-tertiary);
+}
+
+[data-bs-theme="dark"] .permission-name {
+    color: var(--dark-text-secondary);
+}
+
+[data-bs-theme="dark"] .action-btn {
+    background: var(--dark-bg-tertiary);
+    border-color: var(--dark-border-default);
+    color: var(--dark-text-secondary);
+}
+
+[data-bs-theme="dark"] .action-btn:hover {
+    background: var(--dark-bg-hover);
+    color: var(--dark-text-primary);
+}
+
+[data-bs-theme="dark"] .profile-photo-main {
+    border-color: var(--dark-border-default);
+}
+
+[data-bs-theme="dark"] .section-count {
+    background: var(--dark-bg-tertiary);
+    color: var(--dark-text-tertiary);
+}
+
+/* Desktop - Ensure edit button stays on right */
+@media (min-width: 641px) {
+    .page-actions {
+        margin-left: auto;
+        margin-right: 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .profile-overview {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .status-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .permissions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-header-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .page-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .compact-action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+    
+    .compact-action-buttons .btn {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %} 

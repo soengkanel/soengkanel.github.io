@@ -1,0 +1,490 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ position.name }} - Position Details{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Compact Position Detail Page */
+.application-container {
+    background: white;
+    margin: 0;
+    padding: 12px !important;
+    width: 100%;
+}
+
+/* Minimal Page Header */
+.detail-page-header {
+    background: #87CEEB;
+    color: white;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+}
+
+.detail-page-header h1 {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.detail-page-header p {
+    font-size: 12px;
+    margin: 2px 0 0 0;
+    opacity: 0.9;
+}
+
+/* Compact Form Sections */
+.form-section {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.form-section h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 12px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.form-section h4 i {
+    color: #87CEEB;
+    margin-right: 4px;
+    font-size: 12px;
+}
+
+/* Compact Form Labels */
+.form-label {
+    font-size: 10px !important;
+    margin-bottom: 4px !important;
+    font-weight: 500;
+    color: #6b7280 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    display: block;
+}
+
+/* Minimal Field Display */
+.field-display {
+    font-size: 13px !important;
+    padding: 6px 8px !important;
+    height: auto !important;
+    border-radius: 3px;
+    border: 1px solid #e5e7eb;
+    font-family: inherit;
+    background: #ffffff;
+    color: #374151;
+    display: block;
+    width: 100%;
+    min-height: 28px;
+    line-height: 1.4;
+}
+
+/* Special styling for code fields */
+.field-display.code {
+    background: #f0f9ff;
+    color: #0369a1;
+    font-weight: 500;
+    font-family: 'Courier New', monospace;
+}
+
+/* Level badge styling */
+.level-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.level-1 { background: #dbeafe; color: #1e40af; }
+.level-2 { background: #dcfce7; color: #166534; }
+.level-3 { background: #fef3c7; color: #92400e; }
+.level-4 { background: #fde2e2; color: #dc2626; }
+
+.row.g-1 {
+    --bs-gutter-x: 0.5rem;
+    --bs-gutter-y: 0.5rem;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 8px;
+}
+
+/* Minimal Action Buttons */
+.action-buttons-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: white;
+    color: #6b7280;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.back-button:hover {
+    color: #374151;
+    text-decoration: none;
+}
+
+.back-button i {
+    margin-right: 4px;
+    font-size: 11px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 400;
+    text-decoration: none;
+    border: 1px solid transparent;
+}
+
+.action-btn i {
+    margin-right: 4px;
+    font-size: 11px;
+}
+
+.action-btn.edit {
+    background: #87CEEB;
+    color: white;
+}
+
+.action-btn.edit:hover {
+    background: #5DADE2;
+    color: white;
+    text-decoration: none;
+}
+
+.action-btn.delete {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.action-btn.delete:hover {
+    background: #fee2e2;
+    text-decoration: none;
+}
+
+/* Workers/Employees list */
+.personnel-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.personnel-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 12px;
+}
+
+.personnel-item:last-child {
+    border-bottom: none;
+}
+
+.personnel-name {
+    font-weight: 500;
+    color: #374151;
+}
+
+.personnel-id {
+    font-size: 10px;
+    color: #6b7280;
+    font-family: 'Courier New', monospace;
+}
+
+/* Compact Mobile Design */
+@media (max-width: 768px) {
+    .application-container {
+        padding: 8px !important;
+        margin: 4px;
+    }
+    
+    .detail-page-header {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+    }
+    
+    .detail-page-header h1 {
+        font-size: 16px;
+    }
+    
+    .detail-page-header p {
+        font-size: 11px;
+    }
+    
+    .form-section {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .form-section h4 {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+    
+    .action-buttons-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 6px 0;
+        margin-bottom: 8px;
+    }
+    
+    .action-buttons {
+        justify-content: center;
+        gap: 6px;
+    }
+    
+    .field-display {
+        font-size: 14px !important;
+        padding: 8px 10px !important;
+        min-height: 32px;
+    }
+    
+    .form-label {
+        font-size: 9px !important;
+    }
+    
+    .row.g-1 {
+        --bs-gutter-x: 0.25rem;
+        --bs-gutter-y: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .action-buttons {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .action-btn {
+        justify-content: center;
+        width: 100%;
+        padding: 8px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="px-3 w-full">
+    <div class="w-full">
+        <!-- Enhanced Page Header -->
+        <div class="flex justify-between items-start py-3 px-3">
+            <div>
+                <h1 class="text-lg font-medium">{{ position.name }}</h1>
+                <p class="text-gray-500">Position Details - Code: {{ position.code }} | Department: {{ position.department.name }}</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{% url 'hr:position_edit' position.pk %}" class="button-min-primary">
+                    <div>
+                        <i class="bi bi-pencil-square me-1"></i>
+                        Edit
+                    </div>
+                </a>
+                <a href="{% url 'hr:position_delete' position.pk %}" class="button-min-danger" 
+                  >
+                    <div>
+                        <i class="bi bi-trash me-1"></i>
+                        Delete
+                    </div>
+                </a>
+            </div>
+        </div>
+
+       
+       
+        <div class="application-container shadow-none px-0">
+            <!-- Position Information -->
+            <div class="border rounded-lg">
+                <div class="py-2 px-3 border-b bg-gray-50 rounded-t-lg">
+                    <h4 class=" font-medium"><i class="bi bi-info-circle me-2"></i>Position Information</h4>
+                </div>
+                <div class="row g-1 p-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                
+                                Position Name
+                            </label>
+                            <div class="field-display">{{ position.name }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                               
+                                Position Code
+                            </label>
+                            <div class="field-display code">{{ position.code }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-1 px-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                               
+                                Department
+                            </label>
+                            <div class="field-display">{{ position.department.name }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                               
+                                Level
+                            </label>
+                            <div class="field-display">
+                                <span class="level-badge level-{{ position.level }}">
+                                    Level {{ position.level }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if position.description %}
+                <div class="row g-1 px-3 pb-3">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-label">
+                               
+                                Description
+                            </label>
+                            <div class="field-display">{{ position.description|linebreaks }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- System Information -->
+            <div class="border rounded-lg mt-3">
+                <div class="py-2 px-3 border-b bg-gray-50 rounded-t-lg">
+                    <h4  class=" font-medium"><i class="bi bi-clock-history me-2"></i>System Information</h4>
+                </div>
+                
+                <div class="row g-1 p-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                               
+                                Created At
+                            </label>
+                            <div class="field-display">{{ position.created_at|date:"d/m/Y g:i A" }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                               
+                                Last Updated
+                            </label>
+                            <div class="field-display">{{ position.updated_at|date:"d/m/Y g:i A" }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Associated Personnel -->
+                 <div class="border rounded-lg mt-3">
+                <div class="py-2 px-3 border-b bg-gray-50 rounded-t-lg">
+                    <h4  class=" font-medium"><i class="bi bi-people me-2"></i>Associated Personnel</h4>
+                </div>
+                
+                <!-- Employees Section -->
+                <div class="row g-1 p-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                
+                                Employees ({{ employees|length }})
+                            </label>
+                            <div class="field-display">
+                                {% if employees %}
+                                    <div class="personnel-list">
+                                        {% for employee in employees %}
+                                            <div class="personnel-item">
+                                                <span class="personnel-name">{{ employee.get_full_name }}</span>
+                                                <span class="personnel-id">{{ employee.employee_id }}</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <small class="text-muted">No employees assigned to this position</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workers Section -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-label">
+                                
+                                Workers ({{ workers|length }})
+                            </label>
+                            <div class="field-display">
+                                {% if workers %}
+                                    <div class="personnel-list">
+                                        {% for worker in workers %}
+                                            <div class="personnel-item">
+                                                <span class="personnel-name">{{ worker.get_full_name }}</span>
+                                                <span class="personnel-id">{{ worker.worker_id }}</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <small class="text-muted">No workers assigned to this position</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if not employees and not workers %}
+                    <div class="text-center py-3">
+                        <i class="bi bi-people text-muted" style="font-size: 2rem;"></i>
+                        <div class="mt-2 text-muted">
+                            <small>No personnel currently assigned to this position</small>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

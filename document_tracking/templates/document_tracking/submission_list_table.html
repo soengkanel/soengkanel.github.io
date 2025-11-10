@@ -1,0 +1,616 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Document Submissions{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.container {
+    width: 100%;
+    padding: 15px;
+    background: #fff;
+}
+
+/* Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 20px;
+}
+
+.page-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+}
+
+.btn-new {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    background: #333;
+    border: none;
+    border-radius: 3px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-new:hover {
+    background: #555;
+}
+
+/* Stats Row */
+.stats-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    flex: 1;
+    padding: 10px;
+    background: #fcfcfcff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #666;
+    margin: 2px 0 0 0;
+    text-transform: uppercase;
+}
+
+/* Search and Filters */
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #999;
+}
+
+.filter {
+    min-width: 120px;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #999;
+}
+
+/* Table */
+.table-wrapper {
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table thead {
+    background: #f8f8f8;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.data-table th {
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: left;
+    color: #666;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.data-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.data-table tbody tr:hover {
+    background: #fafafa;
+}
+
+.data-table td {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: #333;
+}
+
+/* Compact Status Badges */
+.badge {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 500;
+    border-radius: 2px;
+    text-transform: uppercase;
+}
+
+.badge-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge-submitted {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.badge-checked {
+    background: #e7e8ff;
+    color: #3d3d8f;
+}
+
+.badge-approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.badge-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+/* Entity Types */
+.entity {
+    font-size: 11px;
+    color: #666;
+}
+
+/* ID Display */
+.id-primary {
+    font-weight: 500;
+    color: #333;
+}
+
+.id-secondary {
+    font-size: 11px;
+    color: #999;
+}
+
+/* Date Display */
+.date {
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+    font-size: 12px;
+    color: #666;
+}
+
+/* Priority Indicators */
+.overdue {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.normal {
+    color: #666;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-icon {
+    padding: 4px 6px;
+    font-size: 11px;
+    color: #666;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.btn-icon:hover {
+    background: #f8f8f8;
+    border-color: #999;
+}
+
+.btn-icon.view {
+    color: #0066cc;
+}
+
+.btn-icon.edit {
+    color: #f39c12;
+}
+
+.btn-icon.delete {
+    color: #dc3545;
+}
+
+/* Empty State */
+.empty {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.empty-icon {
+    font-size: 32px;
+    color: #ddd;
+    margin-bottom: 10px;
+}
+
+.empty-text {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Pagination */
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+}
+
+.pagination-info {
+    font-size: 12px;
+    color: #666;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.page-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+    color: #666;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.page-btn:hover {
+    background: #f8f8f8;
+    border-color: #999;
+}
+
+.page-btn.active {
+    background: #333;
+    color: #fff;
+    border-color: #333;
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stats-row {
+        flex-direction: column;
+    }
+    
+    .controls {
+        flex-direction: column;
+    }
+    
+    .search-box,
+    .filter {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .table-wrapper {
+        overflow-x: auto;
+    }
+    
+    .data-table {
+        min-width: 800px;
+    }
+    
+    .pagination-wrapper {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header -->
+    <div class="page-header">
+        <h1 class="page-title">Document Submissions</h1>
+        <a href="{% url 'document_tracking:submission_create' %}" class="button-min-primary">
+            <div><i class="fas fa-plus me-1" style="font-size: 11px;"></i>
+           Add</div>
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+        <div class="stat">
+            <p class="stat-value">{{ stats.total|default:0 }}</p>
+            <p class="stat-label">Total</p>
+        </div>
+        <div class="stat">
+            <p class="stat-value">{{ stats.pending|default:0 }}</p>
+            <p class="stat-label">Pending</p>
+        </div>
+        <div class="stat">
+            <p class="stat-value">{{ stats.submitted|default:0 }}</p>
+            <p class="stat-label">Submitted</p>
+        </div>
+        <div class="stat">
+            <p class="stat-value">{{ stats.completed|default:0 }}</p>
+            <p class="stat-label">Completed</p>
+        </div>
+        <div class="stat">
+            <p class="stat-value">{{ stats.overdue|default:0 }}</p>
+            <p class="stat-label">Overdue</p>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <form method="get" action="">
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" 
+                       name="search" 
+                       class="search-input" 
+                       placeholder="Search..." 
+                       value="{{ search|default:'' }}">
+            </div>
+            
+            <div class="filter">
+                <select name="status" class="filter-select">
+                    <option value="">All Status</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter">
+                <select name="document_type" class="filter-select">
+                    <option value="">All Types</option>
+                    {% for value, label in document_type_choices %}
+                        <option value="{{ value }}" {% if selected_document_type == value %}selected{% endif %}>
+                            {{ label|truncatechars:20 }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter">
+                <select name="entity" class="filter-select">
+                    <option value="">All Entities</option>
+                    {% for value, label in entity_choices %}
+                        <option value="{{ value }}" {% if selected_entity == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter">
+                <input type="date" name="date_from" class="filter-select" value="{{ date_from }}">
+            </div>
+
+            <div class="filter">
+                <input type="date" name="date_to" class="filter-select" value="{{ date_to }}">
+            </div>
+        </div>
+    </form>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Applicants</th>
+                    <th>Office</th>
+                    <th>Entity</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                    <th>Expected</th>
+                    <th>Days</th>
+                    <th width="80">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions %}
+                <tr onclick="window.location.href='{% url 'document_tracking:submission_detail' submission.id %}'">
+                    <td>
+                        <div class="id-primary">{{ submission.submission_id|default:"—" }}</div>
+                        {% if submission.reference_number %}
+                            <div class="id-secondary">{{ submission.reference_number }}</div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span style="font-size: 12px;">{{ submission.get_document_type_display|truncatechars:25 }}</span>
+                    </td>
+                    <td>
+                        {% if submission.total_applicants > 0 %}
+                            <strong>{{ submission.total_applicants }}</strong>
+                            <span style="font-size: 11px; color: #999;">
+                                {{ submission.applicant_name|truncatechars:20 }}
+                            </span>
+                        {% else %}
+                            <span style="color: #999;">—</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span style="font-size: 12px;">{{ submission.government_office|truncatechars:20 }}</span>
+                    </td>
+                    <td>
+                        <span class="entity">{{ submission.get_processing_entity_display }}</span>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ submission.status }}">
+                            {{ submission.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="date">{{ submission.submission_date|date:"d/m/y"|default:"—" }}</span>
+                    </td>
+                    <td>
+                        <span class="date">{{ submission.expected_completion_date|date:"d/m/y"|default:"—" }}</span>
+                    </td>
+                    <td>
+                        {% if submission.days_remaining != None %}
+                            {% if submission.is_overdue %}
+                                <span class="overdue">-{{ submission.days_overdue }}</span>
+                            {% else %}
+                                <span class="normal">{{ submission.days_remaining }}</span>
+                            {% endif %}
+                        {% else %}
+                            <span style="color: #999;">—</span>
+                        {% endif %}
+                    </td>
+                    <td onclick="event.stopPropagation();">
+                        <div class="flex items-center space-x-3">
+                            <a href="{% url 'document_tracking:submission_detail' submission.id %}" 
+                               class="button-min-primary" 
+                               title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% if submission.status == 'submitted'%}
+                            <a href="{% url 'document_tracking:submission_edit' submission.id %}" 
+                               class="button-min-default py-1.5" 
+                               title="Edit">
+                                <i class="fas fa-pen"></i>
+                            </a>
+                            {% endif %}
+                            <form method="post" 
+                                  action="{% url 'document_tracking:submission_delete' submission.id %}" 
+                                  style="display: inline;"
+                                  onsubmit="return confirm('Delete this submission?');">
+                                {% csrf_token %}
+                                <button type="submit" 
+                                        class="button-min-danger" 
+                                        title="Delete">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10">
+                        <div class="empty">
+                            <div class="empty-icon">
+                                <i class="fas fa-inbox"></i>
+                            </div>
+                            <p class="empty-text">No submissions found</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if submissions.has_other_pages %}
+    <div class="pagination-wrapper">
+        <div class="pagination-info">
+            {{ submissions.start_index }}–{{ submissions.end_index }} of {{ submissions.paginator.count }}
+        </div>
+        <div class="pagination-controls">
+            {% if submissions.has_previous %}
+                <a class="page-btn" href="?page=1{% if search %}&search={{ search }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">
+                    First
+                </a>
+                <a class="page-btn" href="?page={{ submissions.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">
+                    Prev
+                </a>
+            {% endif %}
+
+            {% for num in submissions.paginator.page_range %}
+                {% if submissions.number == num %}
+                    <span class="page-btn active">{{ num }}</span>
+                {% elif num > submissions.number|add:'-3' and num < submissions.number|add:'3' %}
+                    <a class="page-btn" href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">
+                        {{ num }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+
+            {% if submissions.has_next %}
+                <a class="page-btn" href="?page={{ submissions.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">
+                    Next
+                </a>
+                <a class="page-btn" href="?page={{ submissions.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}">
+                    Last
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

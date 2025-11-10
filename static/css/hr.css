@@ -1,0 +1,180 @@
+/* ============================================
+   HR MODULE STYLES
+   ============================================ */
+
+/* HR Dashboard */
+.hr-dashboard-header {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 8px 12px;
+}
+
+/* Staff Report Styles */
+.staff-report-controls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.staff-report-total-row .category-col {
+    text-align: center;
+}
+
+.staff-report-signatures {
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.staff-report-dash {
+    color: #6b7280;
+}
+
+/* Position and Employee Lists */
+.description-text-small {
+    font-size: 11px;
+    margin-bottom: 0;
+}
+
+.pagination-controls {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+.pagination-controls .form-select-sm {
+    width: auto;
+    font-size: 11px;
+    padding: 4px 8px;
+}
+
+.pagination-controls span {
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+.employee-count-text {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+/* HR Links */
+.hr-link {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.hr-link:hover {
+    text-decoration: underline;
+}
+
+/* Employee Detail */
+.employee-detail-section-header {
+    grid-column: 1 / -1;
+    margin-bottom: 0.5rem;
+}
+
+.employee-detail-auto-right {
+    margin-left: auto;
+}
+
+.employee-detail-flex-gap {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.employee-detail-small-text {
+    font-size: 10px;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Employee Form */
+.employee-form-help-text {
+    font-size: 11px;
+}
+
+.employee-photo-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.employee-photo-controls .btn {
+    display: none;
+}
+
+.employee-photo-preview {
+    display: none;
+    margin-top: 16px;
+}
+
+.employee-camera-video {
+    display: none;
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.employee-camera-canvas {
+    display: none;
+}
+
+.employee-camera-controls .btn {
+    display: none;
+}
+
+.employee-camera-error {
+    display: none;
+    background: var(--danger-light);
+    color: var(--danger);
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.employee-hidden-section {
+    display: none;
+}
+
+/* Foreign Khmer Report */
+.foreign-khmer-no-data {
+    text-align: center;
+    padding: 20px;
+    color: #6b7280;
+}
+
+.foreign-khmer-total-row {
+    text-align: center;
+}
+
+/* Worker Reports Dashboard */
+.worker-reports-table th {
+    width: auto;
+}
+
+.worker-reports-table .report-col {
+    width: 80px;
+}
+
+.worker-reports-table .name-col {
+    width: 250px;
+}
+
+.worker-reports-table .count-col {
+    width: 120px;
+}
+
+.worker-reports-table .status-col {
+    width: 80px;
+}
+
+.worker-reports-table .actions-col {
+    width: 200px;
+}
+
+.worker-reports-total-row {
+    text-align: center;
+}
+
+.worker-reports-dash-row {
+    text-align: center;
+} 

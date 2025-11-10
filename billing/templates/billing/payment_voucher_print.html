@@ -1,0 +1,1006 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Voucher #{{ voucher.voucher_number }} - Print Preview</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #000;
+            background: #f5f5f5;
+        }
+        
+        /* Print Controls */
+        .print-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-print {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-print:hover {
+            background: #218838;
+        }
+        
+        .btn-back {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-back:hover {
+            background: #5a6268;
+        }
+        
+        /* Voucher Container */
+        .voucher-wrapper {
+            max-width: 800px;
+            margin: 80px auto 40px;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .voucher-container {
+            padding: 40px;
+            position: relative;
+        }
+        
+        /* Header Section */
+        .voucher-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .company-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        
+        .company-details {
+            font-size: 11px;
+            color: #444;
+            line-height: 1.4;
+        }
+        
+        /* Voucher Number Box */
+        .voucher-number-box {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 8px 12px;
+            border: 2px solid #000;
+            background: white;
+        }
+        
+        .voucher-number-label {
+            font-size: 10px;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        .voucher-number-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+        }
+        
+        /* Title */
+        .voucher-title {
+            text-align: center;
+            margin: 30px 0;
+            padding: 12px;
+            border: 2px solid #000;
+            background: #f8f9fa;
+        }
+        
+        .voucher-title-main {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* Info Grid */
+        .info-grid {
+            margin-bottom: 25px;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: baseline;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            min-width: 140px;
+            font-size: 11px;
+        }
+        
+        .info-value {
+            flex: 1;
+            border-bottom: 1px dotted #666;
+            padding: 0 5px;
+            font-size: 12px;
+        }
+        
+        /* Amount Section */
+        .amount-section {
+            background: #f8f9fa;
+            border: 2px solid #000;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .amount-header {
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+        
+        .amount-display {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .amount-words {
+            flex: 1;
+            font-size: 13px;
+            line-height: 1.6;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            min-height: 50px;
+        }
+        
+        .amount-number {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: 2px solid #000;
+            background: white;
+            white-space: nowrap;
+        }
+        
+        /* Purpose Section */
+        .purpose-section {
+            margin: 25px 0;
+            padding: 20px;
+            border: 1px solid #666;
+            min-height: 100px;
+            background: #fafafa;
+        }
+        
+        .purpose-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+        
+        .purpose-content {
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        
+        /* Payment Details Table */
+        .details-table {
+            width: 100%;
+            margin: 25px 0;
+            border-collapse: collapse;
+        }
+        
+        .details-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            font-size: 11px;
+        }
+        
+        .details-table td:first-child {
+            width: 30%;
+            font-weight: bold;
+            background: #f8f9fa;
+        }
+        
+        /* Signature Section */
+        .signature-section {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+        }
+        
+        .signature-box {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .signature-line {
+            border-bottom: 1px solid #000;
+            margin-bottom: 5px;
+            min-height: 50px;
+        }
+        
+        .signature-label {
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .signature-date {
+            font-size: 9px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        /* Footer */
+        .voucher-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #666;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .status-draft {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .status-approved {
+            background: #28a745;
+            color: white;
+        }
+        
+        .status-paid {
+            background: #007bff;
+            color: white;
+        }
+        
+        .status-cancelled {
+            background: #dc3545;
+            color: white;
+        }
+        
+        /* Watermark for draft/cancelled */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            color: rgba(0,0,0,0.08);
+            font-weight: bold;
+            z-index: 0;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+        
+        /* Print specific styles */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .print-controls {
+                display: none !important;
+            }
+            
+            .voucher-wrapper {
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            .voucher-container {
+                padding: 20px;
+            }
+            
+            .status-badge {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Print Controls -->
+    <div class="print-controls no-print">
+        <a href="{% url 'billing:payment_voucher_detail' voucher.id %}" class="btn btn-back">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+        <button onclick="window.print()" class="btn btn-print">
+            <i class="bi bi-printer"></i> Print
+        </button>
+    </div>
+    
+    <!-- Watermark for Draft/Cancelled -->
+    {% if voucher.status == 'draft' %}
+    <div class="watermark">DRAFT</div>
+    {% elif voucher.status == 'cancelled' %}
+    <div class="watermark">CANCELLED</div>
+    {% endif %}
+    
+    <!-- Main Voucher -->
+    <div class="voucher-wrapper">
+        <div class="voucher-container">
+            <!-- Status Badge -->
+            <div class="status-badge status-{{ voucher.status }}">
+                {{ voucher.get_status_display }}
+            </div>
+            
+            <!-- Header -->
+            <div class="voucher-header">
+                <!-- Voucher Number Box -->
+                <div class="voucher-number-box">
+                    <div class="voucher-number-label">Voucher No.</div>
+                    <div class="voucher-number-value">{{ voucher.voucher_number }}</div>
+                </div>
+                
+                <div class="company-name">{{ company_name|default:"Your Company Name" }}</div>
+                <div class="company-details">
+                    {{ company_address|default:"123 Business Street, City, Country" }}<br>
+                    Tel: {{ company_phone|default:"+1 234 567 890" }} | Email: {{ company_email|default:"info@company.com" }}
+                </div>
+            </div>
+            
+            <!-- Title -->
+            <div class="voucher-title">
+                <div class="voucher-title-main">PAYMENT VOUCHER</div>
+            </div>
+            
+            <!-- Basic Information -->
+            <div class="info-grid">
+                <div class="info-row">
+                    <div class="info-label">Date:</div>
+                    <div class="info-value">{{ voucher.date|date:"F d, Y" }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Payee:</div>
+                    <div class="info-value">{{ voucher.payee }}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Payment Method:</div>
+                    <div class="info-value">{{ voucher.get_payment_method_display|default:"Cash" }}</div>
+                </div>
+                {% if voucher.reference_number %}
+                <div class="info-row">
+                    <div class="info-label">Reference No:</div>
+                    <div class="info-value">{{ voucher.reference_number }}</div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Amount Section -->
+            <div class="amount-section">
+                <div class="amount-header">AMOUNT TO BE PAID:</div>
+                <div class="amount-display">
+                    <div class="amount-words">
+                        <strong>In Words:</strong><br>
+                        {{ voucher.amount_in_words|default:"Amount in words" }}
+                    </div>
+                    <div class="amount-number">
+                        ${{ voucher.amount_usd|floatformat:2 }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Purpose/Description -->
+            <div class="purpose-section">
+                <div class="purpose-header">PURPOSE OF PAYMENT:</div>
+                <div class="purpose-content">
+                    {{ voucher.payment_purpose|default:"Payment description" }}
+                </div>
+            </div>
+            
+            <!-- Additional Details Table (if needed) -->
+            {% if voucher.invoice or voucher.project %}
+            <table class="details-table">
+                {% if voucher.invoice %}
+                <tr>
+                    <td>Invoice Number:</td>
+                    <td>{{ voucher.invoice.invoice_number }}</td>
+                </tr>
+                {% endif %}
+                {% if voucher.project %}
+                <tr>
+                    <td>Project:</td>
+                    <td>{{ voucher.project.name }}</td>
+                </tr>
+                {% endif %}
+                {% if voucher.notes %}
+                <tr>
+                    <td>Notes:</td>
+                    <td>{{ voucher.notes }}</td>
+                </tr>
+                {% endif %}
+            </table>
+            {% endif %}
+            
+            <!-- Signature Section -->
+            <div class="signature-section">
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Prepared By</div>
+                    <div class="signature-date">Date: ___________</div>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Approved By</div>
+                    <div class="signature-date">Date: ___________</div>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Received By</div>
+                    <div class="signature-date">Date: ___________</div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="voucher-footer">
+                <div>Printed on: {{ "now"|date:"F d, Y H:i" }}</div>
+                <div>Page 1 of 1</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>  {% endcomment %}
+
+<!DOCTYPE html>
+
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Voucher #{{ voucher.voucher_number }} - Print Preview</title>
+       <link rel="stylesheet" href="{% static 'css/tailwind.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/button-mini.css' %}">
+    <link href="{% static 'vendor/fonts/google-fonts.css' %}" rel="stylesheet">
+    <style>
+
+        .moul-regular {
+            font-family: "Moul", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        .time-roman{
+            font-family: 'Times New Roman', Times, serif;
+            font-style: normal;
+        }
+        .noto-sans-sc-500 {
+        font-family: "Noto Sans SC", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 500;
+        font-style: normal;
+        }
+        .kh-content-regular {
+        font-family: "Content", system-ui;
+        font-weight: 400;
+        font-style: normal;
+        }
+
+        .kh-content-bold {
+            font-family: "Content", system-ui;
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        @page {
+            size: A4;
+            margin: 0.5cm;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.2;
+            background: white;
+        }
+        
+        .receipt-container {
+            width: 100%;
+            max-width: 21cm;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+            border: 1px solid #ddd;
+        }
+        
+        /* Grid background */
+        .grid-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(to right, #f0f0f0 1px, transparent 1px),
+                linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
+            background-size: 15px 15px;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+        
+        .department {
+            font-size: 16px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin: 0 20px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #0066cc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 5px auto;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        }
+        
+        .logo-text {
+            font-size: 10px;
+            font-weight: bold;
+            color: #0066cc;
+            text-align: center;
+        }
+        
+        .receipt-number {
+            font-size: 14px;
+            font-weight: bold;
+            text-align: right;
+        }
+        
+        /* Receipt title section */
+        .receipt-title {
+            text-align: center;
+            margin: 30px 0;
+            border: 2px solid #000;
+            padding: 15px;
+        }
+        
+        .receipt-title-khmer {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .receipt-title-english {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        /* Form fields */
+        .form-section {
+            margin: 20px 0;
+        }
+        
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            min-height: 25px;
+        }
+        
+        .form-label {
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 150px;
+        }
+        
+        .form-value {
+            border-bottom: 1px solid #000;
+            flex: 1;
+            padding: 2px 5px;
+            margin-right: 20px;
+        }
+        
+        .form-value.fixed {
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        /* Amount section */
+        .amount-section {
+            margin: 30px 0;
+            border: 2px solid #000;
+            padding: 15px;
+        }
+        
+        .amount-text {
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .amount-box {
+            float: right;
+            border: 2px solid #000;
+            padding: 8px 15px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-left: 20px;
+        }
+        
+        /* Purpose section */
+        .purpose-section {
+            margin: 30px 0;
+            border: 1px solid #000;
+            padding: 15px;
+            min-height: 60px;
+        }
+        
+        .purpose-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        /* Signature section */
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+        
+        .signature-box {
+            text-align: center;
+            width: 45%;
+        }
+        
+        .signature-title {
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+        
+        .signature-line {
+            border-bottom: 2px dotted #000;
+            height: 1px;
+            margin: 20px 0;
+        }
+        
+        #invoice-container {
+            width: 100%;
+            max-width: 21cm;
+            margin: 80px auto;
+            background: white;
+        }
+
+
+        /* Print styles */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+             .print-button {
+                display: none;
+            }
+            
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin:0 !important;
+                background:white!important;
+            }
+
+            .print-header{
+                display:none;
+            }
+            
+            #invoice-container {
+                box-shadow: none;
+                padding:10px;
+                border:none;
+                margin:0 !important;
+            }
+            .receipt-container {
+                border: none;
+                box-shadow: none;
+            }
+            
+            .grid-background {
+                opacity: 0.2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-header py-2 px-5 fixed top-0 left-0 bg-white w-full border-b px-10 flex items-center justify-center">
+       <div class="flex items-center justify-between max-w-3xl w-full">
+        <h2 class="text-lg font-medium">
+            Payment Voucher Print Preview
+        </h2>
+        <button class="button-min-primary ml-auto" onclick="window.print()"> 
+            Print Voucher
+        </button>
+        </div>
+    </div>
+
+    <div id="invoice-container" class="p-8 border bg-white my-10">
+                <!-- header -->
+                <div class="grid grid-cols-2 gap-10 items-center">
+                    <div class="flex flex-col justify-start items-start">
+                       <div class="flex flex-col items-center justify-center">
+                        {% if company_logo %}
+                            <img src="{{ company_logo.url }}" alt="{{ company.name }} Logo" class="w-28">
+                        {% else %}
+                            <img src="{% static "images/logos/lyp-logo.jpeg" %}" alt="" class="w-28" />
+                         {% endif %}
+                        <h2 class="text-lg font-semibold">{{ company_name|default:"Your Company Name" }}</h2>
+                       </div>
+                        <p class="text-xs text-gray-600 mt-1 font-medium">{{ company_address|default:"123 Business Street, City, State 12345" }}</p>
+                        <p class="text-xs text-gray-600 mt-1 font-medium">Phone: {{ company_phone|default:"(855) 123-4567" }}</p>
+                        <p class="text-xs text-gray-600 mt-1 font-medium">Email: {{ company_email|default:"info@company.com" }}</p>
+                        <p class="text-xs text-gray-600 mt-1 font-medium">Website: {{ company_website }}</p> 
+                    </div>
+                    <div class="text-right space-y-1">
+                        <h1 class="text-lg font-semibold moul-regular">ប័ណ្ណចំណាយសាច់ប្រាក់</h1>
+                        <h1 class="text-lg font-semibold uppercase">Payment Voucher</h1>
+                        <h3 class="font-semibold text-gray-700 text-lg"> {{ voucher.voucher_number }}</h3>
+                    </div>
+                </div>
+                <!-- header -->
+                <!-- bill info -->
+                
+                <div class="grid grid-cols-3 mt-5 divide-x border-t border-b pl-2">
+                    <div class="py-4">
+                        <div class="flex items-center justify-start space-x-1">
+                           <div class="flex items-center">
+                             <h3 class="text-xs font-normal kh-content-regular">កាលបរិច្ឆេទ / </h3>
+                                <h3 class="text-xs ml-1">DATE : </h3>
+                           </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="text-sm font-semibold">{{ voucher.date|date:"d/m/Y" }}</span>
+                        </div>
+                    </div>
+                    <div class="py-4  px-2">
+                        <div class="flex items-center justify-start space-x-1">
+                           <div class="flex items-center">
+                             <h3 class="text-xs font-normal kh-content-regular">អ្នកទទួលប្រាក់ / </h3>
+                                <h3 class="text-xs ml-1 uppercase">Payee : </h3>
+                           </div>
+                        </div>
+                        <div class="mt-3">
+                            <span class="text-sm font-semibold">{{ voucher.payee }}</span>
+                        </div>
+                    </div>
+                    <div class="py-4 px-2">
+                        <div class="flex items-center justify-start space-x-1">
+                            <h3 class="text-xs font-normal kh-content-regular">ទូទាត់តាមរយ:/</h3>
+                             <h3 class="text-xs  uppercase">Payment Method : </h3>
+                        </div>
+                       <div class="mt-3">
+                         <span class="text-sm font-semibold ">{{ voucher.get_payment_method_display }}</span>
+                         {% if voucher.reference_number %}
+                         <div class="info-row">
+                             <div class="info-label">Reference No:</div>
+                             <div class="info-value">{{ voucher.reference_number }}</div>
+                         </div>
+                         {% endif %}
+                       </div>
+                    </div>
+                    
+                </div>
+                <!-- bill info -->
+    
+                <!-- service and items -->
+    
+                <div class="mt-10">
+                    <table class="w-full text-left table-auto min-w-max">
+                        <thead>
+                            <tr class="border-t">
+                                
+                                <th class="py-3 pr-4 pl-2 border-b border-blue-gray-100 bg-white space-y-1">
+                                    <p class="block text-sm  leading-none text-gray-900 font-medium text-left kh-content-regular">
+                                        ចំនួនទឹកប្រាក់ដែលត្រូវបង់
+                                    </p>
+                                    <p class="pt-1 block text-sm  font-medium leading-none text-gray-900m text-left">
+                                        AMOUNT TO BE PAID
+                                    </p>
+                                </th>
+   
+                                {% comment %} <th class="py-3 px-4 border-b border-blue-gray-100 bg-white">
+                                   
+                                    <p class="block text-sm font-normal leading-none text-gray-900 font-semibold ">
+                                       {{ voucher.amount_in_words}}
+                                    </p>
+                                </th> {% endcomment %}
+                                <th colspan="2" class="py-3 px-4 border-b border-blue-gray-100 bg-white">
+                                    
+                                    <p class="block text-sm font-normal leading-none text-gray-900 font-semibold text-right">
+                                        {{ voucher.amount_usd|floatformat:2 }} USD
+                                    </p>
+                                </th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                            <tr>
+                                <td class="py-4 pl-2 border-b border-blue-gray-50 w-auto">
+                                     <p class="block text-sm  leading-none text-gray-900 font-medium text-left kh-content-regular">
+                                      គោលបំណងនៃការទូទាត់
+                                    </p>
+                                    <p class="mt-1 block text-sm uppercase font-medium leading-none text-gray-900m text-left">
+                                      Payment Purpose
+                                    </p>
+                                </td>
+                                <td colspan="2" class="py-4 px-4 border-b border-blue-gray-50">
+                                    <p class="mt-1 block text-sm  font-medium leading-none text-gray-900m text-right">
+                                      {{ voucher.payment_purpose }}
+                                    </p>
+                                </td>
+                            </tr>     
+                    </table>
+                </div>
+                <!-- service and items -->
+
+                <!--Signature-->
+                <div class="mt-10 py-3 grid grid-cols-3 gap-5">
+                    <div class="px-5">
+                        <div class="h-32 border-b-2 flex justify-center" style="border-color:black !important">
+                              
+                        </div>
+                        <div class="flex items-start justify-center space-x-1 mt-3">
+                            <span class="kh-content-regular">អ្នករៀបចំ</span>
+                            <span>/</span>
+                            <span class="uppercase">Prepared By</span>
+                        </div>
+                        <div class="flex items-start justify-center text-xs text-gray-500 space-x-1 mt-3">
+                            <span class="">Date:</span>
+                            <span>________________</span>
+                        </div>
+                    </div>
+                    <div class="px-5">
+                        
+                        <div class="h-32 border-b-2 flex justify-center" style="border-color:black !important">
+                               
+                        </div>
+                        <div class="flex items-start justify-center space-x-1 mt-3">
+                            <span class="kh-content-regular">អ្នកអនុម័ត</span>
+                            <span>/</span>
+                            <span class="uppercase">Approved By</span>
+                        </div>
+                        <div class="flex items-start justify-center text-xs text-gray-500 space-x-1 mt-3">
+                            <span class="">Date:</span>
+                            <span>________________</span>
+                        </div>
+                    </div>
+                    <div class="px-5">
+                        
+                        <div class="h-32 border-b-2 flex justify-center" style="border-color:black !important">
+                                
+                        </div>
+                        <div class="flex items-start justify-center space-x-1 mt-3">
+                            <span class="kh-content-regular">អ្នកទទួល</span>
+                            <span>/</span>
+                            <span class="uppercase">Received By</span>
+                        </div>
+                        <div class="flex items-start justify-center text-xs text-gray-500 space-x-1 mt-3">
+                            <span class="">Date:</span>
+                            <span>________________</span>
+                        </div>
+                    </div>
+                </div>
+                                   
+                <!--Signature-->
+                <!-- footer -->
+                <!--<div class="py-5 mt-28 flex justify-between border-t items-start" style="font-size: 10px !important;">
+                    <div class="text-gray-600 space-y-1">
+                        <div class="font-medium text-gray-800">{{ company_name|default:"Your Company Name" }}</div>
+                        <p>{{ company_tagline|default:"Professional Services" }}</p>
+                        <div class="pb-1 text-gray-600 flex items-center">
+                            <span class="text-gray-600">{{ company_address|default:"123 Business Street, City, State 12345" }}</span>
+                        </div>
+                    </div>
+                    <div>
+    
+                        <div class="text-gray-600 flex items-center">
+                            <div class="w-14 font-medium">Phone: </div>
+                            <span class="text-gray-800 font-medium">{{ company_phone|default:"(555) 123-4567" }}</span>
+                        </div>
+                        <div class=" text-gray-600 flex items-center">
+                            <div class="w-14 font-medium">Email: </div>
+                            <span class="text-gray-800 font-medium">{{ company_email|default:"info@company.com" }}</span>
+                        </div>
+                        <div class="text-gray-600 flex items-center">
+                            <div class="w-14 font-medium">Website: </div>
+                            <span class="text-gray-800 font-medium">{{ company_website }}</span>
+                        </div>
+                    </div>
+                </div> -->
+                <!-- footer -->
+    
+            </div>
+
+ 
+   
+</body>
+</html> 

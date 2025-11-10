@@ -1,0 +1,809 @@
+{% load i18n %}
+<!-- Global Edit Attendance Modal Component -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">
+                    <i class="bi bi-pencil-square me-1"></i>
+                    <span id="editModalTitle">Edit Attendance</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2" id="editModalName" style="font-size: 12px; font-weight: 500; color: #1f2937;"></p>
+
+                <!-- Form fields -->
+                <form id="editAttendanceForm">
+                    <div class="mb-2">
+                        <label for="edit-status" class="form-label">{% trans "Status" %}</label>
+                        <select id="edit-status" class="form-select">
+                            <option value="present">{% trans "Present" %}</option>
+                            <option value="absent">{% trans "Absent" %}</option>
+                            <option value="late">{% trans "Late" %}</option>
+                            <option value="half_day">{% trans "Half Day" %}</option>
+                            <option value="leave">{% trans "Leave" %}</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="edit-project-search" class="form-label">
+                            {% trans "Project" %} <span class="text-muted" style="font-size: 10px;">({% trans "Optional" %})</span>
+                        </label>
+                        <div style="position: relative;">
+                            <input type="text"
+                                   id="edit-project-search"
+                                   class="form-control"
+                                   placeholder="{% trans 'Search project...' %}"
+                                   autocomplete="off">
+                            <input type="hidden" id="edit-project" name="project_id">
+                            <div id="project-suggestions" class="project-suggestions"></div>
+                        </div>
+                        <p class="text-muted mb-0" style="font-size: 9px; margin-top: 2px;">{% trans "Type to search projects" %}</p>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="mb-2">
+                                <label for="edit-clock-in" class="form-label">{% trans "Clock In" %}</label>
+                                <input type="time" id="edit-clock-in" class="form-control">
+                                <button type="button" class="btn btn-outline-success btn-sm w-100 mt-1" id="check-in-now-btn">
+                                    <i class="bi bi-clock"></i>
+                                    {% trans "Check In Now" %}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-2">
+                                <label for="edit-clock-out" class="form-label">{% trans "Clock Out" %}</label>
+                                <input type="time" id="edit-clock-out" class="form-control">
+                                <button type="button" class="btn btn-outline-danger btn-sm w-100 mt-1" id="check-out-now-btn">
+                                    <i class="bi bi-clock"></i>
+                                    {% trans "Check Out Now" %}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="edit-notes" class="form-label">{% trans "Notes" %}</label>
+                        <textarea id="edit-notes" class="form-control" rows="2" placeholder="{% trans 'Optional notes' %}"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex gap-1">
+                    <button type="button" class="button-min-warn py-1" data-bs-dismiss="modal">
+                    {% trans "Cancel" %}
+                </button>
+                <button type="button" class="button-min-primary py-1" id="confirmEditBtn">
+                    {% trans "Save" %}
+                </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Modal Styles - Following Design Guideline */
+#editModal {
+    z-index: 1070 !important;
+}
+
+#editModal .modal-dialog {
+    margin: 4rem auto;
+    position: relative;
+    z-index: 1071;
+}
+
+#editModal .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    position: relative;
+    z-index: 1071;
+}
+
+#editModal.modal.show .modal-content {
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+#editModal .modal-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+    position: relative;
+    z-index: 1072;
+}
+
+#editModal .modal-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #1f2937;
+}
+
+#editModal .modal-title i {
+    font-size: 0.875rem;
+}
+
+#editModal .modal-body {
+    padding: 1rem;
+    color: #4b5563;
+    position: relative;
+    z-index: 1072;
+    overflow: visible !important;
+}
+
+#editModal .modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1072;
+}
+
+#editModal .modal-footer .btn {
+    font-size: 11px;
+    padding: 6px 12px;
+    position: relative;
+    z-index: 1073;
+    pointer-events: auto;
+}
+
+#editModal .modal-footer .btn i {
+    font-size: 10px;
+}
+
+#editModal .form-label {
+    font-size: 11px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #374151;
+}
+
+#editModal .form-control,
+#editModal .form-select {
+    font-size: 11px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+    position: relative;
+    z-index: 1073;
+    background: white;
+    pointer-events: auto;
+}
+
+#editModal .form-control:focus,
+#editModal .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+#editModal textarea.form-control {
+    position: relative;
+    z-index: 1073;
+    pointer-events: auto;
+    resize: none;
+}
+
+/* Check In/Out buttons */
+#check-in-now-btn,
+#check-out-now-btn {
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1073;
+    pointer-events: auto;
+}
+
+#check-in-now-btn i,
+#check-out-now-btn i {
+    font-size: 10px;
+}
+
+#check-in-now-btn:hover {
+    background-color: #10b981;
+    color: white;
+    border-color: #10b981;
+}
+
+#check-out-now-btn:hover {
+    background-color: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+#editModal .modal-header .btn-close {
+    position: relative;
+    z-index: 1074;
+    pointer-events: auto;
+    font-size: 0.75rem;
+    padding: 0.25rem;
+}
+
+/* Ensure backdrop covers entire viewport */
+.modal-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+}
+
+/* Project autocomplete suggestions */
+.project-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1076;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: none;
+    margin-top: 2px;
+}
+
+.project-suggestions.show {
+    display: block;
+}
+
+.project-suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 11px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.15s ease;
+}
+
+.project-suggestion-item:hover,
+.project-suggestion-item.active {
+    background: #f0f9ff;
+}
+
+.project-suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.project-suggestion-name {
+    font-weight: 500;
+    color: #1f2937;
+    display: block;
+}
+
+.project-suggestion-code {
+    font-size: 10px;
+    color: #6b7280;
+    display: block;
+    margin-top: 2px;
+}
+
+.no-suggestions {
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #9ca3af;
+    text-align: center;
+}
+
+/* Choices.js dropdown z-index fix for modal */
+#editModal .choices__list--dropdown {
+    z-index: 1076 !important;
+}
+
+#editModal .choices {
+    position: relative;
+    z-index: 1075 !important;
+}
+
+#editModal .choices.is-open {
+    z-index: 1076 !important;
+}
+
+#editModal .choices__inner {
+    background-color: white !important;
+    z-index: 1075;
+}
+
+#editModal .choices__list--dropdown .choices__item--selectable {
+    cursor: pointer;
+    pointer-events: auto !important;
+}
+
+/* Make sure dropdown is visible and clickable */
+.choices[data-type*=select-one] .choices__inner {
+    padding-bottom: 7.5px;
+}
+
+.choices__list--dropdown {
+    position: absolute;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-top: 0;
+    margin-top: -1px;
+    border-bottom-left-radius: 2.5px;
+    border-bottom-right-radius: 2.5px;
+    overflow: hidden;
+    word-break: break-all;
+    will-change: visibility;
+    z-index: 9999 !important;
+}
+</style>
+
+<script>
+// Global edit modal functionality
+let currentEditData = null;
+
+function initializeEditModal() {
+    console.log('🔧 EDIT MODAL: Initializing edit modal...');
+    const editModalElement = document.getElementById('editModal');
+    if (!editModalElement) {
+        console.error('❌ EDIT MODAL: editModal element not found!');
+        return;
+    }
+    console.log('✅ EDIT MODAL: Modal element found');
+
+    const editModal = new bootstrap.Modal(editModalElement);
+    const confirmEditBtn = document.getElementById('confirmEditBtn');
+    let availableProjects = [];
+    let projectChoices = null;
+
+    console.log('✅ EDIT MODAL: Modal initialized successfully');
+
+    // Watch for backdrop creation and immediately fix it
+    let backdropFixed = false;
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.classList && node.classList.contains('modal-backdrop') && !backdropFixed) {
+                    console.log('🎭 BACKDROP DETECTED: Fixing once');
+
+                    // Mark as fixed to prevent infinite loop
+                    backdropFixed = true;
+
+                    // Disconnect observer temporarily to prevent loop
+                    observer.disconnect();
+
+                    // Set z-index lower than modal (no need to move in DOM)
+                    node.style.setProperty('z-index', '1065', 'important');
+                    console.log('✅ Backdrop fixed on creation');
+                }
+            });
+        });
+    });
+
+    // Start observing when modal is about to show
+    editModalElement.addEventListener('show.bs.modal', function() {
+        backdropFixed = false;
+        observer.observe(document.body, { childList: true });
+        console.log('👀 OBSERVER: Started watching for backdrop');
+    });
+
+    // Stop observing after modal is shown
+    editModalElement.addEventListener('shown.bs.modal', function() {
+        setTimeout(() => {
+            observer.disconnect();
+            console.log('👀 OBSERVER: Stopped watching');
+        }, 100);
+    });
+
+    // Load projects from page context
+    function loadProjects() {
+        console.log('🔍 EDIT MODAL: loadProjects() called');
+        const projectsData = document.getElementById('projects-data');
+
+        if (!projectsData) {
+            console.log('ℹ️ projects-data element not found - this is expected on non-attendance pages');
+            availableProjects = [];
+            return;
+        }
+
+        console.log('🔍 EDIT MODAL: projects-data found');
+        console.log('📄 Raw projects data:', projectsData.textContent);
+
+        try {
+            availableProjects = JSON.parse(projectsData.textContent);
+            console.log('✅ PROJECTS LOADED:', availableProjects.length, 'projects');
+            console.log('✅ PROJECTS:', availableProjects);
+        } catch (e) {
+            console.error('❌ Error loading projects:', e);
+            console.error('❌ Stack:', e.stack);
+            availableProjects = [];
+        }
+    }
+
+    // Project autocomplete functionality
+    function initProjectAutocomplete() {
+        const searchInput = document.getElementById('edit-project-search');
+        const hiddenInput = document.getElementById('edit-project');
+        const suggestionsContainer = document.getElementById('project-suggestions');
+        let selectedIndex = -1;
+
+        if (!searchInput || !suggestionsContainer) return;
+
+        // Filter and display suggestions
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+
+            if (searchTerm.length === 0) {
+                suggestionsContainer.classList.remove('show');
+                suggestionsContainer.innerHTML = '';
+                hiddenInput.value = '';
+                return;
+            }
+
+            const filtered = availableProjects.filter(project =>
+                project.project_name.toLowerCase().includes(searchTerm) ||
+                project.project_code.toLowerCase().includes(searchTerm)
+            );
+
+            if (filtered.length === 0) {
+                suggestionsContainer.innerHTML = '<div class="no-suggestions">No projects found</div>';
+                suggestionsContainer.classList.add('show');
+                return;
+            }
+
+            suggestionsContainer.innerHTML = filtered.map(project => `
+                <div class="project-suggestion-item" data-id="${project.id}" data-name="${project.project_name}" data-code="${project.project_code}">
+                    <span class="project-suggestion-name">${project.project_name}</span>
+                    <span class="project-suggestion-code">${project.project_code}</span>
+                </div>
+            `).join('');
+
+            suggestionsContainer.classList.add('show');
+            selectedIndex = -1;
+        });
+
+        // Handle suggestion click
+        suggestionsContainer.addEventListener('click', function(e) {
+            const item = e.target.closest('.project-suggestion-item');
+            if (item) {
+                const projectId = item.dataset.id;
+                const projectName = item.dataset.name;
+                const projectCode = item.dataset.code;
+
+                searchInput.value = `${projectName} (${projectCode})`;
+                hiddenInput.value = projectId;
+                suggestionsContainer.classList.remove('show');
+                suggestionsContainer.innerHTML = '';
+            }
+        });
+
+        // Handle keyboard navigation
+        searchInput.addEventListener('keydown', function(e) {
+            const items = suggestionsContainer.querySelectorAll('.project-suggestion-item');
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                updateSelection(items);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, -1);
+                updateSelection(items);
+            } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                e.preventDefault();
+                items[selectedIndex].click();
+            } else if (e.key === 'Escape') {
+                suggestionsContainer.classList.remove('show');
+                suggestionsContainer.innerHTML = '';
+            }
+        });
+
+        function updateSelection(items) {
+            items.forEach((item, index) => {
+                if (index === selectedIndex) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                suggestionsContainer.classList.remove('show');
+                suggestionsContainer.innerHTML = '';
+            }
+        });
+
+        // Clear on focus if empty
+        searchInput.addEventListener('focus', function() {
+            if (!this.value && hiddenInput.value) {
+                hiddenInput.value = '';
+            }
+        });
+    }
+
+    // Load projects on initialization
+    console.log('🔧 Calling loadProjects() on init...');
+    loadProjects();
+    initProjectAutocomplete();
+
+    // Handle Check In Now button
+    const checkInNowBtn = document.getElementById('check-in-now-btn');
+    if (checkInNowBtn) {
+        checkInNowBtn.addEventListener('click', function() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const currentTime = `${hours}:${minutes}`;
+
+            document.getElementById('edit-clock-in').value = currentTime;
+            document.getElementById('edit-status').value = 'present';
+            console.log('✅ EDIT MODAL: Clock in set to current time:', currentTime);
+            console.log('✅ EDIT MODAL: Status set to present');
+
+            if (typeof showToast === 'function') {
+                showToast('Checked in - Status set to Present', true);
+            }
+        });
+    }
+
+    // Handle Check Out Now button
+    const checkOutNowBtn = document.getElementById('check-out-now-btn');
+    if (checkOutNowBtn) {
+        checkOutNowBtn.addEventListener('click', function() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const currentTime = `${hours}:${minutes}`;
+
+            document.getElementById('edit-clock-out').value = currentTime;
+            document.getElementById('edit-status').value = 'present';
+            console.log('✅ EDIT MODAL: Clock out set to current time:', currentTime);
+            console.log('✅ EDIT MODAL: Status set to present');
+
+            if (typeof showToast === 'function') {
+                showToast('Checked out - Status set to Present', true);
+            }
+        });
+    }
+
+    // Enhanced modal behavior - Ensure proper positioning
+    editModalElement.addEventListener('show.bs.modal', function() {
+        console.log('🎨 EDIT MODAL: Modal is opening');
+        // Set modal z-index
+        editModalElement.style.setProperty('z-index', '1070', 'important');
+
+        // Check if projects loaded, reload if needed
+        if (availableProjects.length === 0) {
+            console.log('⚠️ Projects not loaded, loading now...');
+            loadProjects();
+        } else {
+            console.log('✅ Projects already loaded:', availableProjects.length);
+        }
+    });
+
+    editModalElement.addEventListener('shown.bs.modal', function() {
+        console.log('✅ EDIT MODAL: Modal shown');
+
+        // Ensure all interactive elements have pointer-events enabled
+        const allInteractive = editModalElement.querySelectorAll('input, select, textarea, button');
+        allInteractive.forEach(element => {
+            element.style.setProperty('pointer-events', 'auto', 'important');
+        });
+
+        // Focus first element
+        const focusableElement = editModalElement.querySelector('select, input, textarea, button');
+        if (focusableElement) {
+            focusableElement.focus();
+        }
+
+        console.log('✅ EDIT MODAL: Setup complete');
+    });
+
+    // Keyboard navigation
+    editModalElement.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modalInstance = bootstrap.Modal.getInstance(editModalElement);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        }
+    });
+
+    // Handle edit button clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-btn')) {
+            console.log('✏️ EDIT MODAL: Edit button detected!');
+            e.preventDefault();
+            const button = e.target.closest('.edit-btn');
+
+            const employeeId = button.dataset.employeeId;
+            const employeeName = button.dataset.employeeName;
+            const attendanceDate = button.dataset.date;
+            const status = button.dataset.status;
+            const clockIn = button.dataset.clockIn;
+            const clockOut = button.dataset.clockOut;
+            const projectId = button.dataset.projectId;
+            const notes = button.dataset.notes;
+
+            console.log('✏️ EDIT MODAL: Edit button clicked');
+            console.log('👤 Employee:', employeeName);
+            console.log('📅 Date:', attendanceDate);
+            console.log('📝 Notes:', notes);
+
+            // Store edit data
+            currentEditData = {
+                employeeId: employeeId,
+                employeeName: employeeName,
+                date: attendanceDate
+            };
+
+            // Update modal content
+            const dateLabel = attendanceDate ? ` - ${attendanceDate}` : '';
+            document.querySelector('#editModalTitle').textContent = 'Edit Attendance' + dateLabel;
+            document.getElementById('editModalName').textContent = employeeName;
+
+            // Pre-fill form fields
+            document.getElementById('edit-status').value = status || 'present';
+            document.getElementById('edit-clock-in').value = clockIn || '';
+            document.getElementById('edit-clock-out').value = clockOut || '';
+            document.getElementById('edit-notes').value = notes || '';
+
+            // Set project value
+            console.log('🔍 Setting project ID:', projectId);
+            const projectSearchInput = document.getElementById('edit-project-search');
+            const projectHiddenInput = document.getElementById('edit-project');
+
+            if (projectId && projectSearchInput && projectHiddenInput) {
+                // Find the project in availableProjects
+                const project = availableProjects.find(p => p.id == projectId);
+                if (project) {
+                    projectSearchInput.value = `${project.project_name} (${project.project_code})`;
+                    projectHiddenInput.value = projectId;
+                    console.log('✅ Set project to:', project.project_name);
+                } else {
+                    projectSearchInput.value = '';
+                    projectHiddenInput.value = '';
+                    console.log('⚠️ Project not found in list');
+                }
+            } else {
+                if (projectSearchInput) projectSearchInput.value = '';
+                if (projectHiddenInput) projectHiddenInput.value = '';
+                console.log('✅ Cleared project selection');
+            }
+
+            // Show modal
+            editModal.show();
+        }
+    });
+
+    // Handle edit confirmation
+    confirmEditBtn.addEventListener('click', function() {
+        console.log('✅ EDIT MODAL: Confirm edit button clicked');
+
+        if (currentEditData) {
+            // Get form data
+            const status = document.getElementById('edit-status').value;
+            const clockIn = document.getElementById('edit-clock-in').value;
+            const clockOut = document.getElementById('edit-clock-out').value;
+            const notes = document.getElementById('edit-notes').value;
+            const projectId = document.getElementById('edit-project').value;
+
+            // Show loading state
+            const originalContent = confirmEditBtn.innerHTML;
+            confirmEditBtn.disabled = true;
+            confirmEditBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>{% trans "Saving..." %}';
+
+            // Get CSRF token
+            function getCSRFToken() {
+                const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+                if (csrfInput) return csrfInput.value;
+
+                const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+                if (csrfMeta) return csrfMeta.getAttribute('content');
+
+                const csrfCookie = document.cookie.match(/csrftoken=([^;]+)/);
+                if (csrfCookie) return csrfCookie[1];
+
+                return null;
+            }
+
+            const csrfToken = getCSRFToken();
+
+            if (!csrfToken) {
+                alert('Security token not found. Please refresh the page and try again.');
+                confirmEditBtn.disabled = false;
+                confirmEditBtn.innerHTML = originalContent;
+                return;
+            }
+
+            // Send AJAX request
+            fetch('{% url "attendance:mark_attendance" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `employee_id=${currentEditData.employeeId}&status=${status}&clock_in=${clockIn}&clock_out=${clockOut}&project_id=${projectId}&date=${encodeURIComponent(currentEditData.date || '')}&notes=${encodeURIComponent(notes)}&csrfmiddlewaretoken=${encodeURIComponent(csrfToken)}`,
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    editModal.hide();
+
+                    if (typeof showToast === 'function') {
+                        showToast(data.message || 'Attendance updated successfully', true);
+                    }
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    const errorMsg = data.error || data.message || 'Error updating attendance';
+                    if (typeof showToast === 'function') {
+                        showToast(errorMsg, false);
+                    } else {
+                        alert(errorMsg);
+                    }
+
+                    confirmEditBtn.disabled = false;
+                    confirmEditBtn.innerHTML = originalContent;
+                }
+            })
+            .catch(error => {
+                console.error('❌ EDIT MODAL: Error:', error);
+
+                const errorMsg = 'Error updating attendance: ' + error.message;
+                if (typeof showToast === 'function') {
+                    showToast(errorMsg, false);
+                } else {
+                    alert(errorMsg);
+                }
+
+                confirmEditBtn.disabled = false;
+                confirmEditBtn.innerHTML = originalContent;
+            });
+        }
+    });
+
+    // Reset modal when hidden
+    editModalElement.addEventListener('hidden.bs.modal', function() {
+        currentEditData = null;
+        confirmEditBtn.disabled = false;
+        confirmEditBtn.innerHTML = '{% trans "Save" %}';
+        document.getElementById('edit-status').value = 'present';
+        document.getElementById('edit-clock-in').value = '';
+        document.getElementById('edit-clock-out').value = '';
+        document.getElementById('edit-notes').value = '';
+        document.getElementById('edit-project-search').value = '';
+        document.getElementById('edit-project').value = '';
+
+        // Clear suggestions
+        const suggestionsContainer = document.getElementById('project-suggestions');
+        if (suggestionsContainer) {
+            suggestionsContainer.classList.remove('show');
+            suggestionsContainer.innerHTML = '';
+        }
+    });
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeEditModal);
+</script>

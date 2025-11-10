@@ -1,0 +1,372 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+<!-- Summernote CSS -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+<style>
+    .note-editor.note-frame {
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+    }
+    .note-toolbar {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .note-editable {
+        background-color: white;
+        min-height: 200px;
+    }
+    /* Hide ONLY Summernote modals - be very specific */
+    .note-modal {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    .note-modal-backdrop {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    .note-btn[data-name="help"] {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <form method="post" data-skip-enhancement>
+            {% csrf_token %}
+
+            <!-- Basic Information -->
+            <div class="mb-3">
+                <label for="title" class="block text-sm font-medium text-gray-700 mb-1">
+                    Job Title <span class="text-red-600">*</span>
+                </label>
+                <input type="text"
+                       name="title"
+                       id="title"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       value="{{ job.title|default:'' }}"
+                       required
+                       placeholder="e.g. Senior Software Engineer">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label for="department" class="block text-sm font-medium text-gray-700 mb-1">
+                        Department <span class="text-red-600">*</span>
+                    </label>
+                    <select name="department"
+                            id="department"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                        <option value="">Select Department</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.id }}" {% if job.department_id == dept.id %}selected{% endif %}>
+                            {{ dept.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label for="position" class="block text-sm font-medium text-gray-700 mb-1">
+                        Position <span class="text-red-600">*</span>
+                    </label>
+                    <select name="position"
+                            id="position"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                        <option value="">Select Position</option>
+                        {% for pos in positions %}
+                        <option value="{{ pos.id }}" {% if job.position_id == pos.id %}selected{% endif %}>
+                            {{ pos.title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label for="employment_type" class="block text-sm font-medium text-gray-700 mb-1">
+                        Employment Type <span class="text-red-600">*</span>
+                    </label>
+                    <select name="employment_type"
+                            id="employment_type"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                        <option value="Full-time" {% if job.employment_type == 'Full-time' %}selected{% endif %}>Full-time</option>
+                        <option value="Part-time" {% if job.employment_type == 'Part-time' %}selected{% endif %}>Part-time</option>
+                        <option value="Contract" {% if job.employment_type == 'Contract' %}selected{% endif %}>Contract</option>
+                        <option value="Temporary" {% if job.employment_type == 'Temporary' %}selected{% endif %}>Temporary</option>
+                        <option value="Internship" {% if job.employment_type == 'Internship' %}selected{% endif %}>Internship</option>
+                    </select>
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label for="vacancies" class="block text-sm font-medium text-gray-700 mb-1">
+                        Number of Vacancies <span class="text-red-600">*</span>
+                    </label>
+                    <input type="number"
+                           name="vacancies"
+                           id="vacancies"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           value="{{ job.vacancies|default:1 }}"
+                           min="1"
+                           required>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label for="salary_range_min" class="block text-sm font-medium text-gray-700 mb-1">
+                        Salary Range Min (USD)
+                    </label>
+                    <input type="number"
+                           name="salary_range_min"
+                           id="salary_range_min"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           value="{{ job.salary_range_min|default:'' }}"
+                           step="0.01"
+                           placeholder="Optional">
+                    <p class="text-xs text-gray-500 mt-1">Minimum salary for this position</p>
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label for="salary_range_max" class="block text-sm font-medium text-gray-700 mb-1">
+                        Salary Range Max (USD)
+                    </label>
+                    <input type="number"
+                           name="salary_range_max"
+                           id="salary_range_max"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           value="{{ job.salary_range_max|default:'' }}"
+                           step="0.01"
+                           placeholder="Optional">
+                    <p class="text-xs text-gray-500 mt-1">Maximum salary for this position</p>
+                </div>
+            </div>
+
+            <!-- Job Details -->
+            <div class="mb-3">
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                    Job Description <span class="text-red-600">*</span>
+                </label>
+                <textarea name="description"
+                          id="description"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          required>{{ job.description|default:'' }}</textarea>
+                <p class="text-xs text-gray-500 mt-1">Describe the role, responsibilities, and what makes it exciting</p>
+            </div>
+
+            <div class="mb-3">
+                <label for="requirements" class="block text-sm font-medium text-gray-700 mb-1">
+                    Requirements <span class="text-red-600">*</span>
+                </label>
+                <textarea name="requirements"
+                          id="requirements"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          required>{{ job.requirements|default:'' }}</textarea>
+                <p class="text-xs text-gray-500 mt-1">Required skills, experience, and qualifications</p>
+            </div>
+
+            <div class="mb-3">
+                <label for="responsibilities" class="block text-sm font-medium text-gray-700 mb-1">
+                    Responsibilities
+                </label>
+                <textarea name="responsibilities"
+                          id="responsibilities"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{ job.responsibilities|default:'' }}</textarea>
+                <p class="text-xs text-gray-500 mt-1">Key responsibilities for this position (optional)</p>
+            </div>
+
+            <div class="mb-4">
+                <label for="qualifications" class="block text-sm font-medium text-gray-700 mb-1">
+                    Qualifications
+                </label>
+                <textarea name="qualifications"
+                          id="qualifications"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{ job.qualifications|default:'' }}</textarea>
+                <p class="text-xs text-gray-500 mt-1">Educational and professional qualifications (optional)</p>
+            </div>
+
+            <!-- Status & Timeline -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="col-span-2 md:col-span-1">
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">
+                        Status <span class="text-red-600">*</span>
+                    </label>
+                    <select name="status"
+                            id="status"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                        <option value="draft" {% if job.status == 'draft' %}selected{% endif %}>Draft</option>
+                        <option value="open" {% if job.status == 'open' %}selected{% endif %}>Open</option>
+                        <option value="on_hold" {% if job.status == 'on_hold' %}selected{% endif %}>On Hold</option>
+                        <option value="filled" {% if job.status == 'filled' %}selected{% endif %}>Filled</option>
+                        <option value="cancelled" {% if job.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                    </select>
+                </div>
+
+                <div class="col-span-2 md:col-span-1">
+                    <label for="posted_date" class="block text-sm font-medium text-gray-700 mb-1">
+                        Posted Date
+                    </label>
+                    <input type="date"
+                           name="posted_date"
+                           id="posted_date"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           value="{{ job.posted_date|date:'Y-m-d'|default:'' }}">
+                </div>
+
+                <div class="col-span-2">
+                    <label for="closing_date" class="block text-sm font-medium text-gray-700 mb-1">
+                        Closing Date
+                    </label>
+                    <input type="date"
+                           name="closing_date"
+                           id="closing_date"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           value="{{ job.closing_date|date:'Y-m-d'|default:'' }}">
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex items-center justify-end space-x-3 mb-3">
+                <a href="{% url 'recruitment:job_list' %}" class="button-min-danger">
+                    Cancel
+                </a>
+                <button type="submit" class="button-min-primary px-4">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<!-- jQuery (required for Summernote) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Summernote JS -->
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script>
+jQuery(document).ready(function($) {
+    // Initialize Summernote for Description
+    $('#description').summernote({
+        height: 200,
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['view', ['fullscreen', 'codeview']]
+        ],
+        placeholder: 'Provide a comprehensive description of the job role',
+        dialogsInBody: false,
+        disableDragAndDrop: true,
+        popover: {
+            image: [],
+            link: [],
+            air: []
+        },
+        callbacks: {
+            onInit: function() {
+                $('.note-editable').css('background-color', 'white');
+            }
+        }
+    });
+
+    // Initialize Summernote for Requirements
+    $('#requirements').summernote({
+        height: 200,
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['view', ['fullscreen', 'codeview']]
+        ],
+        placeholder: 'List required qualifications, skills, and experience',
+        dialogsInBody: false,
+        disableDragAndDrop: true,
+        popover: {
+            image: [],
+            link: [],
+            air: []
+        },
+        callbacks: {
+            onInit: function() {
+                $('.note-editable').css('background-color', 'white');
+            }
+        }
+    });
+
+    // Initialize Summernote for Responsibilities (optional field)
+    $('#responsibilities').summernote({
+        height: 150,
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['view', ['fullscreen', 'codeview']]
+        ],
+        placeholder: 'Key responsibilities for this position (optional)',
+        dialogsInBody: false,
+        disableDragAndDrop: true,
+        popover: {
+            image: [],
+            link: [],
+            air: []
+        }
+    });
+
+    // Initialize Summernote for Qualifications (optional field)
+    $('#qualifications').summernote({
+        height: 150,
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['view', ['fullscreen', 'codeview']]
+        ],
+        placeholder: 'Educational and professional qualifications (optional)',
+        dialogsInBody: false,
+        disableDragAndDrop: true,
+        popover: {
+            image: [],
+            link: [],
+            air: []
+        }
+    });
+
+    // Remove ONLY Summernote modal triggers and modals
+    $('.note-btn[data-name="help"]').parent().remove();
+
+    // Remove ONLY Summernote modals from DOM (not all modals)
+    setTimeout(function() {
+        $('.note-modal').remove();
+        $('.note-modal-backdrop').remove();
+    }, 500);
+
+    // Prevent ONLY Summernote modals from opening
+    $(document).on('show.bs.modal', '.note-modal', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).remove();
+        return false;
+    });
+
+    // Continuously remove ONLY Summernote modals that appear
+    setInterval(function() {
+        if ($('.note-modal').length > 0 || $('.note-modal-backdrop').length > 0) {
+            $('.note-modal').remove();
+            $('.note-modal-backdrop').remove();
+        }
+    }, 200);
+});
+</script>
+{% endblock %}

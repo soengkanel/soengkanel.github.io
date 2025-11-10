@@ -1,0 +1,930 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Billing{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Enhanced Compact System Design for Payment Voucher */
+    :root {
+        --primary: #0066cc;
+        --primary-dark: #0052a3;
+        --primary-light: #e6f2ff;
+        --success: #00a854;
+        --warning: #ffab00;
+        --danger: #e74c3c;
+        --info: #0095ff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #666666;
+        --text-muted: #999999;
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --bg-tertiary: #f0f2f5;
+        --border-light: #e8eaed;
+        --border-medium: #d2d5da;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.12);
+        --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.16);
+        --radius-sm: 4px;
+        --radius-md: 6px;
+        --radius-lg: 8px;
+    }
+
+    /* Global reset for compact design */
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Main container */
+    .voucher-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 16px;
+    }
+
+    /* Compact header */
+    .voucher-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    /* Quick action bar */
+    .quick-actions {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        padding: 12px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .voucher-status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Status-specific colors */
+    .status-draft {
+        background: rgba(108, 117, 125, 0.15);
+        color: #6c757d;
+    }
+    
+    .status-pending_approval {
+        background: rgba(255, 193, 7, 0.15);
+        color: #cc8800;
+    }
+    
+    .status-approved {
+        background: rgba(40, 167, 69, 0.15);
+        color: #28a745;
+    }
+    
+    .status-paid {
+        background: rgba(0, 123, 255, 0.15);
+        color: #007bff;
+    }
+    
+    .status-rejected {
+        background: rgba(220, 53, 69, 0.15);
+        color: #dc3545;
+    }
+    
+    .status-cancelled {
+        background: rgba(108, 117, 125, 0.15);
+        color: #6c757d;
+    }
+    
+    /* Button variants */
+    .btn-danger {
+        background: var(--danger);
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background: #c82333;
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .btn-info {
+        background: var(--info);
+        color: white;
+    }
+    
+    .btn-info:hover {
+        background: #0081d4;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    /* Compact button styles */
+    .btn-compact {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .btn-compact i {
+        font-size: 14px;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-outline {
+        background: white;
+        color: var(--primary);
+        border-color: var(--border-medium);
+    }
+
+    .btn-outline:hover {
+        background: var(--bg-secondary);
+        color: var(--primary-dark);
+        border-color: var(--primary);
+    }
+
+    .btn-success {
+        background: var(--success);
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #008a43;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    /* Main content grid */
+    .voucher-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 16px;
+    }
+
+    /* Info cards */
+    .info-card {
+        background: white;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow 0.2s;
+    }
+
+    .info-card:hover {
+        box-shadow: var(--shadow-md);
+    }
+
+    .card-header {
+        background: var(--bg-secondary);
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border-light);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .card-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card-title i {
+        color: var(--primary);
+        font-size: 16px;
+    }
+
+    .card-body {
+        padding: 16px;
+    }
+
+    /* Compact info grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .info-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .info-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-value {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .info-value.monospace {
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+    }
+
+    .info-value.primary {
+        color: var(--primary);
+    }
+
+    .info-value.amount {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--success);
+    }
+
+    /* Sidebar cards */
+    .sidebar-card {
+        background: white;
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .sidebar-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .sidebar-title i {
+        color: var(--primary);
+        font-size: 16px;
+    }
+
+    /* Category and method badges */
+    .category-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        background: var(--primary-light);
+        color: var(--primary);
+        border: 1px solid var(--primary);
+    }
+
+    .method-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 600;
+        background: rgba(255, 171, 0, 0.15);
+        color: #cc8800;
+        border: 1px solid rgba(255, 171, 0, 0.3);
+    }
+
+    /* Notes section */
+    .notes-box {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-sm);
+        padding: 12px;
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--text-secondary);
+    }
+
+    /* Invoice connection */
+    .invoice-connection {
+        background: var(--primary-light);
+        border: 1px solid var(--primary);
+        border-radius: var(--radius-sm);
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .invoice-connection i {
+        color: var(--primary);
+        font-size: 16px;
+    }
+
+    .invoice-connection .invoice-link {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .invoice-connection .invoice-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Workflow Timeline */
+    .workflow-timeline {
+        position: relative;
+    }
+
+    .timeline-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding-bottom: 16px;
+        position: relative;
+    }
+
+    .timeline-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 30px;
+        bottom: -16px;
+        width: 2px;
+        background: var(--border-light);
+    }
+
+    .timeline-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+        border: 2px solid;
+    }
+
+    .timeline-icon.status-draft {
+        background: rgba(108, 117, 125, 0.15);
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .timeline-icon.status-pending_approval {
+        background: rgba(255, 193, 7, 0.75);
+        color: #cc8800;
+        border-color: #cc8800;
+    }
+
+    .timeline-icon.status-approved {
+        background: rgba(40, 167, 69, 0.75);
+        color: #ffffff;
+        border-color: #28a745;
+    }
+
+    .timeline-icon.status-paid {
+        background: rgba(0, 123, 255, 0.75);
+        color: #ffffff;
+        border-color: #007bff;
+    }
+
+    .timeline-icon.status-rejected {
+        background: rgba(220, 53, 69, 0.75);
+        color: #ffffff;
+        border-color: #dc3545;
+    }
+
+    .timeline-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .timeline-action {
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--text-primary);
+        margin-bottom: 2px;
+    }
+
+    .timeline-user {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 2px;
+    }
+
+    .timeline-date {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+    }
+
+    .timeline-reason {
+        font-size: 12px;
+        color: var(--danger);
+        font-style: italic;
+        padding: 6px;
+        background: rgba(220, 53, 69, 0.05);
+        border-left: 3px solid var(--danger);
+        border-radius: 3px;
+        margin-top: 4px;
+    }
+
+    /* Print styles */
+    @media print {
+        .voucher-header,
+        .quick-actions,
+        .action-buttons,
+        .btn-compact {
+            display: none !important;
+        }
+
+        .voucher-content {
+            grid-template-columns: 1fr;
+        }
+
+        .info-card,
+        .sidebar-card {
+            box-shadow: none;
+            border: 1px solid #ddd;
+            break-inside: avoid;
+        }
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+        .voucher-content {
+            grid-template-columns: 1fr;
+        }
+
+        .quick-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .action-buttons {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hide-mobile {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="voucher-wrapper">
+    <div class="py-3 px-1 flex items-start justify-between">
+        <div>
+            <h1 class="text-xl font-semibold">Payment Voucher</h1>
+        </div>
+        <div class="text-right">
+            <h1 class="text-lg font-semibold text-blue-500">#{{ voucher.voucher_number }}</h1>
+            <span class="text-muted text-xs font-medium">Created {{ voucher.created_at|date:"d/m/Y" }}</span>
+        </div>
+    </div>
+    <!-- Header -->
+
+
+    <!-- Quick Actions Bar -->
+    <div class="flex justify-between items-center py-3 px-3 border rounded-xl mb-4">
+        <span class="rounded-lg voucher-status-pill status-{{ voucher.status }}">
+            <i class="bi bi-{% if voucher.status == 'draft' %}pencil{% elif voucher.status == 'pending_approval' %}clock{% elif voucher.status == 'approved' %}check-circle-fill{% elif voucher.status == 'paid' %}credit-card{% elif voucher.status == 'rejected' %}x-circle-fill{% elif voucher.status == 'cancelled' %}ban{% endif %}" style="font-size: 8px;"></i>
+            {{ voucher.get_status_display|upper }}
+        </span>
+       <div class="flex space-x-3">
+            <!-- Workflow Actions -->
+            {% if can_submit %}
+            <a href="{% url 'billing:payment_voucher_submit' voucher.id %}" class="button-min-primary">
+               <div>
+                <i class="bi bi-send me-1"></i>
+                Submit
+               </div>
+            </a>
+            {% endif %}
+            
+            {% if can_approve %}
+                <a href="{% url 'billing:payment_voucher_approve' voucher.id %}" class="button-min-primary">
+                    <div>
+                        <i class="bi bi-check-circle me-1"></i>
+                        Approve
+                    </div>
+                </a>
+            {% endif %}
+            
+            {% if can_reject %}
+                <a href="{% url 'billing:payment_voucher_reject' voucher.id %}" class="button-min-danger">
+                    <div>
+                        <i class="bi bi-x-circle"></i>
+                        Reject
+                    </div>
+                </a>
+            {% endif %}
+            
+            {% if voucher.can_mark_paid %}
+                <a href="{% url 'billing:payment_voucher_mark_paid' voucher.id %}" class="button-min-primary">
+                    <div>
+                        <i class="bi bi-credit-card"></i>
+                        Mark Paid
+                    </div>
+                </a>
+            {% endif %}
+            
+            <!-- Regular Actions -->
+            {% if voucher.can_edit %}
+                <a href="{% url 'billing:payment_voucher_edit' voucher.id %}" class="button-min-default">
+                    <i class="bi bi-pencil"></i>
+                    Edit
+                </a>
+            {% endif %}
+            
+            <a href="{% url 'billing:payment_voucher_print' voucher.id %}" class="button-min-primary" target="_blank">
+               <div>
+                <i class="bi bi-printer me-1"></i>
+                Print
+               </div>
+            </a>
+            
+            {% comment %} <a href="{% url 'billing:payment_voucher_list' %}" class="btn-compact btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                <span class="hide-mobile">Back to List</span>
+            </a> {% endcomment %}
+            
+            {% if not voucher.is_workflow_completed %}
+                <a href="{% url 'billing:payment_voucher_cancel' voucher.id %}" class="button-min-danger">
+                    <div>
+                        <i class="bi bi-ban"></i>
+                    Cancel
+                    </div>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="voucher-content">
+        <!-- Left Column - Main Voucher Details -->
+        <div>
+            <!-- Payment Information -->
+            <div class="info-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-receipt-cutoff"></i>
+                        Payment Information
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% if voucher.invoice %}
+                    <div class="invoice-connection">
+                        <i class="bi bi-link-45deg"></i>
+                        <div>
+                            Connected to <a href="{% url 'billing:invoice_detail' voucher.invoice.id %}" class="invoice-link">Invoice #{{ voucher.invoice.invoice_number }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Voucher Number</span>
+                            <span class="info-value monospace primary">{{ voucher.voucher_number }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Payment Date</span>
+                            <span class="info-value">{{ voucher.date|date:"d/m/Y" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Pay To</span>
+                            <span class="info-value">{{ voucher.payee }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Amount</span>
+                            <span class="info-value amount">${{ voucher.amount_usd|floatformat:2 }}</span>
+                        </div>
+                        {% if voucher.payee_contact %}
+                        <div class="info-item">
+                            <span class="info-label">Contact</span>
+                            <span class="info-value">{{ voucher.payee_contact }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="info-item">
+                            <span class="info-label">Payment Method</span>
+                            <span class="method-badge">
+                                <i class="bi bi-credit-card" style="font-size: 10px;"></i>
+                                {{ voucher.get_payment_method_display }}
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Category</span>
+                            <span class="category-badge">
+                                <i class="bi bi-tag" style="font-size: 10px;"></i>
+                                {{ voucher.get_expense_category_display }}
+                            </span>
+                        </div>
+                        {% if voucher.budget_code %}
+                        <div class="info-item">
+                            <span class="info-label">Budget Code</span>
+                            <span class="info-value monospace">{{ voucher.budget_code }}</span>
+                        </div>
+                        {% endif %}
+                        {% if voucher.payment_reference %}
+                        <div class="info-item">
+                            <span class="info-label">Reference</span>
+                            <span class="info-value monospace">{{ voucher.payment_reference }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="info-item full-width">
+                            <span class="info-label">Payment Purpose</span>
+                            <span class="info-value">{{ voucher.payment_purpose }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            {% if voucher.notes %}
+            <div class="info-card mt-3">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-sticky-note"></i>
+                        Notes
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="notes-box">
+                        {{ voucher.notes|linebreaks }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Reference Documents -->
+            {% if voucher.reference_documents.exists %}
+            <div class="info-card mt-3">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Reference Documents ({{ voucher.reference_documents.count }})
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        {% for doc in voucher.reference_documents.all %}
+                        <div class="col-md-6">
+                            <div class="document-item border rounded p-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="document-icon me-2">
+                                        {% if doc.get_file_extension == '.pdf' %}
+                                            <i class="bi bi-file-earmark-pdf text-danger" style="font-size: 20px;"></i>
+                                        {% elif doc.get_file_extension in '.doc,.docx' %}
+                                            <i class="bi bi-file-earmark-word text-primary" style="font-size: 20px;"></i>
+                                        {% elif doc.get_file_extension in '.xls,.xlsx' %}
+                                            <i class="bi bi-file-earmark-excel text-success" style="font-size: 20px;"></i>
+                                        {% elif doc.get_file_extension in '.jpg,.jpeg,.png,.gif' %}
+                                            <i class="bi bi-file-earmark-image text-info" style="font-size: 20px;"></i>
+                                        {% else %}
+                                            <i class="bi bi-file-earmark text-secondary" style="font-size: 20px;"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold" style="font-size: 13px; color: var(--text-primary);">
+                                            {{ doc.document_name|truncatechars:30 }}
+                                        </div>
+                                        <div class="text-muted" style="font-size: 11px;">
+                                            {{ doc.get_document_type_display }}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="document-details" style="font-size: 11px; color: var(--text-secondary);">
+                                    {% if doc.document_number %}
+                                    <div><strong>Number:</strong> {{ doc.document_number }}</div>
+                                    {% endif %}
+                                    {% if doc.document_date %}
+                                    <div><strong>Date:</strong> {{ doc.document_date|date:"d/m/Y" }}</div>
+                                    {% endif %}
+                                    {% if doc.document_amount %}
+                                    <div><strong>Amount:</strong> ${{ doc.document_amount|floatformat:2 }}</div>
+                                    {% endif %}
+                                    <div><strong>Size:</strong> {{ doc.get_file_size }}</div>
+                                </div>
+                                
+                                <div class="document-actions mt-2 d-flex gap-1">
+                                    <a href="{{ doc.document_file.url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye" style="font-size: 10px;"></i>
+                                        View
+                                    </a>
+                                    <a href="{{ doc.document_file.url }}" download class="btn btn-outline-secondary btn-sm">
+                                        <i class="bi bi-download" style="font-size: 10px;"></i>
+                                        Download
+                                    </a>
+                                </div>
+                                
+                                {% if doc.notes %}
+                                <div class="document-notes mt-2 p-2 bg-light rounded" style="font-size: 11px;">
+                                    {{ doc.notes }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column - Sidebar -->
+        <div>
+            <!-- Payment Status -->
+            <div class="sidebar-card p-0">
+               <div class="bg-gray-100 px-3 py-2 border-b">
+                    <h4 class="sidebar-title mb-1">
+                        <i class="bi bi-check-circle"></i>
+                        Payment Status
+                    </h4>
+                </div>
+
+                <div class="info-grid px-3 py-2">
+                    <div class="info-item">
+                        <span class="info-label">Amount Paid</span>
+                        <span class="info-value" style="font-size: 18px; font-weight: 700; color: var(--success);">
+                            ${{ voucher.amount_usd|floatformat:2 }}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Status</span>
+                        <span class="voucher-status-pill" style="margin-top: 4px;">
+                            <i class="bi bi-check-circle-fill" style="font-size: 8px;"></i>
+                            PROCESSED
+                        </span>
+                    </div>
+                </div>
+
+                <div class="px-3 pb-2" style="font-size: 12px; color: var(--text-secondary);">
+                    <div class="mb-2">
+                        <strong>Payment Date:</strong><br>
+                        {{ voucher.date|date:"d/m/Y" }}
+                    </div>
+                    <div class="pb-2">
+                        <strong>Method:</strong><br>
+                        {{ voucher.get_payment_method_display }}
+                    </div>
+                    {% if voucher.payment_reference %}
+                    <div class="pb-2">
+                        <strong>Reference:</strong><br>
+                        {{ voucher.payment_reference }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Related Invoice -->
+            {% if voucher.invoice %}
+            <div class="sidebar-card p-0">
+                <div class="bg-gray-100 px-3 py-2 border-b">
+                    <h4 class="sidebar-title mb-1">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Related Invoice
+                    </h4>
+                </div>
+                
+                <div class="px-3 py-2">
+                    <strong>Invoice:</strong><br>
+                    <a href="{% url 'billing:invoice_detail' voucher.invoice.id %}" class="text-primary text-decoration-none">
+                        #{{ voucher.invoice.invoice_number }}
+                    </a>
+                </div>
+                <div class="px-3 py-2">
+                    <strong>Client:</strong><br>
+                    {{ voucher.invoice.get_client_name }}
+                </div>
+                <div class="px-3 py-2">
+                    <strong>Invoice Amount:</strong><br>
+                    ${{ voucher.invoice.total_amount|floatformat:2 }}
+                </div>
+                <div class="px-3 py-2">
+                    <strong>Status:</strong><br>
+                    <span class="badge bg-{{ voucher.invoice.status|yesno:'success,warning,secondary' }} text-capitalize">
+                        {{ voucher.invoice.get_status_display }}
+                    </span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Workflow History -->
+            <div class="sidebar-card p-0">
+                <div class="bg-gray-100 px-3 py-2 border-b">
+                    <h4 class="sidebar-title mb-1">
+                        <i class="bi bi-list-check"></i>
+                        Workflow History
+                    </h4>
+                </div>
+                
+
+                <div class="workflow-timeline p-3">
+                    {% for event in voucher.workflow_history %}
+                    <div class="timeline-item">
+                        <div class="timeline-icon status-{{ event.status }}">
+                            <i class="bi bi-{% if event.status == 'draft' %}pencil{% elif event.status == 'pending_approval' %}clock{% elif event.status == 'approved' %}check-circle-fill{% elif event.status == 'paid' %}credit-card{% elif event.status == 'rejected' %}x-circle-fill{% endif %}"></i>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-action">{{ event.action }}</div>
+                            <div class="timeline-user">{{ event.user.get_full_name|default:event.user.username }}</div>
+                            <div class="timeline-date">{{ event.timestamp|date:"d/m/Y g:i A" }}</div>
+                            {% if event.reason %}
+                            <div class="timeline-reason">{{ event.reason }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add interactivity
+    document.addEventListener('DOMContentLoaded', function () {
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function (e) {
+            // Ctrl/Cmd + E for edit
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                window.location.href = "{% url 'billing:payment_voucher_edit' voucher.id %}";
+            }
+            
+            // Ctrl/Cmd + P for print
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                window.open("{% url 'billing:payment_voucher_print' voucher.id %}", '_blank');
+            }
+        });
+    });
+</script>
+{% endblock %}

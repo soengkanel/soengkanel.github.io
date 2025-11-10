@@ -1,0 +1,394 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">Edit Profile</h1>
+                <span class="page-subtitle">Update your personal information</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <form method="post" enctype="multipart/form-data" class="profile-edit-form">
+            {% csrf_token %}
+            
+            <!-- Profile Photo Section -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="photo-section">
+                        <div class="photo-upload">
+                            <div class="photo-preview">
+                                <img src="{{ role_assignment.profile_photo_url }}" 
+                                     alt="Profile photo" 
+                                     class="profile-photo"
+                                     id="profile-photo-preview">
+                                <div class="photo-overlay" onclick="document.getElementById('profile-photo-input').click();">
+                                    <i class="bi bi-camera"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="photo-controls">
+                                {{ profile_form.profile_photo }}
+                                <div class="photo-actions">
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="document.getElementById('profile-photo-input').click();">
+                                        <i class="bi bi-upload"></i>
+                                        Choose Photo
+                                    </button>
+                                    {% if role_assignment.has_profile_photo %}
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removePhoto()">
+                                        <i class="bi bi-trash"></i>
+                                        Remove
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if profile_form.profile_photo.help_text %}
+                                <div class="form-text">{{ profile_form.profile_photo.help_text }}</div>
+                                {% endif %}
+                                
+                                {% if profile_form.profile_photo.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in profile_form.profile_photo.errors %}
+                                    <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ user_form.first_name.id_for_label }}">
+                                {{ user_form.first_name.label }}
+                            </label>
+                            {{ user_form.first_name }}
+                            {% if user_form.first_name.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in user_form.first_name.errors %}
+                                <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ user_form.last_name.id_for_label }}">
+                                {{ user_form.last_name.label }}
+                            </label>
+                            {{ user_form.last_name }}
+                            {% if user_form.last_name.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in user_form.last_name.errors %}
+                                <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-12">
+                            <label class="form-label" for="{{ user_form.email.id_for_label }}">
+                                {{ user_form.email.label }}
+                            </label>
+                            {{ user_form.email }}
+                            {% if user_form.email.errors %}
+                            <div class="text-danger mt-1">
+                                {% for error in user_form.email.errors %}
+                                <small>{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-12">
+                            <label class="form-label">Username</label>
+                            <div class="readonly-field">
+                                <span class="readonly-value">{{ user.username }}</span>
+                                <small class="text-muted">Cannot be changed</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a href="{% url 'user_management:user_profile' %}" class="btn btn-danger">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check"></i>
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Compact Profile Edit Styles - Following Site Standards */
+.page-header {
+    background: #fff;
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.page-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: #111827;
+    line-height: 1.2;
+}
+
+.page-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 400;
+}
+
+.page-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.profile-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Photo Upload Section */
+.photo-section {
+    display: flex;
+    justify-content: center;
+}
+
+.photo-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.photo-preview {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f0f0f0;
+    transition: all 0.2s ease;
+}
+
+.photo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    opacity: 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.photo-preview:hover .photo-overlay {
+    opacity: 1;
+}
+
+.photo-overlay i {
+    font-size: 1.25rem;
+}
+
+.photo-controls {
+    text-align: center;
+}
+
+.photo-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+#profile-photo-input {
+    display: none;
+}
+
+/* Form Controls */
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+}
+
+.form-control {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+/* Readonly Field */
+.readonly-field {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.readonly-value {
+    font-weight: 500;
+    color: #374151;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Dark Mode */
+[data-bs-theme="dark"] .page-header {
+    background: var(--dark-bg-secondary);
+    border-color: var(--dark-border-default);
+}
+
+[data-bs-theme="dark"] .page-title {
+    color: var(--dark-text-primary);
+}
+
+[data-bs-theme="dark"] .page-subtitle {
+    color: var(--dark-text-tertiary);
+}
+
+[data-bs-theme="dark"] .form-label {
+    color: var(--dark-text-secondary);
+}
+
+[data-bs-theme="dark"] .form-control {
+    background: var(--dark-bg-tertiary);
+    border-color: var(--dark-border-default);
+    color: var(--dark-text-primary);
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+    border-color: var(--dark-primary);
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.1);
+}
+
+[data-bs-theme="dark"] .readonly-field {
+    background: var(--dark-bg-tertiary);
+    border-color: var(--dark-border-default);
+}
+
+[data-bs-theme="dark"] .readonly-value {
+    color: var(--dark-text-primary);
+}
+
+[data-bs-theme="dark"] .profile-photo {
+    border-color: var(--dark-border-default);
+}
+
+[data-bs-theme="dark"] .form-actions {
+    border-color: var(--dark-border-subtle);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .page-header-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .photo-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const photoInput = document.getElementById('profile-photo-input');
+    const photoPreview = document.getElementById('profile-photo-preview');
+    
+    if (photoInput && photoPreview) {
+        photoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photoPreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+});
+
+function removePhoto() {
+    if (confirm('Remove your profile photo?')) {
+        document.getElementById('profile-photo-input').value = '';
+        document.getElementById('profile-photo-preview').src = '/static/images/default-avatar.svg';
+        
+        const clearCheckbox = document.querySelector('input[name="profile_photo-clear"]');
+        if (clearCheckbox) {
+            clearCheckbox.checked = true;
+        }
+    }
+}
+</script>
+{% endblock %} 

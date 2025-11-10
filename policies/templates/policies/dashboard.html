@@ -1,0 +1,117 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Policy Settings - {{ system_title }}{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact Design System - Policy Dashboard */
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+    .page-subtitle {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 4px;
+    }
+
+    .policy-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .policy-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        padding: 14px;
+        transition: all 0.15s;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .policy-card:hover {
+        border-color: #87CEEB;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .policy-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .policy-icon.bg-primary { background: #eff6ff; color: #3b82f6; }
+    .policy-icon.bg-success { background: #f0fdf4; color: #10b981; }
+    .policy-icon.bg-warning { background: #fffbeb; color: #f59e0b; }
+    .policy-icon.bg-info { background: #eff6ff; color: #06b6d4; }
+    .policy-icon.bg-secondary { background: #f9fafb; color: #6b7280; }
+
+    .policy-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 4px;
+    }
+
+    .policy-description {
+        font-size: 11px;
+        color: #6b7280;
+        margin-bottom: 10px;
+        line-height: 1.4;
+    }
+
+    .policy-count {
+        font-size: 10px;
+        color: #9ca3af;
+    }
+
+    .policy-count strong {
+        color: #374151;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-3">
+    <div class="page-header">
+        <h2>Policy Settings</h2>
+        <p class="page-subtitle">Manage HR and payroll policies{% if total_policies %} • {{ total_policies }} total policies{% endif %}</p>
+    </div>
+
+    <div class="policy-grid">
+        {% for policy_type in policy_types %}
+        <a href="{% url policy_type.url %}" class="policy-card">
+            <div class="policy-icon bg-{{ policy_type.color }}">
+                <i class="{{ policy_type.icon }}"></i>
+            </div>
+            <div class="policy-name">{{ policy_type.name }}</div>
+            <div class="policy-description">{{ policy_type.description }}</div>
+            <div class="policy-count">
+                <strong>{{ policy_type.count }}</strong> {{ policy_type.count|pluralize:"policy,policies" }}
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

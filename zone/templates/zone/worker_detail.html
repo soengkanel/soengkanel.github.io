@@ -1,0 +1,1393 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ worker.get_full_name }} - Details{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+/* Compact Design System for Worker Detail */
+:root {
+    --lyp-primary: #3b82f6;
+    --lyp-primary-hover: #2563eb;
+    --lyp-success: #10b981;
+    --lyp-warning: #f59e0b;
+    --lyp-danger: #ef4444;
+    --lyp-gray-50: #f8fafb;
+    --lyp-gray-100: #f1f5f9;
+    --lyp-gray-200: #e2e8f0;
+    --lyp-gray-300: #cbd5e1;
+    --lyp-gray-400: #94a3b8;
+    --lyp-gray-500: #64748b;
+    --lyp-gray-600: #475569;
+    --lyp-gray-700: #334155;
+    --lyp-gray-800: #1e293b;
+    --lyp-gray-900: #0f172a;
+}
+
+/* Container & Layout */
+.container-fluid {
+    max-width: 1400px;
+    padding: 8px 12px;
+}
+
+/* Compact Page Header */
+.page-header {
+    margin-bottom: 8px;
+}
+.page-header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+.page-header p {
+    font-size: 10px;
+    color: #6b7280;
+    margin: 0;
+}
+
+
+
+/* Worker Info Card */
+.worker-info-card {
+    background: white;
+    border: 1px solid #f1f5f9;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Worker Avatar */
+.worker-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--lyp-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+/* Photo Enhancements */
+.worker-photo-section {
+    flex-shrink: 0;
+}
+
+.worker-photo-main {
+    transition: all 0.3s ease;
+}
+
+.worker-photo-main:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Worker Header */
+.worker-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+.worker-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 2px 0;
+}
+.worker-id {
+    font-size: 10px;
+    color: #6b7280;
+    margin: 0 0 4px 0;
+    font-family: 'Courier New', monospace;
+    background: #f8fafb;
+    padding: 1px 4px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+/* Status Badge */
+.status-badge {
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.status-active {
+    background: #dcfce7;
+    color: #166534;
+}
+.status-on_leave {
+    background: #fef3c7;
+    color: #92400e;
+}
+.status-terminated {
+    background: #fee2e2;
+    color: #991b1b;
+}
+.status-suspended {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+/* Performance Rating */
+.performance-rating {
+    text-align: right;
+}
+.performance-stars {
+    color: #f59e0b;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+.performance-text {
+    font-size: 10px;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Info Tables Grid */
+.info-tables-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.info-section-table {
+    background: #f8fafb;
+    border-radius: 4px;
+    padding: 6px;
+}
+.section-title {
+    font-size: 10px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.section-title i {
+    font-size: 12px;
+    color: var(--lyp-primary);
+}
+
+/* Universal Info Table Styling */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.info-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+}
+
+.info-table tr:last-child td {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 9px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    font-weight: 600;
+    background: #f8fafb;
+    width: 35%;
+    border-right: 1px solid #f1f5f9;
+}
+
+.info-value {
+    font-size: 11px;
+    color: #1f2937;
+    font-weight: 500;
+    width: 65%;
+}
+
+.info-table tr:nth-child(odd) {
+    background: #fdfdfd;
+}
+
+.info-table tr:nth-child(even) {
+    background: white;
+}
+
+/* Responsive adjustments for Info Tables */
+@media (max-width: 768px) {
+    .info-tables-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+    
+    .info-table,
+    .info-table tbody,
+    .info-table tr,
+    .info-table td {
+        display: block;
+        width: 100%;
+    }
+    
+    .info-table tr {
+        margin-bottom: 8px;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    
+    .info-label {
+        background: #f8fafb !important;
+        border-right: none;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 10px;
+        padding: 6px 10px;
+        width: 100% !important;
+    }
+    
+    .info-value {
+        font-size: 12px;
+        padding: 8px 10px;
+        border-bottom: none;
+        width: 100% !important;
+    }
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* Modern Button System */
+.btn-modern {
+    font-size: 10px;
+    font-weight: 500;
+    border-radius: 3px;
+    padding: 3px 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.btn-primary-modern {
+    background: #3b82f6;
+    color: white;
+}
+.btn-primary-modern:hover {
+    background: #2563eb;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-outline-modern {
+    background: white;
+    color: #3b82f6;
+    border: 1px solid #3b82f6;
+    
+}
+.btn-outline-modern:hover {
+    background: #3b82f6;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-light-modern {
+    background: #f8fafb;
+    color: #374151;
+    border: 1px solid #e2e8f0;
+    border-radius:10px;
+}
+.btn-light-modern:hover {
+    background: #e2e8f0;
+    color: #1f2937;
+    transform: translateY(-1px);
+}
+
+.btn-sm-modern {
+    font-size: 9px;
+    padding: 2px 4px;
+}
+
+/* Disabled button state */
+.btn-modern.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+.btn-modern.disabled:hover {
+    transform: none;
+}
+
+/* Document Section */
+.documents-section {
+    background: white;
+    border: 1px solid #f1f5f9;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.documents-header {
+    background: #f8fafb;
+    padding: 6px 8px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.documents-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.documents-title i {
+    color: var(--lyp-primary);
+}
+
+/* View Toggle */
+.view-toggle {
+    display: flex;
+    gap: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+.view-toggle .btn {
+    padding: 3px 6px;
+    border: none;
+    background: white;
+    color: #6b7280;
+    font-size: 10px;
+    margin: 0;
+    border-radius: 6px;
+}
+.view-toggle .btn.active {
+    background: linear-gradient(180deg, #4B91F7 0%, #367AF6 100%);
+    background-origin: border-box;
+    box-shadow: 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(3, 97, 190, 0.15);
+    color: white;
+}
+.view-toggle .btn:hover:not(.active) {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+/* Document Gallery Cards */
+.document-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: white;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+    margin-bottom: 12px;
+}
+.document-card:hover {
+    box-shadow: none;
+    transform: translateY(0px);
+}
+
+/* Document Preview Side */
+.document-preview-container {
+    border-right: 1px solid #e2e8f0;
+    height: 100%;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+.document-preview-header {
+    background: #f8fafb;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.document-type-badge {
+    background: var(--lyp-primary);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.document-preview-content {
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 250px;
+}
+.document-image-preview {
+    max-width: 100%;
+    max-height: 400px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.document-image-preview:hover {
+    transform: scale(1.02);
+}
+.pdf-canvas {
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    max-width: 100%;
+    max-height: 400px;
+}
+.file-preview, .no-file-preview, .pdf-placeholder {
+    text-align: center;
+    color: #6b7280;
+    font-size: 12px;
+    padding: 20px;
+}
+.preview-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+}
+
+/* Document Information Side */
+.document-info-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+}
+.document-info-header {
+    background: #f8fafb;
+    padding: 8px 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+.document-number {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    font-family: 'Courier New', monospace;
+}
+.document-info-body {
+    padding: 12px;
+    flex: 1;
+}
+.info-grid-document {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.info-item-document {
+    padding: 6px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+.info-item-document:last-child {
+    border-bottom: none;
+}
+.info-label-document {
+    font-size: 10px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+.info-value-document {
+    font-size: 11px;
+    color: #374151;
+    font-weight: 500;
+}
+.document-validity {
+    padding: 3px 6px;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.validity-valid {
+    background: #dcfce7;
+    color: #166534;
+}
+.validity-expired {
+    background: #fee2e2;
+    color: #991b1b;
+}
+.document-info-actions {
+    padding: 0 12px 12px;
+    display: flex;
+    gap: 6px;
+    margin-top: auto;
+}
+
+/* Table Styles for List View */
+.modern-table-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.table th {
+    background-color: #f8fafb;
+    border-bottom: 1px solid #e2e8f0;
+    font-weight: 600;
+    color: #374151;
+    padding: 4px 6px;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.table td {
+    padding: 4px 6px;
+    font-size: 10px;
+    color: #374151;
+    border-bottom: 1px solid #f8fafb;
+}
+.table tbody tr:hover {
+    background-color: #f8fafb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 8px 12px;
+    }
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .info-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .worker-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .worker-avatar {
+        margin-right: 0;
+        margin-bottom: 12px;
+    }
+    .worker-photo-section .worker-photo-main,
+    .worker-photo-section .worker-avatar {
+        width: 70px !important;
+        height: 70px !important;
+        font-size: 20px !important;
+    }
+    .action-buttons {
+        width: 100%;
+        margin-top: 12px;
+    }
+    .document-card .row {
+        flex-direction: column;
+    }
+    .document-preview-container {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        min-height: 200px;
+    }
+    .document-info-container {
+        min-height: 250px;
+    }
+}
+
+/* View Content Display */
+.view-content {
+    display: none;
+}
+.view-content.active {
+    display: block;
+}
+
+/* Dark Mode Support */
+[data-bs-theme="dark"] .worker-info-card,
+[data-bs-theme="dark"] .documents-section,
+[data-bs-theme="dark"] .modern-table-container,
+[data-bs-theme="dark"] .document-card {
+    background-color: #2d2d2d;
+    border-color: #404040;
+    color: #e0e0e0;
+}
+
+[data-bs-theme="dark"] .worker-name,
+[data-bs-theme="dark"] .documents-title {
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .documents-header,
+[data-bs-theme="dark"] .document-preview-header,
+[data-bs-theme="dark"] .document-info-header,
+[data-bs-theme="dark"] .table th {
+    background-color: #363636;
+    border-bottom-color: #404040;
+}
+
+[data-bs-theme="dark"] .info-section {
+    background: #363636;
+}
+
+[data-bs-theme="dark"] .info-item-document {
+    border-bottom-color: #404040;
+}
+
+[data-bs-theme="dark"] .info-label,
+[data-bs-theme="dark"] .info-label-document {
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .info-value,
+[data-bs-theme="dark"] .info-value-document {
+    color: #d1d5db;
+}
+
+#main-content {
+    transition: none !important;
+}
+
+/* Document Preview Hover Styling */
+.document-preview-hover {
+    position: relative;
+    display: block;
+    cursor: pointer;
+}
+
+
+
+/* Additional Compact Styles */
+.document-preview-content {
+    padding: 16px !important;
+    min-height: 450px !important;
+    background: #f8fafb !important;
+}
+
+.document-info-body {
+    padding: 6px !important;
+}
+
+.document-card {
+    margin-bottom: 8px !important;
+}
+
+.document-preview-header {
+    padding: 4px 6px !important;
+}
+
+.document-info-header {
+    padding: 4px 6px !important;
+}
+
+.info-grid-document {
+    gap: 4px !important;
+    margin-bottom: 6px !important;
+}
+
+.info-item-document {
+    padding: 3px 0 !important;
+}
+
+.info-label-document {
+    font-size: 8px !important;
+    margin-bottom: 1px !important;
+}
+
+.info-value-document {
+    font-size: 10px !important;
+}
+
+.hover-fullsize-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 8px;
+    padding: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 95vw;
+    max-height: 95vh;
+}
+
+.document-preview-hover:hover .hover-fullsize-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.hover-fullsize-image {
+    max-width: calc(95vw - 20px);
+    max-height: calc(95vh - 20px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+    display: block;
+}
+
+/* Add a subtle hover effect to the preview itself */
+.document-preview-hover:hover .document-image-preview {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+}
+
+.document-preview-hover:hover .pdf-canvas {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    
+    <!-- Page Header -->
+    <div class=" border-b-none pb-4 d-flex justify-content-between align-items-center">
+        <div class="flex items-start space-x-2">
+            <a href="{% url 'zone:worker_list' %}{% if not worker.is_vip %}?worker_type=worker{% elif worker.is_vip %}?worker_type=vip{% endif %}" class=" flex items-center space-x-1 hover:text-gray-600">
+                <span>
+                    <i class="fa fa-arrow-left"></i>
+                </span>
+                <span>Back</span>
+            </a>
+            <span>/</span>
+            <div>
+                <h2><i class="bi bi-person me-2"></i>Details</h2>
+            </div>
+          </div>
+        <div class="flex items-center space-x-3">
+
+           
+            <a href="{% url 'zone:worker_edit' worker.id %}" class="button-min-primary">
+                <div>
+                    <i class="bi bi-pencil mr-2"></i>Edit
+                </div>
+            </a>
+            
+            {% if perms.zone.delete_worker %}
+            <button type="button" class="button-min-danger delete-btn"
+                data-delete-url="{% url 'zone:worker_delete' worker.id %}"
+                data-delete-title="Delete Worker?"
+                data-delete-name="{{ worker.get_full_name }}"
+                onclick="console.log('Delete button clicked for:', '{{ worker.get_full_name }}');">
+                <div>
+                    <i class="bi bi-trash mr-2"></i>Delete
+                </div>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Worker Information Card -->
+    <div class="worker-info-card px-0 border">
+        <div class="worker-header border-b pb-3 px-3">
+            <div class="worker-photo-section me-3">
+                {% if worker.photo %}
+                    <img src="{% url 'zone:serve_worker_photo' worker.id %}" 
+                         alt="{{ worker.get_full_name }}" 
+                         class="w-16 h-16 rounded-3xl ring-4 ring-gray-100 object-cover" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="w-16 h-16 bg-blue-500 rounded-3xl ring-4 ring-blue-100 flex items-center justify-center text-2xl font-bold text-white" style="display: none;">
+                        {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+                    </div>
+                {% else %}
+                    <div class="w-16 h-16 bg-blue-500 rounded-3xl ring-4 ring-blue-100 flex items-center justify-center text-2xl font-bold text-white">
+                        {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h3 class="worker-name">{{ worker.get_full_name }}</h3>
+                        <div class="flex gap-2 mt-2">
+                            <div class="font-medium py-0.5 px-1 rounded-full bg-gray-100" style="font-size:9px;">{{ worker.worker_id }}</div>
+                        <span class="status-badge status-{{ worker.status }}">
+                            {{ worker.get_status_display }}
+                        </span>
+                        </div>
+                    </div>
+                    <div class="performance-rating">
+                        <p class="text-xs font-medium text-blue-500 px-1 py-0.5 bg-blue-100 rounded-lg" style="font-size:9px;">Joined {{ worker.date_joined|date:"d/m/Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-5">
+        
+            <!---woker info -->
+            <div class="px-3 ">
+                <h4 class="px-1 text-md font-semibold text-gray-700 uppercase flex gap-2 pt-1.5" style="font-size:14px;">
+                        <i class="fa fa-user"></i>Personal Information
+                </h4>
+                <div class="py-2 px-3">
+                    <div class="py-2 space-x-3 w-full flex">
+                        <span class="text-gray-500 w-28">First Name</span>
+                        <span class="font-semibold">{{ worker.first_name }}</span>
+                    </div>
+                    <div class="py-2 space-x-3  w-full flex">
+                        <span class="text-gray-500 w-28">Last Name</span>
+                        <span class="font-semibold">{{ worker.last_name }}</span>
+                    </div>
+                    <div class="py-2 space-x-3  w-full flex">
+                        <span class="text-gray-500 w-28">Nickname</span>
+                        <span class="font-semibold">{{ worker.nickname|default:"Not provided" }}</span>
+                    </div>
+                    <div class="py-2 space-x-3  w-full flex">
+                        <span class="text-gray-500 w-28">Gender</span>
+                        <span class="font-semibold">{{ worker.get_gender_display|default:"Not provided" }}</span>
+                    </div>
+                    <div class="py-2 space-x-3  w-full flex">
+                        <span class="text-gray-500 w-28">Date of Birth</span>
+                        <span class="font-semibold">{{ worker.dob|date:"d/m/Y"|default:"Not provided" }}</span>
+                    </div>
+                    <div class="py-2 space-x-3  w-full flex">
+                        <span class="text-gray-500 w-28">Age</span>
+                        <span class="font-semibold">{{ worker.age|default:"Not provided" }}</span>
+                    </div>
+                    <div class="py-2 space-x-3  w-full flex">
+                        <span class="text-gray-500 w-28">Nationality</span>
+                        <span class="font-semibold">{{ worker.get_nationality_display|default:"Not provided" }}</span>
+                    </div>
+                </div>
+            </div>
+            <!---woker info -->
+
+            <!---contact info -->
+            <div class="px-3 ">
+                <h4 class="px-1 text-md font-semibold text-gray-700 uppercase flex gap-2 pt-1.5" style="font-size:14px;">
+                        <i class="fa fa-phone"></i>Contact Information
+                </h4>
+                <div class="py-2 px-3">
+                    <div class="py-2 space-x-3 w-full flex">
+                        <span class="text-gray-500 w-28">Phone Number</span>
+                        <span class="font-semibold">{{ worker.phone_number|default:"Not provided" }}</span>
+                    </div>
+                    
+                </div>
+            </div>
+            <!---contact info -->
+        </div>
+
+        <div class="grid grid-cols-2 gap-5 mt-3 border-t pt-3">
+        
+            <!---woker info -->
+            <div class="px-3 ">
+                <h4 class="px-1 text-md font-semibold text-gray-700 uppercase flex gap-2 pt-1.5" style="font-size:14px;">
+                        <i class="fa fa-briefcase"></i>Information
+                </h4>
+                <div class="py-2 px-3">
+                    <div class="py-2 space-x-3 w-full flex">
+                        <span class="text-gray-500 w-28">Position</span>
+                        <span class="font-semibold">{{ worker.position|default:"Not assigned" }}</span>
+                    </div>
+                    <div class="py-2 space-x-3  w-full flex">
+                        <span class="text-gray-500 w-28">Zone</span>
+                        <span class="font-semibold">{{ worker.zone.name|default:"Not provided" }}</span>
+                    </div>
+                    <div class="py-2 space-x-3  w-full flex">
+                        <span class="text-gray-500 w-28">Building</span>
+                        <span class="font-semibold">{{ worker.building.name|default:"Not provided" }}</span>
+                    </div>
+                    <div class="py-2 space-x-3  w-full flex">
+                        <span class="text-gray-500 w-28">Floor</span>
+                        <span class="font-semibold">{{ worker.floor.name|default:"Not provided" }}</span>
+                    </div>
+                    <div class="py-2 space-x-3  w-full flex">
+                        <span class="text-gray-500 w-28">Status</span>
+                        <span class="font-semibold uppercase px-2 py-1 rounded-lg bg-green-100 text-green-700 font-medium" style="font-size:10px">{{ worker.status|default:"Not provided" }}</span>
+                    </div>
+                    
+                   
+                </div>
+            </div>
+            <!---woker info -->
+
+            <!---contact info -->
+            <div class="px-3 ">
+                <h4 class="px-1 text-md font-semibold text-gray-700 uppercase flex gap-2 pt-1.5" style="font-size:14px;">
+                        <i class="fa fa-credit-card"></i>Identification
+                </h4>
+                <div class="py-2 px-3">
+                    <div class="py-2 space-x-3 w-full flex">
+                        <span class="text-gray-500 w-28">Workder ID</span>
+                        <span class="font-semibold">{{ worker.worker_id|default:"Not provided" }}</span>
+                    </div>
+                    <div class="py-2 space-x-3  w-full flex">
+                        <span class="text-gray-500 w-28">VIP</span>
+                        <span class="font-semibold">{{ worker.is_vip|default:"Not provided" }}</span>
+                    </div>
+                </div>
+            </div>
+            <!---contact info -->
+        </div>
+
+       
+    </div>
+
+
+<!-- Documents Section -->
+<div class="documents-section border">
+        <div class="documents-header">
+            <h4 class="documents-title">
+                <i class="bi bi-file-earmark-text"></i>Documents
+                <span class="badge bg-secondary ms-2">{{ worker.documents.count }}</span>
+            </h4>
+            <div class="view-toggle">
+                <button class="btn active" id="btn-list-view" data-view="list">
+                    <i class="bi bi-list"></i>List
+                </button>
+                <button class="btn" id="btn-gallery-view" data-view="gallery">
+                    <i class="bi bi-grid"></i>Gallery
+                </button>
+            </div>
+        </div>
+
+        <!-- List View -->
+        <div id="list-view" class="view-content active">
+            {% if worker.documents.exists %}
+                <div class="">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Document Number</th>
+                                <th>Issue Date</th>
+                                <th>Expiry Date</th>
+                                <th>Authority</th>
+                                <th>Status</th>
+                                <th>File Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for document in worker.documents.all %}
+                            <tr data-document-id="{{ document.id }}">
+                                <td>
+                                    <div class="py-0.5 px-1 text-center bg-blue-100 rounded-lg text-blue-600 font-semibold uppercase" style="font-size:9px;"> {{ document.get_document_type_display }}</div>
+                                   
+                                </td>
+                                <td>
+                                    <code>{{ document.document_number }}</code>
+                                </td>
+                                <td>{{ document.issue_date|date:"d/m/Y" }}</td>
+                                <td>
+                                    {{ document.expiry_date|date:"d/m/Y" }}
+                                    {% if document.is_expired %}
+                                        <span class="document-validity validity-expired ms-2">Expired</span>
+                                    {% else %}
+                                        <span class="document-validity validity-valid ms-2">Valid</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ document.issuing_authority|default:"—" }}</td>
+                                <td>
+                                    {% if document.is_expired %}
+                                        <span class="status-badge status-terminated">Expired</span>
+                                    {% else %}
+                                        <span class="status-badge status-active">Valid</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if document.document_file and document.document_file.name %}
+                                        <span class="text-success" style="font-size:10px;">
+                                            <i class="bi bi-check-circle"></i> Available
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted" style="font-size:10px;">
+                                            <i class="bi bi-x-circle"></i> No File
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-file-earmark text-muted" style="font-size: 3rem;"></i>
+                    <h6 class="mt-3 text-muted">No documents found</h6>
+                    <p class="text-muted">Upload worker documents to get started.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Gallery View -->
+        <div id="gallery-view" class="view-content" style="padding: 8px;">
+            {% if worker.documents.exists %}
+                {% for document in worker.documents.all %}
+                <div class="document-card" data-document-id="{{ document.id }}">
+                    <div class="row g-0">
+                        <!-- Document Preview Side -->
+                        <div class="col-md-6">
+                            <div class="document-preview-container">
+                                <div class="document-preview-header">
+                                    <div class="px-1 py-0.5 bg-blue-100 rounded-lg text-blue-600 font-semibold uppercase" style="font-size:9px;" >{{ document.get_document_type_display }}</div>
+                                    <div class="text-right" style="font-size:10px; color: #6b7280;">
+                                        {% if document.document_file and document.document_file.name %}
+                                            <i class="bi bi-check-circle text-success"></i> Available
+                                        {% else %}
+                                            <i class="bi bi-x-circle text-muted"></i> No File
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="document-preview-content" style="padding: 16px; min-height: 450px; display: flex; align-items: center; justify-content: center; background: #f8fafb;">
+                                    {% if document.document_file %}
+                                        {% if document.document_file.name %}
+                                            {% if document.document_file.name|lower|slice:"-4:" == ".pdf" %}
+                                                <div class="pdf-preview" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                                    <div class="pdf-placeholder" id="pdf-placeholder-{{ document.id }}" style="text-align: center;">
+                                                        <i class="bi bi-file-earmark-pdf text-danger" style="font-size: 4rem;"></i>
+                                                        <p style="margin-top: 12px; font-size: 14px; color: #6b7280;">Loading PDF preview...</p>
+                                                    </div>
+                                                    <canvas id="pdf-canvas-{{ document.id }}" class="pdf-canvas" style="display: none; max-width: 100%; max-height: 400px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); cursor: pointer;" onclick="openModal('{% url 'zone:serve_encrypted_image' document.id %}')"></canvas>
+                                                </div>
+                                            {% elif document.document_file.name %}
+                                                <img src="{% url 'zone:serve_encrypted_image' document.id %}"  
+                                                     alt="Document preview" 
+                                                     id="document-image-preview-{{ document.id }}" 
+                                                     style="max-width: 100%; max-height: 400px; width: auto; height: auto; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); cursor: pointer; transition: transform 0.2s ease;"
+                                                     onclick="openModal('{% url 'zone:serve_encrypted_image' document.id %}')"
+                                                     onmouseover="this.style.transform='scale(1.02)'"
+                                                     onmouseout="this.style.transform='scale(1)'">
+                                            {% else %}
+                                                <div class="file-preview" style="text-align: center;">
+                                                    <i class="bi bi-file-earmark text-muted" style="font-size: 4rem;"></i>
+                                                    <p style="margin-top: 12px; font-size: 14px; color: #6b7280;">File: {{ document.document_file.name }}</p>
+                                                </div>
+                                            {% endif %}
+                                            
+                                        {% else %}
+                                            <div class="no-file-preview" style="text-align: center;">
+                                                <i class="bi bi-file-earmark-x text-muted" style="font-size: 4rem;"></i>
+                                                <p style="margin-top: 12px; font-size: 14px; color: #6b7280;">Document field exists but no file name</p>
+                                            </div>
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="no-file-preview" style="text-align: center;">
+                                            <i class="bi bi-file-earmark-x text-muted" style="font-size: 4rem;"></i>
+                                            <p style="margin-top: 12px; font-size: 14px; color: #6b7280;">No file attached</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Information Side -->
+                        <div class="col-md-6">
+                            <div class="document-info-container">
+                                <div class="document-info-header">
+                                    <span class="document-number h-8 flex items-center" style="font-size:14px; font-family: 'Courier New', monospace;">{{ document.document_number }}</span>
+                                </div>
+                                <div class="document-info-body space-y-2">
+                                    <div class="info-grid-document ">
+                                        <div class="border-b pb-2">
+                                            <div class="info-label-document">Issue Date</div>
+                                            <div class="info-value-document">{{ document.issue_date|date:"d/m/Y" }}</div>
+                                        </div>
+                                        <div class="border-b pb-1">
+                                            <div class="info-label-document">Expiry Date</div>
+                                            <div class="info-value-document">
+                                                {{ document.expiry_date|date:"d/m/Y" }}
+                                                {% if document.is_expired %}
+                                                    <span class="document-validity validity-expired ms-2">Expired</span>
+                                                {% else %}
+                                                    <span class="document-validity validity-valid ms-2">Valid</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="border-b pb-2">
+                                        <div class="info-label-document">Issuing Authority</div>
+                                        <div class="info-value-document">{{ document.issuing_authority|default:"Not specified" }}</div>
+                                    </div>
+                                    
+                                    {% if document.notes %}
+                                    <div class="border-b pb-2">
+                                        <div class="info-label-document">Notes</div>
+                                        <div class="info-value-document">{{ document.notes }}</div>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <div class="border-b pb-2">
+                                        <div class="info-label-document">Created</div>
+                                        <div class="info-value-document">{{ document.created_at|date:"d/m/Y H:i" }}</div>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-file-earmark text-muted" style="font-size: 3rem;"></i>
+                    <h6 class="mt-3 text-muted">No documents found</h6>
+                    <p class="text-muted">Upload worker documents to get started.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    
+</div>
+
+
+<!-- PDF.js and JavaScript -->
+<script src="{% static 'vendor/pdfjs/pdf.min.js' %}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // View toggle functionality
+    const listViewBtn = document.getElementById('btn-list-view');
+    const galleryViewBtn = document.getElementById('btn-gallery-view');
+    const listViewContainer = document.getElementById('list-view');
+    const galleryViewContainer = document.getElementById('gallery-view');
+
+    function switchView(viewType) {
+        if (viewType === 'list') {
+            listViewContainer.classList.add('active');
+            galleryViewContainer.classList.remove('active');
+            listViewBtn.classList.add('active');
+            galleryViewBtn.classList.remove('active');
+        } else {
+            listViewContainer.classList.remove('active');
+            galleryViewContainer.classList.add('active');
+            listViewBtn.classList.remove('active');
+            galleryViewBtn.classList.add('active');
+        }
+        localStorage.setItem('documentViewPreference', viewType);
+    }
+
+    // Load saved preference or default to list view
+    const savedView = localStorage.getItem('documentViewPreference') || 'list';
+    switchView(savedView);
+
+    // Event listeners
+    listViewBtn.addEventListener('click', () => switchView('list'));
+    galleryViewBtn.addEventListener('click', () => switchView('gallery'));
+
+    
+
+    // PDF Preview functionality
+    if (typeof pdfjsLib !== 'undefined') {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = '{% static "vendor/pdfjs/pdf.worker.min.js" %}';
+
+        // Preview button handlers - switch to gallery and highlight card
+        document.querySelectorAll('.preview-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const documentId = this.getAttribute('data-document-id');
+                
+                // Switch to gallery view
+                switchView('gallery');
+                
+                // Scroll to and highlight the document card
+                setTimeout(() => {
+                    const documentCard = document.querySelector(`[data-document-id="${documentId}"].document-card`);
+                    if (documentCard) {
+                        documentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        
+                        // Add highlight effect
+                        documentCard.style.border = '2px solid var(--lyp-primary)';
+                        documentCard.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.3)';
+                        
+                        // Remove highlight after 3 seconds
+                        setTimeout(() => {
+                            documentCard.style.border = '';
+                            documentCard.style.boxShadow = '';
+                        }, 3000);
+                    }
+                }, 100);
+            });
+        });
+
+        // Auto-load PDF previews when gallery view is active
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const placeholder = entry.target;
+                    const documentId = placeholder.id.replace('pdf-placeholder-', '');
+                    const canvas = document.getElementById(`pdf-canvas-${documentId}`);
+                    
+                    if (canvas && !canvas.dataset.loaded) {
+                        // Find PDF URL from document card
+                        const documentCard = placeholder.closest('.document-card');
+                        const pdfLinks = documentCard.querySelectorAll('a[href$=".pdf"]');
+                        
+                        if (pdfLinks.length > 0) {
+                            loadPDF(pdfLinks[0].href, canvas, placeholder, documentId);
+                        }
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+
+        // Observe all PDF placeholders
+        document.querySelectorAll('[id^="pdf-placeholder-"]').forEach(placeholder => {
+            observer.observe(placeholder);
+        });
+
+        function loadPDF(url, canvas, placeholder, documentId) {
+            canvas.dataset.loaded = 'loading';
+            placeholder.innerHTML = '<i class="bi bi-file-earmark-pdf text-danger" style="font-size: 4rem;"></i><p style="margin-top: 12px; font-size: 14px; color: #6b7280;">Loading PDF...</p>';
+
+            pdfjsLib.getDocument(url).promise.then(function(pdf) {
+                return pdf.getPage(1);
+            }).then(function(page) {
+                const container = canvas.parentElement;
+                const containerWidth = container.clientWidth - 32; // Account for padding
+                const viewport = page.getViewport({scale: 1});
+                const scale = Math.min(containerWidth / viewport.width, 400 / viewport.height); // Increased max height to 400px
+                const scaledViewport = page.getViewport({scale: scale});
+                
+                canvas.height = scaledViewport.height;
+                canvas.width = scaledViewport.width;
+                
+                const renderContext = {
+                    canvasContext: canvas.getContext('2d'),
+                    viewport: scaledViewport
+                };
+                
+                return page.render(renderContext).promise;
+            }).then(function() {
+                placeholder.style.display = 'none';
+                canvas.style.display = 'block';
+                canvas.dataset.loaded = 'true';
+            }).catch(function(error) {
+                console.error('Error loading PDF:', error);
+                placeholder.innerHTML = '<i class="bi bi-file-earmark-pdf text-danger" style="font-size: 2rem;"></i><p>Error loading PDF</p>';
+                canvas.dataset.loaded = 'error';
+            });
+        }
+    }
+
+    // Cross-reference highlighting between table rows and gallery cards
+    document.querySelectorAll('tr[data-document-id]').forEach(row => {
+        row.addEventListener('mouseenter', function() {
+            const documentId = this.getAttribute('data-document-id');
+            const card = document.querySelector(`[data-document-id="${documentId}"].document-card`);
+            if (card) {
+                card.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.15)';
+                card.style.transform = 'translateY(-4px)';
+            }
+        });
+
+        row.addEventListener('mouseleave', function() {
+            const documentId = this.getAttribute('data-document-id');
+            const card = document.querySelector(`[data-document-id="${documentId}"].document-card`);
+            if (card) {
+                card.style.boxShadow = '';
+                card.style.transform = '';
+            }
+        });
+    });
+
+    // Gallery card hover effect to highlight corresponding table row
+    document.querySelectorAll('.document-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            const documentId = this.getAttribute('data-document-id');
+            const row = document.querySelector(`tr[data-document-id="${documentId}"]`);
+            if (row) {
+                row.style.backgroundColor = '#f8fafb';
+            }
+        });
+
+        card.addEventListener('mouseleave', function() {
+            const documentId = this.getAttribute('data-document-id');
+            const row = document.querySelector(`tr[data-document-id="${documentId}"]`);
+            if (row) {
+                row.style.backgroundColor = '';
+            }
+        });
+    });
+});
+
+// Debounce function for search input
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+</script>
+<script>
+
+
+    function downloadImage(imgElement, filename = 'image.png') {
+        // Get the image source URL
+        const imageUrl = imgElement.src;
+        
+        // Fetch the image
+        fetch(imageUrl)
+          .then(response => response.blob())
+          .then(blob => {
+            // Create a blob URL
+            const blobUrl = URL.createObjectURL(blob);
+            
+            // Create a temporary anchor element
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = filename;
+            
+            // Trigger the download
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up
+            document.body.removeChild(a);
+            URL.revokeObjectURL(blobUrl);
+          })
+          .catch(error => console.error('Error downloading image:', error));
+      }
+
+</script>
+
+{% endblock %} 
+{% block modals %}
+    {% include 'components/delete_modal.html' %}
+{% endblock %}

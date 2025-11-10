@@ -1,0 +1,344 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Import Results{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Ultra-Compact Complete View Design */
+    :root {
+        --text: #374151;
+        --text-light: #9ca3af;
+        --border: #e5e7eb;
+        --success: #10b981;
+        --error: #ef4444;
+        --warning: #f59e0b;
+    }
+
+    .ultra-page {
+        max-width: 700px;
+        margin: 0.5rem auto;
+        padding: 0 0.5rem;
+        font-family: system-ui, sans-serif;
+        font-size: 12px;
+        line-height: 1.2;
+    }
+
+    /* Compact Header */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.25rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        margin: 0;
+    }
+
+    .nav-links {
+        font-size: 10px;
+        color: var(--text-light);
+    }
+
+    .nav-links a {
+        color: var(--text-light);
+        text-decoration: none;
+        margin-left: 6px;
+    }
+
+    /* Inline Summary */
+    .summary {
+        display: flex;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        margin-bottom: 0.75rem;
+        font-size: 11px;
+    }
+
+    .stat {
+        flex: 1;
+        padding: 6px 4px;
+        text-align: center;
+        border-right: 1px solid var(--border);
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-value {
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 9px;
+        color: var(--text-light);
+        text-transform: uppercase;
+        margin-top: 1px;
+    }
+
+    .stat-success { color: var(--success); }
+    .stat-error { color: var(--error); }
+    .stat-warning { color: var(--warning); }
+
+    /* Compact Issues List */
+    .issues {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .issues-header {
+        padding: 4px 8px;
+        background: #fafafa;
+        border-bottom: 1px solid var(--border);
+        font-size: 10px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .issue {
+        padding: 4px 8px;
+        border-bottom: 1px solid var(--border);
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .issue:last-child { border-bottom: none; }
+
+    .issue-dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .issue-dot.error { background: var(--error); }
+    .issue-dot.warning { background: var(--warning); }
+    .issue-dot.success { background: var(--success); }
+
+    .issue-content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .issue-name {
+        font-weight: 500;
+        color: var(--text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 120px;
+    }
+
+    .issue-desc {
+        color: var(--text-light);
+        font-size: 10px;
+        flex: 1;
+        margin: 0 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .issue-row {
+        font-size: 9px;
+        color: var(--text-light);
+        font-weight: 500;
+        min-width: 20px;
+    }
+
+    /* Show More */
+    .show-more {
+        padding: 3px 8px;
+        text-align: center;
+        background: #fafafa;
+        color: var(--text-light);
+        font-size: 9px;
+        cursor: pointer;
+        border-top: 1px solid var(--border);
+    }
+
+    .show-more:hover { background: #f0f0f0; }
+
+    /* Compact Actions */
+    .actions {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        margin-top: 0.75rem;
+    }
+
+    .btn {
+        padding: 4px 8px;
+        border-radius: 2px;
+        font-size: 10px;
+        font-weight: 500;
+        text-decoration: none;
+        border: 1px solid var(--border);
+    }
+
+    .btn-primary {
+        background: var(--text);
+        color: white;
+        border-color: var(--text);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--text);
+    }
+
+    /* Scrollbar */
+    .issues::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .issues::-webkit-scrollbar-track {
+        background: #fafafa;
+    }
+    
+    .issues::-webkit-scrollbar-thumb {
+        background: var(--text-light);
+        border-radius: 3px;
+    }
+    
+    .issues::-webkit-scrollbar-thumb:hover {
+        background: var(--text);
+    }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+        .ultra-page { 
+            margin: 0.25rem; 
+            padding: 0 0.25rem; 
+        }
+        .issue-name { max-width: 80px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ultra-page">
+    <!-- Header -->
+    <div class="header">
+        <h1 class="title">Import Results</h1>
+        <div class="nav-links">
+            <a href="{% url 'zone:worker_list' %}">Workers</a>
+            <a href="{% url 'zone:import_workers' %}">Import</a>
+            <a href="?compact=1">Compact</a>
+        </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary">
+        <div class="stat">
+            <div class="stat-value stat-success">{{ results.success_count|default:0 }}</div>
+            <div class="stat-label">OK</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value stat-error">{{ results.error_count|default:0 }}</div>
+            <div class="stat-label">ERR</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value stat-warning">{{ warnings|length|default:0 }}</div>
+            <div class="stat-label">WARN</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">{{ results.success_count|add:results.error_count|default:0 }}</div>
+            <div class="stat-label">TOT</div>
+        </div>
+    </div>
+
+    <!-- All Errors -->
+    {% if validation_errors %}
+    <div class="issues">
+        <div class="issues-header">
+            <span>Errors</span>
+            <span>{{ validation_errors|length }}</span>
+        </div>
+        {% for item in validation_errors %}
+        <div class="issue">
+            <div class="issue-dot error"></div>
+            <div class="issue-content">
+                <div class="issue-name" title="{{ item.worker_name }}">{{ item.worker_name }}</div>
+                <div class="issue-desc" title="{% for e in item.errors|slice:':1' %}{{ e.field }}: {{ e.error }}{% endfor %}">
+                    {% for e in item.errors|slice:":1" %}{{ e.field }}: {{ e.error }}{% endfor %}
+                    {% if item.errors|length > 1 %} +{{ item.errors|length|add:"-1" }}{% endif %}
+                </div>
+                <div class="issue-row">R{{ item.row }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- All Warnings -->
+    {% if warnings %}
+    <div class="issues">
+        <div class="issues-header">
+            <span>Warnings</span>
+            <span>{{ warnings|length }}</span>
+        </div>
+        {% for item in warnings %}
+        <div class="issue">
+            <div class="issue-dot warning"></div>
+            <div class="issue-content">
+                <div class="issue-name" title="{{ item.worker_name }}">{{ item.worker_name }}</div>
+                <div class="issue-desc" title="{% for w in item.warnings|slice:':1' %}{{ w.field }}: {{ w.warning }}{% endfor %}">
+                    {% for w in item.warnings|slice:":1" %}{{ w.field }}: {{ w.warning }}{% endfor %}
+                    {% if item.warnings|length > 1 %} +{{ item.warnings|length|add:"-1" }}{% endif %}
+                </div>
+                <div class="issue-row">R{{ item.row }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- All Successfully Imported -->
+    {% if results.workers_created and results.success_count > 0 %}
+    <div class="issues">
+        <div class="issues-header">
+            <span>Successfully Imported</span>
+            <span>{{ results.success_count }}</span>
+        </div>
+        {% for worker in results.workers_created %}
+        <div class="issue">
+            <div class="issue-dot success"></div>
+            <div class="issue-content">
+                <div class="issue-name" title="{{ worker.name }}">{{ worker.name }}</div>
+                <div class="issue-desc">
+                    {% if worker.warnings_count > 0 %}{{ worker.warnings_count }} warning{{ worker.warnings_count|pluralize }}{% endif %}
+                </div>
+                <div class="issue-row">R{{ worker.row }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Actions -->
+    <div class="actions">
+        <a href="{% url 'zone:worker_list' %}" class="btn btn-primary">View All Workers</a>
+    </div>
+</div>
+{% endblock %}

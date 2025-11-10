@@ -1,0 +1,1 @@
+# admin config for dashboard

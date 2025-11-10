@@ -1,0 +1,182 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Delete Building - {{ building.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .delete-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .delete-header {
+        background: #dc3545;
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .delete-header i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .delete-content {
+        padding: 1rem;
+    }
+    
+    .building-info {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .dependency-warning {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 6px;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .dependency-warning h6 {
+        color: #856404;
+        margin-bottom: 0.5rem;
+    }
+    
+    .dependency-list {
+        list-style: none;
+        padding: 0;
+        margin: 0.5rem 0;
+    }
+    
+    .dependency-list li {
+        padding: 0.25rem 0;
+        color: #856404;
+    }
+    
+    .dependency-list i {
+        margin-right: 0.5rem;
+        width: 16px;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+    
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        padding: 0.75rem 2rem;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        padding: 0.75rem 2rem;
+        border-radius: 6px;
+        font-weight: 500;
+    }
+    
+    .warning-text {
+        color: #dc3545;
+        font-weight: 600;
+        text-align: center;
+        margin: 1rem 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="delete-container border rounded-lg">
+        <div class="flex item-start space-x-3 px-3 py-2 mt-2">
+            <div class="w-12 h-12 rounded-full bg-red-50 text-red-500 flex justify-center items-center">
+                <i class="bi bi-exclamation-triangle text-lg"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold">Delete Building</h3>
+                <p class="text-gray-500">This action cannot be undone</p>
+            </div>
+        </div>
+        
+        <div class="delete-content mt-0">
+            <div class="building-info">
+                <h5>{{ building.name }}</h5>
+                <p class="text-muted mb-2">
+                    <i class="bi bi-geo-alt me-1"></i>{{ building.address }}
+                </p>
+                <p class="text-muted mb-0">
+                    <i class="bi bi-layers me-1"></i>{{ building.total_floors }} Floor{{ building.total_floors|pluralize }}
+                </p>
+            </div>
+            
+            {% if has_dependencies %}
+                <div class="dependency-warning">
+                    <h6><i class="bi bi-exclamation-triangle me-2"></i>Warning: Dependencies Found</h6>
+                    <p>This building has the following dependencies that will be affected:</p>
+                    
+                    <ul class="dependency-list">
+                        {% if floor_count > 0 %}
+                            <li>
+                                <i class="bi bi-layers"></i>
+                                <strong>{{ floor_count }}</strong> Floor{{ floor_count|pluralize }} will be deleted
+                            </li>
+                        {% endif %}
+                        {% if zone_count > 0 %}
+                            <li>
+                                <i class="bi bi-person-badge"></i>
+                                <strong>{{ zone_count }}</strong> Zone{{ zone_count|pluralize }} will lose building assignment
+                            </li>
+                        {% endif %}
+                        {% if worker_count > 0 %}
+                            <li>
+                                <i class="bi bi-briefcase"></i>
+                                <strong>{{ worker_count }}</strong> Worker{{ worker_count|pluralize }} will lose building assignment
+                            </li>
+                        {% endif %}
+                    </ul>
+                    
+                    <p class="mb-0 mt-2">
+                        <strong>Consider:</strong> Reassigning zones and workers to other buildings before deletion.
+                    </p>
+                </div>
+                
+                <div class="border-none p-3 rounded bg-red-50 text-red-600">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Deleting this building will permanently remove all associated floors and unassign all zones and workers.
+                </div>
+            {% else %}
+                <div class="text-center">
+                    <p>Are you sure you want to delete this building?</p>
+                    <p class="text-muted">This building has no dependencies and can be safely deleted.</p>
+                </div>
+            {% endif %}
+            
+            <form method="post" class="flex justify-end pt-3 space-x-3">
+                {% csrf_token %}
+                <a href="{% url 'zone:building_detail' building.id %}" class="button-min-default">
+                    Cancel
+                </a>
+                <button type="submit" class="button-min-danger">
+                   <div>
+                    <i class="bi bi-trash me-2"></i>Delete Building
+                   </div>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 

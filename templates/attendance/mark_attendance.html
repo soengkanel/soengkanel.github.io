@@ -1,0 +1,1652 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Mark Attendance" %} - {{ today }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact Variables */
+    .stat-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 1rem;
+        background: #fff;
+    }
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0.25rem 0;
+    }
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 6px;
+        margin-bottom: 12px;
+    }    
+    :root {
+        --primary: #3b82f6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #06b6d4;
+    }
+
+    /* Compact Header */
+    .page-header-compact {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 16px;
+    }
+
+    .page-header-compact h1 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+
+    .btn-compact {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 500;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.15s;
+        border: 1px solid;
+    }
+
+    .btn-primary-compact {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .btn-primary-compact:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-secondary-compact {
+        background: white;
+        color: #374151;
+        border-color: #d1d5db;
+    }
+
+    .btn-secondary-compact:hover {
+        background: #f9fafb;
+    }
+
+    /* Compact Filters */
+    .filters-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+
+    /* Compact Table */
+    .table-container-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .table-compact {
+        width: 100%;
+        margin: 0;
+        font-size: 12px;
+        border-collapse: collapse;
+    }
+
+    .table-compact thead th {
+        background: #f9fafb;
+        padding: 10px 12px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #e5e7eb;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .table-compact tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #f3f4f6;
+        color: #111827;
+        vertical-align: middle;
+    }
+
+    .table-compact tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-compact tbody tr:hover {
+        background: #f9fafb;
+        cursor: pointer;
+    }
+
+    /* Status Badges */
+    .badge-compact {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .badge-active { background: #d1fae5; color: #065f46; }
+    .badge-inactive { background: #e5e7eb; color: #4b5563; }
+
+    /* Action Buttons */
+    .btn-icon-compact {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        padding: 0;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: white;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+
+    .btn-icon-compact:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+        color: #111827;
+    }
+
+    .btn-icon-compact.danger {
+        color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .btn-icon-compact.danger:hover {
+        background: #fee2e2;
+    }
+    .btn-icon-compact.success {
+        color: var(--success);
+        border-color: var(--success);
+    }
+
+    .btn-icon-compact.success:hover {
+        background: #d1fae5;
+    }
+
+    .btn-icon-compact.warning {
+        color: var(--warning);
+        border-color: var(--warning);
+    }
+
+    .btn-icon-compact.warning:hover {
+        background: #f7e2be;
+    }
+    .btn-icon-compact.primary {
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .btn-icon-compact.primary:hover {
+        background: #c8daf7;
+    }
+
+    /* Employee Avatar */
+    .employee-avatar-compact {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .employee-info-compact {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Empty State */
+    .empty-state-compact {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .empty-state-compact i {
+        font-size: 48px;
+        color: #d1d5db;
+        margin-bottom: 12px;
+    }
+
+    .empty-state-compact h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0 0 8px 0;
+    }
+
+    .empty-state-compact p {
+        font-size: 13px;
+        color: #6b7280;
+        margin: 0 0 16px 0;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .table-compact {
+            font-size: 12px;
+        }
+
+        .table-compact thead th,
+        .table-compact tbody td {
+            padding: 8px 10px;
+        }
+
+        .stats-compact {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    .clock-card {
+    transition: all 0.2s ease;
+    background-color: #f8f9fa;
+    }
+    .clock-card:hover {
+        transform: translateY(-2px);
+        background-color: #ffffff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+    .clock-time {
+        font-family: "Roboto Mono", monospace;
+    }
+    .btn-success, .btn-danger {
+        border-radius: 8px;
+    }
+
+    .page-header { padding: 6px 0; margin-bottom: 12px; }
+    .page-header h2 { font-size: 16px; font-weight: 600; margin: 0; color: #1a1a1a; }
+
+    /* Form Controls */
+    .form-control,
+    .form-select {
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+        height: auto !important;
+        border-radius: 3px;
+        border: 1px solid #d1d5db;
+        line-height: 1.4;
+        background: white;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    .form-label { font-size: 10px !important; margin-bottom: 3px !important; font-weight: 500; color: #374151; }
+
+    /* Compact Modal Styling */
+    #addAttendanceModal .modal-content {
+        border-radius: 8px !important;
+    }
+
+    #addAttendanceModal .modal-header {
+        padding: 12px 16px !important;
+        border-bottom: 1px solid #e5e7eb !important;
+        background: white !important;
+    }
+
+    #addAttendanceModal .modal-header .modal-title {
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        color: #111827 !important;
+    }
+
+    #addAttendanceModal .modal-body {
+        padding: 16px !important;
+    }
+
+    #addAttendanceModal .modal-footer {
+        padding: 12px 16px !important;
+        border-top: 1px solid #e5e7eb !important;
+        background: white !important;
+    }
+
+    /* Compact form controls in modal */
+    #addAttendanceModal .form-control {
+        font-size: 13px !important;
+        padding: 6px 10px !important;
+        height: 32px !important;
+        border-radius: 4px !important;
+        border: 1px solid #d1d5db !important;
+    }
+
+    #addAttendanceModal .form-control:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1) !important;
+    }
+
+    #addAttendanceModal .form-label {
+        font-size: 12px !important;
+        margin-bottom: 4px !important;
+        font-weight: 500 !important;
+        color: #374151 !important;
+    }
+
+    #addAttendanceModal .form-select {
+        font-size: 13px !important;
+        padding: 6px 10px !important;
+        height: 32px !important;
+        border-radius: 4px !important;
+    }
+
+    #addAttendanceModal textarea.form-control {
+        height: auto !important;
+        min-height: 60px !important;
+        resize: vertical !important;
+    }
+
+    #addAttendanceModal input[type="date"],
+    #addAttendanceModal input[type="time"] {
+        font-size: 13px !important;
+        padding: 6px 10px !important;
+        height: 32px !important;
+    }
+
+    #addAttendanceModal .btn {
+        font-size: 13px !important;
+        padding: 6px 12px !important;
+        border-radius: 4px !important;
+    }
+
+    #addAttendanceModal .mb-3,
+    #addAttendanceModal .mb-4 {
+        margin-bottom: 12px !important;
+    }
+
+    /* Employee autocomplete suggestions styling */
+    #employee-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1060;
+        background: white;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-top: 2px;
+    }
+
+    #employee-suggestions.show {
+        display: block !important;
+    }
+
+    .employee-suggestion-item {
+        padding: 8px 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #f3f4f6;
+        transition: background-color 0.15s;
+    }
+
+    .employee-suggestion-item:last-child {
+        border-bottom: none;
+    }
+
+    .employee-suggestion-item:hover {
+        background-color: #f0f9ff;
+    }
+
+    .employee-suggestion-item strong {
+        display: block;
+        font-size: 13px;
+        color: #111827;
+        margin-bottom: 2px;
+    }
+
+    .employee-suggestion-item small {
+        display: block;
+        font-size: 11px;
+        color: #6b7280;
+    }
+
+    .no-results {
+        padding: 10px;
+        text-align: center;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    .status-badge { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 500; text-transform: uppercase; }
+    .status-draft { background-color: #f3f4f6; color: #374151; }
+    .status-processing { background-color: #fef3c7; color: #92400e; }
+    .status-closed { background-color: #f73636; color: #f3f4f6;; }
+    .status-approved { background-color: #dbeafe; color: #1e40af; }
+    .status-paid { background-color: #dcfce7; color: #166534; }
+    .status-cancelled { background-color: #fee2e2; color: #991b1b; }
+    .table { font-size: 11px; }
+    .table th { font-weight: 600; color: #374151; text-transform: uppercase; font-size: 10px; padding: 8px; border-bottom: 2px solid #e2e8f0; }
+    .table td { padding: 8px; vertical-align: middle; }
+    .filter-pill { padding: 4px 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 10px; text-decoration: none; color: #6b7280; transition: all 0.2s; }
+    .filter-pill:hover, .filter-pill.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+
+    /* Compact Pagination */
+    .pagination-compact {
+        margin: 12px 0 0 0;
+        justify-content: center;
+    }
+
+    .pagination-compact .page-item {
+        margin: 0 1px;
+    }
+
+    .pagination-compact .page-link {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 8px;
+        min-width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #3b82f6;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .pagination-compact .page-link:hover {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+
+    .pagination-compact .page-item.active .page-link {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+        font-weight: 600;
+    }
+
+    .pagination-compact .page-item.disabled .page-link {
+        color: #9ca3af;
+        background: #f9fafb;
+        border-color: #e5e7eb;
+        cursor: not-allowed;
+    }
+
+    .pagination-compact .page-item.disabled .page-link:hover {
+        box-shadow: none;
+        background: #f9fafb;
+        color: #9ca3af;
+        border-color: #e5e7eb;
+    }
+
+    .pagination-compact .page-nav {
+        font-size: 10px;
+        padding: 4px 6px;
+        min-width: auto;
+    }
+
+    @media (max-width: 768px) {
+        .pagination-compact .page-link {
+            font-size: 10px;
+            padding: 3px 6px;
+            min-width: 24px;
+            height: 24px;
+        }
+
+        .pagination-compact .page-nav {
+            padding: 3px 5px;
+        }
+
+        .pagination-compact .page-text {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3 py-3">
+    <!-- Hidden CSRF token for AJAX requests -->
+    <input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+
+    <!-- Hidden projects data for JavaScript -->
+    <script type="application/json" id="projects-data">
+        [
+        {% for project in projects %}
+            {
+                "id": {{ project.id }},
+                "project_name": "{{ project.project_name|escapejs }}",
+                "project_code": "{{ project.project_code|escapejs }}"
+            }{% if not forloop.last %},{% endif %}
+        {% empty %}
+            <!-- No projects available -->
+        {% endfor %}
+        ]
+    </script>
+
+    <!-- Debug: Project count -->
+    <script>
+        console.log('DEBUG: Projects passed to template:', {{ projects|length }});
+        console.log('DEBUG: Projects variable exists:', {% if projects %}true{% else %}false{% endif %});
+        console.log('DEBUG: Projects is list:', {{ projects|length|default:0 }});
+        {% if projects %}
+        console.log('DEBUG: First project:', '{{ projects.0.project_name|escapejs }}');
+        {% else %}
+        console.log('DEBUG: No projects in context');
+        {% endif %}
+
+        // Check the raw JSON
+        const projectsDataElement = document.getElementById('projects-data');
+        if (projectsDataElement) {
+            console.log('DEBUG: Raw projects-data content:', projectsDataElement.textContent.trim());
+        }
+    </script>
+
+    <!-- Compact Header -->
+    <div class="page-header-compact align-items d-flex">
+        <div>
+            <h1>{% trans "Mark Attendance" %}</h1>
+            <p class="text-muted mb-0" style="font-size: 12px;">
+                {% trans "Quickly mark employee attendance status for today" %}
+            </p>
+        </div>
+
+        <div class="d-flex space-x-1">
+            <!-- <button class="button-min-default py-1">
+                <div class="d-flex" style="font-size: 12px;">
+                    <i class="bi bi-calendar3 me-2 text-primary"></i>
+                    <span class="font-medium">{{ today|date:"l, F j, Y" }}</span>
+                </div>
+            </button> -->
+            <button type="button" class="button-min-primary py-1" data-bs-toggle="modal" data-bs-target="#addAttendanceModal">
+                <div>
+                    <i class="bi bi-plus text-xs"></i>
+                    <span class="font-medium">{% trans "Add" %}</span>
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Actions Legend -->
+    <div class="alert alert-info py-2 mb-3" style="font-size: 11px; border-left: 4px solid #3b82f6;">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center flex-grow-1">
+                <i class="bi bi-info-circle me-2"></i>
+                <div>
+                    <strong>{% trans "How to use:" %}</strong>
+                    <span class="ms-2 text-muted">
+                        {% trans "Use Clock In/Out buttons to record attendance times." %}
+                    </span>
+                    <span class="ms-2">
+                        <i class="bi bi-box-arrow-in-right text-success"></i> {% trans "Clock In" %}
+                    </span>
+                    <span class="ms-2">
+                        <i class="bi bi-box-arrow-right text-danger"></i> {% trans "Clock Out" %}
+                    </span>
+                    <span class="ms-2 text-muted">|</span>
+                    <span class="ms-2">
+                        <i class="bi bi-x-circle text-danger"></i> {% trans "Absent" %}
+                    </span>
+                    <span class="ms-2">
+                        <i class="bi bi-calendar-x text-secondary"></i> {% trans "Leave" %}
+                    </span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="badge bg-warning text-dark" style="font-size: 10px;">
+                    <i class="bi bi-square-fill me-1"></i>{% trans "Unmarked" %}
+                </span>
+                <span class="badge bg-success ms-2" style="font-size: 10px;">
+                    <i class="bi bi-square-fill me-1"></i>{% trans "Marked" %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid mt-2">
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value">{{ stats.total }}</div>
+            <div class="stat-label">{% trans "Total" %}</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value text-success">{{ stats.present }}</div>
+            <div class="stat-label">{% trans "Present" %}</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value text-danger">{{ stats.absent }}</div>
+            <div class="stat-label">{% trans "Absent" %}</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value text-warning">{{ stats.late }}</div>
+            <div class="stat-label">{% trans "Late" %}</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value text-info">{{ stats.marked }}</div>
+            <div class="stat-label">{% trans "Marked" %}</div>
+        </div>
+        <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+            <div class="stat-value text-secondary">{{ stats.unmarked }}</div>
+            <div class="stat-label">{% trans "Unmarked" %}</div>
+        </div>
+    </div>
+
+    <!-- Search/Filter Section -->
+    <div class="rounded-xl bg-white border px-3 py-2 mb-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label for="search" class="form-label">{% trans "Search" %}</label>
+                <input type="text" name="search" id="search" class="form-control"
+                       value="{{ search_query }}" placeholder="{% trans 'Employee name or ID' %}">
+            </div>
+            <div class="col-md-3">
+                <label for="department" class="form-label">{% trans "Department" %}</label>
+                <select name="department" id="department" class="form-control">
+                    <option value="">{% trans "All Departments" %}</option>
+                    {% for dept in departments %}
+                    <option value="{{ dept.id }}" {% if department_filter == dept.id|stringformat:"s" %}selected{% endif %}>
+                        {{ dept.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="status" class="form-label">{% trans "Status" %}</label>
+                <select name="status" id="status" class="form-control">
+                    <option value="">{% trans "All Status" %}</option>
+                    <option value="unmarked" {% if status_filter == 'unmarked' %}selected{% endif %}>
+                        {% trans "Unmarked" %}
+                    </option>
+                    {% for status_code, status_label in status_choices %}
+                    <option value="{{ status_code }}" {% if status_filter == status_code %}selected{% endif %}>
+                        {{ status_label }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <div class="d-flex gap-1">
+                    <button type="submit" class="button-min-primary py-1">
+                        <div class="d-flex align-items-center justify-content-center space-x-1">
+                            <i class="bi bi-search" style="font-size:10px;"></i>
+                            <span class="font-medium">{% trans "Filter" %}</span>
+                        </div>
+                    </button>
+                    <a href="{% url 'attendance:mark_attendance' %}" class="button-min-default py-1">
+                        <i class="bi bi-x" style="font-size:10px;"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="modern-table-container">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Employee ID" %}</th>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Department" %}</th>
+                            <th>{% trans "Position" %}</th>
+                            <th>{% trans "Project" %}</th>
+                            <th>{% trans "Today's Status" %}</th>
+                            <th style="min-width: 100px;">{% trans "Clock In" %}</th>
+                            <th style="min-width: 100px;">{% trans "Clock Out" %}</th>
+                            <th style="min-width: 100px;">{% trans "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in page_obj %}
+                        <tr id="row-{{ item.employee.id }}" class="{% if item.has_attendance %}table-light{% endif %}">
+                            <td>{{ item.employee.employee_id|default:"-" }}</td>
+                            <td>
+                                <strong>{{ item.employee.full_name }}</strong>
+                            </td>
+                            <td>{{ item.employee.department.name|default:"-" }}</td>
+                            <td>{{ item.employee.position.name|default:"-" }}</td>
+                            <td id="project-{{ item.employee.id }}">
+                                {% if item.project %}
+                                    <span class="badge bg-primary" style="font-size: 10px;">
+                                        {{ item.project.project_name }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span id="status-{{ item.employee.id }}">
+                                    {% if item.has_attendance %}
+                                        <span class="status-badge status-{{ item.status }}">
+                                            {{ item.attendance.get_status_display }}
+                                        </span>
+                                    {% else %}
+                                        <span class="status-badge status-unmarked">{% trans "Unmarked" %}</span>
+                                    {% endif %}
+                                </span>
+                            </td>
+                            
+                            <td id="clockin-{{ item.employee.id }}" class="align-middle text-center">
+                                <div class="clock-card p-2 border rounded shadow-sm">
+                                    <div class="fw-semibold text-success mb-1 small">
+                                        <span class="clock-time">{{ item.clock_in|time:"H:i:s"|default:"--:--:--" }}</span>
+                                    </div>
+                                    <button type="button"
+                                            class="btn btn-success btn-sm w-100 clock-in-btn"
+                                            data-employee-id="{{ item.employee.id }}"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="{% trans 'Clock In' %}">
+                                        <i class="bi bi-box-arrow-in-right me-1"></i> Clock In
+                                    </button>
+                                </div>
+                            </td>
+
+                            <td id="clockout-{{ item.employee.id }}" class="align-middle text-center">
+                                <div class="clock-card p-2 border rounded shadow-sm">
+                                    <div class="fw-semibold text-danger mb-1 small">
+                                        <span class="clock-time">{{ item.clock_out|time:"H:i:s"|default:"--:--:--" }}</span>
+                                    </div>
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm w-100 clock-out-btn"
+                                            data-employee-id="{{ item.employee.id }}"
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="top"
+                                            title="{% trans 'Clock Out' %}">
+                                        <i class="bi bi-box-arrow-right me-1"></i> Clock Out
+                                    </button>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="d-flex gap-1 flex-wrap">
+                                    {% if not item.has_attendance %}
+                                    <div class="quick-mark-group d-flex gap-1">
+                                        <button type="button" class="btn btn-sm btn-icon-compact danger mark-btn"
+                                                data-employee-id="{{ item.employee.id }}"
+                                                data-status="absent"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                title="{% trans 'Mark as Absent' %}">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-icon-compact success mark-btn"
+                                                data-employee-id="{{ item.employee.id }}"
+                                                data-status="leave"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                title="{% trans 'Mark as Leave' %}">
+                                            <i class="bi bi-calendar-x"></i>
+                                        </button>
+                                    </div>
+                                    {% else %}
+                                    <div class="edit-group d-flex gap-1">
+                                        <button type="button" class="btn btn-sm btn-icon-compact success edit-btn"
+                                                data-employee-id="{{ item.employee.id }}"
+                                                data-employee-name="{{ item.employee.full_name }}"
+                                                data-date="{{ today|date:'Y-m-d' }}"
+                                                data-status="{{ item.status }}"
+                                                data-clock-in="{{ item.clock_in|time:'H:i'|default:'' }}"
+                                                data-clock-out="{{ item.clock_out|time:'H:i'|default:'' }}"
+                                                data-project-id="{{ item.project.id|default:'' }}"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                title="{% trans 'Edit attendance details' %}">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-icon-compact danger delete-btn"
+                                                data-delete-url="{% url 'attendance:delete_attendance' item.employee.id %}"
+                                                data-delete-title="{% trans 'Delete Attendance?' %}"
+                                                data-delete-name="{{ item.employee.full_name }} - {{ today|date:'Y-m-d' }}"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                title="{% trans 'Remove attendance record' %}">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="9">
+                                <div class="empty-state">
+                                    <i class="bi bi-people"></i>
+                                    <h6>{% trans "No Employees Found" %}</h6>
+                                    <p>
+                                        {% if request.GET %}
+                                            {% trans "No employees match your search criteria." %}
+                                        {% else %}
+                                            {% trans "Get started by adding employees to mark attendance." %}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Compact Pagination with Per-Page Selector -->
+        {% if page_obj %}
+        <div class="d-flex justify-content-between align-items-center mt-3 mb-5">
+            <!-- Per-Page Selector -->
+            <div class="d-flex align-items-center">
+                <span style="font-size: 11px; color: #6b7280; margin-right: 8px;">{% trans "Show:" %}</span>
+                <select class="form-select form-select-sm rounded" style="width: auto; font-size: 11px; padding: 4px 8px;"
+                    onchange="changePerPage(this.value)">
+                    <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                    <option value="20" {% if per_page == 20 %}selected{% endif %}>20</option>
+                    <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                    <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                    <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+                    <option value="200" {% if per_page == 200 %}selected{% endif %}>200</option>
+                </select>
+                <span style="font-size: 11px; color: #6b7280; margin-left: 8px;">{% trans "per page" %}</span>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Attendance pagination">
+                <ul class="pagination pagination-compact w-full">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link page-nav rounded"
+                            href="?page=1&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <i class="bi bi-chevron-double-left"></i><span class="page-text ms-1 px-0"
+                                style="border:none;">{% trans "First" %}</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link page-nav rounded"
+                            href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <i class="bi bi-chevron-left"></i><span class="page-text ms-1 px-0"
+                                style="border:none;">{% trans "Prev" %}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link rounded">{{ num }}</span>
+                    </li>
+                    {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+                    <li class="page-item">
+                        <a class="page-link rounded"
+                            href="?page={{ num }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link page-nav rounded"
+                            href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <span class="page-text me-1 px-0" style="border:none;">{% trans "Next" %}</span><i
+                                class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link page-nav rounded"
+                            href="?page={{ page_obj.paginator.num_pages }}&per_page={{ per_page }}&{{ request.GET.urlencode }}">
+                            <span class="page-text me-1 px-0" style="border:none;">{% trans "Last" %}</span><i
+                                class="bi bi-chevron-double-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">{% trans "Attendance" %}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+            <!-- Message will be inserted here -->
+        </div>
+    </div>
+</div>
+
+<!-- Add Attendance Modal -->
+<div class="modal fade" id="addAttendanceModal" tabindex="-1" aria-labelledby="addAttendanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAttendanceModalLabel">
+                    <i class="bi bi-plus-circle me-2"></i>{% trans "Add Attendance Record" %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addAttendanceForm">
+                    <div class="mb-3">
+                        <label for="add-employee" class="form-label">{% trans "Employee" %} <span class="text-danger">*</span></label>
+                        <div style="position: relative;">
+                            <input type="text" id="add-employee-search" class="form-control"
+                                   placeholder="{% trans 'Search...' %}"
+                                   autocomplete="off">
+                            <input type="hidden" id="add-employee" name="employee_id" required>
+                            <div id="employee-suggestions" class="dropdown-menu" style="width: 100%; max-height: 180px; overflow-y: auto;"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="add-project" class="form-label">{% trans "Project" %} <span class="text-muted" style="font-size: 10px;">({% trans "Optional" %})</span></label>
+                        <select id="add-project" class="form-select">
+                            <option value="">{% trans "No Project" %}</option>
+                            {% if projects %}
+                                {% for project in projects %}
+                                <option value="{{ project.id }}">{{ project.project_name }} ({{ project.project_code }})</option>
+                                {% endfor %}
+                            {% else %}
+                                <option value="" disabled>{% trans "No active projects available" %}</option>
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="add-date" class="form-label">{% trans "Date" %} <span class="text-danger">*</span></label>
+                            <input type="date" id="add-date" class="form-control" value="{{ today|date:'Y-m-d'|default:'' }}" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="add-status" class="form-label">{% trans "Status" %} <span class="text-danger">*</span></label>
+                            <select id="add-status" class="form-select" required>
+                                <option value="present">{% trans "Present" %}</option>
+                                <option value="absent">{% trans "Absent" %}</option>
+                                <option value="late">{% trans "Late" %}</option>
+                                <option value="half_day">{% trans "Half Day" %}</option>
+                                <option value="leave">{% trans "Leave" %}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label for="add-clock-in" class="form-label">{% trans "Clock In" %}</label>
+                            <input type="time" id="add-clock-in" class="form-control">
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="add-clock-out" class="form-label">{% trans "Clock Out" %}</label>
+                            <input type="time" id="add-clock-out" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="add-notes" class="form-label">{% trans "Notes" %}</label>
+                        <textarea id="add-notes" class="form-control" rows="2" placeholder="{% trans 'Optional notes' %}"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="button-min-warn py-1" data-bs-dismiss="modal">
+                    {% trans "Cancel" %}
+                </button>
+                <button type="button" class="button-min-primary py-1" id="confirmAddBtn">
+                    {% trans "Save" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Get CSRF token from cookie or hidden input
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Try to get CSRF token from hidden input first, then cookie, then form
+    let csrftoken = document.getElementById('csrf-token')?.value;
+
+    if (!csrftoken) {
+        csrftoken = getCookie('csrftoken');
+    }
+
+    if (!csrftoken) {
+        const tokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (tokenElement) {
+            csrftoken = tokenElement.value;
+        }
+    }
+
+    console.log('CSRF Token:', csrftoken ? 'Found' : 'Not Found');
+    console.log('CSRF Token value:', csrftoken);
+
+    // Show toast notification
+    function showToast(message, isSuccess = true) {
+        const toastElement = document.getElementById('notificationToast');
+        const toastMessage = document.getElementById('toastMessage');
+        const toastHeader = toastElement.querySelector('.toast-header');
+
+        toastMessage.textContent = message;
+
+        // Change toast header color based on success/error
+        if (isSuccess) {
+            toastHeader.classList.remove('bg-danger', 'text-white');
+            toastHeader.classList.add('bg-success', 'text-white');
+        } else {
+            toastHeader.classList.remove('bg-success', 'text-white');
+            toastHeader.classList.add('bg-danger', 'text-white');
+        }
+
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
+    }
+
+    // Handle Clock In button
+    document.querySelectorAll('.clock-in-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const employeeId = this.getAttribute('data-employee-id');
+            const now = new Date();
+            const clockInTime = now.toTimeString().split(' ')[0].substring(0, 5); // HH:MM format
+
+            // Disable button temporarily
+            button.disabled = true;
+            const originalContent = button.innerHTML;
+            button.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+
+            console.log('Clock In:', {employeeId, time: clockInTime});
+
+            // Send AJAX request with clock in time
+            fetch('{% url "attendance:mark_attendance" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `employee_id=${employeeId}&status=present&clock_in=${clockInTime}&csrfmiddlewaretoken=${encodeURIComponent(csrftoken)}`,
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update clock in time display
+                    const clockInElement = document.querySelector(`#clockin-${employeeId} .clock-time`);
+                    if (clockInElement && data.clock_in) {
+                        clockInElement.textContent = data.clock_in;
+                    }
+
+                    // Update status badge
+                    const statusElement = document.getElementById(`status-${employeeId}`);
+                    statusElement.innerHTML = `<span class="status-badge status-present">{% trans "Present" %}</span>`;
+
+                    // Highlight row
+                    const row = document.getElementById(`row-${employeeId}`);
+                    row.classList.add('table-light');
+
+                    showToast(data.message || '{% trans "Clocked in successfully" %}', true);
+                } else {
+                    showToast(data.error || '{% trans "Error clocking in" %}', false);
+                }
+                button.disabled = false;
+                button.innerHTML = originalContent;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast(`{% trans "Error clocking in" %}: ${error.message}`, false);
+                button.disabled = false;
+                button.innerHTML = originalContent;
+            });
+        });
+    });
+
+    // Handle Clock Out button
+    document.querySelectorAll('.clock-out-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const employeeId = this.getAttribute('data-employee-id');
+            const now = new Date();
+            const clockOutTime = now.toTimeString().split(' ')[0].substring(0, 5); // HH:MM format
+
+            // Disable button temporarily
+            button.disabled = true;
+            const originalContent = button.innerHTML;
+            button.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+
+            console.log('Clock Out:', {employeeId, time: clockOutTime});
+
+            // Send AJAX request with clock out time
+            fetch('{% url "attendance:mark_attendance" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `employee_id=${employeeId}&status=present&clock_out=${clockOutTime}&csrfmiddlewaretoken=${encodeURIComponent(csrftoken)}`,
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update clock out time display
+                    const clockOutElement = document.querySelector(`#clockout-${employeeId} .clock-time`);
+                    if (clockOutElement && data.clock_out) {
+                        clockOutElement.textContent = data.clock_out;
+                    }
+
+                    // Update status badge if needed
+                    const statusElement = document.getElementById(`status-${employeeId}`);
+                    if (!statusElement.querySelector('.status-present')) {
+                        statusElement.innerHTML = `<span class="status-badge status-present">{% trans "Present" %}</span>`;
+                    }
+
+                    // Highlight row
+                    const row = document.getElementById(`row-${employeeId}`);
+                    row.classList.add('table-light');
+
+                    showToast(data.message || '{% trans "Clocked out successfully" %}', true);
+                } else {
+                    showToast(data.error || '{% trans "Error clocking out" %}', false);
+                }
+                button.disabled = false;
+                button.innerHTML = originalContent;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast(`{% trans "Error clocking out" %}: ${error.message}`, false);
+                button.disabled = false;
+                button.innerHTML = originalContent;
+            });
+        });
+    });
+
+    // Handle mark attendance buttons
+    document.querySelectorAll('.mark-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const employeeId = this.getAttribute('data-employee-id');
+            const status = this.getAttribute('data-status');
+
+            // Disable all buttons for this employee temporarily
+            const row = document.getElementById(`row-${employeeId}`);
+            const buttons = row.querySelectorAll('.mark-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            console.log('Marking attendance:', {employeeId, status, csrftoken: csrftoken ? 'present' : 'missing'});
+
+            // Send AJAX request
+            fetch('{% url "attendance:mark_attendance" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `employee_id=${employeeId}&status=${status}&csrfmiddlewaretoken=${encodeURIComponent(csrftoken)}`,
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response type:', response.headers.get('content-type'));
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        console.error('Error response:', text);
+                        throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
+                    });
+                }
+                return response.json().catch(err => {
+                    console.error('JSON parse error:', err);
+                    throw new Error('Invalid JSON response from server');
+                });
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    // Update status badge
+                    const statusElement = document.getElementById(`status-${employeeId}`);
+                    let statusText = status;
+
+                    switch(status) {
+                        case 'present':
+                            statusText = '{% trans "Present" %}';
+                            break;
+                        case 'absent':
+                            statusText = '{% trans "Absent" %}';
+                            break;
+                        case 'late':
+                            statusText = '{% trans "Late" %}';
+                            break;
+                        case 'half_day':
+                            statusText = '{% trans "Half Day" %}';
+                            break;
+                    }
+
+                    statusElement.innerHTML = `<span class="status-badge status-${status}">${statusText}</span>`;
+
+                    // Update clock in/out times if provided
+                    if (data.clock_in) {
+                        const clockInElement = document.getElementById(`clockin-${employeeId}`);
+                        if (clockInElement) {
+                            clockInElement.textContent = data.clock_in;
+                        }
+                    }
+                    if (data.clock_out) {
+                        const clockOutElement = document.getElementById(`clockout-${employeeId}`);
+                        if (clockOutElement) {
+                            clockOutElement.textContent = data.clock_out;
+                        }
+                    }
+
+                    // Highlight row
+                    row.classList.add('table-light');
+
+                    // Show success message
+                    showToast(data.message, true);
+                } else {
+                    const errorMsg = data.error || data.message || '{% trans "Error marking attendance" %}';
+                    console.error('Server returned error:', errorMsg);
+                    showToast(errorMsg, false);
+                }
+
+                // Re-enable buttons
+                buttons.forEach(btn => btn.disabled = false);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast(`{% trans "Error marking attendance" %}: ${error.message}`, false);
+                buttons.forEach(btn => btn.disabled = false);
+            });
+        });
+    });
+
+    // Employee Autocomplete Functionality
+    const employeeSearchInput = document.getElementById('add-employee-search');
+    const employeeIdInput = document.getElementById('add-employee');
+    const suggestionsContainer = document.getElementById('employee-suggestions');
+    let allEmployees = [];
+
+    // Fetch all employees when modal opens
+    const addAttendanceModal = document.getElementById('addAttendanceModal');
+    if (addAttendanceModal) {
+        // Watch for backdrop creation and immediately fix it
+        let backdropFixed = false;
+        const backdropObserver = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.classList && node.classList.contains('modal-backdrop') && !backdropFixed) {
+                        console.log('🎭 BACKDROP DETECTED: Fixing once');
+
+                        // Mark as fixed to prevent infinite loop
+                        backdropFixed = true;
+
+                        // Disconnect observer temporarily to prevent loop
+                        backdropObserver.disconnect();
+
+                        // Set z-index lower than modal (no need to move in DOM)
+                        node.style.setProperty('z-index', '1065', 'important');
+                        console.log('✅ Backdrop fixed on creation');
+                    }
+                });
+            });
+        });
+
+        // Start observing when modal is about to show
+        addAttendanceModal.addEventListener('show.bs.modal', function() {
+            backdropFixed = false;
+            backdropObserver.observe(document.body, { childList: true });
+            console.log('👀 OBSERVER: Started watching for backdrop');
+
+            // Set modal z-index
+            addAttendanceModal.style.setProperty('z-index', '1070', 'important');
+        });
+
+        // Stop observing after modal is shown
+        addAttendanceModal.addEventListener('shown.bs.modal', function() {
+            setTimeout(() => {
+                backdropObserver.disconnect();
+                console.log('👀 OBSERVER: Stopped watching');
+            }, 100);
+
+            // Fetch employees via AJAX
+            fetch('{% url "attendance:get_employees" %}', {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.employees) {
+                    allEmployees = data.employees;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching employees:', error);
+            });
+        });
+    }
+
+    // Handle employee search input
+    if (employeeSearchInput) {
+        employeeSearchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+
+            if (searchTerm.length === 0) {
+                suggestionsContainer.classList.remove('show');
+                employeeIdInput.value = '';
+                return;
+            }
+
+            // Filter employees
+            const filteredEmployees = allEmployees.filter(emp => {
+                const fullName = emp.full_name.toLowerCase();
+                const employeeId = (emp.employee_id || '').toLowerCase();
+                const department = (emp.department || '').toLowerCase();
+                return fullName.includes(searchTerm) || employeeId.includes(searchTerm) || department.includes(searchTerm);
+            });
+
+            // Display suggestions
+            if (filteredEmployees.length > 0) {
+                suggestionsContainer.innerHTML = filteredEmployees.map(emp => `
+                    <div class="employee-suggestion-item" data-id="${emp.id}" data-name="${emp.full_name}">
+                        <strong>${emp.full_name}</strong>
+                        <small>${emp.employee_id || 'N/A'} • ${emp.department || 'No Department'}</small>
+                    </div>
+                `).join('');
+                suggestionsContainer.classList.add('show');
+            } else {
+                suggestionsContainer.innerHTML = '<div class="no-results">{% trans "No employees found" %}</div>';
+                suggestionsContainer.classList.add('show');
+            }
+        });
+
+        // Handle suggestion click
+        suggestionsContainer.addEventListener('click', function(e) {
+            const item = e.target.closest('.employee-suggestion-item');
+            if (item) {
+                const employeeId = item.getAttribute('data-id');
+                const employeeName = item.getAttribute('data-name');
+
+                employeeSearchInput.value = employeeName;
+                employeeIdInput.value = employeeId;
+                suggestionsContainer.classList.remove('show');
+            }
+        });
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!employeeSearchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                suggestionsContainer.classList.remove('show');
+            }
+        });
+    }
+
+    // Handle Add Attendance Modal
+    const confirmAddBtn = document.getElementById('confirmAddBtn');
+    if (confirmAddBtn) {
+        confirmAddBtn.addEventListener('click', function() {
+            const employeeId = document.getElementById('add-employee').value;
+            const projectId = document.getElementById('add-project').value;
+            const date = document.getElementById('add-date').value;
+            const status = document.getElementById('add-status').value;
+            const clockIn = document.getElementById('add-clock-in').value;
+            const clockOut = document.getElementById('add-clock-out').value;
+            const notes = document.getElementById('add-notes').value;
+
+            // Validate required fields
+            if (!employeeId) {
+                showToast('{% trans "Please select an employee" %}', false);
+                return;
+            }
+
+            if (!date) {
+                showToast('{% trans "Please select a date" %}', false);
+                return;
+            }
+
+            if (!status) {
+                showToast('{% trans "Please select a status" %}', false);
+                return;
+            }
+
+            // Show loading state
+            const originalContent = confirmAddBtn.innerHTML;
+            confirmAddBtn.disabled = true;
+            confirmAddBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>{% trans "Saving..." %}';
+
+            // Prepare form data
+            const formData = new URLSearchParams();
+            formData.append('employee_id', employeeId);
+            formData.append('date', date);
+            formData.append('status', status);
+            formData.append('csrfmiddlewaretoken', csrftoken);
+
+            if (projectId) formData.append('project_id', projectId);
+            if (clockIn) formData.append('clock_in', clockIn);
+            if (clockOut) formData.append('clock_out', clockOut);
+            if (notes) formData.append('notes', notes);
+
+            // Send AJAX request
+            fetch('{% url "attendance:mark_attendance" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrftoken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData.toString(),
+                credentials: 'same-origin'
+            })
+            .then(response => {
+                console.log('Add attendance response status:', response.status);
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        console.error('Error response:', text);
+                        throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
+                    });
+                }
+                return response.json().catch(err => {
+                    console.error('JSON parse error:', err);
+                    throw new Error('Invalid JSON response from server');
+                });
+            })
+            .then(data => {
+                console.log('Add attendance response data:', data);
+                if (data.success) {
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addAttendanceModal'));
+                    modal.hide();
+
+                    // Show success message
+                    showToast(data.message || '{% trans "Attendance added successfully" %}', true);
+
+                    // Reset form
+                    document.getElementById('addAttendanceForm').reset();
+                    document.getElementById('add-date').value = '{{ today|date:"Y-m-d" }}';
+
+                    // Reload page to show new data
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    const errorMsg = data.error || data.message || '{% trans "Error adding attendance" %}';
+                    console.error('Server returned error:', errorMsg);
+                    showToast(errorMsg, false);
+
+                    // Reset button state
+                    confirmAddBtn.disabled = false;
+                    confirmAddBtn.innerHTML = originalContent;
+                }
+            })
+            .catch(error => {
+                console.error('Error adding attendance:', error);
+                showToast(`{% trans "Error adding attendance" %}: ${error.message}`, false);
+
+                // Reset button state
+                confirmAddBtn.disabled = false;
+                confirmAddBtn.innerHTML = originalContent;
+            });
+        });
+    }
+
+    // Reset Add Attendance Modal when hidden
+    if (addAttendanceModal) {
+        addAttendanceModal.addEventListener('hidden.bs.modal', function() {
+            document.getElementById('addAttendanceForm').reset();
+            document.getElementById('add-date').value = '{{ today|date:"Y-m-d" }}';
+            document.getElementById('add-employee-search').value = '';
+            document.getElementById('add-employee').value = '';
+            suggestionsContainer.classList.remove('show');
+
+            const confirmBtn = document.getElementById('confirmAddBtn');
+            if (confirmBtn) {
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>{% trans "Save" %}';
+            }
+        });
+    }
+
+    // Enhanced modal behavior for all modals
+    const modals = document.querySelectorAll('.modal');
+
+    modals.forEach(modal => {
+        // Focus management
+        modal.addEventListener('shown.bs.modal', function() {
+            const focusableElement = modal.querySelector('input, button, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (focusableElement) {
+                focusableElement.focus();
+            }
+        });
+
+        // Keyboard navigation
+        modal.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            }
+
+            // Tab trapping
+            if (e.key === 'Tab') {
+                const focusableElements = modal.querySelectorAll(
+                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                );
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+
+                if (e.shiftKey) {
+                    if (document.activeElement === firstElement) {
+                        e.preventDefault();
+                        lastElement.focus();
+                    }
+                } else {
+                    if (document.activeElement === lastElement) {
+                        e.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+            }
+        });
+    });
+
+});
+
+// Per-page change function
+function changePerPage(perPage) {
+    const url = new URL(window.location);
+    url.searchParams.set('per_page', perPage);
+    url.searchParams.set('page', '1'); // Reset to first page when changing per_page
+    window.location.href = url.toString();
+}
+</script>
+
+<style>
+.toast-header.bg-success .btn-close,
+.toast-header.bg-danger .btn-close {
+    filter: invert(1);
+}
+</style>
+
+{% endblock %}
+
+{% block modals %}
+    <!-- Include Edit Modal -->
+    {% include 'components/edit_attendance_modal.html' %}
+
+    <!-- Delete Confirmation Modal Component -->
+    {% include 'components/delete_modal.html' %}
+{% endblock %}

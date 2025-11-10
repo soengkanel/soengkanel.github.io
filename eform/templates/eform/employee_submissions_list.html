@@ -1,0 +1,432 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Employee Form Submissions{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+:root {
+    --primary: #2563eb;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-900: #111827;
+}
+
+.dashboard-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.dashboard-header {
+    margin-bottom: 1.25rem;
+}
+
+.dashboard-title {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin: 0 0 0.5rem 0;
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 0.5rem;
+    padding: 0.875rem;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.6875rem;
+    color: var(--gray-600);
+    margin-top: 0.375rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-card.total .stat-number { color: #8b5cf6; }
+.stat-card.pending .stat-number { color: #f59e0b; }
+.stat-card.review .stat-number { color: #3b82f6; }
+.stat-card.approved .stat-number { color: #10b981; }
+.stat-card.rejected .stat-number { color: #ef4444; }
+
+/* Filters */
+.filters-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 0.5rem;
+    padding: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.filters-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: end;
+}
+
+.filter-group {
+    flex: 1;
+}
+
+.filter-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.form-control,
+.form-select {
+    font-size: 0.8125rem;
+    padding: 0.5rem 0.625rem;
+    border: 1px solid var(--gray-200);
+    border-radius: 0.375rem;
+}
+
+.btn-filter {
+    font-size: 0.8125rem;
+    padding: 0.5rem 1rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 500;
+}
+
+.btn-back {
+    font-size: 0.8125rem;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid var(--gray-200);
+    background: white;
+    color: var(--gray-700);
+    border-radius: 0.375rem;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.btn-back:hover {
+    border-color: var(--gray-600);
+    color: var(--gray-900);
+}
+
+/* Submissions Table */
+.submissions-table {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.table {
+    margin: 0;
+    font-size: 0.8125rem;
+}
+
+.table thead th {
+    background: var(--gray-50);
+    color: var(--gray-700);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem;
+    border: none;
+}
+
+.table tbody td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-top: 1px solid var(--gray-100);
+}
+
+.table tbody tr:hover {
+    background: var(--gray-50);
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge i {
+    font-size: 0.5rem;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-in_review {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-approved,
+.status-completed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.btn-view {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid var(--gray-200);
+    background: white;
+    color: var(--gray-700);
+    border-radius: 0.375rem;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.btn-view:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.submission-id {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--gray-600);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--gray-600);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: var(--gray-200);
+    margin-bottom: 1rem;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.page-link {
+    font-size: 0.8125rem;
+    padding: 0.375rem 0.75rem;
+    border-color: var(--gray-200);
+    color: var(--gray-700);
+}
+
+.page-item.active .page-link {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .filters-row {
+        flex-direction: column;
+    }
+
+    .dashboard-container {
+        padding: 0.75rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="dashboard-title">
+                    <i class="bi bi-file-earmark-check me-2"></i>Employee Form Submissions
+                </h1>
+            </div>
+            <a href="{% url 'eform:operations_dashboard' %}" class="btn-back">
+                <i class="bi bi-arrow-left me-1"></i>Back
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card total">
+            <div class="stat-number">{{ total_submissions }}</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat-card pending">
+            <div class="stat-number">{{ pending_count }}</div>
+            <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card review">
+            <div class="stat-number">{{ in_review_count }}</div>
+            <div class="stat-label">In Review</div>
+        </div>
+        <div class="stat-card approved">
+            <div class="stat-number">{{ approved_count }}</div>
+            <div class="stat-label">Approved</div>
+        </div>
+        <div class="stat-card rejected">
+            <div class="stat-number">{{ rejected_count }}</div>
+            <div class="stat-label">Rejected</div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-card">
+        <form method="get" class="filters-row">
+            <div class="filter-group">
+                <label class="filter-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="in_review" {% if status_filter == 'in_review' %}selected{% endif %}>In Review</option>
+                    <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+                    <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                    <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Form Type</label>
+                <select name="form" class="form-select">
+                    <option value="">All Forms</option>
+                    {% for form in forms %}
+                    <option value="{{ form.id }}" {% if form_filter == form.id|stringformat:"s" %}selected{% endif %}>
+                        {{ form.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label">Search</label>
+                <input type="text" name="search" class="form-control" placeholder="Employee name..." value="{{ search_query }}">
+            </div>
+            <div>
+                <button type="submit" class="btn-filter">
+                    <i class="bi bi-funnel me-1"></i>Filter
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Submissions Table -->
+    <div class="submissions-table">
+        {% if submissions %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Form</th>
+                    <th>Employee</th>
+                    <th>Submitted</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions %}
+                <tr>
+                    <td class="submission-id">#{{ submission.id }}</td>
+                    <td>{{ submission.form.title }}</td>
+                    <td>
+                        {% if submission.submitted_by %}
+                        {{ submission.submitted_by.get_full_name|default:submission.submitted_by.username }}
+                        {% else %}
+                        <span class="text-muted">Anonymous</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ submission.submitted_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        <span class="status-badge status-{{ submission.status }}">
+                            <i class="bi bi-circle-fill"></i>
+                            {{ submission.get_status_display|default:"Pending" }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'eform:employee_submission_detail' submission.id %}" class="btn-view">
+                            <i class="bi bi-eye me-1"></i>View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <p>No submissions found</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&status={{ status_filter }}&form={{ form_filter }}&search={{ search_query }}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active">
+                <a class="page-link" href="#">{{ num }}</a>
+            </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}&status={{ status_filter }}&form={{ form_filter }}&search={{ search_query }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}&status={{ status_filter }}&form={{ form_filter }}&search={{ search_query }}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

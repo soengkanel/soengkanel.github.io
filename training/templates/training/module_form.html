@@ -1,0 +1,230 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Edit Module{% else %}Create Module{% endif %} - LMS{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+        color: white;
+        padding: 20px 24px;
+        border-radius: 8px 8px 0 0;
+        margin-bottom: 0;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-body {
+        background: white;
+        padding: 24px;
+        border: 1px solid #e5e7eb;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+    }
+
+    .error-message {
+        color: #dc2626;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen bg-gray-50">
+    <div class="form-container">
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a href="{% if course %}{% url 'training:course_detail' course.pk %}{% else %}{% url 'training:course_list' %}{% endif %}"
+               class="button-min-default">
+                Back
+            </a>
+        </div>
+
+        <div class="form-header">
+            <h2>
+                <i class="bi bi-folder-plus"></i>
+                {% if form.instance.pk %}Edit Module{% else %}Create New Module{% endif %}
+            </h2>
+        </div>
+
+        <div class="form-body">
+            <form method="post">
+                {% csrf_token %}
+
+                {% if course %}
+                    <input type="hidden" name="course" value="{{ course.id }}">
+                {% endif %}
+
+                <div class="grid grid-cols-1 gap-4 mb-6">
+                    <!-- Course Selection (if not pre-selected) -->
+                    {% if not course %}
+                    <div>
+                        <label for="{{ form.course.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            Course *
+                        </label>
+                        <select name="{{ form.course.name }}"
+                                id="{{ form.course.id_for_label }}"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                required>
+                            <option value="">Select Course</option>
+                            {% for course_option in courses %}
+                            <option value="{{ course_option.id }}"
+                                    {% if form.course.value == course_option.id %}selected{% endif %}>
+                                {{ course_option.code }} - {{ course_option.title }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% if form.course.errors %}
+                            <p class="error-message">{{ form.course.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Module Title -->
+                    <div>
+                        <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            Module Title *
+                        </label>
+                        <input type="text"
+                               name="{{ form.title.name }}"
+                               id="{{ form.title.id_for_label }}"
+                               value="{{ form.title.value|default:'' }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                               placeholder="e.g., Introduction to Programming Basics"
+                               required>
+                        {% if form.title.errors %}
+                            <p class="error-message">{{ form.title.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Module Description -->
+                    <div>
+                        <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            Description
+                        </label>
+                        <textarea name="{{ form.description.name }}"
+                                  id="{{ form.description.id_for_label }}"
+                                  rows="4"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                  placeholder="Provide an overview of what this module covers...">{{ form.description.value|default:'' }}</textarea>
+                        {% if form.description.errors %}
+                            <p class="error-message">{{ form.description.errors.0 }}</p>
+                        {% endif %}
+                        <p class="text-xs text-gray-500 mt-1">Brief description of module content and learning objectives</p>
+                    </div>
+
+                    <!-- Order -->
+                    <div>
+                        <label for="{{ form.order.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                            Order *
+                        </label>
+                        <input type="number"
+                               name="{{ form.order.name }}"
+                               id="{{ form.order.id_for_label }}"
+                               value="{{ form.order.value|default:'1' }}"
+                               min="1"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                               placeholder="1"
+                               required>
+                        {% if form.order.errors %}
+                            <p class="error-message">{{ form.order.errors.0 }}</p>
+                        {% endif %}
+                        <p class="text-xs text-gray-500 mt-1">Display order in the course (1 = first)</p>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+                    <a href="{% if course %}{% url 'training:course_detail' course.pk %}{% else %}{% url 'training:course_list' %}{% endif %}"
+                       class="button-min-default">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                            class="button-min-primary px-4">
+                        {% if form.instance.pk %}Update Module{% else %}Create Module{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lessons Section (for editing existing modules) -->
+        {% if form.instance.pk %}
+        <div class="mt-6 bg-white border border-gray-200 rounded-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    <i class="bi bi-list-ul"></i> Lessons in this Module
+                </h3>
+                <a href="{% url 'training:lesson_create' form.instance.pk %}"
+                   class="button-min-primary px-4">
+                    Add Lesson
+                </a>
+            </div>
+
+            {% if form.instance.lessons.all %}
+                <div class="space-y-2">
+                    {% for lesson in form.instance.lessons.all %}
+                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-md hover:bg-gray-50">
+                        <div class="flex items-center gap-3">
+                            <i class="bi bi-{% if lesson.content_type == 'video' %}play-circle{% elif lesson.content_type == 'document' %}file-text{% elif lesson.content_type == 'quiz' %}question-circle{% else %}book{% endif %} text-gray-400"></i>
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">{{ lesson.title }}</div>
+                                <div class="text-xs text-gray-500">
+                                    {{ lesson.duration_minutes }} min • {{ lesson.get_content_type_display }}
+                                    {% if lesson.materials.count %}
+                                        • {{ lesson.materials.count }} material(s)
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <a href="{% url 'training:lesson_edit' lesson.pk %}"
+                               class="button-min-default"
+                               title="Edit Lesson">
+                                Edit
+                            </a>
+                            <button type="button"
+                                    class="button-min-danger delete-btn"
+                                    data-delete-url="{% url 'training:lesson_delete' lesson.pk %}"
+                                    data-delete-title="Delete Lesson?"
+                                    data-delete-name="{{ lesson.title }}">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8 text-gray-500">
+                    <i class="bi bi-inbox" style="font-size: 48px; opacity: 0.3;"></i>
+                    <p class="mt-2 text-sm">No lessons yet. Click "Add Lesson" to create the first one.</p>
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</main>
+
+<!-- Delete Modal Component -->
+{% include 'components/delete_modal.html' %}
+
+{% endblock %}
+
+{% block modals %}
+    {% include 'components/delete_modal.html' %}
+{% endblock %}

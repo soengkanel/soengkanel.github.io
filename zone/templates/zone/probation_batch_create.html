@@ -1,0 +1,1019 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Batch Probation Creation{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact Design System */
+    .page-header {
+        padding: 8px 0;
+        margin-bottom: 12px;
+    }
+    .page-header h2 {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+    .page-header p {
+        font-size: 11px;
+        color: #666;
+        margin: 0;
+    }
+
+    /* Form sections */
+    .form-section {
+        background: #f8fafb;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .form-row.single {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-label {
+        font-size: 11px !important;
+        margin-bottom: 4px !important;
+        font-weight: 500;
+        color: #374151;
+    }
+    
+    .form-control, .form-select {
+        font-size: 12px !important;
+        padding: 6px 10px !important;
+        height: auto !important;
+        border-radius: 4px;
+        border: 1px solid #d1d5db;
+        line-height: 1.4;
+        background: white;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #87ceeb;
+        box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.2);
+        outline: none;
+    }
+    
+    .required {
+        color: #dc2626;
+    }
+
+    /* Compact buttons */
+    .btn-compact {
+        font-size: 10px;
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 4px 8px;
+        border: 1px solid #bfdbfe;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        line-height: 1;
+    }
+
+    .btn-primary-compact {
+        background: #87ceeb;
+        color: #ffffff;
+        border-color: #87ceeb;
+    }
+    .btn-primary-compact:hover {
+        background: #5fb3d9;
+        border-color: #5fb3d9;
+        color: #ffffff;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary-compact {
+        background: #ffffff;
+        color: #1e3a8a;
+        border-color: #bfdbfe;
+    }
+    .btn-secondary-compact:hover {
+        background: #eff6ff;
+        color: #1e40af;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    /* Worker table */
+    .worker-table {
+        width: 100%;
+        font-size: 12px;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+    
+    .worker-table th {
+        background: #f1f5f9;
+        padding: 8px;
+        font-weight: 600;
+        color: #374151;
+        text-align: left;
+        font-size: 11px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .worker-table td {
+        padding: 6px 8px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+        font-size: 11px;
+    }
+    
+    .worker-table tbody tr:hover {
+        background: #f8fafc;
+    }
+    
+    .worker-name {
+        font-weight: 600;
+        color: #374151;
+        margin: 0;
+        font-size: 11px;
+    }
+    
+    .worker-id {
+        font-size: 9px;
+        color: #6b7280;
+        margin: 2px 0 0 0;
+    }
+    
+    .status-badge {
+        padding: 2px 6px;
+        border-radius: 8px;
+        font-size: 9px;
+        font-weight: 500;
+        text-transform: uppercase;
+    }
+    
+    .status-active {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    /* Controls */
+    .controls {
+        display: grid;
+        grid-template-columns: 2fr 1fr auto auto auto;
+        gap: 6px;
+        align-items: end;
+        margin-bottom: 8px;
+        padding: 8px;
+        background: #f1f5f9;
+        border-radius: 4px;
+    }
+    
+    .controls input[type="text"] {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+    
+    .controls select {
+        font-size: 11px;
+        padding: 4px 6px;
+    }
+    
+    .table-container {
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+    }
+    
+    .info-text {
+        font-size: 10px;
+        color: #6b7280;
+        margin-left: auto;
+    }
+
+    .text-danger {
+        color: #dc2626;
+        font-size: 10px;
+        margin-top: 2px;
+    }
+    
+    .form-help {
+        font-size: 9px;
+        color: #6b7280;
+        margin-top: 2px;
+    }
+    
+    /* Filter toggle animation */
+    #filter-content {
+        transition: opacity 0.3s ease;
+    }
+    
+    #filter-toggle-btn {
+        white-space: nowrap;
+    }
+    
+    #filter-toggle-btn i {
+        transition: transform 0.2s ease;
+    }
+
+    /* Form actions */
+    .form-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        padding-top: 12px;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 12px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-2">
+    <div class="page-header">
+        <h2>Batch Probation Creation</h2>
+        <p>Create probation periods for multiple workers at once</p>
+    </div>
+
+    <!-- Filter & Select Workers (Completely outside form to avoid any validation conflicts) -->
+    <div class="form-section">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <h6 style="margin: 0; font-size: 12px; font-weight: 600; color: #374151;">Filter & Select Workers</h6>
+            <button type="button" class="btn-compact btn-secondary-compact" onclick="toggleFilterSection()" id="filter-toggle-btn">
+                <i class="fa fa-chevron-down" id="filter-toggle-icon"></i> Show Filters
+            </button>
+        </div>
+
+        <div id="filter-content" style="display: none;">
+
+        <div class="form-row">
+            <div>
+                <label class="form-label">Search</label>
+                <input type="text" class="form-control" placeholder="Search by name, ID, zone, building, nationality..." onkeyup="searchWorkers(this.value)">
+            </div>
+
+            <div>
+                <label class="form-label">Zone</label>
+                <select id="filter_zone" class="form-select" onchange="loadBuildingsForZone(this.value)">
+                    <option value="">All Zones</option>
+                    {% for zone in form.filter_zone.field.queryset %}
+                        <option value="{{ zone.id }}" {% if request.GET.filter_zone == zone.id|stringformat:"s" %}selected{% endif %}>
+                            {{ zone.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label class="form-label">Building</label>
+                <select id="filter_building" class="form-select" onchange="loadFloorsForBuilding(this.value)" disabled>
+                    <option value="">Select Zone First</option>
+                </select>
+                <div id="building-loading" style="display: none; font-size: 10px; color: #6b7280; margin-top: 2px;">
+                    <i class="fa fa-spinner fa-spin"></i> Loading buildings...
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label class="form-label">Floor</label>
+                <select id="filter_floor" class="form-select" disabled>
+                    <option value="">Select Building First</option>
+                </select>
+                <div id="floor-loading" style="display: none; font-size: 10px; color: #6b7280; margin-top: 2px;">
+                    <i class="fa fa-spinner fa-spin"></i> Loading floors...
+                </div>
+            </div>
+
+            <div>
+                <label class="form-label">Joined From</label>
+                <input type="date" id="filter_date_from" class="form-control" value="{{ request.GET.filter_date_from }}">
+                <div class="form-help">Filter workers joined from this date</div>
+            </div>
+
+            <div>
+                <label class="form-label">Joined To</label>
+                <input type="date" id="filter_date_to" class="form-control" value="{{ request.GET.filter_date_to }}">
+                <div class="form-help">Filter workers joined up to this date</div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div></div>
+            <div></div>
+            <div>
+                <label class="form-label" style="visibility: hidden;">Actions</label>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button type="button" class="btn-compact btn-primary-compact" onclick="applyFilters(event)" style="flex: 1;">
+                        <i class="fa fa-filter"></i> Apply Filters
+                    </button>
+                    <button type="button" class="btn-compact btn-secondary-compact" onclick="clearFilters()" style="flex: 1;">
+                        <i class="fa fa-times"></i> Clear Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-section">
+            {% with field=form.workers %}
+            <div class="controls">
+                <button type="button" class="btn-compact btn-primary-compact" onclick="selectAllVisible()">Select All</button>
+                <button type="button" class="btn-compact btn-secondary-compact" onclick="deselectAllWorkers()">Clear</button>
+                <div class="info-text">
+                    <span id="selected-count">0</span> selected
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table class="worker-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 30px;">
+                                <input type="checkbox" id="select-all-checkbox" onchange="toggleAllWorkers(this.checked)">
+                            </th>
+                            <th>Worker</th>
+                            <th>Status</th>
+                            <th>Zone</th>
+                            <th>Building</th>
+                            <th>Floor</th>
+                            <th>Position</th>
+                            <th>Sex</th>
+                            <th>DOB</th>
+                            <th>Nationality</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for worker in field.field.queryset %}
+                            <tr class="worker-row" 
+                                data-worker-name="{{ worker.get_full_name|lower }}" 
+                                data-worker-id="{{ worker.worker_id|default:'' }}" 
+                                data-zone="{{ worker.zone.name|default:'' }}"
+                                data-building="{{ worker.building.name|default:'' }}"
+                                data-floor="{{ worker.floor.floor_number|default:'' }}"
+                                data-position="{{ worker.position.name|default:'' }}"
+                                data-nationality="{{ worker.nationality|default:'' }}">
+                                <td>
+                                    <input type="checkbox" name="{{ field.name }}" value="{{ worker.pk }}" 
+                                           id="id_{{ field.name }}_{{ forloop.counter0 }}"
+                                           {% if worker.pk|stringformat:"s" in field.value %}checked{% endif %}>
+                                </td>
+                                <td>
+                                    <div class="worker-name">{{ worker.get_full_name }}</div>
+                                    <div class="worker-id">{{ worker.worker_id|default:"No ID" }}</div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-{{ worker.status }}">
+                                        {{ worker.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ worker.zone.name|default:"No Zone" }}</td>
+                                <td>{{ worker.building.name|default:"No Building" }}</td>
+                                <td>
+                                    {% if worker.floor %}
+                                        F{{ worker.floor.floor_number }}
+                                    {% else %}
+                                        No Floor
+                                    {% endif %}
+                                </td>
+                                <td>{{ worker.position.name|default:"No Position" }}</td>
+                                <td>
+                                    <span class="text-capitalize">{{ worker.get_sex_display|default:"N/A" }}</span>
+                                </td>
+                                <td>
+                                    {% if worker.dob %}
+                                        {{ worker.dob|date:"d/m/Y" }}
+                                        <div style="font-size: 9px; color: #6b7280;">
+                                            {% if worker.age %}{{ worker.age }}y{% endif %}
+                                        </div>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="text-capitalize">{{ worker.nationality|default:"N/A" }}</span>
+                                </td>
+                                <td>
+                                    {% if worker.date_joined %}
+                                        {{ worker.date_joined|date:"d/m/Y" }}
+                                        <div style="font-size: 9px; color: #6b7280;">
+                                            {{ worker.date_joined|timesince }} ago
+                                        </div>
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="11" style="text-align: center; padding: 20px; color: #6b7280;">
+                                    No eligible workers found
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- Batch Details -->
+        <div class="form-section">
+            <h6 style="margin: 0 0 8px 0; font-size: 12px; font-weight: 600; color: #374151;">Batch Details</h6>
+            <div class="form-row">
+                {% with field=form.batch_name %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        Batch Name {% if field.field.required %}<span class="required">*</span>{% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    {% if field.help_text %}
+                        <div class="form-help">{{ field.help_text }}</div>
+                    {% endif %}
+                </div>
+                {% endwith %}
+
+                {% with field=form.start_date %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        Start Date {% if field.field.required %}<span class="required">*</span>{% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% endwith %}
+
+                {% with field=form.original_end_date %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        End Date {% if field.field.required %}<span class="required">*</span>{% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% endwith %}
+            </div>
+
+            {% with field=form.evaluation_notes %}
+            <div class="form-row single">
+                <div>
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        Notes (Optional)
+                    </label>
+                    {{ field }}
+                </div>
+            </div>
+            {% endwith %}
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <a href="{% url 'zone:probation_list' %}" class="btn-compact btn-secondary-compact">
+                <i class="fa fa-arrow-left"></i> Cancel
+            </a>
+            <button type="submit" class="btn-compact btn-primary-compact">
+                <i class="fa fa-save"></i> Create Probations
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+function updateCounters() {
+    const visibleRows = document.querySelectorAll('.worker-row:not([style*="display: none"])');
+    const selectedCheckboxes = document.querySelectorAll('.worker-row:not([style*="display: none"]) input[type="checkbox"]:checked');
+    
+    document.getElementById('selected-count').textContent = selectedCheckboxes.length;
+    
+    const headerCheckbox = document.getElementById('select-all-checkbox');
+    if (visibleRows.length === 0) {
+        headerCheckbox.indeterminate = false;
+        headerCheckbox.checked = false;
+    } else {
+        const visibleCheckboxes = document.querySelectorAll('.worker-row:not([style*="display: none"]) input[type="checkbox"]');
+        const checkedVisible = selectedCheckboxes.length;
+        
+        if (checkedVisible === 0) {
+            headerCheckbox.indeterminate = false;
+            headerCheckbox.checked = false;
+        } else if (checkedVisible === visibleCheckboxes.length) {
+            headerCheckbox.indeterminate = false;
+            headerCheckbox.checked = true;
+        } else {
+            headerCheckbox.indeterminate = true;
+            headerCheckbox.checked = false;
+        }
+    }
+}
+
+function toggleAllWorkers(checked) {
+    const visibleCheckboxes = document.querySelectorAll('.worker-row:not([style*="display: none"]) input[type="checkbox"]');
+    visibleCheckboxes.forEach(checkbox => {
+        checkbox.checked = checked;
+    });
+    updateCounters();
+}
+
+function selectAllVisible() {
+    const visibleCheckboxes = document.querySelectorAll('.worker-row:not([style*="display: none"]) input[type="checkbox"]');
+    visibleCheckboxes.forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    updateCounters();
+}
+
+function deselectAllWorkers() {
+    const allCheckboxes = document.querySelectorAll('.worker-row input[type="checkbox"]');
+    allCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    updateCounters();
+}
+
+// Enhanced search function for the search box (client-side search within filtered results)
+function searchWorkers(searchTerm) {
+    const allRows = document.querySelectorAll('.worker-row');
+    
+    allRows.forEach(row => {
+        let visible = true;
+        
+        if (searchTerm.trim()) {
+            const workerName = row.dataset.workerName || '';
+            const workerId = row.dataset.workerId || '';
+            const zone = row.dataset.zone || '';
+            const building = row.dataset.building || '';
+            const floor = row.dataset.floor || '';
+            const position = row.dataset.position || '';
+            const nationality = row.dataset.nationality || '';
+            
+            const searchLower = searchTerm.toLowerCase();
+            const matches = workerName.includes(searchLower) || 
+                          workerId.toLowerCase().includes(searchLower) ||
+                          zone.toLowerCase().includes(searchLower) ||
+                          building.toLowerCase().includes(searchLower) ||
+                          floor.toLowerCase().includes(searchLower) ||
+                          position.toLowerCase().includes(searchLower) ||
+                          nationality.toLowerCase().includes(searchLower);
+            
+            if (!matches) visible = false;
+        }
+        
+        row.style.display = visible ? '' : 'none';
+    });
+    
+    updateCounters();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    const checkboxes = document.querySelectorAll('.worker-row input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateCounters);
+    });
+
+    updateCounters();
+
+    // Check if filters are active and show indicator
+    checkActiveFilters();
+
+    // Initialize chain select dropdowns
+    initializeChainSelects();
+
+    // Restore validation for actual form submission
+    const batchForm = document.querySelector('form[method="post"]');
+    if (batchForm) {
+        batchForm.addEventListener('submit', function() {
+            // Re-enable validation for actual form submission
+            this.noValidate = false;
+        });
+    }
+});
+
+// Function to load buildings for selected zone
+function loadBuildingsForZone(zoneId) {
+    const buildingSelect = document.getElementById('filter_building');
+    const floorSelect = document.getElementById('filter_floor');
+    const buildingLoading = document.getElementById('building-loading');
+
+    // Reset floor dropdown immediately when zone changes
+    floorSelect.innerHTML = '<option value="">Select Building First</option>';
+    floorSelect.disabled = true;
+
+    if (!zoneId) {
+        // No zone selected - disable building dropdown
+        buildingSelect.innerHTML = '<option value="">Select Zone First</option>';
+        buildingSelect.disabled = true;
+        return;
+    }
+
+    // Clear current options and show loading
+    buildingSelect.innerHTML = '<option value="">Loading...</option>';
+    buildingSelect.disabled = true;
+    buildingLoading.style.display = 'block';
+
+    // Fetch buildings for the selected zone
+    fetch(`{% url 'zone:get_buildings_for_zone' %}?zone_id=${zoneId}`)
+        .then(response => response.json())
+        .then(data => {
+            buildingLoading.style.display = 'none';
+
+            // Clear and populate building options
+            buildingSelect.innerHTML = '<option value="">Select Building</option>';
+
+            data.buildings.forEach(building => {
+                const option = document.createElement('option');
+                option.value = building.id;
+                option.textContent = building.name;
+
+                // Check if this building should be selected (from URL parameters)
+                const selectedBuildingId = new URLSearchParams(window.location.search).get('filter_building');
+                if (selectedBuildingId && selectedBuildingId == building.id) {
+                    option.selected = true;
+                }
+
+                buildingSelect.appendChild(option);
+            });
+
+            buildingSelect.disabled = false;
+
+            // Load floors for selected building if any
+            const selectedBuildingId = buildingSelect.value;
+            if (selectedBuildingId) {
+                loadFloorsForBuilding(selectedBuildingId);
+            }
+        })
+        .catch(error => {
+            buildingLoading.style.display = 'none';
+            buildingSelect.innerHTML = '<option value="">Error loading buildings</option>';
+            buildingSelect.disabled = true;
+            console.error('Error fetching buildings:', error);
+        });
+}
+
+// Function to load floors for selected building
+function loadFloorsForBuilding(buildingId) {
+    const floorSelect = document.getElementById('filter_floor');
+    const floorLoading = document.getElementById('floor-loading');
+
+    if (!buildingId) {
+        // No building selected - disable floor dropdown
+        floorSelect.innerHTML = '<option value="">Select Building First</option>';
+        floorSelect.disabled = true;
+        floorLoading.style.display = 'none';
+        return;
+    }
+
+    // Clear current options and show loading
+    floorSelect.innerHTML = '<option value="">Loading...</option>';
+    floorSelect.disabled = true;
+    floorLoading.style.display = 'block';
+
+    // Fetch floors for the selected building
+    fetch(`{% url 'zone:get_floors_for_building' %}?building_id=${buildingId}`)
+        .then(response => response.json())
+        .then(data => {
+            floorLoading.style.display = 'none';
+
+            // Clear and populate floor options
+            floorSelect.innerHTML = '<option value="">Select Floor</option>';
+
+            data.floors.forEach(floor => {
+                const option = document.createElement('option');
+                option.value = floor.id;
+                option.textContent = floor.display_name;
+
+                // Check if this floor should be selected (from URL parameters)
+                const selectedFloorId = new URLSearchParams(window.location.search).get('filter_floor');
+                if (selectedFloorId && selectedFloorId == floor.id) {
+                    option.selected = true;
+                }
+
+                floorSelect.appendChild(option);
+            });
+
+            floorSelect.disabled = false;
+        })
+        .catch(error => {
+            floorLoading.style.display = 'none';
+            floorSelect.innerHTML = '<option value="">Error loading floors</option>';
+            floorSelect.disabled = true;
+            console.error('Error fetching floors:', error);
+        });
+}
+
+// Function to initialize chain select dropdowns on page load
+function initializeChainSelects() {
+    const zoneSelect = document.getElementById('filter_zone');
+    const buildingSelect = document.getElementById('filter_building');
+    const floorSelect = document.getElementById('filter_floor');
+    const selectedZone = zoneSelect.value;
+
+    if (selectedZone) {
+        // Load buildings for the currently selected zone
+        loadBuildingsForZone(selectedZone);
+    } else {
+        // No zone selected - ensure proper initial state
+        buildingSelect.innerHTML = '<option value="">Select Zone First</option>';
+        buildingSelect.disabled = true;
+        floorSelect.innerHTML = '<option value="">Select Building First</option>';
+        floorSelect.disabled = true;
+    }
+}
+
+// Function to check and display active filters
+function checkActiveFilters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let activeFilters = [];
+
+    // Check each filter parameter
+    if (urlParams.get('filter_zone')) {
+        const zoneName = document.querySelector('#filter_zone option:checked')?.textContent;
+        if (zoneName && zoneName !== 'All Zones') {
+            activeFilters.push(`Zone: ${zoneName}`);
+        }
+    }
+    if (urlParams.get('filter_building')) {
+        const buildingName = document.querySelector('#filter_building option:checked')?.textContent;
+        if (buildingName && buildingName !== 'All Buildings') {
+            activeFilters.push(`Building: ${buildingName}`);
+        }
+    }
+    if (urlParams.get('filter_floor')) {
+        const floorName = document.querySelector('#filter_floor option:checked')?.textContent;
+        if (floorName && floorName !== 'All Floors') {
+            activeFilters.push(`Floor: ${floorName}`);
+        }
+    }
+    if (urlParams.get('filter_date_from')) {
+        activeFilters.push(`From: ${urlParams.get('filter_date_from')}`);
+    }
+    if (urlParams.get('filter_date_to')) {
+        activeFilters.push(`To: ${urlParams.get('filter_date_to')}`);
+    }
+
+    // Display active filters indicator
+    if (activeFilters.length > 0) {
+        const filterToggleBtn = document.getElementById('filter-toggle-btn');
+        if (filterToggleBtn) {
+            // Add badge to filter button showing number of active filters
+            const badgeHtml = ` <span style="background: #dc2626; color: white; padding: 2px 6px; border-radius: 10px; font-size: 9px; margin-left: 4px;">${activeFilters.length}</span>`;
+            if (!filterToggleBtn.innerHTML.includes('span')) {
+                filterToggleBtn.innerHTML += badgeHtml;
+            }
+        }
+
+        // Create active filters display
+        const filterSection = document.querySelector('.form-section:nth-of-type(2)');
+        if (filterSection && !document.getElementById('active-filters-display')) {
+            const activeFiltersDiv = document.createElement('div');
+            activeFiltersDiv.id = 'active-filters-display';
+            activeFiltersDiv.style.cssText = `
+                background: #fef3c7;
+                border: 1px solid #fbbf24;
+                border-radius: 4px;
+                padding: 6px 10px;
+                margin-bottom: 8px;
+                font-size: 10px;
+                color: #92400e;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            `;
+            activeFiltersDiv.innerHTML = `
+                <i class="fa fa-filter" style="color: #f59e0b;"></i>
+                <strong>Active Filters:</strong>
+                <span>${activeFilters.join(' | ')}</span>
+                <button type="button" onclick="clearFilters()" style="margin-left: auto; background: #fbbf24; color: #451a03; border: none; padding: 2px 8px; border-radius: 3px; font-size: 9px; cursor: pointer;">
+                    Clear All
+                </button>
+            `;
+            filterSection.insertBefore(activeFiltersDiv, filterSection.firstChild.nextSibling);
+        }
+    }
+}
+
+// Filter section toggle
+function toggleFilterSection() {
+    const filterContent = document.getElementById('filter-content');
+    const toggleBtn = document.getElementById('filter-toggle-btn');
+    const toggleIcon = document.getElementById('filter-toggle-icon');
+    
+    if (filterContent.style.display === 'none') {
+        // Show filters
+        filterContent.style.display = 'block';
+        toggleIcon.className = 'fa fa-chevron-up';
+        toggleBtn.innerHTML = '<i class="fa fa-chevron-up" id="filter-toggle-icon"></i> Hide Filters';
+    } else {
+        // Hide filters
+        filterContent.style.display = 'none';
+        toggleIcon.className = 'fa fa-chevron-down';
+        toggleBtn.innerHTML = '<i class="fa fa-chevron-down" id="filter-toggle-icon"></i> Show Filters';
+    }
+}
+
+// Filter functions
+function applyFilters(event) {
+    // Prevent any form submission or validation
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+    }
+
+    // Additional protection: ensure no form validation is triggered
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.noValidate = true;
+    });
+
+    // Get filter values
+    const filterDateFrom = document.getElementById('filter_date_from').value;
+    const filterDateTo = document.getElementById('filter_date_to').value;
+
+    // Validation
+    let errors = [];
+
+    // Date validation
+    if (filterDateFrom && filterDateTo) {
+        const fromDate = new Date(filterDateFrom);
+        const toDate = new Date(filterDateTo);
+
+        if (fromDate > toDate) {
+            errors.push('• "Joined From" date cannot be after "Joined To" date');
+        }
+
+        // Check if date range is too large (optional - e.g., max 1 year)
+        const daysDiff = Math.ceil((toDate - fromDate) / (1000 * 60 * 60 * 24));
+        if (daysDiff > 365) {
+            errors.push('• Date range cannot exceed 365 days');
+        }
+    }
+
+    // If only one date is provided, warn the user
+    if ((filterDateFrom && !filterDateTo) || (!filterDateFrom && filterDateTo)) {
+        errors.push('• Please provide both "Joined From" and "Joined To" dates, or leave both empty');
+    }
+
+    // Show validation errors if any
+    if (errors.length > 0) {
+        showFilterValidationMessage(errors.join('\n'), 'error');
+        return;
+    }
+
+    // Show loading message
+    showFilterValidationMessage('Applying filters...', 'info');
+
+    // Get current form data including filters
+    const form = document.querySelector('form');
+    const formData = new FormData(form);
+
+    // Add filter values to current URL and reload
+    const url = new URL(window.location);
+
+    // Clear existing filter parameters
+    url.searchParams.delete('filter_zone');
+    url.searchParams.delete('filter_building');
+    url.searchParams.delete('filter_floor');
+    url.searchParams.delete('filter_date_from');
+    url.searchParams.delete('filter_date_to');
+
+    // Add new filter values if they exist
+    const filterZone = document.getElementById('filter_zone').value;
+    const filterBuilding = document.getElementById('filter_building').value;
+    const filterFloor = document.getElementById('filter_floor').value;
+
+    if (filterZone) url.searchParams.set('filter_zone', filterZone);
+    if (filterBuilding) url.searchParams.set('filter_building', filterBuilding);
+    if (filterFloor) url.searchParams.set('filter_floor', filterFloor);
+    if (filterDateFrom) url.searchParams.set('filter_date_from', filterDateFrom);
+    if (filterDateTo) url.searchParams.set('filter_date_to', filterDateTo);
+
+    // Reload page with filters
+    window.location.href = url.toString();
+}
+
+// Function to show validation messages
+function showFilterValidationMessage(message, type) {
+    // Remove existing validation message if any
+    const existingMsg = document.getElementById('filter-validation-msg');
+    if (existingMsg) {
+        existingMsg.remove();
+    }
+
+    // Create message element
+    const msgDiv = document.createElement('div');
+    msgDiv.id = 'filter-validation-msg';
+    msgDiv.style.cssText = `
+        padding: 8px 12px;
+        margin: 8px 0;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 500;
+        white-space: pre-line;
+    `;
+
+    // Style based on message type
+    if (type === 'error') {
+        msgDiv.style.backgroundColor = '#fee2e2';
+        msgDiv.style.color = '#dc2626';
+        msgDiv.style.border = '1px solid #fca5a5';
+    } else if (type === 'success') {
+        msgDiv.style.backgroundColor = '#d1fae5';
+        msgDiv.style.color = '#065f46';
+        msgDiv.style.border = '1px solid #86efac';
+    } else if (type === 'info') {
+        msgDiv.style.backgroundColor = '#dbeafe';
+        msgDiv.style.color = '#1e40af';
+        msgDiv.style.border = '1px solid #93c5fd';
+    }
+
+    msgDiv.textContent = message;
+
+    // Insert message after the filter controls
+    const filterContent = document.getElementById('filter-content');
+    if (filterContent) {
+        const lastRow = filterContent.querySelector('.form-row:last-of-type');
+        if (lastRow) {
+            lastRow.insertAdjacentElement('afterend', msgDiv);
+        }
+    }
+
+    // Auto-remove info messages after 3 seconds
+    if (type === 'info') {
+        setTimeout(() => {
+            msgDiv.remove();
+        }, 3000);
+    }
+}
+
+function clearFilters() {
+    // Show clearing message
+    showFilterValidationMessage('Clearing filters...', 'info');
+
+    // Clear all filter fields and reset chain selects to initial state
+    document.getElementById('filter_zone').value = '';
+
+    // Reset building dropdown to disabled state
+    const buildingSelect = document.getElementById('filter_building');
+    buildingSelect.innerHTML = '<option value="">Select Zone First</option>';
+    buildingSelect.disabled = true;
+
+    // Reset floor dropdown to disabled state
+    const floorSelect = document.getElementById('filter_floor');
+    floorSelect.innerHTML = '<option value="">Select Building First</option>';
+    floorSelect.disabled = true;
+
+    document.getElementById('filter_date_from').value = '';
+    document.getElementById('filter_date_to').value = '';
+
+    // Clear URL parameters and reload
+    const url = new URL(window.location);
+    url.searchParams.delete('filter_zone');
+    url.searchParams.delete('filter_building');
+    url.searchParams.delete('filter_floor');
+    url.searchParams.delete('filter_date_from');
+    url.searchParams.delete('filter_date_to');
+
+    // Reload page without filters
+    window.location.href = url.toString();
+}
+</script>
+{% endblock %}

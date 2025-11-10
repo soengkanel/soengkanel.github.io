@@ -1,0 +1,80 @@
+# Core Django packages
+Django==5.2.1
+psycopg2-binary==2.9.10
+
+# Multi-Tenancy
+django-tenants==3.8.0
+django-tenant-users==2.1.1
+
+# Current packages (already installed)
+django-auditlog==3.1.2
+django-htmx==1.23.0
+Pillow==11.2.1
+
+# UI and Form Enhancement
+django-crispy-forms==2.1
+crispy-bootstrap5==2024.2
+django-widget-tweaks==1.5.0
+
+# Data Management
+django-filter==23.5
+django-tables2==2.7.0
+django-import-export==4.0.7
+openpyxl==3.1.2
+openpyxl-image-loader==1.0.5
+pandas==2.3.1
+
+# API Framework
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+drf-spectacular==0.27.2
+
+# Background Tasks & Caching
+celery==5.3.4
+redis==5.0.1
+django-redis==5.4.0
+
+# Development & Configuration
+django-environ==0.11.2
+python-dotenv==1.0.0
+django-extensions==3.2.3
+django-debug-toolbar==4.2.0
+werkzeug==3.0.1
+pyOpenSSL==25.1.0
+
+# Security & Authentication
+django-allauth==0.57.0
+django-guardian==2.4.0
+cryptography==41.0.7
+
+# File Handling
+django-storages==1.14.2
+boto3==1.34.34
+qrcode==7.4.2
+python-barcode==0.15.1
+reportlab==4.2.2
+
+# Monitoring & Logging
+sentry-sdk==1.40.6
+django-health-check==3.17.0
+
+# Testing
+pytest-django==4.8.0
+factory-boy==3.3.0
+coverage==7.4.1
+
+# Production
+gunicorn==21.2.0
+whitenoise==6.6.0
+
+# QR Code Generator
+django-qr-code==4.2.0
+# OCR Dependencies removed 
+
+# python easy ocr
+torch
+torchvision
+torchaudio
+easyocr
+
+pytesseract

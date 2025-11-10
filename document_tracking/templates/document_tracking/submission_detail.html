@@ -1,0 +1,1104 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ submission.document_title }} - Document Details{% endblock %}
+
+{% block extra_css %}
+<style>
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Override base template main content width to make page full width but respect sidebar */
+#main-content {
+    width: calc(100% - 15%) !important;
+    margin-left: 15% !important;
+}
+
+/* When sidebar is collapsed, use full width */
+@media screen {
+    .sidebar-w-0 ~ #main-content,
+    body:has(.sidebar-w-0) #main-content {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+}
+
+/* Mobile responsive - always full width */
+@media (max-width: 768px) {
+    #main-content {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #000;
+    background: #fff;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.container {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 10px 20px;
+    background: #fff;
+}
+
+/* Header */
+.page-header {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+}
+
+.submission-id {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 5px 0;
+}
+
+.document-type {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+
+/* Info Section - Balanced Readable Layout */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-bottom: 10px;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    background: white;
+}
+
+.info-group {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    min-height: 22px;
+}
+
+.info-group:nth-child(even) {
+    border-left: 1px solid #e0e0e0;
+}
+
+.info-group:last-child,
+.info-group:nth-last-child(2) {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: #000;
+    width: 110px;
+    padding: 4px 6px;
+    background: #f8f8f8;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+}
+
+.info-value {
+    font-size: 9px;
+    font-weight: 500;
+    color: #000;
+    padding: 4px 6px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: white;
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 8px !important;
+    font-weight: 500;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.status-submitted {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-checked {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.status-approved {
+    background: #e8f5e8;
+    color: #388e3c;
+}
+
+.status-completed {
+    background: #e8f5e8;
+    color: #388e3c;
+}
+
+/* People Table - Balanced Readable Style */
+.people-section {
+    margin-bottom: 10px;
+}
+
+.section-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 6px 0;
+    padding: 5px;
+    background: #f0f0f0;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.people-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    background: white;
+    font-size: 8px;
+}
+
+.people-table th {
+    background: #f8f8f8;
+    color: #000;
+    padding: 4px 3px;
+    font-size: 8px;
+    font-weight: 700;
+    text-align: center;
+    border-bottom: 1px solid #000;
+    vertical-align: middle;
+    line-height: 1.2;
+}
+
+.people-table td {
+    padding: 3px 2px;
+    font-size: 8px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #000;
+    text-align: center;
+    line-height: 1.2;
+    vertical-align: middle;
+}
+
+.people-table tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+.people-table tbody tr:hover {
+    background: #f0f0f0;
+}
+
+.people-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Summary Row */
+.summary-row {
+    background: #f0f0f0 !important;
+    font-weight: 700;
+    border-top: 1px solid #000 !important;
+}
+
+.summary-row td {
+    font-weight: 700;
+    color: #000 !important;
+    font-size: 9px !important;
+    border-bottom: none !important;
+}
+
+/* Status Colors */
+.status-new {
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+.status-renew {
+    color: #1976d2;
+    font-weight: 600;
+}
+
+/* Print Styles */
+@media print {
+    * {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    }
+    
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        font-size: 12px !important;
+        line-height: 1.4 !important;
+        color: #000 !important;
+    }
+
+    footer{
+        display:none;
+    }
+    
+    .container {
+        max-width: none;
+        padding: 20px;
+    }
+    
+    .people-table {
+        font-size: 11px;
+    }
+    
+    .people-table th,
+    .people-table td {
+        padding: 6px 8px;
+    }
+    
+    .section-title {
+        font-size: 16px;
+    }
+    
+    .submission-id {
+        font-size: 24px;
+    }
+    
+    .document-type {
+        font-size: 16px;
+    }
+}
+
+/* Signature Section - Balanced Readable Style */
+.signature-section {
+    margin-top: 12px;
+    margin-bottom: 10px;
+    page-break-inside: avoid;
+    border-top: 1px solid #000;
+    padding-top: 8px;
+}
+
+.signature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.signature-box {
+    text-align: center;
+    min-height: 50px;
+    border: 1px solid #000;
+    padding: 6px;
+    background: white;
+}
+
+.signature-label {
+    font-size: 8px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    border-bottom: 1px solid #000;
+    padding-bottom: 2px;
+}
+
+.signature-line {
+    width: 100%;
+    height: 20px;
+    border-bottom: 1px solid #000;
+    margin-bottom: 4px;
+}
+
+.signature-details {
+    text-align: left;
+    font-size: 7px;
+    color: #000;
+    line-height: 1.3;
+    font-weight: 500;
+}
+
+/* Letterhead Styles - Balanced Readable */
+.letterhead {
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+}
+
+.letterhead-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #000;
+}
+
+.company-logo {
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-placeholder {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 700;
+    text-align: center;
+    background: white;
+}
+
+.company-info {
+    flex: 1;
+    text-align: center;
+}
+
+.company-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 3px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.company-details {
+    font-size: 9px;
+    color: #000;
+    line-height: 1.3;
+    margin-bottom: 6px;
+}
+
+.letterhead-separator {
+    height: 1px;
+    background: #000;
+    margin: 6px 0;
+}
+
+.document-header {
+    text-align: center;
+    margin: 8px 0;
+    padding: 6px;
+    background: #f0f0f0;
+    border: 1px solid #000;
+}
+
+.document-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.document-meta {
+    font-size: 9px;
+    color: #000;
+    margin-top: 3px;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+/* Print/Screen visibility */
+.print-only {
+    display: none;
+}
+
+.screen-only {
+    display: block;
+}
+
+/* Print Button Styles */
+.header-actions {
+    margin-top: 5px;
+}
+
+.print-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.print-button:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.print-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.print-button svg {
+    flex-shrink: 0;
+}
+
+/* Hide elements for clean print */
+@media print {
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    /* Hide navigation and UI elements */
+    nav, .sidebar, .btn, .header-actions,
+    .breadcrumb, .pagination, .footer,
+    header, #sidebar, aside, .sidebar-overlay,
+    .toast-container, .alert, .messages,
+    /* Hide modals and dialogs */
+    .modal, .modal-backdrop, .modal-dialog,
+    .modal-content, .modal-header, .modal-body, .modal-footer,
+    /* Hide confirmation dialogs */
+    .confirm-delete, .delete-confirmation,
+    /* Hide overlays and popups */
+    .overlay, .popup, .dropdown-menu,
+    /* Hide any Bootstrap modals */
+    .fade, .show,
+    /* Hide specific deletion confirmation elements */
+    [id*="delete"], [class*="delete"], [id*="confirm"], [class*="confirm"],
+    /* Hide any fixed positioned elements */
+    [style*="position: fixed"], [style*="position:fixed"] {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    /* Reset body for clean print layout */
+    body {
+        padding: 0 !important;
+        margin: 0 !important;
+        background: white !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    }
+    
+    /* Override any parent containers to be visible */
+    .container-fluid,
+    .flex.items-start,
+    #main-content {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: static !important;
+    }
+    
+    /* Document container styles for print */
+    .container {
+        display: block !important;
+        visibility: visible !important;
+        position: static !important;
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 auto !important;
+        padding: 20px 30px !important;
+        background: white !important;
+    }
+    
+    /* Show print-only elements */
+    .print-only {
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    /* Hide screen-only elements */
+    .screen-only {
+        display: none !important;
+    }
+    
+    /* Ensure letterhead is visible */
+    .letterhead {
+        display: block !important;
+        visibility: visible !important;
+        margin-bottom: 20px;
+        page-break-after: avoid;
+    }
+    
+    .letterhead-separator {
+        background: #333 !important;
+    }
+    
+    .signature-section {
+        margin-top: 40px;
+        page-break-inside: avoid;
+    }
+    
+    .signature-grid {
+        gap: 30px;
+    }
+    
+    .signature-line {
+        border-bottom: 1px solid #000;
+    }
+    
+    /* Clean minimal table styles for print */
+    .people-table {
+        font-size: 11px !important;
+        border-top: 1px solid #333 !important;
+        border-bottom: 1px solid #333 !important;
+        margin-bottom: 15px !important;
+        border-collapse: collapse !important;
+    }
+    
+    .people-table th {
+        background: #f8f8f8 !important;
+        color: #000 !important;
+        font-size: 11px !important;
+        padding: 6px 8px !important;
+        border-bottom: 1px solid #333 !important;
+        line-height: 1.3 !important;
+        font-weight: 600 !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    }
+    
+    .people-table td {
+        padding: 4px 6px !important;
+        font-size: 10px !important;
+        border-bottom: 1px solid #e0e0e0 !important;
+        line-height: 1.3 !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    }
+    
+    .people-table tr:last-child td {
+        border-bottom: none !important;
+    }
+    
+    .section-title {
+        font-size: 13px !important;
+        background: #f8f8f8 !important;
+        padding: 6px 8px !important;
+        margin: 8px 0 5px 0 !important;
+        border-bottom: 1px solid #333 !important;
+        font-weight: 600 !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    }
+    
+    .info-grid {
+        border: 1px solid #ddd !important;
+        background: white !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .info-group {
+        border-left: none !important;
+        border-bottom: 1px solid #eee !important;
+        box-shadow: none !important;
+        min-height: 24px !important;
+    }
+    
+    .info-group:last-child {
+        border-bottom: none !important;
+    }
+    
+    .info-label, .info-value {
+        font-size: 11px !important;
+        padding: 6px 8px !important;
+        line-height: 1.3 !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    }
+    
+    .info-label {
+        font-weight: 500 !important;
+        color: #444 !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    }
+    
+    /* Remove excessive borders from service table */
+    .people-table tr {
+        border-left: none !important;
+        border-right: none !important;
+    }
+    
+    .people-table th,
+    .people-table td {
+        border-left: none !important;
+        border-right: none !important;
+    }
+    
+    .letterhead {
+        margin-bottom: 20px !important;
+        padding-bottom: 10px !important;
+    }
+    
+    .letterhead-header {
+        margin-bottom: 10px !important;
+        padding-bottom: 10px !important;
+    }
+    
+    .company-name {
+        font-size: 18px !important;
+        margin-bottom: 5px !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        font-weight: 600 !important;
+    }
+    
+    .company-details {
+        font-size: 12px !important;
+        line-height: 1.5 !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    }
+    
+    .document-header {
+        margin: 10px 0 !important;
+        padding: 10px !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    }
+    
+    .document-title {
+        font-size: 16px !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        font-weight: 600 !important;
+    }
+    
+    .signature-section {
+        margin-top: 30px !important;
+        margin-bottom: 20px !important;
+        padding-top: 15px !important;
+    }
+    
+    .signature-box {
+        min-height: 80px !important;
+        padding: 10px !important;
+    }
+    
+    .signature-label {
+        font-size: 12px !important;
+        margin-bottom: 5px !important;
+        padding-bottom: 3px !important;
+    }
+    
+    .signature-line {
+        height: 25px !important;
+        margin-bottom: 5px !important;
+    }
+    
+    .signature-details {
+        font-size: 10px !important;
+        line-height: 1.5 !important;
+    }
+    
+    /* Remove page breaks to keep everything on one page */
+    * {
+        page-break-inside: avoid !important;
+        page-break-after: avoid !important;
+        page-break-before: avoid !important;
+    }
+    
+    .people-section, .signature-section {
+        page-break-inside: avoid !important;
+    }
+    
+    .letterhead-separator {
+        background: #000 !important;
+    }
+    
+    .company-name {
+        color: #000 !important;
+        border-bottom: 1px solid #000 !important;
+    }
+    
+    .document-header {
+        background: #f0f0f0 !important;
+        border: 1px solid #000 !important;
+    }
+    
+    .document-title {
+        color: #000 !important;
+    }
+    
+    .signature-section {
+        border-top: 2px solid #000 !important;
+    }
+    
+    .signature-box {
+        border: 1px solid #000 !important;
+        background: #f9f9f9 !important;
+    }
+    
+    .signature-label {
+        color: #000 !important;
+        border-bottom: 1px solid #000 !important;
+    }
+    
+    .signature-line {
+        border-bottom: 1px solid #000 !important;
+    }
+    
+    /* Additional modal hiding rules for any remaining elements */
+    body > .modal,
+    body > .modal-backdrop,
+    body > div[class*="modal"],
+    body > div[id*="Modal"],
+    div[aria-hidden="false"],
+    div[role="dialog"],
+    div[tabindex="-1"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Letterhead (Print Only) -->
+    <div class="letterhead print-only">
+        <div class="flex flex-col justify-start items-start">
+            <div class="flex flex-col items-start justify-center">
+             {% if company_logo %}
+                 <img src="{{ company_logo.url }}" alt="{{ company.name }} Logo" class="w-28">
+             {% else %}
+                 <img src="{% static "images/logos/lyp-logo.jpeg" %}" alt="" class="w-28" />
+              {% endif %}
+             <h2 class="text-lg font-semibold">{{ company.name|default:"Your Company Name" }}</h2>
+            </div>
+             <p class="text-xs text-gray-600 mt-1 font-medium">{{ company.address|default:"123 Business Street, City, State 12345" }}</p>
+             <p class="text-xs text-gray-600 mt-1 font-medium">Phone: {{ company.phone_number|default:"(855) 123-4567" }}</p>
+             <p class="text-xs text-gray-600 mt-1 font-medium">Email: {{ company.email|default:"info@company.com" }}</p>
+             <p class="text-xs text-gray-600 mt-1 font-medium">Website: {{ company.website }}</p> 
+        </div>
+
+        
+        <div class="letterhead-separator"></div>
+        <div class="document-header">
+            <h2 class="document-title">{{ submission.get_document_type_display|upper }} SUBMISSION REPORT</h2>
+        </div>
+    </div>
+
+    <!-- Regular Header (Screen Only) -->
+    <div class="page-header screen-only">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <h1 class="submission-id">{{ submission.submission_id|default:"Pending Submission" }}</h1>
+                <p class="document-type">{{ submission.get_document_type_display }}</p>
+            </div>
+            <div class="header-actions">
+                <button onclick="window.print()" class="button-min-primary">
+                    <div>
+                        <i class="fa fa-print me-1"></i>
+                        Print Preview
+                    </div>
+                   
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Basic Information -->
+    <div class="info-grid">
+        <div class="info-group">
+            <div class="info-label">Status</div>
+            <div class="info-value">
+                <span class="status-badge status-{{ submission.status }}">
+                    {{ submission.get_status_display }}
+                </span>
+            </div>
+        </div>
+
+        <div class="info-group">
+            <div class="info-label">Government Office</div>
+            <div class="info-value">{{ submission.government_office|default:"—" }}</div>
+        </div>
+
+        <div class="info-group">
+            <div class="info-label">Processing Entity</div>
+            <div class="info-value">{{ submission.get_processing_entity_display|default:"—" }}</div>
+        </div>
+
+        {% if submission.reference_number %}
+        <div class="info-group">
+            <div class="info-label">Reference Number</div>
+            <div class="info-value">{{ submission.reference_number }}</div>
+        </div>
+        {% endif %}
+
+        <div class="info-group">
+            <div class="info-label">Submission Date</div>
+            <div class="info-value">{{ submission.submission_date|date:"d/m/Y"|default:"—" }}</div>
+        </div>
+
+        <div class="info-group">
+            <div class="info-label">Expected Completion</div>
+            <div class="info-value">{{ submission.expected_completion_date|date:"d/m/Y"|default:"—" }}</div>
+        </div>
+        
+    </div>
+
+
+    <!-- People Section -->
+    {% if submission.workers.exists %}
+    <div class="people-section">
+        <h2 class="section-title">Workers ({{ submission.workers.count }})</h2>
+        
+        <table class="people-table">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">No.</th>
+                    <th style="width: 50px;">Photo</th>
+                    <th style="width: 80px;">Worker ID</th>
+                    <th>Name</th>
+                    <th style="width: 60px;">Gender</th>
+                    <th style="width: 80px;">DOB</th>
+                    <th style="width: 100px;">Passport No.</th>
+                    <th style="width: 80px;">Nationality</th>
+                    <th style="width: 80px;">Join Date</th>
+                    <th style="width: 80px;">Visa Expiry</th>
+                    {% if submission.document_type == 'visa' %}
+                    <th style="width: 120px;">Visa Service Charge</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission_worker in submission.submissionworker_set.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td style="text-align: center; padding: 2px;">
+                        {% if submission_worker.worker.photo %}
+                            <img src="{% url 'zone:serve_worker_photo' submission_worker.worker.id %}" alt="{{ submission_worker.worker.get_full_name }}" 
+                                 style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd;"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div style="width: 28px; height: 28px; border-radius: 50%; background: #f0f0f0; display: none; align-items: center; justify-content: center; border: 1px solid #ddd; font-size: 9px; color: #666;">
+                                {{ submission_worker.worker.first_name|first|upper }}{{ submission_worker.worker.last_name|first|upper }}
+                            </div>
+                        {% else %}
+                            <div style="width: 28px; height: 28px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; font-size: 9px; color: #666;">
+                                {{ submission_worker.worker.first_name|first|upper }}{{ submission_worker.worker.last_name|first|upper }}
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td>{{ submission_worker.worker.worker_id|default:"—" }}</td>
+                    <td>{{ submission_worker.worker.get_full_name }}</td>
+                    <td>
+                        {% if submission_worker.worker.sex == 'M' %}Male
+                        {% elif submission_worker.worker.sex == 'F' %}Female
+                        {% else %}—{% endif %}
+                    </td>
+                    <td>{{ submission_worker.worker.dob|date:"d/m/Y"|default:"—" }}</td>
+                    <td>{{ submission_worker.worker.passport_number|default:"—" }}</td>
+                    <td>{{ submission_worker.worker.nationality|upper|default:"—" }}</td>
+                    <td>{{ submission_worker.worker.date_joined|date:"d/m/Y"|default:"—" }}</td>
+                    <td>{{ submission_worker.worker.visa_expiry|date:"d/m/Y"|default:"—" }}</td>
+                    {% if submission.document_type == 'visa' %}
+                    <td>
+                        {% if submission_worker.visa_service_charge %}
+                            {{ submission_worker.visa_service_charge.name }} - ${{ submission_worker.visa_service_charge.default_price }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                
+                <!-- Summary Row -->
+                <tr style="background: #f5f5f5; font-weight: 600; border-top: 1px solid #333;">
+                    <td colspan="4" style="padding: 6px 8px !important;">Total: {{ submission.workers.count }} worker{{ submission.workers.count|pluralize }}</td>
+                    <td style="padding: 6px 8px !important;">M: {{ worker_male_count }}</td>
+                    <td style="padding: 6px 8px !important;">F: {{ worker_female_count }}</td>
+                    {% if submission.document_type == 'visa' %}
+                    <td colspan="5"></td>
+                    {% else %}
+                    <td colspan="4"></td>
+                    {% endif %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="people-section">
+        <h2 class="section-title">Workers</h2>
+        <div style="padding: 20px; text-align: center; color: #666; background: #f8f8f8; border: 1px solid #ddd; border-radius: 4px;">
+            <p style="margin: 0;">No workers have been added to this submission.</p>
+            <a href="{% url 'document_tracking:submission_edit' submission.id %}" class="btn btn-primary" style="margin-top: 10px;">Edit Submission to Add Workers</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- VIPs Section (if exists) -->
+    {% if submission.vips.exists %}
+    <div class="people-section">
+        <h2 class="section-title">VIPs ({{ submission.vips.count }})</h2>
+        
+        <table class="people-table">
+            <thead>
+                <tr>
+                    <th style="width: 40px;">No.</th>
+                    <th style="width: 50px;">Photo</th>
+                    <th style="width: 80px;">VIP ID</th>
+                    <th>Name</th>
+                    <th style="width: 60px;">Gender</th>
+                    <th style="width: 80px;">DOB</th>
+                    <th style="width: 100px;">Passport No.</th>
+                    <th style="width: 80px;">Nationality</th>
+                    <th style="width: 80px;">Join Date</th>
+                    <th style="width: 80px;">Visa Expiry</th>
+                    <th style="width: 60px;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vip in submission.vips.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td style="text-align: center; padding: 2px;">
+                        {% if vip.photo %}
+                            <img src="{% url 'zone:serve_worker_photo' vip.id %}" alt="{{ vip.get_full_name }}" 
+                                 style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd;"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div style="width: 28px; height: 28px; border-radius: 50%; background: #f0f0f0; display: none; align-items: center; justify-content: center; border: 1px solid #ddd; font-size: 9px; color: #666;">
+                                {{ vip.first_name|first|upper }}{{ vip.last_name|first|upper }}
+                            </div>
+                        {% else %}
+                            <div style="width: 28px; height: 28px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border: 1px solid #ddd; font-size: 9px; color: #666;">
+                                {{ vip.first_name|first|upper }}{{ vip.last_name|first|upper }}
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td>{{ vip.vip_id|default:"—" }}</td>
+                    <td>{{ vip.get_full_name }}</td>
+                    <td>
+                        {% if vip.sex == 'M' %}Male
+                        {% elif vip.sex == 'F' %}Female
+                        {% else %}—{% endif %}
+                    </td>
+                    <td>{{ vip.dob|date:"d/m/Y"|default:"—" }}</td>
+                    <td>{{ vip.passport_number|default:"—" }}</td>
+                    <td>{{ vip.nationality|upper|default:"—" }}</td>
+                    <td>{{ vip.created_at|date:"d/m/Y"|default:"—" }}</td>
+                    <td>{{ vip.visa_expiry|date:"d/m/Y"|default:"—" }}</td>
+                    <td>
+                        <span class="status-new">New</span>
+                    </td>
+                </tr>
+                {% endfor %}
+                
+                <!-- Summary Row -->
+                <tr style="background: #f5f5f5; font-weight: 600; border-top: 1px solid #333;">
+                    <td colspan="4" style="padding: 6px 8px !important;">Total: {{ submission.vips.count }} VIP{{ submission.vips.count|pluralize }}</td>
+                    <td style="padding: 6px 8px !important;">M: {{ vip_male_count }}</td>
+                    <td style="padding: 6px 8px !important;">F: {{ vip_female_count }}</td>
+                    <td colspan="5"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- Overall Summary -->
+    {% if submission.workers.exists or submission.vips.exists %}
+    <div class="people-section">
+        <h2 class="section-title">Summary</h2>
+        
+        <table class="people-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th style="width: 80px;">Total</th>
+                    <th style="width: 80px;">Male</th>
+                    <th style="width: 80px;">Female</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if submission.workers.exists %}
+                <tr>
+                    <td><strong>Workers</strong></td>
+                    <td>{{ submission.workers.count }}</td>
+                    <td>{{ worker_male_count }}</td>
+                    <td>{{ worker_female_count }}</td>
+                </tr>
+                {% endif %}
+                {% if submission.vips.exists %}
+                <tr>
+                    <td><strong>VIPs</strong></td>
+                    <td>{{ submission.vips.count }}</td>
+                    <td>{{ vip_male_count }}</td>
+                    <td>{{ vip_female_count }}</td>
+                </tr>
+                {% endif %}
+                <tr class="summary-row">
+                    <td><strong>Grand Total</strong></td>
+                    <td><strong>{{ total_male|add:total_female }}</strong></td>
+                    <td><strong>{{ total_male }}</strong></td>
+                    <td><strong>{{ total_female }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {% if submission.notes %}
+    <!-- Notes Section -->
+    <div class="people-section">
+        <h2 class="section-title">Notes</h2>
+        <div style="background: #f8f8f8; padding: 15px; border-radius: 4px; font-size: 13px; line-height: 1.5;">
+            {{ submission.notes|linebreaks }}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Signature Section -->
+    <div class="signature-section">
+        <h2 class="section-title">Signatures</h2>
+        <div class="signature-grid">
+            <div class="signature-box">
+                <div class="signature-label">Prepared by</div>
+                <div class="signature-line"></div>
+                <div class="signature-details">
+                    <div>Name: _________________________</div>
+                    <div>Date: _________________________</div>
+                    <div>Position: _____________________</div>
+                </div>
+            </div>
+
+            <div class="signature-box">
+                <div class="signature-label">Reviewed by</div>
+                <div class="signature-line"></div>
+                <div class="signature-details">
+                    <div>Name: _________________________</div>
+                    <div>Date: _________________________</div>
+                    <div>Position: _____________________</div>
+                </div>
+            </div>
+
+            <div class="signature-box">
+                <div class="signature-label">Approved by</div>
+                <div class="signature-line"></div>
+                <div class="signature-details">
+                    <div>Name: _________________________</div>
+                    <div>Date: _________________________</div>
+                    <div>Position: _____________________</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

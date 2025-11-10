@@ -1,0 +1,1467 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Import Workers - Excel Import{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    .import-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 15px;
+    }
+
+    .steps-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .step-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 16px;
+        position: relative;
+    }
+
+    .step-card.active {
+        border-color: #4f46e5;
+        box-shadow: 0 1px 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .step-card.completed {
+        border-color: #10b981;
+        background: #fafbfa;
+    }
+
+    .step-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .step-number {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #e5e7eb;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .step-card.active .step-number {
+        background: #4f46e5;
+        color: white;
+    }
+
+    .step-card.completed .step-number {
+        background: #10b981;
+        color: white;
+    }
+
+    .step-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .step-description {
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 12px;
+        line-height: 1.3;
+    }
+
+    .upload-area {
+        border: 1px dashed #d1d5db;
+        border-radius: 4px;
+        padding: 20px 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .upload-area:hover {
+        border-color: #4f46e5;
+        background: #f8faff;
+    }
+
+    .upload-area.dragover {
+        border-color: #4f46e5;
+        background: #f0f9ff;
+    }
+
+    .upload-area i {
+        font-size: 24px;
+        color: #6b7280;
+        margin-bottom: 6px;
+    }
+
+    .file-selected {
+        background: #ecfdf5;
+        border: 1px solid #10b981;
+        border-radius: 4px;
+        padding: 8px 12px;
+        margin: 8px 0;
+        display: none;
+        font-size: 13px;
+    }
+
+    .btn-primary {
+        background: #4f46e5;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        background: #4338ca;
+    }
+
+    .btn-primary:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+    }
+
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 12px;
+    }
+
+    .spinner {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #e5e7eb;
+        border-top-color: #4f46e5;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 6px;
+    }
+
+    .loading div {
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .result-info {
+        background: #f0fdf4;
+        border: 1px solid #10b981;
+        border-radius: 4px;
+        padding: 8px 12px;
+        margin: 8px 0;
+        display: none;
+        font-size: 13px;
+    }
+
+    .error-info {
+        background: #fef2f2;
+        border: 1px solid #ef4444;
+        border-radius: 4px;
+        padding: 8px 12px;
+        margin: 8px 0;
+        display: none;
+        font-size: 13px;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 6px;
+        width: 95%;
+        max-width: 1000px;
+        max-height: 85vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+        padding: 12px 16px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        z-index: 1000;
+    }
+
+    .modal-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        z-index: 1001;
+        position: relative;
+        min-width: 32px;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-close:hover {
+        color: #1f2937;
+        background: #f3f4f6;
+    }
+
+    .modal-close:active {
+        background: #e5e7eb;
+        transform: scale(0.95);
+    }
+
+    .modal-body {
+        padding: 12px 16px 16px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .preview-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .summary-card {
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .summary-number {
+        font-size: 18px;
+        font-weight: bold;
+        color: #4f46e5;
+    }
+
+    .summary-label {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 2px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+    }
+
+    .preview-table {
+        width: 100%;
+        min-width: 1500px;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+    .preview-table th {
+        background: #f3f4f6;
+        padding: 6px 8px;
+        text-align: left;
+        font-weight: 600;
+        color: #374151;
+        border-bottom: 1px solid #e5e7eb;
+        border-right: 1px solid #e5e7eb;
+        position: sticky;
+        top: 0;
+        white-space: nowrap;
+        font-size: 12px;
+    }
+
+    .preview-table td {
+        padding: 6px 8px;
+        border-bottom: 1px solid #e5e7eb;
+        border-right: 1px solid #e5e7eb;
+        white-space: nowrap;
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 12px;
+    }
+
+    .preview-table tr:hover {
+        background: #f9fafb;
+    }
+
+    .image-indicator {
+        display: inline-block;
+        background: #dbeafe;
+        color: #1e40af;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .no-image {
+        color: #9ca3af;
+        font-size: 11px;
+    }
+    
+    /* Editable cell styles */
+    .editable-cell {
+        cursor: pointer;
+        position: relative;
+        transition: background-color 0.2s;
+    }
+    
+    .editable-cell:hover {
+        background-color: #fef3c7;
+        border-color: #f59e0b;
+    }
+    
+    .editable-cell.editing {
+        padding: 0;
+        background-color: #ffffff;
+    }
+    
+    .editable-input {
+        width: 100%;
+        padding: 6px 8px;
+        border: 2px solid #4f46e5;
+        border-radius: 4px;
+        font-size: 12px;
+        font-family: inherit;
+        outline: none;
+        margin: 0;
+    }
+    
+    .cell-edited {
+        background-color: #dbeafe !important;
+        position: relative;
+    }
+    
+    .cell-edited::after {
+        content: '✓';
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        color: #10b981;
+        font-size: 10px;
+        font-weight: bold;
+    }
+    
+    .edit-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        background: #f0f9ff;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .edit-info {
+        color: #4f46e5;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .save-changes-btn {
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 6px 16px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        display: none;
+    }
+    
+    .save-changes-btn.has-changes {
+        display: block;
+    }
+    
+    .save-changes-btn:hover {
+        background: #059669;
+    }
+    
+    .reset-changes-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 13px;
+        cursor: pointer;
+        display: none;
+    }
+    
+    .reset-changes-btn.has-changes {
+        display: block;
+    }
+    
+    .reset-changes-btn:hover {
+        background: #dc2626;
+    }
+
+    .image-thumbnail {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+        cursor: pointer;
+        border: 2px solid #e5e7eb;
+        transition: all 0.2s ease;
+    }
+
+    .image-thumbnail:hover {
+        border-color: #4f46e5;
+        transform: scale(1.05);
+    }
+
+    .image-cell {
+        padding: 4px !important;
+        text-align: center;
+    }
+
+    /* Image Lightbox */
+    .image-lightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        cursor: pointer;
+    }
+
+    .lightbox-image {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 8px;
+    }
+
+    .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        color: white;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .lightbox-close:hover {
+        color: #f3f4f6;
+    }
+
+    .modal-footer {
+        padding: 15px 20px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .btn-secondary {
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+        background: #e5e7eb;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .steps-wrapper {
+            grid-template-columns: 1fr;
+        }
+        
+        .import-container {
+            padding: 10px;
+        }
+        
+        .modal-content {
+            width: 98%;
+            max-height: 90vh;
+        }
+        
+        .preview-summary {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .upload-area i {
+            font-size: 20px;
+        }
+        
+        .upload-area {
+            padding: 16px 8px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="import-container">
+    <h2 class="mb-3">Import Workers from Excel</h2>
+    
+    <div class="steps-wrapper">
+        <!-- Step 1: Excel to JSON -->
+        <div class="step-card active" id="step1-card">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <div class="step-title">Upload Excel File</div>
+            </div>
+            <div class="step-description">Extract worker data from Excel file</div>
+        
+        <form id="step1-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="upload-area" id="upload-area">
+                <i class="bi bi-cloud-upload"></i>
+                <div>
+                    <strong>Select Excel file</strong><br>
+                    <small>or drag & drop (.xlsx, .xls)</small>
+                </div>
+                <input type="file" id="excel-file" name="excel_file" accept=".xlsx,.xls" style="display: none;" required>
+            </div>
+            
+            <div class="file-selected" id="file-selected">
+                <i class="bi bi-check-circle text-success"></i>
+                <span id="file-name"></span>
+            </div>
+            
+            <button type="submit" class="btn-primary" id="step1-btn">
+                <i class="bi bi-arrow-right"></i> Preview
+            </button>
+            </form>
+            
+            <div class="loading" id="step1-loading">
+                <div class="spinner"></div>
+                <div>Reading Excel file...</div>
+            </div>
+            
+            <div class="result-info" id="step1-result">
+                <i class="bi bi-check-circle"></i>
+                <span id="step1-message"></span>
+            </div>
+            
+            <div class="error-info" id="step1-error">
+                <i class="bi bi-x-circle"></i>
+                <span id="step1-error-message"></span>
+            </div>
+        </div>
+        
+        <!-- Step 2: Import Workers -->
+        <div class="step-card" id="step2-card">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <div class="step-title">Import Workers</div>
+            </div>
+            <div class="step-description">Import workers directly to database</div>
+            
+            <button type="button" class="btn-primary" id="step2-btn" disabled>
+                <i class="bi bi-arrow-right"></i> Import to Database
+            </button>
+            
+            <div class="loading" id="step2-loading">
+                <div class="spinner"></div>
+                <div>Importing workers...</div>
+            </div>
+        
+            <div class="result-info" id="step2-result">
+                <i class="bi bi-check-circle"></i>
+                <span id="step2-message"></span>
+            </div>
+            
+            <div class="error-info" id="step2-error">
+                <i class="bi bi-x-circle"></i>
+                <span id="step2-error-message"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Lightbox -->
+<div class="image-lightbox" id="image-lightbox" onclick="closeLightbox()">
+    <span class="lightbox-close">&times;</span>
+    <img class="lightbox-image" id="lightbox-image" src="" alt="Preview">
+</div>
+
+<!-- JSON Preview Modal -->
+<div class="modal-overlay" id="preview-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">
+                <i class="bi bi-table"></i> Data Preview
+                <span id="preview-count" style="font-size: 14px; color: #6b7280; margin-left: 10px;"></span>
+            </h3>
+            <button class="modal-close" onclick="closePreviewModal()" type="button" aria-label="Close modal" title="Close modal">×</button>
+        </div>
+        <div class="modal-body">
+            <div class="preview-summary">
+                <div class="summary-card">
+                    <div class="summary-number" id="preview-total">0</div>
+                    <div class="summary-label">Total Workers</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number" id="preview-images">0</div>
+                    <div class="summary-label">Images Found</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number" id="preview-photos">0</div>
+                    <div class="summary-label">With Photos</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-number" id="preview-docs">0</div>
+                    <div class="summary-label">With Documents</div>
+                </div>
+            </div>
+            
+            
+            <div class="table-container">
+                <table class="preview-table">
+                    <thead id="preview-thead">
+                        <!-- Headers will be dynamically generated -->
+                    </thead>
+                    <tbody id="preview-tbody">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="edit-controls">
+            <div class="edit-info">
+                <i class="bi bi-pencil"></i>
+                Click on any cell to edit data
+                <span id="changes-count" style="display: none; color: #10b981; font-weight: 600; margin-left: 10px;"></span>
+            </div>
+            <button class="reset-changes-btn" id="reset-changes-btn" onclick="resetAllChanges()">
+                Reset Changes
+            </button>
+            <button class="save-changes-btn" id="save-changes-btn" onclick="saveChanges()">
+                Save Changes
+            </button>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closePreviewModal()">Close</button>
+            <button class="btn-primary" onclick="proceedToStep2()">
+                <i class="bi bi-arrow-right"></i> Continue to Step 2
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const uploadArea = document.getElementById('upload-area');
+    const fileInput = document.getElementById('excel-file');
+    const fileSelected = document.getElementById('file-selected');
+    const fileName = document.getElementById('file-name');
+    const step1Form = document.getElementById('step1-form');
+    const step1Card = document.getElementById('step1-card');
+    const step2Card = document.getElementById('step2-card');
+    const step1Btn = document.getElementById('step1-btn');
+    const step2Btn = document.getElementById('step2-btn');
+    
+    // Upload area click
+    uploadArea.addEventListener('click', () => fileInput.click());
+    
+    // File drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragover');
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (validateFile(file)) {
+                fileInput.files = files;
+                showFileSelected(file);
+            }
+        }
+    });
+    
+    // File selection
+    fileInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file && validateFile(file)) {
+            showFileSelected(file);
+        }
+    });
+    
+    function validateFile(file) {
+        if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+            alert('Please select an Excel file (.xlsx or .xls)');
+            return false;
+        }
+        if (file.size > 100 * 1024 * 1024) {
+            alert('File size too large. Maximum size is 100MB.');
+            return false;
+        }
+        return true;
+    }
+    
+    function showFileSelected(file) {
+        fileName.textContent = file.name + ' (' + formatFileSize(file.size) + ')';
+        fileSelected.style.display = 'block';
+        uploadArea.style.display = 'none';
+    }
+    
+    function formatFileSize(bytes) {
+        if (bytes < 1024) return bytes + ' bytes';
+        else if (bytes < 1048576) return Math.round(bytes / 1024) + ' KB';
+        else return Math.round(bytes / 1048576) + ' MB';
+    }
+    
+    // Step 1: Excel to JSON
+    step1Form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert('Please select an Excel file');
+            return;
+        }
+        
+        // Show loading
+        document.getElementById('step1-loading').style.display = 'block';
+        step1Btn.disabled = true;
+        hideMessages();
+        
+        try {
+            const formData = new FormData(step1Form);
+            
+            const response = await fetch('{% url "zone:step1_extract_excel_to_json" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                
+                // Step 1 completed
+                step1Card.classList.remove('active');
+                step1Card.classList.add('completed');
+                step2Card.classList.add('active');
+                step2Btn.disabled = false;
+                
+                document.getElementById('step1-result').style.display = 'block';
+                document.getElementById('step1-message').textContent = 
+                    `Success! Extracted ${data.record_count} records${data.image_count > 0 ? ' and ' + data.image_count + ' images' : ''}`;
+                
+                // Store data for later use
+                window.extractedData = data;
+                
+                // Show preview modal
+                showPreviewModal(data);
+                
+            } else {
+                // Handle error with details
+                let errorMessage = data.error || 'Extraction failed';
+                if (data.details) {
+                    console.error('Form validation details:', data.details);
+                    // Format detailed error message
+                    errorMessage += '\n';
+                    for (const [field, errors] of Object.entries(data.details)) {
+                        errorMessage += `\n${field}: ${errors.join(', ')}`;
+                    }
+                }
+                throw new Error(errorMessage);
+            }
+            
+        } catch (error) {
+            console.error('Step 1 error:', error);
+            document.getElementById('step1-error').style.display = 'block';
+            document.getElementById('step1-error-message').textContent = error.message;
+            document.getElementById('step1-error-message').style.whiteSpace = 'pre-line';
+        } finally {
+            document.getElementById('step1-loading').style.display = 'none';
+            step1Btn.disabled = false;
+        }
+    });
+    
+    // Step 2: Process MRZ and Import
+    step2Btn.addEventListener('click', async function() {
+        // Show loading
+        document.getElementById('step2-loading').style.display = 'block';
+        step2Btn.disabled = true;
+        hideMessages();
+        
+        try {
+            const formData = new FormData();
+            formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+            
+            const response = await fetch('{% url "zone:step2_process_mrz_and_import" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Step 2 completed
+                step2Card.classList.remove('active');
+                step2Card.classList.add('completed');
+                
+                // Create simple success message
+                let message = `Success! Imported ${data.total_rows} workers to database`;
+                
+                // Log import results for debugging
+                console.log('=== STEP 2: IMPORT RESULTS ===');
+                console.log('Total rows imported:', data.total_rows);
+                console.log('=== END IMPORT LOG ===');
+                
+                document.getElementById('step2-result').style.display = 'block';
+                document.getElementById('step2-message').textContent = message;
+                
+                // Redirect to worker list after 3 seconds
+                setTimeout(() => {
+                    window.location.href = '{% url "zone:worker_list" %}';
+                }, 3000);
+                
+            } else {
+                throw new Error(data.error || 'Import failed');
+            }
+            
+        } catch (error) {
+            console.error('Step 2 error:', error);
+            document.getElementById('step2-error').style.display = 'block';
+            document.getElementById('step2-error-message').textContent = error.message;
+        } finally {
+            document.getElementById('step2-loading').style.display = 'none';
+            step2Btn.disabled = false;
+        }
+    });
+    
+    function hideMessages() {
+        document.querySelectorAll('.result-info, .error-info').forEach(el => {
+            el.style.display = 'none';
+        });
+    }
+    
+    // Preview Modal Functions
+    function showPreviewModal(data) {
+        // Update summary cards
+        document.getElementById('preview-total').textContent = data.record_count || 0;
+        document.getElementById('preview-images').textContent = data.image_count || 0;
+        
+        // Show preview count info
+        if (data.preview_showing && data.preview_total) {
+            const countText = data.preview_showing < data.preview_total 
+                ? `(Showing ${data.preview_showing} of ${data.preview_total} records)`
+                : `(Showing all ${data.preview_total} records)`;
+            document.getElementById('preview-count').textContent = countText;
+        }
+        
+        // Count photos and documents based on actual Excel extraction structure
+        let photoCount = 0;
+        let docCount = 0;
+        let totalImages = 0;
+        
+        if (data.preview_data && data.preview_data.length > 0) {
+            console.log('First worker record:', data.preview_data[0]);
+            
+            data.preview_data.forEach(worker => {
+                // Check specific image fields that Excel extraction creates
+                const imageFields = ['PHOTO', 'IDKH/PASSPORT', 'WORKINGPERMIT', 'VISA'];
+                
+                let workerHasPhoto = false;
+                let workerHasDoc = false;
+                
+                imageFields.forEach(field => {
+                    const value = worker[field];
+                    // Check if this field contains image URL (string starting with /media/)
+                    if (value && typeof value === 'string' && value.startsWith('/media/')) {
+                        totalImages++;
+                        
+                        if (field === 'PHOTO') {
+                            workerHasPhoto = true;
+                        } else {
+                            workerHasDoc = true;
+                        }
+                    }
+                });
+                
+                if (workerHasPhoto) photoCount++;
+                if (workerHasDoc) docCount++;
+            });
+        }
+        
+        document.getElementById('preview-photos').textContent = photoCount;
+        document.getElementById('preview-docs').textContent = docCount;
+        
+        // Update image count with actual detected images
+        document.getElementById('preview-images').textContent = totalImages;
+        
+        
+        // Get all unique fields from the data
+        let allFields = new Set();
+        if (data.preview_data && data.preview_data.length > 0) {
+            data.preview_data.forEach(worker => {
+                Object.keys(worker).forEach(key => allFields.add(key));
+            });
+        }
+        
+        // Use original Excel column order if available, otherwise fallback to default order
+        let fields;
+        if (data.original_column_order && data.original_column_order.length > 0) {
+            console.log('Using original Excel column order:', data.original_column_order);
+            // Use the original Excel column order and filter out any fields not in the data
+            fields = data.original_column_order.filter(col => allFields.has(col));
+            
+            // Add any extra fields that might not be in the original order (shouldn't happen but safe)
+            const remainingFields = Array.from(allFields).filter(field => !data.original_column_order.includes(field));
+            fields = fields.concat(remainingFields);
+        } else {
+            console.log('No original column order available, using fallback order');
+            // Fallback to the old hardcoded order
+            const fieldOrder = ['NO', 'NAME', 'SEX', 'DOB', 'NATIONALITY', 
+                               'PHONE_NUMBER', 'ZONE', 'BUILDING', 'FLOOR', 'POSITION',
+                               'JOINEDDATE', 'RESIGNEDDATE', 'ACTIVE/NOACTIVE',
+                               'IDKH/PASSPORT', 'WORKINGPERMIT', 'VISA', 'PHOTO'];
+            
+            fields = Array.from(allFields).sort((a, b) => {
+                const aIndex = fieldOrder.indexOf(a);
+                const bIndex = fieldOrder.indexOf(b);
+                if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+                if (aIndex !== -1) return -1;
+                if (bIndex !== -1) return 1;
+                return a.localeCompare(b);
+            });
+        }
+        
+        // Generate table headers
+        const thead = document.getElementById('preview-thead');
+        thead.innerHTML = '';
+        const headerRow = document.createElement('tr');
+        headerRow.innerHTML = '<th style="position: sticky; left: 0; background: #f3f4f6; z-index: 1;">#</th>';
+        
+        fields.forEach(field => {
+            const th = document.createElement('th');
+            th.textContent = field.replace(/_/g, ' ');
+            if (field === 'NAME') {
+                th.style.position = 'sticky';
+                th.style.left = '40px';
+                th.style.background = '#f3f4f6';
+                th.style.zIndex = '1';
+            }
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        
+        // Populate table body
+        const tbody = document.getElementById('preview-tbody');
+        tbody.innerHTML = '';
+        
+        if (data.preview_data && data.preview_data.length > 0) {
+            data.preview_data.forEach((worker, index) => {
+                const row = document.createElement('tr');
+                
+                // Add row number (sticky)
+                let html = `<td style="position: sticky; left: 0; background: white; z-index: 1; border-right: 1px solid #e5e7eb;">${index + 1}</td>`;
+                
+                // Add all fields
+                fields.forEach(field => {
+                    const value = worker[field];
+                    let cellContent = '';
+                    
+                    // Check if this is an image column with a URL
+                    const isImageColumn = ['PHOTO', 'IDKH/PASSPORT', 'WORKINGPERMIT', 'VISA'].includes(field);
+                    
+                    if (value === null || value === undefined || value === '') {
+                        cellContent = '<span style="color: #9ca3af;">-</span>';
+                    } else if (isImageColumn && value.startsWith('/media/')) {
+                        // Show image thumbnail for image URLs
+                        const imageUrl = value;
+                        console.log('Loading image:', imageUrl, 'Original value:', value);
+                        cellContent = `<div style="text-align: center;">
+                                      <img src="${imageUrl}" class="image-thumbnail" 
+                                      onclick="showLightbox('${imageUrl}')" 
+                                      style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 2px solid #e5e7eb; display: block; margin: 0 auto;"
+                                      onerror="console.error('Failed to load image:', '${imageUrl}', 'Status:', this.complete, 'Natural dimensions:', this.naturalWidth + 'x' + this.naturalHeight); this.style.display='none'; this.parentNode.innerHTML='<span style=\\'color: #ef4444; font-size: 11px; display: block;\\'>⚠ Image Not Found<br><small style=\\'color: #9ca3af;\\'>Check browser console</small></span>';"
+                                      onload="console.log('Image loaded successfully:', '${imageUrl}', 'Dimensions:', this.naturalWidth + 'x' + this.naturalHeight);"
+                                      alt="${field}" title="Click to enlarge: ${imageUrl}">
+                                      </div>`;
+                    } else if (typeof value === 'object') {
+                        // Handle other object types (might be complex data)
+                        cellContent = '<span style="color: #6b7280; font-style: italic;">Complex data</span>';
+                    } else {
+                        cellContent = String(value);
+                    }
+                    
+                    if (field === 'NAME') {
+                        html += `<td class="editable-cell" data-field="${field}" data-row="${index}" style="position: sticky; left: 40px; background: white; z-index: 1; font-weight: 500; border-right: 1px solid #e5e7eb;">${cellContent}</td>`;
+                    } else if (isImageColumn && value.startsWith('/media/')) {
+                        // Use image-cell class for images
+                        html += `<td class="image-cell">${cellContent}</td>`;
+                    } else {
+                        // Make most fields editable except complex data and images
+                        const isEditable = typeof value !== 'object' && !isImageColumn;
+                        if (isEditable) {
+                            html += `<td class="editable-cell" data-field="${field}" data-row="${index}">${cellContent}</td>`;
+                        } else {
+                            html += `<td>${cellContent}</td>`;
+                        }
+                    }
+                });
+                
+                row.innerHTML = html;
+                tbody.appendChild(row);
+            });
+        } else {
+            tbody.innerHTML = '<tr><td colspan="100" style="text-align: center; color: #6b7280;">No data to preview</td></tr>';
+        }
+        
+        // Show modal
+        const modal = document.getElementById('preview-modal');
+        modal.style.display = 'flex';
+    }
+    
+    function getImageIndicator(imageData, fieldName, worker) {
+        // First check if worker has embedded images
+        if (worker && worker._images && worker._images[fieldName]) {
+            const embeddedImage = worker._images[fieldName];
+            if (embeddedImage.data) {
+                console.log('Using embedded image for', fieldName);
+                // Use base64 data directly
+                return `<img src="${embeddedImage.data}" class="image-thumbnail" 
+                        onclick="showLightbox('${embeddedImage.data}')" 
+                        alt="${fieldName}" title="Click to enlarge - ${embeddedImage.filename || fieldName}">`;
+            }
+        }
+        
+        // Use URL if available, fallback to path-based logic
+        if (imageData && imageData.filename) {
+            console.log('Image data for', fieldName, ':', imageData);
+            
+            let imagePath;
+            
+            // Use pre-generated URL if available (preferred)
+            if (imageData.url) {
+                imagePath = imageData.url;
+                console.log('Using pre-generated URL for', fieldName, ':', imagePath);
+            } else if (imageData.path) {
+                // Fallback: Convert path to URL format
+                imagePath = imageData.path;
+                
+                // Handle Windows paths
+                imagePath = imagePath.replace(/\\/g, '/');
+                
+                // If path starts with media/, prepend /
+                if (imagePath.startsWith('media/')) {
+                    imagePath = '/' + imagePath;
+                } else if (imagePath.includes('/media/')) {
+                    // Extract from full path
+                    imagePath = '/media/' + imagePath.split('/media/')[1];
+                } else if (imagePath.startsWith('C:/') || imagePath.startsWith('/')) {
+                    // Handle absolute paths - extract media part
+                    const mediaIndex = imagePath.indexOf('media/');
+                    if (mediaIndex !== -1) {
+                        imagePath = '/' + imagePath.substring(mediaIndex);
+                    }
+                }
+            }
+            
+            console.log('Final image path for', fieldName, ':', imagePath);
+            
+            // Return an actual image thumbnail
+            return `<img src="${imagePath}" class="image-thumbnail" 
+                    onclick="showLightbox('${imagePath}')" 
+                    onerror="this.style.display='none'; this.parentNode.innerHTML='<span class=\\'image-indicator\\'>✓ ${imageData.filename}</span>';"
+                    alt="${fieldName}" title="Click to enlarge - ${imageData.filename}">`;
+        }
+        return '<span class="no-image">-</span>';
+    }
+    
+    function showLightbox(imagePath) {
+        event.stopPropagation();
+        // Escape the imagePath properly for base64 or regular URLs
+        const lightboxImg = document.getElementById('lightbox-image');
+        if (imagePath.startsWith('data:')) {
+            // Base64 image
+            lightboxImg.src = imagePath;
+        } else {
+            // Regular URL
+            lightboxImg.src = imagePath;
+        }
+        document.getElementById('image-lightbox').style.display = 'flex';
+    }
+    
+    function closeLightbox() {
+        document.getElementById('image-lightbox').style.display = 'none';
+    }
+    
+    function closePreviewModal() {
+        console.log('Closing preview modal...');
+        const modal = document.getElementById('preview-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            console.log('Modal closed successfully');
+        } else {
+            console.error('Modal element not found');
+        }
+    }
+    
+    function proceedToStep2() {
+        closePreviewModal();
+        // Trigger Step 2
+        document.getElementById('step2-btn').click();
+    }
+    
+    // Make functions globally accessible for onclick handlers
+    window.showLightbox = showLightbox;
+    window.closeLightbox = closeLightbox;
+    window.closePreviewModal = closePreviewModal;
+    window.proceedToStep2 = proceedToStep2;
+    
+    // Close modal on overlay click
+    document.getElementById('preview-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePreviewModal();
+        }
+    });
+    
+    // Add event listeners for close buttons (alternative to onclick)
+    document.addEventListener('DOMContentLoaded', function() {
+        const closeButtons = document.querySelectorAll('.modal-close, [onclick="closePreviewModal()"]');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Close button clicked via event listener');
+                closePreviewModal();
+            });
+        });
+        
+        // ESC key functionality will be handled by the existing handler below
+    });
+    
+    // Close lightbox on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLightbox();
+            closePreviewModal();
+        }
+    });
+    
+    // Initialize inline editing after modal is shown
+    initializeInlineEditing();
+});
+
+// Global variables for tracking changes
+let editedData = {};
+let originalData = {};
+
+function initializeInlineEditing() {
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('editable-cell') && !e.target.classList.contains('editing')) {
+            startEditingCell(e.target);
+        }
+    });
+}
+
+function startEditingCell(cell) {
+    // Exit any other editing cells first
+    exitAllEditingCells();
+    
+    const field = cell.dataset.field;
+    const row = parseInt(cell.dataset.row);
+    const currentValue = cell.textContent.trim();
+    
+    // Store original value if not already stored
+    const key = `${row}-${field}`;
+    if (!(key in originalData)) {
+        originalData[key] = currentValue;
+    }
+    
+    // Create input element
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'editable-input';
+    input.value = currentValue === '-' ? '' : currentValue;
+    
+    // Replace cell content with input
+    cell.classList.add('editing');
+    cell.innerHTML = '';
+    cell.appendChild(input);
+    
+    // Focus and select text
+    input.focus();
+    input.select();
+    
+    // Handle Enter key to save
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            saveEditingCell(cell, input.value);
+        } else if (e.key === 'Escape') {
+            cancelEditingCell(cell);
+        }
+    });
+    
+    // Handle blur to save
+    input.addEventListener('blur', function() {
+        saveEditingCell(cell, input.value);
+    });
+}
+
+function saveEditingCell(cell, newValue) {
+    const field = cell.dataset.field;
+    const row = parseInt(cell.dataset.row);
+    const key = `${row}-${field}`;
+    
+    // Clean up the value
+    const cleanValue = newValue.trim();
+    const displayValue = cleanValue || '-';
+    
+    // Update the data
+    if (window.extractedData && window.extractedData.preview_data && window.extractedData.preview_data[row]) {
+        window.extractedData.preview_data[row][field] = cleanValue;
+    }
+    
+    // Track the change
+    editedData[key] = cleanValue;
+    
+    // Update cell appearance
+    cell.classList.remove('editing');
+    cell.innerHTML = displayValue;
+    
+    // Mark as edited if value changed
+    if (cleanValue !== originalData[key]) {
+        cell.classList.add('cell-edited');
+    } else {
+        cell.classList.remove('cell-edited');
+        delete editedData[key];
+    }
+    
+    updateChangesUI();
+}
+
+function cancelEditingCell(cell) {
+    const field = cell.dataset.field;
+    const row = parseInt(cell.dataset.row);
+    const key = `${row}-${field}`;
+    
+    // Restore original value
+    const originalValue = originalData[key] || '-';
+    
+    cell.classList.remove('editing');
+    cell.innerHTML = originalValue;
+}
+
+function exitAllEditingCells() {
+    const editingCells = document.querySelectorAll('.editable-cell.editing');
+    editingCells.forEach(cell => {
+        const input = cell.querySelector('.editable-input');
+        if (input) {
+            saveEditingCell(cell, input.value);
+        }
+    });
+}
+
+function updateChangesUI() {
+    const changeCount = Object.keys(editedData).length;
+    const changesCountEl = document.getElementById('changes-count');
+    const saveBtn = document.getElementById('save-changes-btn');
+    const resetBtn = document.getElementById('reset-changes-btn');
+    
+    if (changeCount > 0) {
+        changesCountEl.style.display = 'inline';
+        changesCountEl.textContent = `${changeCount} changes made`;
+        saveBtn.classList.add('has-changes');
+        resetBtn.classList.add('has-changes');
+    } else {
+        changesCountEl.style.display = 'none';
+        saveBtn.classList.remove('has-changes');
+        resetBtn.classList.remove('has-changes');
+    }
+}
+
+function resetAllChanges() {
+    if (Object.keys(editedData).length === 0) return;
+    
+    if (!confirm('Are you sure you want to reset all changes? This cannot be undone.')) {
+        return;
+    }
+    
+    // Restore all original values
+    Object.keys(editedData).forEach(key => {
+        const [row, field] = key.split('-');
+        const cell = document.querySelector(`[data-row="${row}"][data-field="${field}"]`);
+        if (cell) {
+            const originalValue = originalData[key] || '-';
+            cell.innerHTML = originalValue;
+            cell.classList.remove('cell-edited');
+            
+            // Update the data
+            if (window.extractedData && window.extractedData.preview_data && window.extractedData.preview_data[row]) {
+                window.extractedData.preview_data[row][field] = originalValue === '-' ? '' : originalValue;
+            }
+        }
+    });
+    
+    // Clear tracked changes
+    editedData = {};
+    updateChangesUI();
+}
+
+async function saveChanges() {
+    if (Object.keys(editedData).length === 0) return;
+    
+    // Exit any editing cells first
+    exitAllEditingCells();
+    
+    // Show confirmation
+    const changeCount = Object.keys(editedData).length;
+    if (!confirm(`Save ${changeCount} changes? The updated data will be saved to the server.`)) {
+        return;
+    }
+    
+    const saveBtn = document.getElementById('save-changes-btn');
+    const originalText = saveBtn.textContent;
+    saveBtn.textContent = 'Saving...';
+    saveBtn.disabled = true;
+    
+    try {
+        // Send the edited data to server
+        const formData = new FormData();
+        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+        formData.append('updated_data', JSON.stringify(window.extractedData.preview_data));
+        
+        const response = await fetch('{% url "zone:save_edited_preview_data" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Clear the edited status (changes are now saved to server)
+            document.querySelectorAll('.cell-edited').forEach(cell => {
+                cell.classList.remove('cell-edited');
+            });
+            
+            // Update original data to match current values
+            Object.keys(editedData).forEach(key => {
+                originalData[key] = editedData[key];
+            });
+            
+            // Clear tracked changes
+            editedData = {};
+            updateChangesUI();
+            
+            // Show success message
+            saveBtn.textContent = '✓ Saved to Server';
+            saveBtn.style.background = '#10b981';
+            
+            setTimeout(() => {
+                saveBtn.textContent = originalText;
+                saveBtn.style.background = '';
+                saveBtn.disabled = false;
+            }, 2000);
+        } else {
+            throw new Error(result.error || 'Failed to save changes');
+        }
+        
+    } catch (error) {
+        console.error('Save error:', error);
+        alert('Failed to save changes: ' + error.message);
+        
+        saveBtn.textContent = 'Save Failed';
+        saveBtn.style.background = '#ef4444';
+        
+        setTimeout(() => {
+            saveBtn.textContent = originalText;
+            saveBtn.style.background = '';
+            saveBtn.disabled = false;
+        }, 3000);
+    }
+}
+
+function proceedToStep2() {
+    // Exit any editing cells first
+    exitAllEditingCells();
+    
+    // Ask to save changes if there are any
+    if (Object.keys(editedData).length > 0) {
+        if (confirm('You have unsaved changes. Would you like to save them before proceeding?')) {
+            saveChanges();
+        }
+    }
+    
+    // Close modal and enable step 2
+    closePreviewModal();
+}
+</script>
+{% endblock %}

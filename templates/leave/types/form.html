@@ -1,0 +1,306 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact Form Design - Following Project Guidelines */
+    .form-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    .form-section {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    .section-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0 0 10px 0;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .form-label {
+        font-size: 12px !important;
+        margin-bottom: 4px !important;
+        font-weight: 500;
+        color: #374151;
+        display: block;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 12px !important;
+        padding: 6px 8px !important;
+        height: auto !important;
+        min-height: 32px;
+        border-radius: 6px !important;
+        border: 1px solid #d1d5db !important;
+        line-height: 1.4;
+        background: #ffffff;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        outline: none !important;
+    }
+
+    .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 0;
+    }
+
+    .checkbox-wrapper input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+        accent-color: #3b82f6;
+    }
+
+    .checkbox-wrapper label {
+        font-size: 12px;
+        color: #374151;
+        margin: 0;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .error-text {
+        font-size: 11px;
+        color: #ef4444;
+        margin-top: 4px;
+    }
+
+    .form-actions {
+        background: #f9fafb;
+        border-top: 1px solid #e5e7eb;
+        padding: 12px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 12px;
+        border-radius: 6px;
+    }
+
+    /* Fix button-min alignment for inline use */
+    .form-actions .button-min-default,
+    .form-actions .button-min-success {
+        flex-direction: row;
+        display: inline-flex;
+        gap: 6px;
+    }
+
+    @media (max-width: 768px) {
+        .form-section {
+            padding: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3 py-3">
+    <div class="form-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2>{{ title }}</h2>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h2 class="section-title">Basic Information</h2>
+                <div class="row g-2">
+                    <div class="col-md-8">
+                        <label class="form-label">{{ form.name.label }}</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <p class="error-text">{{ form.name.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.code.label }}</label>
+                        {{ form.code }}
+                        {% if form.code.errors %}
+                        <p class="error-text">{{ form.code.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">{{ form.max_days_per_year.label }}</label>
+                        {{ form.max_days_per_year }}
+                        {% if form.max_days_per_year.errors %}
+                        <p class="error-text">{{ form.max_days_per_year.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">{{ form.color.label }}</label>
+                        {{ form.color }}
+                        {% if form.color.errors %}
+                        <p class="error-text">{{ form.color.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carry Forward & Encashment -->
+            <div class="form-section">
+                <h2 class="section-title">Carry Forward & Encashment</h2>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <div class="checkbox-wrapper">
+                            {{ form.carry_forward_allowed }}
+                            <label for="{{ form.carry_forward_allowed.id_for_label }}">
+                                {{ form.carry_forward_allowed.label }}
+                            </label>
+                        </div>
+                        <label class="form-label-compact mt-2">{{ form.max_carry_forward_days.label }}</label>
+                        {{ form.max_carry_forward_days }}
+                        {% if form.max_carry_forward_days.errors %}
+                        <p class="error-text">{{ form.max_carry_forward_days.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="checkbox-wrapper">
+                            {{ form.encashment_allowed }}
+                            <label for="{{ form.encashment_allowed.id_for_label }}">
+                                {{ form.encashment_allowed.label }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leave Rules -->
+            <div class="form-section">
+                <h2 class="section-title">Leave Rules</h2>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.apply_in_advance_days.label }}</label>
+                        {{ form.apply_in_advance_days }}
+                        {% if form.apply_in_advance_days.errors %}
+                        <p class="error-text">{{ form.apply_in_advance_days.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.minimum_continuous_days.label }}</label>
+                        {{ form.minimum_continuous_days }}
+                        {% if form.minimum_continuous_days.errors %}
+                        <p class="error-text">{{ form.minimum_continuous_days.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">{{ form.maximum_continuous_days.label }}</label>
+                        {{ form.maximum_continuous_days }}
+                        {% if form.maximum_continuous_days.errors %}
+                        <p class="error-text">{{ form.maximum_continuous_days.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Certificate -->
+            <div class="form-section">
+                <h2 class="section-title">Medical Certificate</h2>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <div class="checkbox-wrapper">
+                            {{ form.medical_certificate_required }}
+                            <label for="{{ form.medical_certificate_required.id_for_label }}">
+                                {{ form.medical_certificate_required.label }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">{{ form.medical_certificate_min_days.label }}</label>
+                        {{ form.medical_certificate_min_days }}
+                        {% if form.medical_certificate_min_days.errors %}
+                        <p class="error-text">{{ form.medical_certificate_min_days.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Settings -->
+            <div class="form-section">
+                <h2 class="section-title">Additional Settings</h2>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <div class="checkbox-wrapper">
+                            {{ form.is_paid }}
+                            <label for="{{ form.is_paid.id_for_label }}">
+                                {{ form.is_paid.label }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="checkbox-wrapper">
+                            {{ form.include_holiday }}
+                            <label for="{{ form.include_holiday.id_for_label }}">
+                                {{ form.include_holiday.label }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="checkbox-wrapper">
+                            {{ form.is_active }}
+                            <label for="{{ form.is_active.id_for_label }}">
+                                {{ form.is_active.label }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <a href="{% url 'leave:type_list' %}" class="button-min-default">
+                    <i class="bi bi-x-circle"></i>
+                    Cancel
+                </a>
+                <button type="submit" class="button-min-success">
+                    <i class="bi bi-check-circle"></i>
+                    Save Leave Type
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

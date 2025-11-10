@@ -1,0 +1,444 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Review Extension Request - {{ extension_request.probation_period.worker.get_full_name }}{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Use same design system as probation_list.html */
+:root {
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #06b6d4;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+}
+
+.review-container {
+    padding: 0.75rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.page-header-compact {
+    background: white;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.page-title-compact {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin: 0;
+}
+
+.user-role-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.role-manager {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.action-btn-compact {
+    padding: 0.375rem 0.625rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.btn-outline-compact {
+    background: white;
+    color: var(--gray-600);
+    border: 1px solid var(--gray-300);
+}
+
+.btn-outline-compact:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-400);
+}
+
+.review-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 1rem;
+}
+
+.worker-header {
+    background: var(--gray-50);
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.worker-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.worker-info h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.worker-info p {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--gray-600);
+}
+
+.request-details {
+    padding: 1.5rem;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.detail-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.detail-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    letter-spacing: 0.025em;
+}
+
+.detail-value {
+    font-size: 1rem;
+    color: var(--gray-900);
+    font-weight: 500;
+}
+
+.request-reason {
+    background: var(--gray-50);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+}
+
+.request-reason h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.request-reason p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--gray-700);
+    line-height: 1.5;
+}
+
+.decision-form {
+    background: var(--gray-50);
+    border-radius: 8px;
+    padding: 1.5rem;
+    border-top: 1px solid var(--gray-200);
+}
+
+.decision-form h4 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    font-size: 0.875rem;
+    background: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-success {
+    background: var(--success);
+    color: white;
+}
+
+.btn-success:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: var(--gray-500);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: var(--gray-600);
+    transform: translateY(-1px);
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.alert-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fed7aa;
+}
+
+@media (max-width: 768px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .worker-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="review-container">
+    <!-- Header -->
+    <div class="page-header-compact">
+        <div class="header-left">
+            <h1 class="page-title-compact">
+                <i class="bi bi-hourglass-split"></i>
+                Review Extension Request
+            </h1>
+            <span class="user-role-badge role-manager">
+                <i class="bi bi-shield-check"></i>
+                MANAGER
+            </span>
+        </div>
+        <div class="header-right">
+            <a href="{% url 'zone:probation_extension_requests' %}" class="action-btn-compact btn-outline-compact">
+                <i class="bi bi-arrow-left"></i>
+                Back to Requests
+            </a>
+        </div>
+    </div>
+
+    <!-- Alert -->
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div>
+            <strong>Manager Review Required:</strong> This extension request needs your approval or rejection.
+        </div>
+    </div>
+
+    <!-- Review Card -->
+    <div class="review-card">
+        <div class="worker-header">
+            <div class="worker-avatar">
+                {{ extension_request.probation_period.worker.first_name|first|upper }}{{ extension_request.probation_period.worker.last_name|first|upper }}
+            </div>
+            <div class="worker-info">
+                <h2>{{ extension_request.probation_period.worker.get_full_name }}</h2>
+                <p>{{ extension_request.probation_period.worker.worker_id }} • {{ extension_request.probation_period.worker.position.name|default:"Unassigned" }}</p>
+            </div>
+        </div>
+
+        <div class="request-details">
+            <div class="detail-grid">
+                <div class="detail-section">
+                    <div class="detail-item">
+                        <span class="detail-label">Requested By</span>
+                        <span class="detail-value">{{ extension_request.requested_by.get_full_name|default:extension_request.requested_by.username }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Request Date</span>
+                        <span class="detail-value">{{ extension_request.created_at|date:"M d, Y g:i A" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Extension Duration</span>
+                        <span class="detail-value">{{ extension_request.extension_duration_days }} days</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-item">
+                        <span class="detail-label">Current End Date</span>
+                        <span class="detail-value">{{ extension_request.probation_period.get_end_date|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">New End Date (if approved)</span>
+                        <span class="detail-value">{{ extension_request.probation_period.get_end_date|date:"M d, Y" }} + {{ extension_request.extension_duration_days }}d</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Days Remaining</span>
+                        <span class="detail-value">{{ extension_request.probation_period.get_days_remaining }} days</span>
+                    </div>
+                </div>
+            </div>
+
+            {% if extension_request.reason %}
+            <div class="request-reason">
+                <h4>Extension Reason</h4>
+                <p>{{ extension_request.reason }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Decision Form -->
+            <div class="decision-form">
+                <h4>Manager Decision</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label class="form-label">Review Notes (Optional)</label>
+                        <textarea name="review_notes" class="form-control" placeholder="Add any comments about your decision..." rows="4"></textarea>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="submit" name="action" value="approve" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i>
+                            Approve Extension
+                        </button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger">
+                            <i class="bi bi-x-circle"></i>
+                            Reject Request
+                        </button>
+                        <a href="{% url 'zone:probation_extension_requests' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

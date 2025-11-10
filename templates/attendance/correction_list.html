@@ -1,0 +1,828 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Attendance Corrections" %} - Attendance{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Page Header */
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    /* Statistics Cards */
+    .stats-row {
+        margin-bottom: 12px;
+    }
+
+    .stat-number {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .stat-label {
+        font-size: 10px;
+        color: #6b7280;
+        margin: 2px 0 0 0;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    /* Form Controls */
+    .form-label {
+        font-size: 10px !important;
+        margin-bottom: 3px !important;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+        height: auto !important;
+        border-radius: 3px;
+        border: 1px solid #d1d5db;
+        line-height: 1.4;
+        background: white;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    /* Modern Table */
+    .modern-table-container {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .table {
+        margin: 0;
+        font-size: 12px;
+    }
+
+    .table th {
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        background: #f8fafb;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 8px 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table tbody tr:hover {
+        background: #f8fafb;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pending {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-approved {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .status-rejected {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-draft {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+
+    .type-badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+
+    /* Employee Avatar */
+    .employee-avatar-list {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 11px;
+    }
+
+    /* Pagination */
+    .pagination-compact {
+        margin: 12px 0 0 0;
+        justify-content: center;
+    }
+
+    .pagination-compact .page-item {
+        margin: 0 1px;
+    }
+
+    .pagination-compact .page-link {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 8px;
+        min-width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #3b82f6;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .pagination-compact .page-link:hover {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+
+    .pagination-compact .page-item.active .page-link {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+        font-weight: 600;
+    }
+
+    .pagination-compact .page-item.disabled .page-link {
+        color: #9ca3af;
+        background: #f9fafb;
+        border-color: #e5e7eb;
+        cursor: not-allowed;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6b7280;
+    }
+
+    .empty-state i {
+        font-size: 32px;
+        color: #d1d5db;
+        margin-bottom: 12px;
+    }
+
+    .empty-state h6 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    .empty-state p {
+        font-size: 12px;
+        margin-bottom: 16px;
+    }
+
+    /* Button Styles */
+    .button-min-primary {
+        background: #3b82f6;
+        color: white;
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 3px;
+        padding: 4px 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .button-min-primary:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    .button-min-default {
+        background: white;
+        color: #374151;
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 9px;
+        padding: 4px 8px;
+        border: 1px solid #e2e8f0;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .button-min-default:hover {
+        background: #f8fafb;
+        color: #1f2937;
+    }
+
+    .button-min-success {
+        background: #10b981;
+        color: white;
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 9px;
+        padding: 4px 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .button-min-success:hover {
+        background: #059669;
+        color: white;
+    }
+
+    .button-min-danger {
+        background: #ef4444;
+        color: white;
+        font-size: 11px;
+        font-weight: 500;
+        border-radius: 9px;
+        padding: 4px 8px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .button-min-danger:hover {
+        background: #dc2626;
+        color: white;
+    }
+
+    /* Utility classes */
+    .space-x-1 > * + * {
+        margin-left: 4px;
+    }
+
+    .space-x-2 > * + * {
+        margin-left: 8px;
+    }
+
+    .space-x-3 > * + * {
+        margin-left: 12px;
+    }
+
+    .text-xs {
+        font-size: 10px;
+    }
+
+    .font-medium {
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        .stats-row .col-3 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+
+        .pagination-compact .page-link {
+            font-size: 10px;
+            padding: 3px 6px;
+            min-width: 24px;
+            height: 24px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center pb-3">
+        <div>
+            <h2>{% trans "Attendance Corrections" %}</h2>
+        </div>
+        <div class="d-flex align-items-center space-x-3">
+            <a href="{% url 'attendance:correction_create' %}" class="button-min-primary">
+                <div class="space-x-1">
+                    <i class="fa fa-plus text-xs"></i>
+                    <span class="font-medium">{% trans "Request Correction" %}</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row stats-row my-3">
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ stats.total }}</div>
+                <div class="stat-label">{% trans "Total Requests" %}</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number text-warning">{{ stats.pending_requests }}</div>
+                <div class="stat-label">{% trans "Pending" %}</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number text-success">{{ stats.approved_requests }}</div>
+                <div class="stat-label">{% trans "Approved" %}</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number text-danger">{{ stats.rejected_requests }}</div>
+                <div class="stat-label">{% trans "Rejected" %}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search/Filter Section -->
+    <div class="rounded-xl bg-white border px-3 py-2 mb-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-2">
+                <label for="employee" class="form-label">{% trans "Employee" %}</label>
+                <select name="employee" id="employee" class="form-select">
+                    <option value="">{% trans "All Employees" %}</option>
+                    {% for emp in employees %}
+                        <option value="{{ emp.id }}" {% if filters.employee == emp.id|stringformat:"s" %}selected{% endif %}>
+                            {{ emp.full_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="status" class="form-label">{% trans "Status" %}</label>
+                <select name="status" id="status" class="form-select">
+                    <option value="">{% trans "All Status" %}</option>
+                    <option value="draft" {% if filters.status == 'draft' %}selected{% endif %}>{% trans "Draft" %}</option>
+                    <option value="pending" {% if filters.status == 'pending' %}selected{% endif %}>{% trans "Pending" %}</option>
+                    <option value="approved" {% if filters.status == 'approved' %}selected{% endif %}>{% trans "Approved" %}</option>
+                    <option value="rejected" {% if filters.status == 'rejected' %}selected{% endif %}>{% trans "Rejected" %}</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="correction_type" class="form-label">{% trans "Type" %}</label>
+                <select name="correction_type" id="correction_type" class="form-select">
+                    <option value="">{% trans "All Types" %}</option>
+                    <option value="clock_in" {% if filters.correction_type == 'clock_in' %}selected{% endif %}>{% trans "Clock In" %}</option>
+                    <option value="clock_out" {% if filters.correction_type == 'clock_out' %}selected{% endif %}>{% trans "Clock Out" %}</option>
+                    <option value="both" {% if filters.correction_type == 'both' %}selected{% endif %}>{% trans "Both" %}</option>
+                    <option value="absent" {% if filters.correction_type == 'absent' %}selected{% endif %}>{% trans "Mark Present" %}</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="date_from" class="form-label">{% trans "From Date" %}</label>
+                <input type="date" name="date_from" id="date_from" class="form-control" value="{{ filters.date_from }}">
+            </div>
+            <div class="col-md-2">
+                <label for="date_to" class="form-label">{% trans "To Date" %}</label>
+                <input type="date" name="date_to" id="date_to" class="form-control" value="{{ filters.date_to }}">
+            </div>
+            <div class="col-md-2">
+                <div class="d-flex gap-1">
+                    <button type="submit" class="button-min-primary flex-fill">
+                        <div class="d-flex align-items-center justify-content-center space-x-1">
+                            <i class="bi bi-search" style="font-size:10px;"></i>
+                            <span class="font-medium">{% trans "Filter" %}</span>
+                        </div>
+                    </button>
+                    <a href="{% url 'attendance:correction_list' %}" class="button-min-default">
+                        <i class="bi bi-x" style="font-size:12px;"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="modern-table-container">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>{% trans "Employee" %}</th>
+                        <th>{% trans "Date" %}</th>
+                        <th>{% trans "Type" %}</th>
+                        <th>{% trans "Requested Changes" %}</th>
+                        <th>{% trans "Status" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for correction in corrections %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="employee-avatar-list me-2">
+                                    {{ correction.requested_by.first_name|first|upper }}{{ correction.requested_by.last_name|first|upper }}
+                                </div>
+                                <div>
+                                    <div style="font-size: 12px; font-weight: 600;">{{ correction.requested_by.full_name }}</div>
+                                    <div style="font-size: 10px; color: #6b7280;">{{ correction.requested_by.employee_id }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">{{ correction.attendance.date|date:"Y-m-d" }}</div>
+                            <div style="font-size: 10px; color: #6b7280;">{{ correction.attendance.date|date:"l" }}</div>
+                        </td>
+                        <td>
+                            <span class="type-badge">{{ correction.get_correction_type_display }}</span>
+                        </td>
+                        <td>
+                            {% if correction.correction_type == 'clock_in' or correction.correction_type == 'both' %}
+                                {% if correction.new_clock_in %}
+                                    <div style="font-size: 11px;">
+                                        <strong>{% trans "In:" %}</strong> {{ correction.new_clock_in|time:"H:i" }}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                            {% if correction.correction_type == 'clock_out' or correction.correction_type == 'both' %}
+                                {% if correction.new_clock_out %}
+                                    <div style="font-size: 11px;">
+                                        <strong>{% trans "Out:" %}</strong> {{ correction.new_clock_out|time:"H:i" }}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                            {% if correction.supporting_document %}
+                                <div style="font-size: 10px; color: #10b981; margin-top: 2px;">
+                                    <i class="bi bi-paperclip"></i> {% trans "Attached" %}
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="status-badge status-{{ correction.status }}">
+                                {{ correction.get_status_display }}
+                            </span>
+                            {% if correction.status == 'approved' and correction.approved_at %}
+                                <div style="font-size: 10px; color: #10b981; margin-top: 2px;">
+                                    <i class="bi bi-check-circle"></i> {{ correction.approved_at|date:"M d" }}
+                                </div>
+                            {% elif correction.status == 'rejected' %}
+                                <div style="font-size: 10px; color: #ef4444; margin-top: 2px;">
+                                    <i class="bi bi-x-circle"></i> {% trans "Rejected" %}
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <button type="button" class="button-min-default" style="border-radius:9px;"
+                                        data-bs-toggle="modal" data-bs-target="#correctionModal{{ correction.id }}">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                {% if correction.status == 'draft' or correction.status == 'rejected' %}
+                                    <a href="{% url 'attendance:correction_update' correction.pk %}"
+                                       class="button-min-default" style="border-radius:9px;">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                {% endif %}
+                                {% if correction.status == 'pending' and perms.attendance.can_approve_corrections %}
+                                    <button type="button" class="button-min-success" style="border-radius:9px;"
+                                            onclick="approveCorrection({{ correction.id }})">
+                                        <i class="bi bi-check"></i>
+                                    </button>
+                                    <button type="button" class="button-min-danger" style="border-radius:9px;"
+                                            onclick="rejectCorrection({{ correction.id }})">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Correction Details Modal -->
+                    <div class="modal fade" id="correctionModal{{ correction.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        {% trans "Correction Request Details" %} - {{ correction.requested_by.full_name }}
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>{% trans "Employee:" %}</strong> {{ correction.requested_by.full_name }}<br>
+                                            <strong>{% trans "Date:" %}</strong> {{ correction.attendance.date|date:"Y-m-d l" }}<br>
+                                            <strong>{% trans "Correction Type:" %}</strong> {{ correction.get_correction_type_display }}<br>
+                                            <strong>{% trans "Status:" %}</strong>
+                                            <span class="status-badge status-{{ correction.status }}">
+                                                {{ correction.get_status_display }}
+                                            </span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>{% trans "Requested On:" %}</strong> {{ correction.created_at|date:"Y-m-d H:i" }}<br>
+                                            {% if correction.supporting_document %}
+                                                <strong>{% trans "Supporting Document:" %}</strong>
+                                                <a href="{{ correction.supporting_document.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-download"></i> {% trans "Download" %}
+                                                </a><br>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>{% trans "Requested Changes:" %}</h6>
+                                            {% if correction.correction_type == 'clock_in' or correction.correction_type == 'both' %}
+                                                {% if correction.new_clock_in %}
+                                                    <strong>{% trans "Clock In Time:" %}</strong> {{ correction.new_clock_in|time:"H:i:s" }}<br>
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if correction.correction_type == 'clock_out' or correction.correction_type == 'both' %}
+                                                {% if correction.new_clock_out %}
+                                                    <strong>{% trans "Clock Out Time:" %}</strong> {{ correction.new_clock_out|time:"H:i:s" }}<br>
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if correction.correction_type == 'status' %}
+                                                {% if correction.new_status %}
+                                                    <strong>{% trans "New Status:" %}</strong> {{ correction.get_new_status_display }}<br>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>{% trans "Current Record:" %}</h6>
+                                            {% if correction.attendance %}
+                                                <strong>{% trans "Clock In:" %}</strong>
+                                                {% if correction.attendance.clock_in %}
+                                                    {{ correction.attendance.clock_in|time:"H:i:s" }}
+                                                {% else %}
+                                                    <span class="text-muted">{% trans "Not recorded" %}</span>
+                                                {% endif %}<br>
+                                                <strong>{% trans "Clock Out:" %}</strong>
+                                                {% if correction.attendance.clock_out %}
+                                                    {{ correction.attendance.clock_out|time:"H:i:s" }}
+                                                {% else %}
+                                                    <span class="text-muted">{% trans "Not recorded" %}</span>
+                                                {% endif %}<br>
+                                                <strong>{% trans "Status:" %}</strong>
+                                                <span class="status-badge status-{{ correction.attendance.status }}">
+                                                    {{ correction.attendance.get_status_display }}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-muted">{% trans "No attendance record found" %}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+                                    <div class="mb-3">
+                                        <strong>{% trans "Reason:" %}</strong>
+                                        <p>{{ correction.reason }}</p>
+                                    </div>
+
+                                    {% if correction.status == 'approved' and correction.approved_by %}
+                                    <div class="alert alert-success">
+                                        <strong>{% trans "Approved by:" %}</strong> {{ correction.approved_by.full_name }}<br>
+                                        <strong>{% trans "Approved on:" %}</strong> {{ correction.approved_at|date:"Y-m-d H:i" }}
+                                    </div>
+                                    {% elif correction.status == 'rejected' %}
+                                    <div class="alert alert-danger">
+                                        <strong>{% trans "Status:" %}</strong> {% trans "Rejected" %}
+                                        {% if correction.rejection_reason %}
+                                            <br><strong>{% trans "Reason:" %}</strong> {{ correction.rejection_reason }}
+                                        {% endif %}
+                                    </div>
+                                    {% elif correction.status == 'pending' %}
+                                    <div class="alert alert-warning">
+                                        <strong>{% trans "Status:" %}</strong> {% trans "Pending approval" %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        {% trans "Close" %}
+                                    </button>
+                                    {% if correction.status == 'draft' or correction.status == 'rejected' %}
+                                    <a href="{% url 'attendance:correction_update' correction.pk %}" class="btn btn-primary">
+                                        <i class="bi bi-pencil"></i> {% trans "Edit Request" %}
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="bi bi-arrow-repeat"></i>
+                                <h6>{% trans "No Correction Requests Found" %}</h6>
+                                <p>
+                                    {% if request.GET %}
+                                        {% trans "No correction requests match your search criteria." %}
+                                    {% else %}
+                                        {% trans "Get started by requesting your first correction." %}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="d-flex justify-content-between align-items-center mt-3 mb-5">
+        <!-- Per-Page Selector -->
+        <div class="d-flex align-items-center">
+            <span style="font-size: 11px; color: #6b7280; margin-right: 8px;">{% trans "Show:" %}</span>
+            <select class="form-select form-select-sm rounded"
+                    style="width: auto; font-size: 11px; padding: 4px 8px;"
+                    onchange="changePerPage(this.value)">
+                <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                <option value="100" {% if per_page == 100 %}selected{% endif %}>100</option>
+            </select>
+            <span style="font-size: 11px; color: #6b7280; margin-left: 8px;">{% trans "per page" %}</span>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Pagination">
+            <ul class="pagination pagination-compact mb-0">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link rounded" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <i class="bi bi-chevron-double-left"></i>
+                        <span class="ms-1 d-none d-md-inline">{% trans "First" %}</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link rounded" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link rounded">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link rounded" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link rounded" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link rounded" href="?page={{ page_obj.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <i class="bi bi-chevron-double-right"></i>
+                        <span class="ms-1 d-none d-md-inline">{% trans "Last" %}</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function changePerPage(perPage) {
+    const url = new URL(window.location);
+    url.searchParams.set('per_page', perPage);
+    url.searchParams.set('page', '1');
+    window.location.href = url.toString();
+}
+
+function approveCorrection(correctionId) {
+    if (confirm('{% trans "Approve this correction request?" %}')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/attendance/corrections/${correctionId}/approve/`;
+
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfmiddlewaretoken';
+        csrfToken.value = '{{ csrf_token }}';
+        form.appendChild(csrfToken);
+
+        const action = document.createElement('input');
+        action.type = 'hidden';
+        action.name = 'action';
+        action.value = 'approve';
+        form.appendChild(action);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function rejectCorrection(correctionId) {
+    const reason = prompt('{% trans "Please provide a reason for rejection:" %}');
+    if (reason && reason.trim()) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/attendance/corrections/${correctionId}/approve/`;
+
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfmiddlewaretoken';
+        csrfToken.value = '{{ csrf_token }}';
+        form.appendChild(csrfToken);
+
+        const action = document.createElement('input');
+        action.type = 'hidden';
+        action.name = 'action';
+        action.value = 'reject';
+        form.appendChild(action);
+
+        const reasonInput = document.createElement('input');
+        reasonInput.type = 'hidden';
+        reasonInput.name = 'rejection_reason';
+        reasonInput.value = reason.trim();
+        form.appendChild(reasonInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const dateFrom = document.getElementById('date_from');
+    const dateTo = document.getElementById('date_to');
+
+    if (!dateFrom.value) {
+        const firstDayThisMonth = new Date();
+        firstDayThisMonth.setDate(1);
+        dateFrom.value = firstDayThisMonth.toISOString().split('T')[0];
+    }
+
+    if (!dateTo.value) {
+        dateTo.value = new Date().toISOString().split('T')[0];
+    }
+});
+</script>
+{% endblock %}

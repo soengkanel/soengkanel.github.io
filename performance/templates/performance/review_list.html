@@ -1,0 +1,539 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Performance Reviews{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Ultra-Minimal Design System - Performance Reviews */
+    .page-header {
+        padding: 6px 0;
+        margin-bottom: 12px;
+    }
+
+    .page-header h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+    /* Ultra-Minimal search filters */
+    .search-filters {
+        background: #f8fafb;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        padding: 8px;
+        margin-bottom: 12px;
+    }
+
+    .filter-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr auto;
+        gap: 8px;
+        align-items: end;
+    }
+
+    .form-label {
+        font-size: 10px !important;
+        margin-bottom: 3px !important;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .form-control,
+    .form-select {
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+        height: auto !important;
+        border-radius: 3px;
+        border: 1px solid #d1d5db;
+        line-height: 1.4;
+        background: white;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    /* Ultra-Minimal stats */
+    .stats-row {
+        margin-bottom: 12px;
+    }
+
+    .stat-item {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        padding: 8px;
+        text-align: center;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-number {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    .stat-label {
+        font-size: 10px;
+        color: #6b7280;
+        margin: 2px 0 0 0;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+
+    /* Modern Table */
+    .modern-table-container {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .table {
+        margin: 0;
+        font-size: 12px;
+    }
+
+    .table th {
+        font-size: 11px;
+        font-weight: 600;
+        color: #374151;
+        background: #f8fafb;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 8px 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid #f1f5f9;
+        vertical-align: middle;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table tbody tr:hover {
+        background: #f8fafb;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-completed {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+
+    .status-in-progress {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+
+    .status-draft {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+
+    .period-badge {
+        background-color: #e0e7ff;
+        color: #3730a3;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 500;
+    }
+
+    /* Rating Stars */
+    .rating-display {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .rating-display i {
+        font-size: 12px;
+    }
+
+    .rating-number {
+        font-size: 11px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-right: 4px;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6b7280;
+    }
+
+    .empty-state i {
+        font-size: 32px;
+        color: #d1d5db;
+        margin-bottom: 12px;
+    }
+
+    .empty-state h6 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 6px;
+    }
+
+    .empty-state p {
+        font-size: 12px;
+        margin-bottom: 16px;
+    }
+
+    /* Compact Pagination */
+    .pagination-compact {
+        margin: 12px 0 0 0;
+        justify-content: center;
+    }
+
+    .pagination-compact .page-item {
+        margin: 0 1px;
+    }
+
+    .pagination-compact .page-link {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 4px 8px;
+        min-width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #3b82f6;
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .pagination-compact .page-link:hover {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+    }
+
+    .pagination-compact .page-item.active .page-link {
+        background: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
+        font-weight: 600;
+    }
+
+    .pagination-compact .page-item.disabled .page-link {
+        color: #9ca3af;
+        background: #f9fafb;
+        border-color: #e5e7eb;
+        cursor: not-allowed;
+    }
+
+    .pagination-compact .page-nav {
+        font-size: 10px;
+        padding: 4px 6px;
+        min-width: auto;
+    }
+
+    @media (max-width: 768px) {
+        .filter-row {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Compact Page Header -->
+    <div class="page-header d-flex justify-content-between align-items-center pb-3">
+        <div>
+            <h2>Performance Reviews</h2>
+        </div>
+        <div class="d-flex align-items-center space-x-3">
+            <a href="{% url 'performance:review_create' %}" class="button-min-primary">
+                <div class="space-x-1">
+                    <i class="fa fa-plus text-xs"></i>
+                    <span class="font-medium">Add Review</span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Compact Stats -->
+    <div class="row stats-row my-3">
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ status_counts.all }}</div>
+                <div class="stat-label">Total Reviews</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ status_counts.completed }}</div>
+                <div class="stat-label">Completed</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ status_counts.in_progress }}</div>
+                <div class="stat-label">In Progress</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="rounded-xl bg-white border px-3 py-2 shadow-sm text-center">
+                <div class="stat-number">{{ status_counts.draft }}</div>
+                <div class="stat-label">Draft</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compact Search and Filters -->
+    <div class="rounded-xl bg-white border px-3 py-2 mb-3">
+        <form method="get" class="flex justify-between items-end space-x-4 pb-2">
+            <div class="w-full">
+                <label for="search" class="form-label">Search Reviews</label>
+                <input type="text" name="search" id="search" class="form-control"
+                       placeholder="Search by employee or reviewer..." value="{{ search_query }}">
+            </div>
+            <div class="w-full">
+                <label for="status" class="form-label">Status</label>
+                <select name="status" id="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="draft" {% if status_filter == 'draft' %}selected{% endif %}>Draft</option>
+                    <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option>
+                    <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+            <div class="w-full">
+                <label for="period" class="form-label">Period</label>
+                <select name="period" id="period" class="form-select">
+                    <option value="">All Periods</option>
+                    <option value="quarterly" {% if period_filter == 'quarterly' %}selected{% endif %}>Quarterly</option>
+                    <option value="semi_annual" {% if period_filter == 'semi_annual' %}selected{% endif %}>Semi-Annual</option>
+                    <option value="annual" {% if period_filter == 'annual' %}selected{% endif %}>Annual</option>
+                </select>
+            </div>
+            <div class="flex space-x-2 items-end">
+                <button type="submit" class="button-min-primary py-1">
+                    <div class="flex items-center space-x-1">
+                        <i class="bi bi-search" style="font-size:10px;"></i>
+                        <span class="font-medium">Filter</span>
+                    </div>
+                </button>
+                {% if request.GET %}
+                <a href="{% url 'performance:review_list' %}" class="button-min-default py-1">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </a>
+                {% endif %}
+            </div>
+        </form>
+        {% if request.GET %}
+        <div class="mt-2">
+            <span style="font-size: 11px; color: #6b7280;">{{ page_obj.paginator.count }} review{{ page_obj.paginator.count|pluralize }} found</span>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Reviews Table -->
+    {% if page_obj %}
+    <div class="modern-table-container">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Reviewer</th>
+                        <th>Period</th>
+                        <th>Review Date</th>
+                        <th>Rating</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for review in page_obj %}
+                    <tr>
+                        <td>
+                            <div class="employee-details">
+                                <h6 style="font-size: 13px; font-weight: 600; color: #1a1a1a; margin: 0;">
+                                    {{ review.employee.get_full_name }}
+                                </h6>
+                                <p style="font-size: 11px; color: #6b7280; margin: 2px 0 0 0;">
+                                    {{ review.employee.employee_id|default:"N/A" }}
+                                </p>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size: 12px;">
+                                {{ review.reviewer.username|default:"Not assigned" }}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="period-badge">{{ review.get_review_period_display }}</span>
+                        </td>
+                        <td>
+                            <div class="employee-details">
+                                <h6 style="font-size: 12px; font-weight: 600; margin: 0;">
+                                    {{ review.review_date|date:"M d, Y" }}
+                                </h6>
+                                <p style="font-size: 10px; color: #6b7280; margin: 2px 0 0 0;">
+                                    {{ review.period_start|date:"M d" }} - {{ review.period_end|date:"M d, Y" }}
+                                </p>
+                            </div>
+                        </td>
+                        <td>
+                            {% if review.overall_rating %}
+                            <div class="rating-display">
+                                <span class="rating-number">{{ review.overall_rating }}/5</span>
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.overall_rating %}
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    {% else %}
+                                    <i class="bi bi-star text-muted"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <span style="font-size: 11px; color: #9ca3af;">Not rated</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if review.status == 'completed' %}
+                            <span class="status-badge status-completed">Completed</span>
+                            {% elif review.status == 'in_progress' %}
+                            <span class="status-badge status-in-progress">In Progress</span>
+                            {% else %}
+                            <span class="status-badge status-draft">Draft</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <a href="{% url 'performance:review_detail' review.pk %}"
+                                   class="button-min-default" style="border-radius:9px; padding: 4px 8px;">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{% url 'performance:review_edit' review.pk %}"
+                                   class="button-min-default" style="border-radius:9px; padding: 4px 8px;">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button type="button" class="button-min-default delete-btn"
+                                    data-delete-url="{% url 'performance:review_delete' review.pk %}"
+                                    data-delete-title="Delete Performance Review?"
+                                    data-delete-name="{{ review.employee.get_full_name }} - {{ review.get_review_period_display }}"
+                                    style="border-radius:9px; padding: 4px 8px;">
+                                    <i class="bi bi-trash text-red-500"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Compact Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="d-flex justify-content-center mt-3 mb-5">
+        <nav aria-label="Reviews pagination">
+            <ul class="pagination pagination-compact">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link page-nav rounded"
+                       href="?page=1&status={{ status_filter }}&search={{ search_query }}&period={{ period_filter }}">
+                        <i class="bi bi-chevron-double-left"></i><span class="page-text ms-1">First</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link page-nav rounded"
+                       href="?page={{ page_obj.previous_page_number }}&status={{ status_filter }}&search={{ search_query }}&period={{ period_filter }}">
+                        <i class="bi bi-chevron-left"></i><span class="page-text ms-1">Prev</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link rounded">{{ num }}</span>
+                </li>
+                {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+                <li class="page-item">
+                    <a class="page-link rounded"
+                       href="?page={{ num }}&status={{ status_filter }}&search={{ search_query }}&period={{ period_filter }}">{{ num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link page-nav rounded"
+                       href="?page={{ page_obj.next_page_number }}&status={{ status_filter }}&search={{ search_query }}&period={{ period_filter }}">
+                        <span class="page-text me-1">Next</span><i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link page-nav rounded"
+                       href="?page={{ page_obj.paginator.num_pages }}&status={{ status_filter }}&search={{ search_query }}&period={{ period_filter }}">
+                        <span class="page-text me-1">Last</span><i class="bi bi-chevron-double-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="modern-table-container">
+        <div class="empty-state">
+            <i class="bi bi-star"></i>
+            <h6>No Reviews Found</h6>
+            <p>
+                {% if request.GET %}
+                No reviews match your search criteria.
+                {% else %}
+                Get started by creating your first performance review.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Delete functionality handled by global delete modal
+});
+</script>
+{% endblock %}
+
+{% block modals %}
+    {% include 'components/delete_modal.html' %}
+{% endblock %}

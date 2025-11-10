@@ -1,0 +1,179 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Create Milestone - Project Management{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ui/css/app.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen h-auto">
+    <div class="px-5 py-3">
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Basic Information -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Milestone Name *</label>
+                    <input type="text" name="milestone_name"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           required placeholder="Enter milestone name">
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Type *</label>
+                    <select name="milestone_type"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required>
+                        {% for value, label in milestone_types %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Project and Task -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                {% if not project %}
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Project *</label>
+                    <select name="project"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required id="project-select">
+                        <option value="">Select project</option>
+                        {% for proj in projects %}
+                        <option value="{{ proj.id }}">{{ proj.project_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% else %}
+                <input type="hidden" name="project" value="{{ project.id }}">
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Project</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+                           value="{{ project.project_name }}" disabled>
+                </div>
+                {% endif %}
+
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Linked Task (Optional)</label>
+                    <select name="task"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            id="task-select">
+                        <option value="">Select task</option>
+                        {% for task in tasks %}
+                        <option value="{{ task.id }}">{{ task.task_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Due Date and Amount -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Due Date *</label>
+                    <input type="date" name="milestone_date"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           required>
+                </div>
+                <div class="col-span-2 md:col-span-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Amount (Optional)</label>
+                    <div class="flex">
+                        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">$</span>
+                        <input type="number" name="amount"
+                               class="flex-1 px-3 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               step="0.01" min="0" placeholder="0.00">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea name="description"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          rows="3" placeholder="Describe the milestone objective and purpose..."></textarea>
+            </div>
+
+            <!-- Deliverables -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Deliverables</label>
+                <textarea name="deliverables"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          rows="3" placeholder="List the specific deliverables for this milestone..."></textarea>
+                <p class="text-xs text-gray-500 mt-1">Specify what needs to be delivered for this milestone</p>
+            </div>
+
+            <!-- Acceptance Criteria -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Acceptance Criteria</label>
+                <textarea name="acceptance_criteria"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          rows="3" placeholder="Define the criteria for milestone completion..."></textarea>
+                <p class="text-xs text-gray-500 mt-1">Specify how completion will be measured and validated</p>
+            </div>
+
+            <!-- Dependencies -->
+            {% if available_milestones %}
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Dependencies (Optional)</label>
+                <select name="depends_on_milestones"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        multiple size="4">
+                    {% for milestone in available_milestones %}
+                    <option value="{{ milestone.id }}">{{ milestone.milestone_name }} - {{ milestone.project.project_name }}</option>
+                    {% endfor %}
+                </select>
+                <p class="text-xs text-gray-500 mt-1">Select milestones that must be completed before this one</p>
+            </div>
+            {% endif %}
+
+            <!-- Options -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="flex items-center">
+                    <input type="checkbox" name="is_billable" id="is_billable"
+                           class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="is_billable" class="ml-2 text-sm text-gray-700">Billable milestone</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" name="requires_approval" id="requires_approval"
+                           class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <label for="requires_approval" class="ml-2 text-sm text-gray-700">Requires approval</label>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3">
+                <a href="{% if project %}{% url 'project:project_detail' project.id %}{% else %}{% url 'project:milestone_list' %}{% endif %}"
+                   class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors">
+                    <i class="bi bi-plus-circle"></i> Create Milestone
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script>
+// Dynamic task loading based on project selection
+document.getElementById('project-select')?.addEventListener('change', function() {
+    const projectId = this.value;
+    const taskSelect = document.getElementById('task-select');
+
+    // Clear current options
+    taskSelect.innerHTML = '<option value="">Select task</option>';
+
+    if (projectId) {
+        // In a real implementation, you would fetch tasks via AJAX
+        // For now, we'll just enable the select
+        taskSelect.disabled = false;
+    } else {
+        taskSelect.disabled = true;
+    }
+});
+</script>
+{% endblock %}

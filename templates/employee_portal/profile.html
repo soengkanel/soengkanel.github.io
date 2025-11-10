@@ -1,0 +1,492 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Clean Profile Design */
+    .profile-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .clean-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    /* Profile Header */
+    .profile-header {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .profile-photo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 2px solid #e5e7eb;
+        object-fit: cover;
+    }
+
+    .profile-header-info {
+        flex: 1;
+    }
+
+    .profile-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 2px;
+    }
+
+    .profile-title {
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 6px;
+    }
+
+    .profile-meta {
+        display: flex;
+        gap: 12px;
+        font-size: 11px;
+        color: #6b7280;
+    }
+
+    .profile-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* Section */
+    .section-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    /* Info Grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .info-label {
+        font-size: 11px;
+        font-weight: 500;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .info-value {
+        font-size: 13px;
+        color: #111827;
+        font-weight: 500;
+    }
+
+    /* Status Badge */
+    .status-badge {
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .status-active {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .status-on_leave {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .status-suspended {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .status-terminated {
+        background: #f3f4f6;
+        color: #6b7280;
+    }
+
+    /* Divider */
+    .divider {
+        height: 1px;
+        background: #e5e7eb;
+        margin: 12px 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .profile-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .profile-meta {
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-3">
+    <div class="profile-container">
+        <!-- Page Title -->
+        <div class="mb-3">
+            <h5 class="mb-0" style="font-weight: 600; color: #111827;">My Profile</h5>
+            <small class="text-muted">View your personal and employment information</small>
+        </div>
+
+        <!-- Profile Header -->
+        <div class="profile-header">
+            {% if employee %}
+            <img src="{{ employee.photo_url }}" alt="{{ employee.full_name }}" class="profile-photo">
+            <div class="profile-header-info">
+                <h3 class="profile-name">{{ employee.full_name }}</h3>
+                <div class="profile-title">
+                    {{ employee.position.name|default:"Position not assigned" }} •
+                    {{ employee.department.name|default:"Department not assigned" }}
+                </div>
+                <div class="profile-meta">
+                    <div class="profile-meta-item">
+                        <i class="bi bi-hash"></i>
+                        <span>{{ employee.employee_id }}</span>
+                    </div>
+                    <div class="profile-meta-item">
+                        <i class="bi bi-calendar-check"></i>
+                        <span>Joined {{ employee.hire_date|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="profile-meta-item">
+                        <i class="bi bi-briefcase"></i>
+                        <span class="status-badge status-{{ employee.employment_status }}">
+                            {{ employee.get_employment_status_display }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <img src="{{ role_assignment.profile_photo_url }}" alt="{{ user.get_full_name|default:user.username }}" class="profile-photo">
+            <div class="profile-header-info">
+                <h3 class="profile-name">{{ user.get_full_name|default:user.username }}</h3>
+                <div class="profile-title">
+                    User Account
+                </div>
+                <div class="profile-meta">
+                    <div class="profile-meta-item">
+                        <i class="bi bi-person"></i>
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <div class="profile-meta-item">
+                        <i class="bi bi-calendar-check"></i>
+                        <span>Joined {{ user.date_joined|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="profile-meta-item">
+                        <i class="bi bi-briefcase"></i>
+                        <span class="status-badge {% if user.is_active %}status-active{% else %}status-suspended{% endif %}">
+                            {{ user.is_active|yesno:"Active,Inactive" }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if employee %}
+        <!-- Personal Information -->
+        <div class="clean-card">
+            <h6 class="section-title">Personal Information</h6>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value">{{ employee.first_name }} {{ employee.last_name }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Gender</div>
+                    <div class="info-value">{{ employee.get_gender_display }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date of Birth</div>
+                    <div class="info-value">{{ employee.date_of_birth|date:"M d, Y" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Nationality</div>
+                    <div class="info-value">{{ employee.get_nationality_display }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="clean-card">
+            <h6 class="section-title">Contact Information</h6>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Email Address</div>
+                    <div class="info-value">{{ employee.email|default:"Not provided" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Phone Number</div>
+                    <div class="info-value">{{ employee.phone_number|default:"Not provided" }}</div>
+                </div>
+                <div class="info-item" style="grid-column: 1 / -1;">
+                    <div class="info-label">Address</div>
+                    <div class="info-value">{{ employee.address|default:"Not provided" }}</div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <h6 style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 12px;">Emergency Contact</h6>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Contact Name</div>
+                    <div class="info-value">{{ employee.emergency_contact_name|default:"Not provided" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Contact Phone</div>
+                    <div class="info-value">{{ employee.emergency_contact_phone|default:"Not provided" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employment Information -->
+        <div class="clean-card">
+            <h6 class="section-title">Employment Information</h6>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Employee ID</div>
+                    <div class="info-value">{{ employee.employee_id }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Employment Status</div>
+                    <div class="info-value">
+                        <span class="status-badge status-{{ employee.employment_status }}">
+                            {{ employee.get_employment_status_display }}
+                        </span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Department</div>
+                    <div class="info-value">{{ employee.department.name|default:"Not assigned" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Position</div>
+                    <div class="info-value">{{ employee.position.name|default:"Not assigned" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Employee Type</div>
+                    <div class="info-value">{{ employee.get_employee_type_display }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Work Type</div>
+                    <div class="info-value">{{ employee.get_work_type_display }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Hire Date</div>
+                    <div class="info-value">{{ employee.hire_date|date:"M d, Y" }}</div>
+                </div>
+                {% if employee.end_date %}
+                <div class="info-item">
+                    <div class="info-label">End Date</div>
+                    <div class="info-value">{{ employee.end_date|date:"M d, Y" }}</div>
+                </div>
+                {% endif %}
+                {% if employee.manager %}
+                <div class="info-item">
+                    <div class="info-label">Reports To</div>
+                    <div class="info-value">{{ employee.manager.full_name }}</div>
+                </div>
+                {% endif %}
+                {% if employee.work_location %}
+                <div class="info-item">
+                    <div class="info-label">Work Location</div>
+                    <div class="info-value">{{ employee.work_location }}</div>
+                </div>
+                {% endif %}
+                {% if employee.branch %}
+                <div class="info-item">
+                    <div class="info-label">Branch</div>
+                    <div class="info-value">{{ employee.branch.name }}</div>
+                </div>
+                {% endif %}
+                <div class="info-item">
+                    <div class="info-label">Number of Dependents</div>
+                    <div class="info-value">{{ employee.number_of_dependents }}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- User Account Information -->
+        <div class="clean-card">
+            <h6 class="section-title">Account Information</h6>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Username</div>
+                    <div class="info-value">{{ user.username }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Account Email</div>
+                    <div class="info-value">{{ user.email|default:"Not set" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Role</div>
+                    <div class="info-value">
+                        {% if role_assignment.role %}
+                            <span style="background: #87CEEB; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;">{{ role_assignment.role.name }}</span>
+                        {% else %}
+                            <span style="background: #9ca3af; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;">No Role</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Account Status</div>
+                    <div class="info-value">
+                        {% if user.is_active %}
+                            <span class="status-badge status-active">Active</span>
+                        {% else %}
+                            <span class="status-badge status-suspended">Inactive</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Joined</div>
+                    <div class="info-value">{{ user.date_joined|date:"M d, Y" }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Last Login</div>
+                    <div class="info-value">
+                        {% if user.last_login %}
+                            {{ user.last_login|date:"M d, Y" }}
+                        {% else %}
+                            Never
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Permissions Section -->
+        <div class="clean-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h6 class="section-title" style="margin-bottom: 0;">Permissions</h6>
+                {% if permission_source == 'superuser' %}
+                    <span style="background: linear-gradient(135deg, #dc2626, #ef4444); color: white; padding: 3px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; text-transform: uppercase;">
+                        SUPERUSER - All {{ total_system_permissions }} permissions
+                    </span>
+                {% elif permission_source == 'role_superuser' %}
+                    <span style="background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;">
+                        {{ permissions|length }} + All system permissions (Superuser)
+                    </span>
+                {% elif permission_source == 'role' %}
+                    <span style="background: #e5e7eb; color: #6b7280; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;">{{ permissions|length }}</span>
+                {% else %}
+                    <span style="background: #e5e7eb; color: #6b7280; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 500;">0</span>
+                {% endif %}
+            </div>
+
+            {% if permission_source == 'superuser' %}
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; text-align: center;">
+                    <p style="font-size: 12px; color: #4b5563; margin: 0;">
+                        This account has <strong>all system permissions</strong> as a superuser.
+                    </p>
+                </div>
+            {% elif permission_source == 'role_superuser' %}
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
+                    <p style="font-size: 12px; color: #4b5563; margin: 0;">
+                        This account has <strong>all system permissions</strong> as a superuser, plus the following role-specific permissions:
+                    </p>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 6px;">
+                    {% for permission in permissions %}
+                    <div style="display: flex; align-items: center; gap: 6px; padding: 6px; background: #f9fafb; border-radius: 4px; font-size: 12px; color: #374151;">
+                        <i class="bi bi-check-circle" style="color: #10b981;"></i>
+                        <span>{{ permission.name }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% elif permission_source == 'role' and permissions %}
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 6px;">
+                    {% for permission in permissions %}
+                    <div style="display: flex; align-items: center; gap: 6px; padding: 6px; background: #f9fafb; border-radius: 4px; font-size: 12px; color: #374151;">
+                        <i class="bi bi-check-circle" style="color: #10b981;"></i>
+                        <span>{{ permission.name }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% elif permission_source == 'none' %}
+                <div style="text-align: center; padding: 16px; color: #6b7280; font-size: 12px;">
+                    <i class="bi bi-exclamation-circle" style="font-size: 20px; display: block; margin-bottom: 6px;"></i>
+                    <p style="margin: 0;">No permissions assigned. Contact an administrator to assign a role.</p>
+                </div>
+            {% endif %}
+
+            {% if direct_permissions_count > 0 %}
+                <div style="background: #eff6ff; border: 1px solid #dbeafe; border-radius: 4px; padding: 8px; margin-top: 12px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1d4ed8;">
+                    <i class="bi bi-info-circle"></i>
+                    <span>{{ direct_permissions_count }} direct permission{{ direct_permissions_count|pluralize }} also assigned</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="clean-card">
+            <h6 class="section-title">Quick Actions</h6>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <a href="{% url 'user_management:password_change' %}" class="button-min-default">
+                    <i class="bi bi-lock"></i> Change Password
+                </a>
+                {% if user.is_staff or user.is_superuser %}
+                <a href="{% url 'user_management:user_edit' user.id %}" class="button-min-default">
+                    <i class="bi bi-gear"></i> Account Settings
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        {% if employee and employee.notes %}
+        <div class="clean-card">
+            <h6 class="section-title">Additional Notes</h6>
+            <div style="font-size: 13px; color: #374151; line-height: 1.5;">
+                {{ employee.notes|linebreaks }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

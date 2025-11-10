@@ -1,0 +1,397 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Probation Status - {{ worker.get_full_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Simple and Clean Design */
+.page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.page-header {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.worker-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f3f4f6;
+}
+
+.worker-avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #6366f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.worker-info h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.worker-details {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 5px 0 0 0;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.status-probation { background: #fef3c7; color: #d97706; }
+.status-extended { background: #fed7aa; color: #ea580c; }
+.status-passed { background: #d1fae5; color: #059669; }
+.status-failed { background: #fecaca; color: #dc2626; }
+.status-active { background: #dbeafe; color: #2563eb; }
+
+.content-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.probation-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.probation-item:last-child {
+    border-bottom: none;
+}
+
+.probation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.probation-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+}
+
+.probation-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-label {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    font-size: 14px;
+    color: #111827;
+    font-weight: 500;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #f3f4f6;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 5px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #6366f1;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-fill.warning { background: #f59e0b; }
+.progress-fill.danger { background: #ef4444; }
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: #6366f1;
+    color: white;
+    border-color: #6366f1;
+}
+
+.btn-primary:hover {
+    background: #5048e5;
+    border-color: #5048e5;
+}
+
+.btn-secondary {
+    background: white;
+    color: #6b7280;
+    border-color: #d1d5db;
+}
+
+.btn-secondary:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.btn-success {
+    background: #10b981;
+    color: white;
+    border-color: #10b981;
+}
+
+.btn-success:hover {
+    background: #059669;
+    border-color: #059669;
+}
+
+.btn-warning {
+    background: #f59e0b;
+    color: white;
+    border-color: #f59e0b;
+}
+
+.btn-warning:hover {
+    background: #d97706;
+    border-color: #d97706;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6b7280;
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .page-container {
+        padding: 15px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .probation-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .actions {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Simple Header -->
+    <div class="page-header">
+        {% if worker.photo %}
+            <img src="{% url 'zone:serve_worker_photo' worker.id %}" 
+                 alt="{{ worker.get_full_name }}" 
+                 class="worker-avatar"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="worker-avatar-placeholder" style="display: none;">
+                {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+            </div>
+        {% else %}
+            <div class="worker-avatar-placeholder">
+                {{ worker.first_name|first|upper }}{{ worker.last_name|first|upper }}
+            </div>
+        {% endif %}
+        
+        <div class="worker-info">
+            <h1>{{ worker.get_full_name }}</h1>
+            <div class="worker-details">
+                ID: {{ worker.worker_id }} • {{ worker.position.name|default:"No Position" }} • {{ worker.zone.name }}
+                <span class="status-badge status-{{ worker.status }}">{{ worker.get_status_display }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Probation History -->
+    <div class="content-card">
+        <h2 class="section-title">Probation History</h2>
+        
+        {% if probation_periods %}
+            {% for probation in probation_periods %}
+                <div class="probation-item">
+                    <div class="probation-header">
+                        <h3 class="probation-title">
+                            Probation Period #{{ forloop.counter }}
+                            {% if probation.worker.status == 'probation' or probation.worker.status == 'extended' %}
+                                <small style="color: #6366f1; font-weight: normal;">(Current)</small>
+                            {% endif %}
+                        </h3>
+                        <span class="status-badge status-{{ probation.worker.status }}">
+                            {{ probation.worker.get_status_display }}
+                        </span>
+                    </div>
+                    
+                    <div class="probation-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Start Date</span>
+                            <span class="detail-value">{{ probation.start_date|date:"M d, Y" }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-label">End Date</span>
+                            <span class="detail-value">{{ probation.get_end_date|date:"M d, Y" }}</span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <span class="detail-label">Duration</span>
+                            <span class="detail-value">{{ probation.get_total_duration_days }} days</span>
+                        </div>
+                        
+                        {% if probation.worker.status == 'probation' or probation.worker.status == 'extended' %}
+                            <div class="detail-item">
+                                <span class="detail-label">Days Remaining</span>
+                                <span class="detail-value">
+                                    {% with days=probation.get_days_remaining %}
+                                        {% if days <= 0 %}
+                                            {{ days|cut:"-" }} days overdue
+                                        {% else %}
+                                            {{ days }} days
+                                        {% endif %}
+                                    {% endwith %}
+                                </span>
+                            </div>
+                            
+                            <div class="detail-item">
+                                <span class="detail-label">Progress</span>
+                                <div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill {% if probation.get_days_remaining <= 3 %}danger{% elif probation.get_days_remaining <= 7 %}warning{% endif %}" 
+                                             style="width: {{ probation.get_progress_percentage }}%;"></div>
+                                    </div>
+                                    <span class="detail-value">{{ probation.get_progress_percentage }}%</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if probation.extensions.count > 0 %}
+                        <div style="margin: 10px 0;">
+                            <span class="detail-label">Extensions: {{ probation.extensions.count }}</span>
+                        </div>
+                    {% endif %}
+                    
+                    {% if probation.evaluation_notes %}
+                        <div style="margin: 10px 0;">
+                            <span class="detail-label">Notes</span>
+                            <div style="margin-top: 5px; padding: 10px; background: #f9fafb; border-radius: 4px; font-size: 14px;">
+                                {{ probation.evaluation_notes }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="actions">
+                        <a href="{% url 'zone:probation_detail' probation.id %}" class="btn btn-secondary">
+                            View Details
+                        </a>
+                        
+                        {% if probation.worker.status == 'probation' or probation.worker.status == 'extended' %}
+                            {% if probation.get_max_allowed_extension_days > 0 %}
+                                <a href="{% url 'zone:probation_extend' probation.id %}" class="btn btn-warning">
+                                    Extend
+                                </a>
+                            {% endif %}
+                            
+                            <a href="{% url 'zone:probation_pass' probation.id %}" class="btn btn-success">
+                                Complete
+                            </a>
+                        {% endif %}
+                        
+                        <a href="{% url 'zone:probation_edit' probation.id %}" class="btn btn-secondary">
+                            Edit
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="bi bi-hourglass"></i>
+                <h3>No Probation History</h3>
+                <p>This worker has no probation periods recorded.</p>
+                <a href="{% url 'zone:probation_create_for_worker' worker.id %}" class="btn btn-primary">
+                    Create Probation Period
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

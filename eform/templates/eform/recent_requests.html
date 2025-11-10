@@ -1,0 +1,190 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">{{ title }}</h1>
+            <p class="text-muted mb-0">Recent extension and certificate requests</p>
+        </div>
+        <div>
+            <a href="{% url 'eform:unified_dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                This Week - Extensions
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ weekly_extensions }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-alt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                This Week - Certificates
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ weekly_certificates }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-certificate fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Extension Requests -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Extension Requests</h6>
+                    <a href="{% url 'eform:extension_requests_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Worker</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for extension in recent_extensions %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'eform:extension_edit_form' extension.worker.id %}" class="text-decoration-none">
+                                            {{ extension.worker.get_full_name }}
+                                        </a>
+                                    </td>
+                                    <td>{{ extension.get_extension_type_display }}</td>
+                                    <td>
+                                        <span class="badge badge-{% if extension.status == 'approved' %}success{% elif extension.status == 'pending' %}warning{% elif extension.status == 'rejected' %}danger{% else %}secondary{% endif %}">
+                                            {{ extension.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ extension.created_at|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No extension requests yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Certificate Requests -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-success">Recent Certificate Requests</h6>
+                    <a href="{% url 'eform:certificate_requests_list' %}" class="btn btn-sm btn-outline-success">View All</a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Workers</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for certificate in recent_certificates %}
+                                <tr>
+                                    <td>{{ certificate.get_certificate_type_display }}</td>
+                                    <td>
+                                        {{ certificate.workers.count }} worker{% if certificate.workers.count != 1 %}s{% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-{% if certificate.status == 'completed' %}success{% elif certificate.status == 'processing' %}warning{% elif certificate.status == 'cancelled' %}danger{% else %}secondary{% endif %}">
+                                            {{ certificate.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ certificate.created_at|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No certificate requests yet.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'eform:extension_form' %}" class="btn btn-outline-primary btn-block">
+                                <i class="fas fa-plus"></i> New Extension
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'eform:certificate_form' %}" class="btn btn-outline-success btn-block">
+                                <i class="fas fa-certificate"></i> New Certificate
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'eform:extension_requests_list' %}" class="btn btn-outline-info btn-block">
+                                <i class="fas fa-list"></i> All Extensions
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'eform:certificate_requests_list' %}" class="btn btn-outline-warning btn-block">
+                                <i class="fas fa-list"></i> All Certificates
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

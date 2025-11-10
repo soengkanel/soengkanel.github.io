@@ -1,0 +1,19 @@
+ID,Username,Email,First Name,Last Name,Role,Is Active,Is Staff,Is Superuser,Default Password,Date Joined
+1,admin,admin@ngt.com.kh,,,Admin,Yes,Yes,Yes,admin123,2025-08-24 05:13:34
+2,m1,m1@ngt.com.kh,Manager,One,Manager,Yes,Yes,No,manager123,2025-08-24 05:15:23
+3,m2,m2@ngt.com.kh,Manager,Two,Manager,Yes,Yes,No,manager123,2025-08-24 05:15:24
+4,u1,u1@ngt.com.kh,User,One,User,Yes,Yes,No,user123,2025-08-24 05:15:24
+5,u2,u2@ngt.com.kh,User,Two,User,Yes,Yes,No,user123,2025-08-24 05:15:25
+7,u3,u3@ngt.com.kh,User,Three,User,Yes,Yes,No,user123,2025-08-28 01:08:57
+8,u4,u4@ngt.com.kh,User,Four,User,Yes,Yes,No,user123,2025-08-28 01:08:57
+9,u5,u5@ngt.com.kh,User,Five,User,Yes,Yes,No,user123,2025-08-28 01:08:57
+10,u6,u6@ngt.com.kh,User,Six,User,Yes,Yes,No,user123,2025-08-28 01:08:58
+11,u7,u7@ngt.com.kh,User,Seven,User,Yes,Yes,No,user123,2025-08-28 01:08:58
+12,u8,u8@ngt.com.kh,User,Eight,User,Yes,Yes,No,user123,2025-08-28 01:08:58
+13,u9,u9@ngt.com.kh,User,Nine,User,Yes,Yes,No,user123,2025-08-28 01:08:59
+14,u10,u10@ngt.com.kh,User,Ten,User,Yes,Yes,No,user123,2025-08-28 01:08:59
+15,u11,u11@ngt.com.kh,User,Eleven,User,Yes,Yes,No,user123,2025-08-28 01:08:59
+16,u12,u12@ngt.com.kh,User,Twelve,User,Yes,Yes,No,user123,2025-08-28 01:09:00
+17,u13,u13@ngt.com.kh,User,Thirteen,User,Yes,Yes,No,user123,2025-08-28 01:09:00
+18,u14,u14@ngt.com.kh,User,Fourteen,User,Yes,Yes,No,user123,2025-08-28 01:09:00
+19,u15,u15@ngt.com.kh,User,Fifteen,User,Yes,Yes,No,user123,2025-08-28 01:09:01

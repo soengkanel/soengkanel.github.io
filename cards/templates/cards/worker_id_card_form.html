@@ -1,0 +1,1343 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block main_class %}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Ultra-Minimal ID Card Creation Form */
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px;
+}
+
+/* Compact Page Header */
+.page-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 8px 16px;
+    margin-bottom: 16px;
+}
+
+.page-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-subtitle {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 2px 0 0 0;
+}
+
+/* Compact Form Container */
+.form-container {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Form Sections */
+.form-section {
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.form-section:last-child {
+    border-bottom: none;
+}
+
+.section-header {
+    background: #f8fafc;
+    padding: 8px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.section-content {
+    padding: 16px;
+}
+
+/* Worker Search */
+.search-container {
+    position: relative;
+    margin-bottom: 12px;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+}
+
+.search-input-wrapper:hover {
+    border-color: #9ca3af;
+}
+
+.search-input-wrapper.focused {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.search-input-wrapper.has-results {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.search-icon {
+    position: absolute;
+    left: 8px;
+    color: #9ca3af;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.search-input {
+    flex: 1;
+    padding: 8px 12px 8px 28px;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    color: #1f2937;
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.clear-search {
+    position: absolute;
+    right: 8px;
+    color: #9ca3af;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 2px;
+    transition: all 0.15s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.clear-search:hover {
+    color: #6b7280;
+    background: #f3f4f6;
+}
+
+.search-container.has-value .clear-search {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Search Results */
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-top: none;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all 0.15s ease;
+}
+
+.search-results.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Search Result Items */
+.search-result-item {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.search-result-item:hover {
+    background: #f8fafc;
+    border-left: 2px solid #3b82f6;
+    padding-left: 10px;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.worker-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+.worker-info {
+    flex: 1;
+}
+
+.worker-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.worker-details {
+    font-size: 10px;
+    color: #6b7280;
+    line-height: 1.2;
+}
+
+.worker-code {
+    font-weight: 500;
+    color: #3b82f6;
+}
+
+.eligibility-badge {
+    background: #dcfce7;
+    color: #166534;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Match Indicators */
+.match-indicators {
+    margin-top: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.match-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-size: 9px;
+    font-weight: 500;
+    cursor: help;
+}
+
+.match-badge i {
+    font-size: 8px;
+}
+
+.match-name {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.match-id {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.match-email {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.match-phone {
+    background: #e0e7ff;
+    color: #3730a3;
+    border: 1px solid #c7d2fe;
+}
+
+.match-badge:hover {
+    transform: scale(1.05);
+    transition: transform 0.1s ease;
+}
+
+/* Search Text Highlighting */
+.search-highlight {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 1px 2px;
+    border-radius: 2px;
+    font-weight: 600;
+}
+
+/* Loading and Empty States */
+.search-loading {
+    padding: 16px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.search-loading i {
+    font-size: 14px;
+    color: #3b82f6;
+    margin-bottom: 4px;
+    animation: spin 1s linear infinite;
+}
+
+.search-empty {
+    padding: 16px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.search-empty i {
+    font-size: 16px;
+    color: #d1d5db;
+    margin-bottom: 4px;
+}
+
+/* Selected Worker Display */
+.selected-worker {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 12px;
+    display: none;
+    font-size: 12px;
+}
+
+.selected-worker.show {
+    display: block;
+}
+
+.selected-worker-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.selected-worker-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #10b981;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.selected-worker-info {
+    flex: 1;
+}
+
+.selected-worker-name {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.selected-worker-details {
+    font-size: 10px;
+    color: #6b7280;
+}
+
+.change-worker-btn {
+    background: #ffffff;
+    border: 1px solid #10b981;
+    color: #10b981;
+    padding: 4px 8px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.change-worker-btn:hover {
+    background: #10b981;
+    color: white;
+}
+
+/* Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+/* Form Groups */
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.required {
+    color: #dc2626;
+}
+
+.form-control, .form-select {
+    padding: 6px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 2px;
+    font-size: 12px;
+    background: #ffffff;
+    transition: all 0.15s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.form-control.error, .form-select.error {
+    border-color: #dc2626;
+}
+
+/* Photo Upload */
+.photo-upload-area {
+    border: 1px dashed #d1d5db;
+    border-radius: 4px;
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background: #fafafa;
+}
+
+.photo-upload-area:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+}
+
+.photo-upload-icon {
+    font-size: 24px;
+    color: #9ca3af;
+    margin-bottom: 8px;
+}
+
+.photo-upload-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.photo-upload-hint {
+    font-size: 10px;
+    color: #6b7280;
+}
+
+.photo-preview {
+    margin-top: 12px;
+    text-align: center;
+}
+
+.photo-preview img {
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 4px;
+    border: 1px solid #d1d5db;
+}
+
+/* Form Actions */
+.form-actions {
+    background: #f8fafc;
+    padding: 12px 16px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #6b7280;
+    border: 1px solid #d1d5db;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* Error Messages */
+.error-message {
+    color: #dc2626;
+    font-size: 10px;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12px;
+}
+
+.alert-info {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1e40af;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+/* Animations */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-container {
+        padding: 8px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container shadow-none px-3">
+    <div class="flex justify-between items-center my-3 ">
+        <div>
+        <h1 class="text-xl font-semibold">Create {{filter|capfirst}} ID Card </h1>
+        <p class="text-gray-500">Issue a new identification card for eligible {{filter}}s</p>
+        </div>
+    </div>
+    
+
+    <!-- Business Rule Information -->
+    {% comment %} {% if business_rule_message %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        <div>
+            <strong>Eligibility:</strong> {{ business_rule_message }}
+            {% if workers_completed_probation_count > 0 %}
+                <br><small>
+                    {{ workers_completed_probation_count }} completed probation, 
+                    {% if workers_with_active_cards_count > 0 %}{{ workers_with_active_cards_count }} have cards, {% endif %}
+                    {{ eligible_workers_count }} eligible
+                </small>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %} {% endcomment %}
+
+    <!-- Form Container -->
+    <div class="">
+        <form method="post" enctype="multipart/form-data" id="cardForm">
+            {% csrf_token %}
+            
+            <!-- Worker Search Section -->
+            <div class="form-section border rounded">
+                <div class="section-header uppercase rounded-t">
+                    <i class="bi bi-search"></i>
+                    {{filter|capfirst}} Selection
+                </div>
+                <div class="section-content">
+                    {% if not is_editable %}
+                    <div class="search-container" id="searchContainer">
+                        <div class="search-input-wrapper" id="searchInputWrapper">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text" 
+                                   class="search-input" 
+                                   id="workerSearch" 
+                                   placeholder="Search by name, code, or phone..."
+                                   autocomplete="off">
+                            <i class="bi bi-x-lg clear-search" id="clearSearch"></i>
+                            <div class="search-results" id="searchResults"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if is_editable %}
+            
+                    <div class="selected-worker show">
+                        <div class="selected-worker-content">
+                            <div class="selected-worker-avatar">SL</div>
+                            <div class="selected-worker-info">
+                                <div class="selected-worker-name">{{card.worker.get_full_name}}</div>
+                                <div class="selected-worker-details">
+                                    <strong>{{card.worker.worker_id}}</strong> • {{card.worker.position.name}} • {{card.worker.building}}
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    {% else %}
+                     <!-- Selected Worker Display -->
+                     <div class="selected-worker" id="selectedWorker">
+                        <div class="selected-worker-content">
+                            <div class="selected-worker-avatar" id="selectedWorkerAvatar">?</div>
+                            <div class="selected-worker-info">
+                                <div class="selected-worker-name" id="selectedWorkerName">No worker selected</div>
+                                <div class="selected-worker-details" id="selectedWorkerDetails"></div>
+                            </div>
+                            <button type="button" class="change-worker-btn" id="changeWorkerBtn">
+                                Change
+                            </button>
+                        </div>
+                    </div>
+
+                    {% endif %}
+                   
+                    <!-- Hidden form field -->
+                    {{ form.worker }}
+                    {% if form.worker.errors %}
+                        <div class="error-message">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            {{ form.worker.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Card Details Section -->
+            <div class="form-section border rounded">
+                <div class="section-header uppercase rounded-t">
+                    <i class="bi bi-credit-card"></i>
+                    Card Details
+                </div>
+                <div class="section-content">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="{{ form.card_number.id_for_label }}" class="form-label">
+                                Card Number <span class="required">*</span>
+                            </label>
+                            {{ form.card_number }}
+                            {% if form.card_number.errors %}
+                                <div class="error-message">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    {{ form.card_number.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">
+                                Status <span class="required">*</span>
+                            </label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="error-message">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    {{ form.status.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.issue_date.id_for_label }}" class="form-label">
+                                Issue Date <span class="required">*</span>
+                            </label>
+                            {{ form.issue_date }}
+                            {% if form.issue_date.errors %}
+                                <div class="error-message">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    {{ form.issue_date.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.expiry_date.id_for_label }}" class="form-label">
+                                Expiry Date <span class="required">*</span>
+                            </label>
+                            {{ form.expiry_date }}
+                            {% if form.expiry_date.errors %}
+                                <div class="error-message">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    {{ form.expiry_date.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photo Upload Section -->
+            <div class="form-section rounded border hidden">
+                <div class="section-header uppercase rounded-t">
+                    <i class="bi bi-camera"></i>
+                    {{filter|capfirst}} Photo
+                </div>
+                <div class="section-content">
+                    <div class="photo-upload-area" id="photoUploadArea">
+                        {{ form.photo }}
+                        <div id="uploadPrompt">
+                            <div class="photo-upload-icon">
+                                <i class="bi bi-cloud-upload"></i>
+                            </div>
+                            <div class="photo-upload-text">Click to upload photo</div>
+                            <div class="photo-upload-hint">JPG, PNG (Max 5MB)</div>
+                        </div>
+                        <div class="photo-preview" id="photoPreview" {% if not card.photo %}style="display: none;"{% endif %}>
+                            <img id="previewImage" src="{% if card.photo %}{{ card.photo.url }}{% endif %}" alt="Photo preview">
+                            {% if card.photo %}
+                                <div style="margin-top: 8px; font-size: 10px; color: #6b7280;">
+                                    Current photo (click area above to change)
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if form.photo.errors %}
+                        <div class="error-message">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            {{ form.photo.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex items-center justify-end space-x-3 mb-3">
+                <button type="button" class="button-min-default" onclick="window.history.back()">
+                    Cancel
+                </button>
+                <button type="submit" class="button-min-primary px-4">
+                   Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Ultra-Minimal Worker Search
+class WorkerSearch {
+    constructor() {
+        this.searchContainer = document.getElementById('searchContainer');
+        this.searchInputWrapper = document.getElementById('searchInputWrapper');
+        this.searchInput = document.getElementById('workerSearch');
+        this.clearButton = document.getElementById('clearSearch');
+        this.searchResults = document.getElementById('searchResults');
+        this.selectedWorkerDiv = document.getElementById('selectedWorker');
+        this.selectedWorkerAvatar = document.getElementById('selectedWorkerAvatar');
+        this.selectedWorkerName = document.getElementById('selectedWorkerName');
+        this.selectedWorkerDetails = document.getElementById('selectedWorkerDetails');
+        this.changeWorkerBtn = document.getElementById('changeWorkerBtn');
+        this.workerInput = document.querySelector('input[name="worker"]');
+        
+        this.searchTimeout = null;
+        this.selectedWorker = null;
+        
+        this.init();
+    }
+    
+    init() {
+        this.searchInput.addEventListener('input', this.handleInput.bind(this));
+        this.searchInput.addEventListener('focus', this.handleFocus.bind(this));
+        this.searchInput.addEventListener('blur', this.handleBlur.bind(this));
+        this.clearButton.addEventListener('click', this.clearSearch.bind(this));
+        this.changeWorkerBtn.addEventListener('click', this.changeWorker.bind(this));
+        
+        document.addEventListener('click', this.handleClickOutside.bind(this));
+        
+        this.searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+        
+        // Check for pre-selected worker from URL parameter
+        this.checkPreselectedWorker();
+    }
+    
+    handleInput(e) {
+        const query = e.target.value.trim();
+        
+        if (query.length > 0) {
+            this.searchContainer.classList.add('has-value');
+        } else {
+            this.searchContainer.classList.remove('has-value');
+        }
+        
+        if (this.searchTimeout) {
+            clearTimeout(this.searchTimeout);
+        }
+        
+        if (query.length >= 2) {
+            this.showLoading();
+            this.searchTimeout = setTimeout(() => {
+                this.searchWorkers(query);
+            }, 300);
+        } else {
+            this.hideResults();
+        }
+    }
+    
+    handleFocus() {
+        this.searchInputWrapper.classList.add('focused');
+    }
+    
+    handleBlur() {
+        setTimeout(() => {
+            if (!this.searchResults.matches(':hover')) {
+                this.searchInputWrapper.classList.remove('focused');
+            }
+        }, 150);
+    }
+    
+    handleClickOutside(e) {
+        if (!this.searchContainer.contains(e.target)) {
+            this.hideResults();
+        }
+    }
+    
+    clearSearch() {
+        this.searchInput.value = '';
+        this.searchContainer.classList.remove('has-value');
+        this.hideResults();
+        this.searchInput.focus();
+    }
+    
+    changeWorker() {
+        this.selectedWorker = null;
+        this.workerInput.value = '';
+        this.selectedWorkerDiv.classList.remove('show');
+        this.clearSearch();
+    }
+    
+    showLoading() {
+        this.searchResults.innerHTML = `
+            <div class="search-loading">
+                <i class="bi bi-arrow-clockwise"></i>
+                <div>Searching...</div>
+            </div>
+        `;
+        this.showResults();
+    }
+    
+    showResults() {
+        this.searchResults.classList.add('show');
+        this.searchInputWrapper.classList.add('has-results');
+    }
+    
+    hideResults() {
+        this.searchResults.classList.remove('show');
+        this.searchInputWrapper.classList.remove('has-results');
+    }
+    
+    async searchWorkers(query) {
+        try {
+            const response = await fetch(`/cards/api/worker-search-new-card/?q=${encodeURIComponent(query)}&option={{filter}}`);
+            const data = await response.json();
+            
+            console.log('API Response:', data); // Debug logging
+            
+            if (data.workers && data.workers.length > 0) {
+                // Add fallback match detection if API doesn't provide matched_fields
+                data.workers.forEach(worker => {
+                    if (!worker.matched_fields) {
+                        worker.matched_fields = this.detectMatches(worker, query);
+                        worker.match_summary = worker.matched_fields.join(' | ');
+                    }
+                });
+                
+                this.renderSearchResults(data.workers);
+            } else {
+                this.showEmptyState();
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            this.showErrorState();
+        }
+    }
+    
+    // Fallback function to detect matches on the frontend
+    detectMatches(worker, query) {
+        const matched_fields = [];
+        const queryLower = query.toLowerCase();
+        
+        if (worker.worker_name && worker.worker_name.toLowerCase().includes(queryLower)) {
+            // Check if it's first or last name
+            const nameParts = worker.worker_name.split(' ');
+            let nameMatched = false;
+            
+            if (nameParts[0] && nameParts[0].toLowerCase().includes(queryLower)) {
+                matched_fields.push(`First Name: ${nameParts[0]}`);
+                nameMatched = true;
+            }
+            if (nameParts.length > 1 && nameParts[1] && nameParts[1].toLowerCase().includes(queryLower)) {
+                matched_fields.push(`Last Name: ${nameParts[1]}`);
+                nameMatched = true;
+            }
+            // If no specific part matched but the full name does, just say "Name"
+            if (!nameMatched) {
+                matched_fields.push(`Name: ${worker.worker_name}`);
+            }
+        }
+        
+        if (worker.worker_code && worker.worker_code.toLowerCase().includes(queryLower)) {
+            matched_fields.push(`Worker ID: ${worker.worker_code}`);
+        }
+        
+        // Check both 'email' and 'worker.email' field names
+        const email = worker.email || worker.worker_email || '';
+        if (email && email.toLowerCase().includes(queryLower)) {
+            matched_fields.push(`Email: ${email}`);
+        }
+        
+        // Check both 'phone' and 'worker.phone' field names  
+        const phone = worker.phone || worker.phone_number || '';
+        if (phone && phone.toLowerCase().includes(queryLower)) {
+            matched_fields.push(`Phone: ${phone}`);
+        }
+        
+        // If no specific matches found but the worker appeared in results, 
+        // it might be matching a field we don't have access to
+        if (matched_fields.length === 0) {
+            matched_fields.push(`Hidden Field: Contains "${query}"`);
+        }
+        
+        return matched_fields;
+    }
+    
+    highlightText(text, query) {
+        if (!text || !query) return text;
+        
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+    }
+    
+    renderSearchResults(workers) {
+        let html = '';
+        const currentQuery = this.searchInput.value.trim();
+        
+        workers.forEach(worker => {
+            const initials = worker.worker_name.split(' ').map(n => n[0]).join('').toUpperCase();
+            
+            // Highlight matching text in name and worker code
+            const highlightedName = this.highlightText(worker.worker_name, currentQuery);
+            const highlightedCode = this.highlightText(worker.worker_code, currentQuery);
+            
+            // Create match indicators
+            let matchIndicators = '';
+            if (worker.matched_fields && worker.matched_fields.length > 0) {
+                worker.matched_fields.forEach(field => {
+                    const fieldName = field.split(':')[0];
+                    const fieldValue = field.split(':')[1].trim();
+                    
+                    let badgeClass = 'match-badge';
+                    let icon = 'bi-person';
+                    
+                    switch(fieldName) {
+                        case 'First Name':
+                        case 'Last Name':
+                            badgeClass += ' match-name';
+                            icon = 'bi-person';
+                            break;
+                        case 'Worker ID':
+                            badgeClass += ' match-id';
+                            icon = 'bi-hash';
+                            break;
+                        case 'Email':
+                            badgeClass += ' match-email';
+                            icon = 'bi-envelope';
+                            break;
+                        case 'Phone':
+                            badgeClass += ' match-phone';
+                            icon = 'bi-telephone';
+                            break;
+                    }
+                    
+                    // Show only partial email/phone for privacy
+                    let displayValue = fieldValue;
+                    if (fieldName === 'Email' && fieldValue.includes('@')) {
+                        const parts = fieldValue.split('@');
+                        displayValue = parts[0].slice(0, 3) + '***@' + parts[1];
+                    } else if (fieldName === 'Phone' && fieldValue.length > 6) {
+                        displayValue = fieldValue.slice(0, 3) + '***' + fieldValue.slice(-2);
+                    }
+                    
+                    matchIndicators += `<span class="${badgeClass}" title="${displayValue}"><i class="${icon}"></i> ${fieldName}</span>`;
+                });
+            }
+            
+            html += `
+                <div class="search-result-item" data-worker-id="${worker.worker_id}" data-worker='${JSON.stringify(worker)}'>
+                    <div class="worker-avatar">${initials}</div>
+                    <div class="worker-info">
+                        <div class="worker-name">${highlightedName}</div>
+                        <div class="worker-details">
+                            <span class="worker-code">${highlightedCode}</span> • 
+                            ${worker.position} • ${worker.building}
+                        </div>
+                        ${matchIndicators ? `<div class="match-indicators">${matchIndicators}</div>` : ''}
+                    </div>
+                    <span class="eligibility-badge">Eligible</span>
+                </div>
+            `;
+        });
+        
+        this.searchResults.innerHTML = html;
+        this.showResults();
+        
+        this.searchResults.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const workerData = JSON.parse(item.dataset.worker);
+                this.selectWorker(workerData);
+            });
+        });
+    }
+    
+    showEmptyState() {
+        this.searchResults.innerHTML = `
+            <div class="search-empty">
+                <i class="bi bi-person-x"></i>
+                <div>No eligible records found</div>
+            </div>
+        `;
+        this.showResults();
+    }
+    
+    showErrorState() {
+        this.searchResults.innerHTML = `
+            <div class="search-empty">
+                <i class="bi bi-exclamation-triangle"></i>
+                <div>Search failed</div>
+            </div>
+        `;
+        this.showResults();
+    }
+    
+    selectWorker(worker) {
+        this.selectedWorker = worker;
+        this.workerInput.value = worker.worker_id;
+        
+        const initials = worker.worker_name.split(' ').map(n => n[0]).join('').toUpperCase();
+        this.selectedWorkerAvatar.textContent = initials;
+        this.selectedWorkerName.textContent = worker.worker_name;
+        this.selectedWorkerDetails.innerHTML = `
+            <strong>${worker.worker_code}</strong> • ${worker.position} • ${worker.building}
+        `;
+        
+        // Auto-generate card number based on worker's building and floor
+        this.generateCardNumber(worker);
+        
+        this.selectedWorkerDiv.classList.add('show');
+        this.hideResults();
+        this.searchInput.value = '';
+        this.searchContainer.classList.remove('has-value');
+    }
+    
+    showResults() {
+        this.searchInputWrapper.classList.add('has-results');
+        this.searchResults.classList.add('show');
+    }
+    
+    hideResults() {
+        this.searchInputWrapper.classList.remove('has-results');
+        this.searchResults.classList.remove('show');
+    }
+    
+    clearSearch() {
+        this.searchInput.value = '';
+        this.searchContainer.classList.remove('has-value');
+        this.hideResults();
+    }
+    
+    changeWorker() {
+        this.selectedWorkerDiv.classList.remove('show');
+        this.workerInput.value = '';
+        this.selectedWorker = null;
+        this.searchInput.focus();
+    }
+    
+    generateCardNumber(worker) {
+        // Get the card number input field
+        const cardNumberInput = document.getElementById('id_card_number');
+        if (!cardNumberInput) return;
+        
+        // Generate card number based on worker's zone, building and floor
+        if (worker.zone && worker.building && worker.floor_number) {
+            // Extract zone name from building code if needed
+            let zoneName = worker.zone;
+            let buildingName = worker.building;
+            
+            // If building_code exists and contains underscore (like "3H_B12"), parse it
+            if (worker.building_code && worker.building_code.includes('_')) {
+                const parts = worker.building_code.split('_');
+                zoneName = parts[0]; // Extract zone part (3H)
+                buildingName = parts[1]; // Extract building part (B12)
+            }
+            
+            // Zone-Building-Floor format: {ZONE}-{BUILDING}-F{FLOOR_NUMBER}-{SEQUENCE}
+            const prefix = `${zoneName}-${buildingName}-F${worker.floor_number}`;
+            this.getNextSequenceNumber(prefix, '')
+                .then(sequence => {
+                    const cardNumber = `${prefix}-${sequence.toString().padStart(4, '0')}`;
+                    cardNumberInput.value = cardNumber;
+                })
+                .catch(error => {
+                    console.error('Error generating card number:', error);
+                    // Fallback to WID format
+                    this.generateFallbackCardNumber(cardNumberInput);
+                });
+        } else if (worker.building_code && worker.floor_number) {
+            // Fallback: use old format if zone/building info is not available
+            this.getNextSequenceNumber(worker.building_code, worker.floor_number)
+                .then(sequence => {
+                    const cardNumber = `${worker.building_code}-F${worker.floor_number}-${sequence.toString().padStart(4, '0')}`;
+                    cardNumberInput.value = cardNumber;
+                })
+                .catch(error => {
+                    console.error('Error generating card number:', error);
+                    this.generateFallbackCardNumber(cardNumberInput);
+                });
+        } else {
+            // Fallback format: WID{YEAR}{HEX}
+            this.generateFallbackCardNumber(cardNumberInput);
+        }
+    }
+    
+    generateFallbackCardNumber(cardNumberInput) {
+        const year = new Date().getFullYear();
+        const hex = Math.random().toString(16).substring(2, 8).toUpperCase();
+        cardNumberInput.value = `WID${year}${hex}`;
+    }
+    
+    async getNextSequenceNumber(prefix, floorNumber) {
+        // Handle both new format (prefix already includes floor) and old format
+        const fullPrefix = floorNumber ? `${prefix}-F${floorNumber}-` : `${prefix}-`;
+        
+        // Call API to get next sequence number
+        try {
+            const response = await fetch(`/cards/api/next-card-sequence/?prefix=${encodeURIComponent(fullPrefix)}`);
+            if (!response.ok) {
+                throw new Error('Failed to get sequence number');
+            }
+            const data = await response.json();
+            return data.next_sequence;
+        } catch (error) {
+            console.error('Error getting sequence number:', error);
+            // Fallback to timestamp-based sequence
+            return Math.floor(Date.now() / 1000) % 10000;
+        }
+    }
+    
+    handleClickOutside(e) {
+        if (!this.searchContainer.contains(e.target)) {
+            this.hideResults();
+        }
+    }
+    
+    showLoading() {
+        this.searchResults.innerHTML = '<div class="search-loading">Searching...</div>';
+        this.showResults();
+    }
+    
+    searchWorkers(query) {
+        const option = '{{ filter }}'; // Pass the filter type to API
+        
+        const url = `/cards/api/worker-search-new-card/?q=${encodeURIComponent(query)}&option=${encodeURIComponent(option)}`;
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.workers && data.workers.length > 0) {
+                    this.renderSearchResults(data.workers);
+                } else {
+                    this.showEmptyState();
+                }
+            })
+            .catch(error => {
+                console.error('Search failed:', error);
+                this.showErrorState();
+            });
+    }
+    
+    checkPreselectedWorker() {
+        // Check if there's a worker ID pre-populated in the hidden field
+        const preselectedWorkerId = this.workerInput.value;
+        if (preselectedWorkerId) {
+            // Get worker data from Django context - passed via template
+            {% if selected_worker %}
+            const preselectedWorkerData = {
+                worker_id: {{ selected_worker.id }},
+                worker_name: "{{ selected_worker.get_full_name|escapejs }}",
+                worker_code: "{{ selected_worker.worker_id|escapejs }}",
+                position: "{{ selected_worker.position.name|default:'No Position'|escapejs }}",
+                building: "{{ selected_worker.building.name|default:'No Building'|escapejs }}",
+                zone: "{{ selected_worker.zone.name|default:'No Zone'|escapejs }}",
+                phone: "",
+                matched_fields: [],
+                display_text: "{{ selected_worker.get_full_name|escapejs }} ({{ selected_worker.worker_id|escapejs }}) - {{ selected_worker.position.name|default:'No Position'|escapejs }}"
+            };
+            
+            this.selectWorker(preselectedWorkerData);
+            {% endif %}
+        }
+    }
+}
+
+// Photo Upload Handler
+class PhotoUpload {
+    constructor() {
+        this.uploadArea = document.getElementById('photoUploadArea');
+        this.fileInput = document.getElementById('photoInput');
+        this.uploadPrompt = document.getElementById('uploadPrompt');
+        this.photoPreview = document.getElementById('photoPreview');
+        this.previewImage = document.getElementById('previewImage');
+        
+        this.init();
+    }
+    
+    init() {
+        this.uploadArea.addEventListener('click', () => {
+            this.fileInput.click();
+        });
+        
+        this.fileInput.addEventListener('change', this.handleFileSelect.bind(this));
+        
+        this.uploadArea.addEventListener('dragover', this.handleDragOver.bind(this));
+        this.uploadArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
+        this.uploadArea.addEventListener('drop', this.handleDrop.bind(this));
+        
+        // Check if there's already a photo preview shown (for editing)
+        if (this.previewImage.src && this.previewImage.src !== window.location.href) {
+            this.uploadPrompt.style.display = 'none';
+            this.photoPreview.style.display = 'block';
+        }
+    }
+    
+    handleFileSelect(e) {
+        const file = e.target.files[0];
+        if (file) {
+            this.showPreview(file);
+        }
+    }
+    
+    handleDragOver(e) {
+        e.preventDefault();
+        this.uploadArea.classList.add('dragover');
+    }
+    
+    handleDragLeave(e) {
+        e.preventDefault();
+        this.uploadArea.classList.remove('dragover');
+    }
+    
+    handleDrop(e) {
+        e.preventDefault();
+        this.uploadArea.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            this.fileInput.files = files;
+            this.showPreview(files[0]);
+        }
+    }
+    
+    showPreview(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            this.previewImage.src = e.target.result;
+            this.uploadPrompt.style.display = 'none';
+            this.photoPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    new WorkerSearch();
+    new PhotoUpload();
+});
+</script>
+{% endblock %}

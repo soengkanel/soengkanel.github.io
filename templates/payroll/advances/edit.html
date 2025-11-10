@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Salary Advance{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Compact Variables */
+    .form-control { font-size: 11px !important; padding: 4px 6px !important; height: auto !important; border-radius: 3px; border: 1px solid #d1d5db; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h1 class="h3 mb-0">Edit Salary Advance</h1>
+        <p class="text-muted mb-0">Update salary advance for {{ advance.employee.get_full_name }}</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Advance Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Employee</label>
+                            <input type="text" class="form-control" value="{{ advance.employee.get_full_name }}" disabled>
+                            <small class="form-text text-muted">Employee cannot be changed</small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Amount (KHR) <span class="text-danger">*</span></label>
+                                    <input type="number" name="amount" class="form-control" step="0.01" value="{{ advance.amount }}" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Request Date <span class="text-danger">*</span></label>
+                                    <input type="date" name="request_date" class="form-control" value="{{ advance.request_date|date:'Y-m-d' }}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Repayment Method <span class="text-danger">*</span></label>
+                                    <select name="repayment_method" class="form-select" id="repayment_method" required>
+                                        <option value="ONE_TIME" {% if advance.repayment_method == 'ONE_TIME' %}selected{% endif %}>One Time Deduction</option>
+                                        <option value="INSTALLMENTS" {% if advance.repayment_method == 'INSTALLMENTS' %}selected{% endif %}>Monthly Installments</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3" id="installments_container" {% if advance.repayment_method != 'INSTALLMENTS' %}style="display: none;"{% endif %}>
+                                    <label class="form-label">Number of Installments</label>
+                                    <input type="number" name="installment_months" class="form-control" min="1" max="12" value="{{ advance.installment_months }}">
+                                    <small class="form-text text-muted">Maximum 12 months</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Reason <span class="text-danger">*</span></label>
+                            <textarea name="reason" class="form-control" rows="3" required>{{ advance.reason }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Remarks</label>
+                            <textarea name="remarks" class="form-control" rows="2">{{ advance.remarks }}</textarea>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Note:</strong> Current status is <strong>{{ advance.get_status_display }}</strong>.
+                            To change the status, use the Approve or Reject buttons from the detail view.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="mt-4">
+                    <div class="d-flex justify-content-end space-x-1">
+                        <button type="submit" class="button-min-primary py-1">
+                            <div>
+                                <i class="fas fa-save me-2"></i> Save
+                            </div>
+                        </button>
+                        <a href="{% url 'payroll:salary_advance_detail' advance.id %}" class="button-min-warn py-1">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('repayment_method').addEventListener('change', function() {
+    const installmentsContainer = document.getElementById('installments_container');
+    if (this.value === 'INSTALLMENTS') {
+        installmentsContainer.style.display = 'block';
+    } else {
+        installmentsContainer.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}

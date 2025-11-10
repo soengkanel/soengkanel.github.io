@@ -1,0 +1,92 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Import Workers - Zone Management{% endblock %}
+
+{% block main_class %}col-md-10 ms-sm-auto col-lg-10{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h4>Import Workers from Excel - Simple Form</h4>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Upload Excel File</h5>
+                    
+                    <!-- Simple form without JavaScript -->
+                    <form method="post" enctype="multipart/form-data" action="{% url 'zone:import_workers' %}">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_excel_file" class="form-label">Excel File *</label>
+                            <input type="file" 
+                                   name="excel_file" 
+                                   id="id_excel_file" 
+                                   class="form-control" 
+                                   accept=".xlsx,.xls" 
+                                   required>
+                            <small class="form-text text-muted">
+                                Upload the Excel file containing worker data with embedded images.
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       name="update_existing" 
+                                       id="id_update_existing" 
+                                       class="form-check-input">
+                                <label class="form-check-label" for="id_update_existing">
+                                    Update Existing Workers
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       name="skip_duplicates" 
+                                       id="id_skip_duplicates" 
+                                       class="form-check-input" 
+                                       checked>
+                                <label class="form-check-label" for="id_skip_duplicates">
+                                    Skip Duplicate Workers
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Upload & Preview
+                        </button>
+                        <a href="{% url 'zone:worker_list' %}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Debug Info</h5>
+                    <p>CSRF Token: {{ csrf_token }}</p>
+                    <p>User: {{ request.user }}</p>
+                    <p>Method: {{ request.method }}</p>
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

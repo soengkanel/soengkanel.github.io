@@ -1,0 +1,1390 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="L.Y.P. Group - Cambodia's leading HRMS solution for modern businesses. Compliant with Cambodian labor laws, supporting local currency and Khmer language.">
+    <title>L.Y.P. Group - Modern HRMS for Cambodia</title>
+    <link href="{% static 'vendor/tailwind/tailwind.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
+    <style>
+        /* Premium Khmer Cultural Design */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .khmer-gold {
+            background: linear-gradient(135deg, #87CEEB 0%, #6BB6D6 100%);
+        }
+
+        .khmer-gold-text {
+            background: linear-gradient(135deg, #87CEEB 0%, #4A9FCC 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .premium-shadow {
+            box-shadow: 0 20px 50px rgba(135, 206, 235, 0.2);
+        }
+
+        .khmer-border {
+            border-image: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 50%, #87CEEB 100%) 1;
+        }
+
+        .hover-lift {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            will-change: transform;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow:
+                0 4px 6px rgba(0,0,0,0.07),
+                0 25px 60px rgba(135, 206, 235, 0.25),
+                0 0 0 1px rgba(135, 206, 235, 0.1);
+        }
+
+        /* Animated Gradient Background */
+        .animated-gradient-bg {
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #1e3a5f, #1e293b);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .float-icon {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* Pulse Glow */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(135, 206, 235, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(135, 206, 235, 0.7), 0 0 50px rgba(135, 206, 235, 0.3); }
+        }
+
+        .pulse-shadow {
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Enhanced Typography */
+        h1, h2, h3 {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        /* Icon Rotate on Hover */
+        .icon-rotate-hover:hover {
+            animation: rotateIcon 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes rotateIcon {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.15); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .cultural-pattern {
+            background-image:
+                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(135, 206, 235, 0.02) 35px, rgba(135, 206, 235, 0.02) 70px);
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .btn-premium {
+            background: linear-gradient(135deg, #87CEEB 0%, #6BB6D6 100%);
+            box-shadow: 0 10px 30px rgba(135, 206, 235, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(135, 206, 235, 0.5);
+        }
+
+        .btn-premium:hover::before {
+            left: 100%;
+        }
+
+        /* Galaxy Background Effect */
+        .galaxy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #87CEEB;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 4s infinite;
+            box-shadow: 0 0 3px rgba(135, 206, 235, 0.8);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(135, 206, 235, 0.2), transparent);
+            transform-origin: left center;
+            opacity: 0;
+            animation: fadeConnection 6s infinite;
+        }
+
+        @keyframes fadeConnection {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-gray-800 cultural-pattern">
+    <!-- Galaxy Background -->
+    <div class="galaxy-bg" id="galaxyBg"></div>
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50" style="border-bottom: 3px solid; border-image: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 50%, #87CEEB 100%) 1;">
+        <div class="container mx-auto px-6 py-2">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold khmer-gold-text">
+                    🏛️ L.Y.P. Group
+                </div>
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-gray-700 hover:text-yellow-700 transition-colors font-semibold">Features</a>
+                    <a href="#about" class="text-gray-700 hover:text-yellow-700 transition-colors font-semibold">About</a>
+                    <a href="#contact" class="text-gray-700 hover:text-yellow-700 transition-colors font-semibold">Contact</a>
+                    <a href="accounts/login/" class="btn-premium text-white px-6 py-2 rounded-lg font-semibold">
+                        Login
+                    </a>
+                </nav>
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-button" class="md:hidden text-gray-600 hover:text-blue-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-6 py-4 space-y-4">
+                <a href="#features" class="block text-gray-600 hover:text-blue-600 transition-colors">Features</a>
+                <a href="#about" class="block text-gray-600 hover:text-blue-600 transition-colors">About</a>
+                <a href="#contact" class="block text-gray-600 hover:text-blue-600 transition-colors">Contact</a>
+                <a href="accounts/login/" class="block bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors text-center">
+                    Login
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative py-24 overflow-hidden" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #1a202c 100%);">
+        <!-- Cultural pattern overlay -->
+        <div class="absolute inset-0 opacity-10">
+            <div style="background-image: radial-gradient(circle at 20% 50%, rgba(135, 206, 235, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(135, 206, 235, 0.3) 0%, transparent 50%);"></div>
+        </div>
+
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <!-- Cultural Badge -->
+            <div class="inline-flex items-center bg-white bg-opacity-10 backdrop-blur-sm px-6 py-2 rounded-full mb-8 border-2" style="border-color: rgba(135, 206, 235, 0.5);">
+                <span class="font-semibold" style="color: #87CEEB;">🏛️ Designed for Cambodia</span>
+            </div>
+
+            <h1 class="text-4xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
+                Cambodia's <span class="khmer-gold-text">Premium</span><br/>
+                HRMS Solution
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+                <span style="color: #87CEEB;" class="text-2xl">✦</span>
+                Empower your Cambodian business with cutting-edge HR technology that honors local traditions.
+                Full labor law compliance, bilingual support, and dual currency management.
+                <span style="color: #87CEEB;" class="text-2xl">✦</span>
+            </p>
+            <a href="#contact" class="btn-premium inline-block text-white px-10 py-4 rounded-xl text-lg font-bold">
+                Begin Your Journey
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-gradient-to-b from-gray-50 to-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+                    Features Built for <span class="khmer-gold-text">Cambodia</span>
+                </h2>
+                <div class="w-24 h-1 mx-auto mb-4" style="background: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%);"></div>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Premium features designed with Cambodian businesses in mind
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="bg-white rounded-2xl p-8 hover-lift border-2 border-gray-200" style="border-top: 4px solid; border-image: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%) 1;">
+                        <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-2xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                            <i class="fas fa-shield-halved text-4xl khmer-gold-text"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Data Privacy & Security</h3>
+                        <p class="text-gray-600 leading-relaxed">Bank-grade encryption, role-based access control, and full GDPR compliance. Your employee data is protected with enterprise-level security measures and regular backups.</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="bg-white rounded-2xl p-8 hover-lift border-2 border-gray-200" style="border-top: 4px solid; border-image: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%) 1;">
+                        <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-2xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                            <i class="fas fa-scale-balanced text-4xl khmer-gold-text"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Labor Law Compliance</h3>
+                        <p class="text-gray-600 leading-relaxed">Automatically comply with Cambodian labor regulations including seniority pay, overtime rules, and Ministry of Labor reporting.</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="bg-white rounded-2xl p-8 hover-lift border-2 border-gray-200" style="border-top: 4px solid; border-image: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%) 1;">
+                        <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-2xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                            <i class="fas fa-dollar-sign text-4xl khmer-gold-text"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Dual Currency System</h3>
+                        <p class="text-gray-600 leading-relaxed">Native support for USD and KHR with real-time exchange rates. Perfect for Cambodia's unique dual-currency economy.</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="bg-white rounded-2xl p-8 hover-lift border-2 border-gray-200" style="border-top: 4px solid; border-image: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%) 1;">
+                        <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-2xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                            <i class="fas fa-calendar-alt text-4xl khmer-gold-text"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Holiday Calendar Integration</h3>
+                        <p class="text-gray-600 leading-relaxed">Recognizes all Cambodian public holidays and festivals with automatic leave management and scheduling.</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="bg-white rounded-2xl p-8 hover-lift border-2 border-gray-200" style="border-top: 4px solid; border-image: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%) 1;">
+                        <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-2xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                            <i class="fas fa-industry text-4xl khmer-gold-text"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Industry-Specific Solutions</h3>
+                        <p class="text-gray-600 leading-relaxed">Tailored for garment manufacturing, hospitality, construction, and BPO sectors in Cambodia.</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="bg-white rounded-2xl p-8 hover-lift border-2 border-gray-200" style="border-top: 4px solid; border-image: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%) 1;">
+                        <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-2xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                            <i class="fas fa-mobile-alt text-4xl khmer-gold-text"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Mobile-First Design</h3>
+                        <p class="text-gray-600 leading-relaxed">Responsive design accessible on any device. Perfect for multi-location management across Cambodia.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-24 bg-gradient-to-b from-white to-gray-50 cultural-pattern">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+                    Trusted by <span class="khmer-gold-text">Cambodian</span> Businesses
+                </h2>
+                <div class="w-24 h-1 mx-auto mb-8" style="background: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%);"></div>
+                <p class="text-xl text-gray-600 mb-12 leading-relaxed">
+                    L.Y.P. Group is dedicated to empowering Cambodian businesses with modern HR solutions. We understand
+                    the unique challenges of managing workforce in Cambodia's dynamic business environment, from garment
+                    factories to hotels, and construction to BPO services. Our locally-adapted platform ensures compliance
+                    with Cambodian labor regulations while streamlining your HR operations.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mt-16">
+                    <div class="bg-white rounded-2xl p-8 premium-shadow">
+                        <div class="text-5xl font-bold khmer-gold-text mb-3">200+</div>
+                        <div class="text-gray-700 font-semibold text-lg">Cambodian Companies</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-8 premium-shadow">
+                        <div class="text-5xl font-bold khmer-gold-text mb-3">50,000+</div>
+                        <div class="text-gray-700 font-semibold text-lg">Employees Managed</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-8 premium-shadow">
+                        <div class="text-5xl font-bold khmer-gold-text mb-3">100%</div>
+                        <div class="text-gray-700 font-semibold text-lg">Labor Law Compliant</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Privacy & Security Section -->
+    <section class="py-24" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center bg-white px-6 py-2 rounded-full mb-6 shadow-md border-2" style="border-color: rgba(135, 206, 235, 0.3);">
+                    <i class="fas fa-shield-halved mr-2" style="color: #87CEEB;"></i>
+                    <span class="font-semibold" style="color: #4A9FCC;">Enterprise-Grade Security</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+                    Your Data, <span class="khmer-gold-text">Protected</span>
+                </h2>
+                <div class="w-24 h-1 mx-auto mb-4" style="background: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%);"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    We understand that HR data is sensitive. That's why we've built security and privacy into every layer of our system.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white rounded-2xl p-6 hover-lift border-2 border-gray-100">
+                    <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                        <i class="fas fa-lock text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">256-bit Encryption</h3>
+                    <p class="text-gray-600 text-sm">Bank-grade AES-256 encryption for all data at rest and in transit</p>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 hover-lift border-2 border-gray-100">
+                    <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                        <i class="fas fa-user-shield text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Role-Based Access</h3>
+                    <p class="text-gray-600 text-sm">Granular permissions ensure employees only see what they need to</p>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 hover-lift border-2 border-gray-100">
+                    <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                        <i class="fas fa-database text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Daily Backups</h3>
+                    <p class="text-gray-600 text-sm">Automated daily backups with 30-day retention and instant recovery</p>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 hover-lift border-2 border-gray-100">
+                    <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                        <i class="fas fa-file-contract text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">GDPR Compliant</h3>
+                    <p class="text-gray-600 text-sm">Full compliance with international data protection standards</p>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 hover-lift border-2 border-gray-100">
+                    <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                        <i class="fas fa-history text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Audit Trails</h3>
+                    <p class="text-gray-600 text-sm">Complete activity logs tracking who accessed what and when</p>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 hover-lift border-2 border-gray-100">
+                    <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                        <i class="fas fa-server text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Secure Hosting</h3>
+                    <p class="text-gray-600 text-sm">ISO 27001 certified data centers with 99.9% uptime guarantee</p>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 hover-lift border-2 border-gray-100">
+                    <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                        <i class="fas fa-key text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Two-Factor Auth</h3>
+                    <p class="text-gray-600 text-sm">Optional 2FA for enhanced account security and protection</p>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 hover-lift border-2 border-gray-100">
+                    <div class="mb-4 inline-flex items-center justify-center w-16 h-16 rounded-xl" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                        <i class="fas fa-shield-virus text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Regular Security Audits</h3>
+                    <p class="text-gray-600 text-sm">Quarterly penetration testing and vulnerability assessments</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-8 md:p-12 shadow-xl border-2" style="border-color: rgba(135, 206, 235, 0.2);">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-3xl font-bold text-gray-900 mb-4">Privacy by Design</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Data privacy isn't an afterthought—it's built into every feature from the ground up. We follow strict data minimization principles, only collecting what's necessary for HR operations.
+                        </p>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-xl mr-3 mt-1" style="color: #87CEEB;"></i>
+                                <span class="text-gray-700"><strong>Data Ownership:</strong> Your data belongs to you, not us. Export anytime.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-xl mr-3 mt-1" style="color: #87CEEB;"></i>
+                                <span class="text-gray-700"><strong>No Third-Party Sharing:</strong> We never sell or share your data with third parties.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-xl mr-3 mt-1" style="color: #87CEEB;"></i>
+                                <span class="text-gray-700"><strong>Right to be Forgotten:</strong> Complete data deletion when employees leave.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-xl mr-3 mt-1" style="color: #87CEEB;"></i>
+                                <span class="text-gray-700"><strong>Transparent Processing:</strong> Clear documentation of how we handle your data.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="flex justify-center">
+                        <div class="relative">
+                            <div class="w-64 h-64 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); box-shadow: 0 20px 60px rgba(135, 206, 235, 0.3);">
+                                <i class="fas fa-shield-halved text-8xl khmer-gold-text"></i>
+                            </div>
+                            <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white shadow-lg flex items-center justify-center pulse-shadow">
+                                <i class="fas fa-check text-3xl" style="color: #22c55e;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Integration Highlights Section -->
+    <section class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+                    <span class="khmer-gold-text">Enterprise</span> Integrations
+                </h2>
+                <div class="w-24 h-1 mx-auto mb-6" style="background: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%);"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Seamlessly connect with leading business systems and Cambodian government services
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Business Central Integration -->
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 hover-lift border-2 border-gray-200">
+                    <div class="flex items-start mb-6">
+                        <div class="mr-4 flex items-center justify-center" style="width: 70px; height: 70px; min-width: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                            <i class="fas fa-building text-4xl khmer-gold-text"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Microsoft Dynamics 365 Business Central</h3>
+                            <p class="text-gray-600">Bi-directional sync with your ERP system</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Real-time payroll data sync</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Employee master data integration</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Automated GL postings</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Financial reporting integration</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- SAP Integration -->
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 hover-lift border-2 border-gray-200">
+                    <div class="flex items-start mb-6">
+                        <div class="mr-4 flex items-center justify-center" style="width: 70px; height: 70px; min-width: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                            <i class="fas fa-network-wired text-4xl khmer-gold-text"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">SAP Integration</h3>
+                            <p class="text-gray-600">Connect with SAP ERP systems</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>SAP HCM/SuccessFactors integration</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Cost center and org structure sync</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Time and attendance data transfer</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Payroll results posting</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Cambodia GDT Tax -->
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 hover-lift border-2 border-gray-200">
+                    <div class="flex items-start mb-6">
+                        <div class="mr-4 flex items-center justify-center" style="width: 70px; height: 70px; min-width: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                            <i class="fas fa-file-invoice-dollar text-4xl khmer-gold-text"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">🇰🇭 Cambodia GDT Tax System</h3>
+                            <p class="text-gray-600">Direct integration with General Department of Taxation</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Automated tax on salary calculations</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Monthly tax declaration filing</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Annual tax reconciliation reports</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Digital submission ready</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Cambodia Banks -->
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-8 hover-lift border-2 border-gray-200">
+                    <div class="flex items-start mb-6">
+                        <div class="mr-4 flex items-center justify-center" style="width: 70px; height: 70px; min-width: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                            <i class="fas fa-university text-4xl khmer-gold-text"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">🇰🇭 Cambodian Banks Integration</h3>
+                            <p class="text-gray-600">Direct salary disbursement to local banks</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-3 text-gray-700">
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>ABA Bank, ACLEDA, Canadia & more</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Automated salary file generation</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>Batch payment processing</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check-circle text-yellow-600 mr-3 text-lg"></i>
+                            <span>USD & KHR payment support</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Minimal Modern Styles -->
+    <style>
+        .minimal-stat-card {
+            transition: all 0.3s ease;
+        }
+
+        .minimal-stat-card:hover {
+            border-color: #87CEEB !important;
+            transform: translateY(-2px);
+        }
+
+        .minimal-badge {
+            transition: all 0.3s ease;
+        }
+
+        .minimal-badge:hover {
+            background: rgba(135, 206, 235, 0.15) !important;
+        }
+    </style>
+
+    <!-- Zen Transformation Section -->
+    <section class="py-20" style="background: linear-gradient(to bottom, #f9fafb 0%, #ffffff 100%);">
+        <div class="container mx-auto px-6">
+            <!-- Zen Header -->
+            <div class="text-center mb-16">
+                <div class="mb-4">
+                    <span class="d-inline-block px-4 py-2 rounded-pill" style="background: rgba(135, 206, 235, 0.08); color: #6B7280; font-size: 0.875rem; letter-spacing: 2px; font-weight: 500;">
+                        TRANSFORMATION
+                    </span>
+                </div>
+                <h2 class="mb-3" style="font-size: 2.5rem; font-weight: 300; color: #1F2937; letter-spacing: -0.02em;">
+                    From Chaos to <span style="font-weight: 400; color: #87CEEB;">Peace of Mind</span>
+                </h2>
+                <p class="text-muted mx-auto" style="max-width: 560px; font-size: 1.125rem; font-weight: 300; line-height: 1.8;">
+                    Simplify your HR, amplify your impact
+                </p>
+            </div>
+
+            <!-- Zen Stats - Breathing Room -->
+            <div class="row g-4 mb-16 justify-content-center">
+                <div class="col-md-4">
+                    <div class="text-center p-5" style="background: white; border-radius: 12px; border: 1px solid #E5E7EB;">
+                        <div class="mb-3" style="font-size: 3rem; font-weight: 200; color: #87CEEB; line-height: 1;">90%</div>
+                        <div style="color: #6B7280; font-size: 0.95rem; font-weight: 400;">Less Time, More Focus</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-5" style="background: white; border-radius: 12px; border: 1px solid #E5E7EB;">
+                        <div class="mb-3" style="font-size: 3rem; font-weight: 200; color: #87CEEB; line-height: 1;">99.9%</div>
+                        <div style="color: #6B7280; font-size: 0.95rem; font-weight: 400;">Accuracy, No Worries</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-5" style="background: white; border-radius: 12px; border: 1px solid #E5E7EB;">
+                        <div class="mb-3" style="font-size: 3rem; font-weight: 200; color: #87CEEB; line-height: 1;">100%</div>
+                        <div style="color: #6B7280; font-size: 0.95rem; font-weight: 400;">Automated Serenity</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zen Transformation Cards -->
+            <div class="row g-5">
+                <!-- Payroll Journey -->
+                <div class="col-lg-6">
+                    <div style="background: white; border-radius: 16px; overflow: hidden; border: 1px solid #E5E7EB; padding: 2.5rem;">
+                        <div class="mb-4" style="color: #9CA3AF; font-size: 0.75rem; letter-spacing: 2px; font-weight: 500;">PAYROLL PROCESSING</div>
+
+                        <div class="row g-4">
+                            <div class="col-6">
+                                <div class="mb-3" style="color: #9CA3AF; font-size: 0.75rem; font-weight: 500;">Before</div>
+                                <div class="mb-4" style="font-size: 1.25rem; color: #6B7280; font-weight: 300;">5 days of stress</div>
+                                <div style="color: #9CA3AF; font-size: 0.875rem; line-height: 1.8;">
+                                    <div>Manual work</div>
+                                    <div>Error-prone</div>
+                                    <div>Delayed payments</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3" style="color: #87CEEB; font-size: 0.75rem; font-weight: 500;">After</div>
+                                <div class="mb-4" style="font-size: 1.25rem; color: #1F2937; font-weight: 400;">4 hours of calm</div>
+                                <div style="color: #6B7280; font-size: 0.875rem; line-height: 1.8;">
+                                    <div>Automated</div>
+                                    <div>99.9% accurate</div>
+                                    <div>Always on time</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subtle Divider -->
+                        <div class="my-4" style="height: 1px; background: linear-gradient(to right, transparent, #E5E7EB, transparent);"></div>
+
+                        <div class="text-center" style="color: #87CEEB; font-size: 0.875rem; font-weight: 400;">
+                            <i class="bi bi-arrow-right me-2"></i>90% time saved
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Management Journey -->
+                <div class="col-lg-6">
+                    <div style="background: white; border-radius: 16px; overflow: hidden; border: 1px solid #E5E7EB; padding: 2.5rem;">
+                        <div class="mb-4" style="color: #9CA3AF; font-size: 0.75rem; letter-spacing: 2px; font-weight: 500;">DATA MANAGEMENT</div>
+
+                        <div class="row g-4">
+                            <div class="col-6">
+                                <div class="mb-3" style="color: #9CA3AF; font-size: 0.75rem; font-weight: 500;">Before</div>
+                                <div class="mb-4" style="font-size: 1.25rem; color: #6B7280; font-weight: 300;">Scattered chaos</div>
+                                <div style="color: #9CA3AF; font-size: 0.875rem; line-height: 1.8;">
+                                    <div>100+ spreadsheets</div>
+                                    <div>Version conflicts</div>
+                                    <div>Insecure files</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3" style="color: #87CEEB; font-size: 0.75rem; font-weight: 500;">After</div>
+                                <div class="mb-4" style="font-size: 1.25rem; color: #1F2937; font-weight: 400;">Unified clarity</div>
+                                <div style="color: #6B7280; font-size: 0.875rem; line-height: 1.8;">
+                                    <div>Single source</div>
+                                    <div>Real-time sync</div>
+                                    <div>Bank-grade security</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subtle Divider -->
+                        <div class="my-4" style="height: 1px; background: linear-gradient(to right, transparent, #E5E7EB, transparent);"></div>
+
+                        <div class="text-center" style="color: #87CEEB; font-size: 0.875rem; font-weight: 400;">
+                            <i class="bi bi-arrow-right me-2"></i>Complete peace of mind
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zen Quote -->
+            <div class="text-center mt-16">
+                <p class="mb-0" style="color: #9CA3AF; font-size: 1rem; font-weight: 300; font-style: italic;">
+                    "Simplicity is the ultimate sophistication"
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section - Redesigned -->
+    <section class="py-24 position-relative overflow-hidden" style="background: linear-gradient(to bottom, #f8fafc 0%, #e2e8f0 100%);">
+        <div class="container position-relative" style="z-index: 2;">
+            <div class="text-center mb-16">
+                <div class="d-inline-block mb-4 px-4 py-2 rounded-pill" style="background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(135, 206, 235, 0.3);">
+                    <span class="fw-bold" style="color: #87CEEB;">💎 WHY L.Y.P. GROUP</span>
+                </div>
+                <h2 class="display-4 fw-extrabold mb-4" style="color: #1e293b;">
+                    The Smart Choice for <span style="background: linear-gradient(135deg, #87CEEB 0%, #4A9FCC 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Cambodia</span>
+                </h2>
+                <div class="mx-auto mb-6" style="width: 100px; height: 4px; background: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%); box-shadow: 0 0 20px rgba(135, 206, 235, 0.3); border-radius: 2px;"></div>
+                <p class="fs-5 text-muted max-w-3xl mx-auto">
+                    Join 200+ companies and 50,000+ employees already transforming HR in Cambodia
+                </p>
+            </div>
+
+            <!-- Primary Benefits - Large Feature Cards -->
+            <div class="row g-4 mb-4">
+                <!-- Local Expertise -->
+                <div class="col-lg-6">
+                    <div class="position-relative h-100 rounded-4 p-5 hover-lift-card" style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border: 2px solid rgba(135, 206, 235, 0.2); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);">
+                        <div class="d-flex align-items-start">
+                            <div class="me-4 flex-shrink-0">
+                                <div class="d-flex align-items-center justify-center position-relative" style="width: 80px; height: 80px; background: linear-gradient(135deg, #87CEEB 0%, #4A9FCC 100%); border-radius: 20px; box-shadow: 0 8px 24px rgba(135, 206, 235, 0.3);">
+                                    <i class="bi bi-award fs-2 text-white"></i>
+                                    <div class="position-absolute top-0 end-0 translate-middle">
+                                        <div class="px-2 py-1 rounded-circle" style="background: #22c55e; font-size: 10px; color: white; font-weight: bold;">✓</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h3 class="h4 fw-bold mb-3" style="color: #1e293b;">🇰🇭 Built for Cambodia</h3>
+                                <p class="text-muted mb-3">Developed by Cambodians who understand local business culture, labor laws, and operational challenges.</p>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="p-3 rounded-3" style="background: rgba(212, 175, 55, 0.08);">
+                                            <div class="fw-bold fs-4" style="color: #87CEEB;">100%</div>
+                                            <small class="text-muted">Labor Law Compliant</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 rounded-3" style="background: rgba(212, 175, 55, 0.08);">
+                                            <div class="fw-bold fs-4" style="color: #87CEEB;">5+</div>
+                                            <small class="text-muted">Years in Cambodia</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fast Implementation -->
+                <div class="col-lg-6">
+                    <div class="position-relative h-100 rounded-4 p-5 hover-lift-card" style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border: 2px solid rgba(135, 206, 235, 0.2); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);">
+                        <div class="d-flex align-items-start">
+                            <div class="me-4 flex-shrink-0">
+                                <div class="d-flex align-items-center justify-center position-relative" style="width: 80px; height: 80px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 20px; box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);">
+                                    <i class="bi bi-lightning-charge-fill fs-2 text-white"></i>
+                                    <div class="position-absolute top-0 end-0 translate-middle">
+                                        <div class="px-2 py-1 rounded-circle" style="background: #22c55e; font-size: 10px; color: white; font-weight: bold;">⚡</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h3 class="h4 fw-bold mb-3" style="color: #1e293b;">Lightning Fast Setup</h3>
+                                <p class="text-muted mb-3">Go live in just 2 weeks with our proven implementation process and dedicated onboarding team.</p>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="p-3 rounded-3" style="background: rgba(59, 130, 246, 0.08);">
+                                            <div class="fw-bold fs-4 text-primary">14 Days</div>
+                                            <small class="text-muted">Average Go-Live</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 rounded-3" style="background: rgba(59, 130, 246, 0.08);">
+                                            <div class="fw-bold fs-4 text-primary">24/7</div>
+                                            <small class="text-muted">Training Support</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secondary Benefits - Grid Cards -->
+            <div class="row g-4">
+                <!-- Local Support -->
+                <div class="col-md-4">
+                    <div class="h-100 rounded-4 p-4 hover-lift-card" style="background: white; border: 2px solid rgba(212, 175, 55, 0.15); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3 d-flex align-items-center justify-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px;">
+                                <i class="bi bi-headset fs-4 text-white"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.1rem;">Local Support</h4>
+                        </div>
+                        <p class="text-muted mb-0 small">Khmer & English speaking team in Phnom Penh ready to help during business hours.</p>
+                    </div>
+                </div>
+
+                <!-- Cost Effective -->
+                <div class="col-md-4">
+                    <div class="h-100 rounded-4 p-4 hover-lift-card" style="background: white; border: 2px solid rgba(212, 175, 55, 0.15); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3 d-flex align-items-center justify-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 12px;">
+                                <i class="bi bi-cash-coin fs-4 text-white"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.1rem;">Cost-Effective</h4>
+                        </div>
+                        <p class="text-muted mb-0 small">Transparent pricing with no hidden fees. Plans for all business sizes in Cambodia.</p>
+                    </div>
+                </div>
+
+                <!-- Cloud Based -->
+                <div class="col-md-4">
+                    <div class="h-100 rounded-4 p-4 hover-lift-card" style="background: white; border: 2px solid rgba(212, 175, 55, 0.15); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3 d-flex align-items-center justify-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); border-radius: 12px;">
+                                <i class="bi bi-cloud-check fs-4 text-white"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.1rem;">Cloud-Based</h4>
+                        </div>
+                        <p class="text-muted mb-0 small">Access anywhere, anytime. Zero IT infrastructure needed with automatic updates.</p>
+                    </div>
+                </div>
+
+                <!-- Mobile Ready -->
+                <div class="col-md-4">
+                    <div class="h-100 rounded-4 p-4 hover-lift-card" style="background: white; border: 2px solid rgba(212, 175, 55, 0.15); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3 d-flex align-items-center justify-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); border-radius: 12px;">
+                                <i class="bi bi-phone fs-4 text-white"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.1rem;">Mobile Ready</h4>
+                        </div>
+                        <p class="text-muted mb-0 small">Perfect on phones & tablets. Manage HR on the go anywhere in Cambodia.</p>
+                    </div>
+                </div>
+
+                <!-- Scalable -->
+                <div class="col-md-4">
+                    <div class="h-100 rounded-4 p-4 hover-lift-card" style="background: white; border: 2px solid rgba(212, 175, 55, 0.15); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3 d-flex align-items-center justify-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); border-radius: 12px;">
+                                <i class="bi bi-arrow-up-circle fs-4 text-white"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.1rem;">Scalable Growth</h4>
+                        </div>
+                        <p class="text-muted mb-0 small">From 10 to 10,000 employees. Our system grows with your business needs.</p>
+                    </div>
+                </div>
+
+                <!-- Secure -->
+                <div class="col-md-4">
+                    <div class="h-100 rounded-4 p-4 hover-lift-card" style="background: white; border: 2px solid rgba(212, 175, 55, 0.15); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3 d-flex align-items-center justify-center" style="width: 50px; height: 50px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 12px;">
+                                <i class="bi bi-shield-check fs-4 text-white"></i>
+                            </div>
+                            <h4 class="fw-bold mb-0" style="color: #1e293b; font-size: 1.1rem;">Bank-Level Security</h4>
+                        </div>
+                        <p class="text-muted mb-0 small">256-bit encryption. Your employee data protected with industry-leading security.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust Badge -->
+            <div class="text-center mt-5">
+                <div class="d-inline-flex align-items-center gap-4 px-5 py-3 rounded-pill" style="background: white; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-star-fill text-warning fs-5 me-2"></i>
+                        <span class="fw-bold" style="color: #1e293b;">4.9/5</span>
+                        <small class="text-muted ms-2">Customer Rating</small>
+                    </div>
+                    <div style="width: 1px; height: 30px; background: #e2e8f0;"></div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-building fs-5 me-2" style="color: #87CEEB;"></i>
+                        <span class="fw-bold" style="color: #1e293b;">200+</span>
+                        <small class="text-muted ms-2">Companies</small>
+                    </div>
+                    <div style="width: 1px; height: 30px; background: #e2e8f0;"></div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-people-fill fs-5 me-2" style="color: #87CEEB;"></i>
+                        <span class="fw-bold" style="color: #1e293b;">50,000+</span>
+                        <small class="text-muted ms-2">Employees Managed</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Background Decoration -->
+        <div class="position-absolute top-0 end-0" style="width: 300px; height: 300px; background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%); filter: blur(60px); z-index: 1;"></div>
+        <div class="position-absolute bottom-0 start-0" style="width: 400px; height: 400px; background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%); filter: blur(80px); z-index: 1;"></div>
+    </section>
+
+    <!-- Trusted Clients Section -->
+    <section class="py-24 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+                    Trusted by <span class="khmer-gold-text">Leading</span> Businesses
+                </h2>
+                <div class="w-24 h-1 mx-auto mb-6" style="background: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%);"></div>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Join 200+ Cambodian companies managing over 50,000 employees
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-6 text-center hover-lift border-2 border-gray-200">
+                    <div class="inline-flex items-center justify-center mb-4" style="width: 70px; height: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                        <i class="fas fa-industry text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Garment Manufacturing</h3>
+                    <p class="text-sm text-gray-600">Leading Export Factories</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-6 text-center hover-lift border-2 border-gray-200">
+                    <div class="inline-flex items-center justify-center mb-4" style="width: 70px; height: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                        <i class="fas fa-hotel text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Hospitality</h3>
+                    <p class="text-sm text-gray-600">Hotels & Resorts</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-6 text-center hover-lift border-2 border-gray-200">
+                    <div class="inline-flex items-center justify-center mb-4" style="width: 70px; height: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                        <i class="fas fa-hospital text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Healthcare</h3>
+                    <p class="text-sm text-gray-600">Private Hospitals</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-6 text-center hover-lift border-2 border-gray-200">
+                    <div class="inline-flex items-center justify-center mb-4" style="width: 70px; height: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                        <i class="fas fa-store text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Retail & F&B</h3>
+                    <p class="text-sm text-gray-600">Chain Stores</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-6 text-center hover-lift border-2 border-gray-200">
+                    <div class="inline-flex items-center justify-center mb-4" style="width: 70px; height: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                        <i class="fas fa-truck text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Logistics</h3>
+                    <p class="text-sm text-gray-600">Shipping Companies</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-6 text-center hover-lift border-2 border-gray-200">
+                    <div class="inline-flex items-center justify-center mb-4" style="width: 70px; height: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                        <i class="fas fa-hard-hat text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Construction</h3>
+                    <p class="text-sm text-gray-600">Development Projects</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-6 text-center hover-lift border-2 border-gray-200">
+                    <div class="inline-flex items-center justify-center mb-4" style="width: 70px; height: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                        <i class="fas fa-phone-volume text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">BPO Services</h3>
+                    <p class="text-sm text-gray-600">Call Centers</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-gray-50 to-white rounded-3xl p-6 text-center hover-lift border-2 border-gray-200">
+                    <div class="inline-flex items-center justify-center mb-4" style="width: 70px; height: 70px; background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%); border-radius: 16px;">
+                        <i class="fas fa-university text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Financial Services</h3>
+                    <p class="text-sm text-gray-600">Banks & MFIs</p>
+                </div>
+            </div>
+
+            <!-- Testimonial -->
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-3xl p-12 text-center max-w-4xl mx-auto" style="border-left: 5px solid #87CEEB;">
+                <i class="fas fa-quote-left text-5xl khmer-gold-text mb-4"></i>
+                <p class="text-2xl text-gray-800 mb-6 font-semibold leading-relaxed">
+                    "L.Y.P. Group has transformed how we manage our 8,000+ workers. What used to take 5 days now takes just 4 hours. The GDT tax integration saves us countless hours every month."
+                </p>
+                <div class="mt-6">
+                    <p class="font-bold text-gray-900 text-lg">HR Director</p>
+                    <p class="text-gray-600">Leading Garment Manufacturing Group</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="relative py-24 overflow-hidden" style="background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);">
+        <div class="absolute inset-0 opacity-5">
+            <div style="background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(135, 206, 235, 0.5) 35px, rgba(135, 206, 235, 0.5) 70px);"></div>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">
+                    Ready to <span class="khmer-gold-text">Transform</span> Your HR?
+                </h2>
+                <div class="w-24 h-1 mx-auto mb-6" style="background: linear-gradient(90deg, #87CEEB 0%, #4A9FCC 100%);"></div>
+                <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                    Contact us today for a free consultation. Let us show you how L.Y.P. Group can streamline your Cambodian business operations.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8 text-center border-2 border-blue-400 border-opacity-20 hover-lift">
+                    <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                        <i class="fas fa-envelope text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Email Us</h3>
+                    <p class="text-gray-300 font-semibold">info@lypgroup.com.kh</p>
+                </div>
+                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8 text-center border-2 border-blue-400 border-opacity-20 hover-lift">
+                    <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                        <i class="fas fa-phone text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Call Us</h3>
+                    <p class="text-gray-300 font-semibold">+855 (0)23 123 4567<br>+855 (0)12 345 678</p>
+                </div>
+                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8 text-center border-2 border-blue-400 border-opacity-20 hover-lift">
+                    <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full" style="background: linear-gradient(135deg, #E8F4F8 0%, #D6EAF8 100%);">
+                        <i class="fas fa-map-marker-alt text-3xl khmer-gold-text"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Visit Us</h3>
+                    <p class="text-gray-300 font-semibold">#123, St. 271, Sangkat Toul Tompong<br>Khan Chamkarmorn, Phnom Penh<br>Kingdom of Cambodia</p>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <p class="text-gray-300 mb-3 text-lg">Business Hours: Monday - Friday, 8:00 AM - 5:30 PM (Cambodia Time)</p>
+                <p class="khmer-gold-text text-xl font-semibold">Local support available in English</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative py-12" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-top: 3px solid #87CEEB;">
+        <div class="absolute top-0 left-0 right-0 h-px" style="background: linear-gradient(90deg, transparent, #87CEEB, transparent);"></div>
+
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-wrap -mx-4 mb-8">
+                <div class="w-full md:w-1/2 px-4 mb-8">
+                    <h3 class="text-2xl font-bold mb-4 khmer-gold-text">🏛️ L.Y.P. Group</h3>
+                    <p class="text-gray-300 leading-relaxed">Cambodia's trusted premium HRMS solution. Empowering local businesses with technology that honors Cambodian traditions while driving modern efficiency.</p>
+                </div>
+                <div class="w-full md:w-1/2 px-4 mb-8">
+                    <h4 class="text-xl font-bold mb-4 text-white">Connect With Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white bg-opacity-10 text-yellow-400 hover:bg-opacity-20 transition-all duration-300">
+                            <i class="fab fa-facebook text-2xl"></i>
+                        </a>
+                        <a href="#" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white bg-opacity-10 text-yellow-400 hover:bg-opacity-20 transition-all duration-300">
+                            <i class="fab fa-telegram text-2xl"></i>
+                        </a>
+                        <a href="#" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white bg-opacity-10 text-yellow-400 hover:bg-opacity-20 transition-all duration-300">
+                            <i class="fab fa-linkedin text-2xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8 mt-8 text-center">
+                <p class="text-gray-300 mb-3 text-lg font-semibold">&copy; 2025 L.Y.P. Group - Cambodia's Premium HRMS Solution</p>
+                <p class="khmer-gold-text font-semibold mb-2">Built with ❤️ for Cambodia</p>
+                <p class="text-gray-400 text-sm">Empowering the Kingdom's workforce with modern technology</p>
+            </div>
+            
+            <!-- Environment Footer -->
+            {% if show_env_footer %}
+            <div class="border-t border-gray-700 pt-4 mt-4 text-center">
+                <p class="text-gray-500 text-sm">
+                    <i class="fas fa-tools"></i> {{ env_name }} Environment | Build: {{ build_time }}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </footer>
+
+    <script>
+        // Create Galaxy Background with Angkor Wat shape
+        function createGalaxyBackground() {
+            const galaxyBg = document.getElementById('galaxyBg');
+            const stars = [];
+
+            // Define Dragon shape coordinates (Asian dragon silhouette)
+            const angkorWatShape = [
+                // Dragon Head - front facing right
+                {x: 75, y: 25}, {x: 77, y: 26}, {x: 79, y: 27}, {x: 81, y: 28}, // snout
+                {x: 82, y: 29}, {x: 81, y: 30}, {x: 79, y: 31}, // nose
+
+                // Upper jaw
+                {x: 78, y: 29}, {x: 76, y: 30}, {x: 74, y: 31},
+
+                // Horns
+                {x: 73, y: 22}, {x: 74, y: 20}, {x: 75, y: 18}, // left horn
+                {x: 77, y: 22}, {x: 78, y: 20}, {x: 79, y: 19}, // right horn
+
+                // Head and crown
+                {x: 73, y: 24}, {x: 74, y: 25}, {x: 75, y: 24}, {x: 76, y: 23},
+                {x: 77, y: 24}, {x: 78, y: 25}, {x: 79, y: 24},
+
+                // Eye
+                {x: 75, y: 27}, {x: 76, y: 28},
+
+                // Lower jaw
+                {x: 73, y: 32}, {x: 75, y: 33}, {x: 77, y: 32},
+
+                // Whiskers/barbels
+                {x: 80, y: 28}, {x: 82, y: 27}, {x: 84, y: 26},
+                {x: 80, y: 31}, {x: 82, y: 32}, {x: 84, y: 33},
+
+                // Neck flowing back
+                {x: 72, y: 27}, {x: 70, y: 28}, {x: 68, y: 29},
+                {x: 71, y: 31}, {x: 69, y: 32}, {x: 67, y: 33},
+
+                // Upper body/spine (flowing serpentine)
+                {x: 66, y: 30}, {x: 64, y: 31}, {x: 62, y: 32}, {x: 60, y: 33},
+                {x: 58, y: 34}, {x: 56, y: 35}, {x: 54, y: 36}, {x: 52, y: 37},
+                {x: 50, y: 38}, {x: 48, y: 39}, {x: 46, y: 40}, {x: 44, y: 41},
+
+                // Lower body
+                {x: 65, y: 34}, {x: 63, y: 35}, {x: 61, y: 36}, {x: 59, y: 37},
+                {x: 57, y: 38}, {x: 55, y: 39}, {x: 53, y: 40}, {x: 51, y: 41},
+                {x: 49, y: 42}, {x: 47, y: 43}, {x: 45, y: 44},
+
+                // Wings (upper wing)
+                {x: 60, y: 28}, {x: 58, y: 26}, {x: 56, y: 24}, {x: 54, y: 23},
+                {x: 62, y: 27}, {x: 61, y: 25}, {x: 59, y: 24}, {x: 57, y: 23},
+                {x: 55, y: 22}, {x: 53, y: 22}, {x: 51, y: 23},
+
+                // Wing membrane
+                {x: 58, y: 27}, {x: 56, y: 28}, {x: 54, y: 29},
+                {x: 57, y: 29}, {x: 55, y: 30}, {x: 53, y: 31},
+
+                // Lower wing attachment
+                {x: 59, y: 34}, {x: 57, y: 35}, {x: 55, y: 36},
+
+                // Tail curving down and back up
+                {x: 42, y: 42}, {x: 40, y: 43}, {x: 38, y: 44}, {x: 36, y: 45},
+                {x: 34, y: 46}, {x: 32, y: 47}, {x: 30, y: 48}, {x: 28, y: 49},
+                {x: 26, y: 48}, {x: 24, y: 47}, {x: 22, y: 46}, {x: 20, y: 45},
+                {x: 18, y: 44}, {x: 16, y: 43}, {x: 14, y: 42}, {x: 12, y: 41},
+
+                // Tail tip flourish
+                {x: 10, y: 40}, {x: 8, y: 39}, {x: 7, y: 38}, {x: 6, y: 37},
+                {x: 8, y: 41}, {x: 6, y: 42}, {x: 5, y: 43},
+
+                // Legs (front leg)
+                {x: 64, y: 36}, {x: 64, y: 38}, {x: 64, y: 40}, {x: 63, y: 42},
+                {x: 62, y: 41}, {x: 65, y: 41}, // claws
+
+                // Back leg
+                {x: 48, y: 42}, {x: 47, y: 44}, {x: 46, y: 46}, {x: 45, y: 48},
+                {x: 44, y: 47}, {x: 47, y: 47}, // claws
+
+                // Spine ridges/scales
+                {x: 69, y: 29}, {x: 65, y: 31}, {x: 61, y: 33}, {x: 57, y: 35},
+                {x: 53, y: 37}, {x: 49, y: 39}, {x: 45, y: 41}, {x: 41, y: 43},
+                {x: 37, y: 45}, {x: 33, y: 46}, {x: 29, y: 47}, {x: 25, y: 46},
+                {x: 21, y: 45}, {x: 17, y: 43}, {x: 13, y: 41},
+            ];
+
+            // Add random background stars (night sky)
+            const randomStarCount = 120;
+            for (let i = 0; i < randomStarCount; i++) {
+                let x, y;
+                // Generate random positions for night sky effect
+                x = Math.random() * 100;
+                y = Math.random() * 100;
+
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = x + '%';
+                star.style.top = y + '%';
+                star.style.animationDelay = Math.random() * 4 + 's';
+                star.style.animationDuration = (3 + Math.random() * 3) + 's';
+
+                const size = 1 + Math.random() * 1.5;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+
+                galaxyBg.appendChild(star);
+                stars.push({element: star, x: x, y: y});
+            }
+
+            // Create Dragon shape stars
+            angkorWatShape.forEach((coord, index) => {
+                const star = document.createElement('div');
+                star.className = 'star';
+
+                // Start from random position
+                const startX = Math.random() * 100;
+                const startY = Math.random() * 100;
+                star.style.left = startX + '%';
+                star.style.top = startY + '%';
+
+                // Larger stars for the temple structure
+                const size = 2 + Math.random() * 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+
+                // Animate to final position
+                star.style.transition = `all ${2 + Math.random() * 2}s ease-out ${index * 0.02}s`;
+                star.style.animationDelay = Math.random() * 4 + 's';
+                star.style.animationDuration = (3 + Math.random() * 2) + 's';
+
+                galaxyBg.appendChild(star);
+
+                // Move to Angkor Wat position after a brief delay
+                setTimeout(() => {
+                    star.style.left = coord.x + '%';
+                    star.style.top = coord.y + '%';
+                }, 100);
+
+                stars.push({element: star, x: coord.x, y: coord.y, isTemple: true});
+            });
+
+            // Create connections between nearby stars in the temple
+            setTimeout(() => {
+                for (let i = 0; i < stars.length; i++) {
+                    if (!stars[i].isTemple) continue;
+
+                    for (let j = i + 1; j < stars.length; j++) {
+                        if (!stars[j].isTemple) continue;
+
+                        const dx = stars[j].x - stars[i].x;
+                        const dy = stars[j].y - stars[i].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        // Only connect stars that are close to each other
+                        if (distance < 8) {
+                            const line = document.createElement('div');
+                            line.className = 'connection-line';
+                            line.style.left = stars[i].x + '%';
+                            line.style.top = stars[i].y + '%';
+                            line.style.width = distance + '%';
+
+                            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+                            line.style.transform = `rotate(${angle}deg)`;
+                            line.style.animationDelay = Math.random() * 6 + 's';
+
+                            galaxyBg.appendChild(line);
+                        }
+                    }
+                }
+            }, 3000);
+        }
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            createGalaxyBackground();
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const targetId = this.getAttribute('href');
+                    if(targetId !== '#') {
+                        e.preventDefault();
+                        
+                        // Close mobile menu if it's open
+                        if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                        
+                        // Smooth scroll to target
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Intersection Observer for scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const fadeInObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Apply fade-in animation to cards
+            document.querySelectorAll('.hover-lift, .depth-card').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.7s ease, transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                fadeInObserver.observe(el);
+            });
+
+            // Add floating animation to icons with delay
+            document.querySelectorAll('.feature-icon, .khmer-gold-text i').forEach((icon, index) => {
+                icon.style.animationDelay = (index * 0.1) + 's';
+            });
+
+            // Parallax scroll effect for hero
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const heroContent = document.querySelector('.hero-content');
+                if (heroContent && scrolled < 800) {
+                    heroContent.style.transform = 'translateY(' + (scrolled * 0.3) + 'px)';
+                    heroContent.style.opacity = 1 - (scrolled / 800);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

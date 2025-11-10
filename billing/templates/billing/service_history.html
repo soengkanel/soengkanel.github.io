@@ -1,0 +1,296 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - Billing{% endblock %}
+
+{% block extra_css %}
+{% include 'includes/compact_ui.html' %}
+<style>
+/* History-specific styles */
+.history-container {
+    background: var(--white);
+    border: var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: var(--space-4);
+}
+
+.service-info-header {
+    background: var(--blue-50);
+    padding: var(--space-4);
+    border-bottom: var(--border);
+}
+
+.service-info-title {
+    color: var(--blue-900);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    margin: 0 0 var(--space-2) 0;
+}
+
+.service-info-meta {
+    color: var(--blue-700);
+    font-size: var(--text-sm);
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+}
+
+.history-table th {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    font-weight: 600;
+    color: var(--gray-700);
+    background: var(--gray-50);
+    border-bottom: var(--border);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.history-table td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-700);
+    vertical-align: top;
+}
+
+.history-table tbody tr:hover {
+    background: var(--gray-50);
+}
+
+.action-badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.action-created {
+    background: var(--green-100);
+    color: var(--green-800);
+}
+
+.action-price_changed {
+    background: var(--yellow-100);
+    color: var(--yellow-800);
+}
+
+.action-name_changed, 
+.action-description_changed,
+.action-category_changed,
+.action-code_changed {
+    background: var(--blue-100);
+    color: var(--blue-800);
+}
+
+.action-status_changed {
+    background: var(--purple-100);
+    color: var(--purple-800);
+}
+
+.change-details {
+    font-size: var(--text-xs);
+    color: var(--gray-600);
+    margin-top: var(--space-1);
+}
+
+.old-value, .new-value {
+    font-weight: 500;
+    padding: 0 var(--space-1);
+}
+
+.old-value {
+    background: var(--red-100);
+    color: var(--red-800);
+}
+
+.new-value {
+    background: var(--green-100);
+    color: var(--green-800);
+}
+
+.no-history {
+    text-align: center;
+    padding: var(--space-8) var(--space-4);
+    color: var(--gray-500);
+}
+
+.back-button {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: none;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.back-button:hover {
+    background: var(--gray-200);
+    color: var(--gray-800);
+    text-decoration: none;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <div class="page-title-section">
+                <h1 class="page-title">{{ title }}</h1>
+                <p class="page-subtitle">Track all changes made to service pricing and details</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <a href="{% url 'billing:service_list' %}" class="back-button">
+        <i class="bi bi-arrow-left"></i>
+        Back to Services
+    </a>
+
+    <!-- Service Information Header -->
+    <div class="history-container">
+        <div class="service-info-header">
+            <h2 class="service-info-title">
+                <i class="bi bi-gear-fill"></i>
+                {{ service.name }}
+            </h2>
+            <div class="service-info-meta">
+                <span><strong>Code:</strong> {{ service.service_code|default:"Not set" }}</span>
+                <span><strong>Category:</strong> {{ service.get_category_display }}</span>
+                <span><strong>Current Price:</strong> ${{ service.default_price }}</span>
+                <span><strong>Status:</strong> 
+                    {% if service.is_active %}
+                        <span style="color: var(--green-600);">Active</span>
+                    {% else %}
+                        <span style="color: var(--red-600);">Inactive</span>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- History Table -->
+        {% if history_records %}
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Action</th>
+                        <th>Changed By</th>
+                        <th>Changes</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in history_records %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500;">{{ record.changed_at|date:"d/m/Y" }}</div>
+                            <div class="change-details">{{ record.changed_at|time:"g:i A" }}</div>
+                        </td>
+                        <td>
+                            <span class="action-badge action-{{ record.action }}">
+                                {{ record.get_action_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if record.changed_by %}
+                                <div style="font-weight: 500;">{{ record.changed_by.get_full_name|default:record.changed_by.username }}</div>
+                                <div class="change-details">{{ record.changed_by.username }}</div>
+                            {% else %}
+                                <span style="color: var(--gray-500);">System</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if record.action == 'created' %}
+                                <div style="color: var(--green-600); font-weight: 500;">Service created</div>
+                                <div class="change-details">{{ record.new_value }}</div>
+                            {% elif record.action == 'price_changed' %}
+                                <div>Price: <span class="old-value">${{ record.old_value }}</span> → <span class="new-value">${{ record.new_value }}</span></div>
+                            {% elif record.action == 'name_changed' %}
+                                <div>Name: <span class="old-value">{{ record.old_value }}</span> → <span class="new-value">{{ record.new_value }}</span></div>
+                            {% elif record.action == 'description_changed' %}
+                                <div>Description updated</div>
+                                {% if record.old_value %}
+                                    <div class="change-details">
+                                        <div><strong>From:</strong> {{ record.old_value|truncatewords:10 }}</div>
+                                        <div><strong>To:</strong> {{ record.new_value|truncatewords:10 }}</div>
+                                    </div>
+                                {% endif %}
+                            {% elif record.action == 'category_changed' %}
+                                <div>Category: <span class="old-value">{{ record.old_value }}</span> → <span class="new-value">{{ record.new_value }}</span></div>
+                            {% elif record.action == 'code_changed' %}
+                                <div>Code: <span class="old-value">{{ record.old_value|default:"Not set" }}</span> → <span class="new-value">{{ record.new_value|default:"Not set" }}</span></div>
+                            {% elif record.action == 'status_changed' %}
+                                <div>Status: <span class="old-value">{{ record.old_value }}</span> → <span class="new-value">{{ record.new_value }}</span></div>
+                            {% else %}
+                                <div>{{ record.field_name }}: {{ record.old_value }} → {{ record.new_value }}</div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if record.notes %}
+                                <div class="change-details">{{ record.notes }}</div>
+                            {% else %}
+                                <span style="color: var(--gray-400);">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="no-history">
+                <i class="bi bi-clock-history" style="font-size: 3rem; color: var(--gray-300); margin-bottom: var(--space-4);"></i>
+                <h3>No History Available</h3>
+                <p>No changes have been recorded for this service yet.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if history_records.has_other_pages %}
+    <nav aria-label="History pagination">
+        <ul class="pagination justify-content-center">
+            {% if history_records.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ history_records.previous_page_number }}">
+                        <i class="bi bi-chevron-left"></i> Previous
+                    </a>
+                </li>
+            {% endif %}
+            
+            <li class="page-item active">
+                <span class="page-link">
+                    Page {{ history_records.number }} of {{ history_records.paginator.num_pages }}
+                </span>
+            </li>
+            
+            {% if history_records.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ history_records.next_page_number }}">
+                        Next <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

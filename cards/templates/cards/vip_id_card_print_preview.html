@@ -1,0 +1,347 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load card_codes %}
+{% load qr_code %}
+
+{% block title %}Print Preview - {{ total_cards }} VIP Cards{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tailwind.min.css' %}">
+<style>
+    .card-line-content{
+        width: 60%;
+    }
+    .card-line-1{
+        width: 70%;
+    }
+    .card-line-2{
+        width: 30%;
+    }
+
+    .idcar-size{
+        height: 3.375in;
+        width: 2.125in;
+    }
+    .id-image-size{
+        width: 75px;
+        height: 95px;
+    }
+    .id-qr-size{
+        width: 70px;
+        height: 70px;
+    }
+    .font-size{
+        font-size: 8.5pt;
+    }
+    .photo-size{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .vip-text-footer{
+        font-size: 6pt;
+    }
+    .vip-logo-size{
+        width: 70px;
+        height: 70px;
+    }
+    .crop {
+        width: 70px;
+        height: 70px;
+        overflow: hidden;
+    }
+
+    .vip-title {
+        font-size: 48px;
+        font-weight: 900;
+        color: #333;
+        margin: 0;
+        letter-spacing: 8px;
+        position: relative;
+    }
+
+    .vip-title::before {
+        content: '♦';
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 16px;
+        color: #333;
+    }
+
+    .flip-card {
+        background-color: transparent;
+        perspective: 1000px; /* Adds 3D effect */
+      }
+  
+      .flip-card-inner {
+        position: relative;
+        height: 3.375in;
+        width: 2.125in;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+      }
+  
+      .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+      }
+  
+      .flip-card-front,
+      .flip-card-back {
+        position: absolute;
+        height: 3.375in;
+        width: 2.125in;
+        backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        font-family: sans-serif;
+      }
+  
+
+      .flip-card-back {
+        transform: rotateY(180deg);
+      }
+
+      .card-grid{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .card-container{
+        border:1px solid #ddd;
+      }
+      /* Print Actions */
+    .print-actions {
+        background: white;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .print-info {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+ 
+
+      @media print {
+        .flip-card-back {
+            display:none !important
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: none !important;
+        }
+        .card-grid{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .card-container{
+            border:none !important;
+        }
+      }
+   
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class=" flex items-center justify-between px-3 py-2 bg-gray-100 rounded">
+    <div class=" flex items-center justify-start space-x-1">
+        <div>
+           
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>          
+        <div>
+            <h1 class="text-lg font-medium">Print Preview - VIP Cards <span class="text-xs text-gray-500 font-medium">( {{ total_cards }} card{{ total_cards|pluralize }} ready )</span></h1>
+            
+        </div>
+    </div>
+    <div>
+        <button onclick="printCard('worker_id_card')" class="px-3 py-2 rounded bg-blue-500 hover:bg-blue-400 text-white text-xs space-x-1">
+            <i class="fa fa-print pr-2"></i>
+            <span>Print {{ total_cards }} Card{{ total_cards|pluralize }}</span>
+        </button>
+    </div>
+</div>
+<div class="mt-4 grid grid-cols-2">
+    
+    <div class="p-3 rounded-l border space-y-1">
+        <span class="uppercase font-medium text-xs text-gray-700">Total</span>
+        <div class="flex items-center space-x-4 card-line-content">
+            <span class="border-b-4 card-line-1"></span>
+            <span class="border-b-4 card-line-2 border-blue-500"></span>
+        </div>
+        <h2 class="text-2xl font-semibold text-gray-800">{{ total_cards }}</h2>
+    </div>
+    <div class="p-3 border rounded-r space-y-1">
+        <span class="uppercase font-medium text-xs text-gray-700">Ready</span>
+        <div class="flex items-center space-x-4 card-line-content">
+            <span class="border-b-4 card-line-1"></span>
+            <span class="border-b-4 card-line-2 border-green-500"></span>
+        </div>
+        <h2 class="text-2xl font-semibold text-gray-800">{{ cards|length }}</h2>
+    </div>
+    
+</div> 
+<div class="mt-4 px-3 py-3 border-t border-l border-r w-full rounded-t flex justify-between items-center space-x-2">
+   <div class="flex items-center space-x-2">
+    <div class="flex items-center space-x-2">
+        <i class="fas fa-star text-lg text-yellow-400"></i>
+        <h2 class="text-sm font-medium">VIP ID Cards</h2>
+    </diV>
+    <h3 class="text-xs font-medium text-gray-500">{{ total_cards }} Card{{ total_cards|pluralize }} • <span id="current-date"></span></h3>
+   </div>
+   <div class="flex items-center space-x-1">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-yellow-400">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+    </svg>
+    <span class="text-xs text-gray-500">Card Previews (Hover to see back)</span>
+   </div>
+</div>
+
+<div id="worker_id_card"> 
+<div class="px-3 py-4 card-grid gap-1 card-container" id="worker_grid">
+    
+    {% for card in cards %}
+    <!-- id card -->
+     
+     <div class="flip-card">
+        <div class="flip-card-inner">
+            <!-- front card -->
+            <div class="flip-card-front">
+                <div class="border-2 border-blue-700 idcar-size rounded-xl flex flex-col justify-end items-center overflow-hidden relative px-1" >
+                    <div class=" absolute left-0 -top-3 z-0">
+                        <img src="{% static 'images/card-bg/vip-bg.jpeg'%}" />
+                    </div>
+                    <div>
+                        <h1 class="vip-title">VIP</h1>
+                    </div>
+                    <div class="text-center space-y-1 mt-2 z-10">
+                        <h3 class="text-sm font-medium uppercase">{{ card.vip.nickname|upper }}</h3>
+                        <h3 class="text-lg font-bold uppercase">No. {{ card.card_number|default:"0000" }}</h3>
+                        <h3 class="text-lg font-bold uppercase">{{ card.vip.company|default:"GENERAL"|upper }}</h3>
+                    </div>
+                    <div class="w-full flex items-end justify-between py-2 px-2 z-10">
+                        <div>
+                            <p class="vip-text-footer font-medium">Date of Issue: {{ card.issue_date|date:"d/m/Y"|default:"Pending" }}</p>
+                            <p class="vip-text-footer font-medium">Date of Expired: {{ card.expiry_date|date:"d/m/Y"|default:"No expiry" }}</p>
+                        </div>
+                        <div>
+                            <div class="vip-logo-size">
+                                <img src="{% static 'images/logos/hr-logo-1.jpeg'%}" alt="LYP" class="w-full" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- front card -->
+            <!-- back card -->
+            <div class="flip-card-back ">
+                <div class="border-2 border-blue-700 rounded-xl idcar-size relative px-3">
+                    <div class="absolute top-0 left-0 py-2.5 w-full px-3">
+                        <h2 class="text-xs uppercase text-center font-semibold border-b border-gray-700 pb-2">Terms & Conditions</h2>
+                    </div>
+                    <div class="space-y-2 mt-5" style="font-size:10px;">
+                        <p>✓ Priority service and support</p>
+                        <p>✓ Exclusive member discounts</p>
+                        <p>✓ Special event invitations</p>
+                        <p>✓ Extended warranty coverage</p>
+                        <p>✓ Complimentary services</p>
+                         
+                    </div>
+                    <div class=" absolute bottom-0 left-0 py-1.5 w-full px-2">
+                        <div class="w-full flex items-center justify-center border-t py-2 border-gray-500">
+                            <strong style=" font-size:8px;">For assistance, contact our VIP support team</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- back card -->
+        </div>
+     </div>
+    
+    <!-- id card -->
+    {% empty %}
+    <div class="no-cards">No cards selected for preview.</div>
+    {% endfor %}
+    </div>
+</div>
+
+ <!-- Print Actions -->
+ <div class="px-3 py-3 border-b border-l border-r w-full rounded-b flex justify-between items-center space-x-2 mb-10">
+    <div class="print-info">
+        <i class="fas fa-info-circle"></i>
+        Cards will be printed in high quality. Make sure your printer is ready.
+    </div>
+    <div class="print-buttons">
+        <form method="post" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="confirm_print">
+            <button type="submit" class="px-3 py-1.5 bg-yellow-500 rounded text-white">
+                <i class="fas fa-check"></i>
+                Confirm Print
+            </button>
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+
+
+
+<script>
+    // Get today's date
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    document.getElementById("current-date").textContent = formattedDate;
+  </script>
+  <script>
+    function printCard(cardId) {
+        // Clear any existing toast messages first
+        const toastContainer = document.getElementById('toast-container');
+        if (toastContainer) {
+            toastContainer.innerHTML = '';
+        }
+
+        // Get the content of the specific card
+        var printContents = document.getElementById(cardId).innerHTML;
+        var elm = document.getElementById(cardId);
+     
+        elm.classList.remove('flip-card', 'flip-card-front');
+
+        // Store the original content of the body
+        var originalContents = document.body.innerHTML;
+
+        // Replace the body's content with only the card's content for printing
+        document.body.innerHTML = printContents;
+
+        // Trigger the browser's print dialog
+        window.print();
+
+        // Restore the original content of the body after printing
+
+        document.body.innerHTML = originalContents;
+
+        // Reload the page to clear all CSS and toast messages
+        window.location.reload();
+        
+    }
+</script>
+{% endblock %}
+{% endblock %} 
