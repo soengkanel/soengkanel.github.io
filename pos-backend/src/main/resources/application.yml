@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: pos-system
+
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:pos}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:111111}
+
+  jpa:
+    hibernate:
+      ddl-auto: update  # Let Hibernate create base tables, Flyway handles migrations
+    show-sql: true
+
+  flyway:
+    enabled: false  # Temporarily disabled - need to clean schema history first
+    baseline-on-migrate: true  # Create baseline for existing database
+    baseline-version: 5  # Skip V6-V10 migrations if tables already exist
+    locations: classpath:db/migration
+    validate-on-migrate: false  # Disable validation to allow flexible migration
+    clean-disabled: true  # Prevent accidental data loss
+    repair-on-migrate: true  # Automatically repair failed migrations
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your email
+    password: your gmail app password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  devtools:
+    livereload:
+      enabled: true
+
+server:
+  port: 5000
+
+razorpay:
+  api:
+    key: your razor pay key
+    secret: your razorpay secret key
+
+stripe:
+  api:
+    key: your stripe key
+
+
+
+app:
+  frontend:
+    reset-url: http://localhost:5173/auth/reset-password?token=
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql: TRACE

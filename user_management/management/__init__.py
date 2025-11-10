@@ -1,1 +1,0 @@
-# Management package for user_management app 
