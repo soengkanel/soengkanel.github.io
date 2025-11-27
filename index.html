@@ -8,6 +8,27 @@ layout: default
   <p class="page-subtitle">{{ site.description }}</p>
 </section>
 
+<!-- Category Filter -->
+<section class="category-filter">
+  <div class="category-list">
+    <button class="category-btn active" data-category="all">ទាំងអស់</button>
+    {% assign categories = "" | split: "" %}
+    {% for post in site.posts %}
+      {% assign title_parts = post.title | split: ']' %}
+      {% if title_parts.size > 1 %}
+        {% assign cat = title_parts[0] | remove: '[' | strip | downcase %}
+        {% unless categories contains cat %}
+          {% assign categories = categories | push: cat %}
+        {% endunless %}
+      {% endif %}
+    {% endfor %}
+    {% assign sorted_categories = categories | sort %}
+    {% for cat in sorted_categories %}
+      <button class="category-btn" data-category="{{ cat }}">{{ cat | capitalize }}</button>
+    {% endfor %}
+  </div>
+</section>
+
 <!-- Posts Section -->
 <section class="posts-section">
   <header class="section-header">
@@ -17,45 +38,127 @@ layout: default
 
   <div class="posts-grid">
     {% for post in site.posts %}
-      <article class="post-card">
-        <!-- Meta: Category & Date -->
-        <div class="post-card-meta">
-          {% assign title_parts = post.title | split: ']' %}
-          {% if title_parts.size > 1 %}
-            {% assign category = title_parts[0] | remove: '[' | strip %}
-            <span class="post-card-category">{{ category }}</span>
-          {% endif %}
-          <time class="post-card-date" datetime="{{ post.date | date_to_xmlschema }}">
-            {{ post.date | date: "%b %d, %Y" }}
-          </time>
+      {% assign title_parts = post.title | split: ']' %}
+      {% if title_parts.size > 1 %}
+        {% assign category = title_parts[0] | remove: '[' | strip %}
+        {% assign category_lower = category | downcase %}
+        {% assign clean_title = title_parts[1] | strip %}
+      {% else %}
+        {% assign category = "article" %}
+        {% assign category_lower = "article" %}
+        {% assign clean_title = post.title %}
+      {% endif %}
+
+      {% comment %} Map categories to image keywords {% endcomment %}
+      {% case category_lower %}
+        {% when 'rust' %}
+          {% assign img_keyword = 'rust,programming,code' %}
+        {% when 'python' %}
+          {% assign img_keyword = 'python,programming,code' %}
+        {% when 'blockchain' %}
+          {% assign img_keyword = 'blockchain,crypto,technology' %}
+        {% when 'algorithm' %}
+          {% assign img_keyword = 'algorithm,math,data' %}
+        {% when 'bigdata' %}
+          {% assign img_keyword = 'data,analytics,server' %}
+        {% when 'scala' %}
+          {% assign img_keyword = 'scala,functional,code' %}
+        {% when 'arduino' %}
+          {% assign img_keyword = 'arduino,electronics,circuit' %}
+        {% when 'book' %}
+          {% assign img_keyword = 'book,reading,education' %}
+        {% when 'life' %}
+          {% assign img_keyword = 'meditation,nature,peace' %}
+        {% when 'quote' %}
+          {% assign img_keyword = 'inspiration,motivation,success' %}
+        {% when 'softwares' %}
+          {% assign img_keyword = 'software,design,pattern' %}
+        {% when 'oop' %}
+          {% assign img_keyword = 'programming,object,code' %}
+        {% when 'politcal' or 'political' %}
+          {% assign img_keyword = 'politics,world,globe' %}
+        {% when 'rust_exercises' %}
+          {% assign img_keyword = 'coding,exercise,practice' %}
+        {% when 'inspiration' %}
+          {% assign img_keyword = 'inspiration,future,sky' %}
+        {% when 't24' %}
+          {% assign img_keyword = 'banking,finance,technology' %}
+        {% when 'skills' %}
+          {% assign img_keyword = 'skills,business,success' %}
+        {% when 'cp' %}
+          {% assign img_keyword = 'competitive,programming,trophy' %}
+        {% else %}
+          {% assign img_keyword = 'technology,code,computer' %}
+      {% endcase %}
+
+      <article class="post-card" data-category="{{ category_lower }}">
+        <!-- Post Image -->
+        <div class="post-card-image">
+          <img src="https://source.unsplash.com/600x400/?{{ img_keyword }}&sig={{ post.date | date: '%s' }}" alt="{{ clean_title }}" loading="lazy">
+          <span class="post-card-category">{{ category }}</span>
         </div>
 
-        <!-- Title -->
-        <h3 class="post-card-title">
-          <a href="{{ site.baseurl }}{{ post.url }}">
-            {% assign title_parts = post.title | split: ']' %}
-            {% if title_parts.size > 1 %}
-              {{ title_parts[1] | strip }}
-            {% else %}
-              {{ post.title }}
-            {% endif %}
+        <!-- Post Content -->
+        <div class="post-card-content">
+          <!-- Meta: Date -->
+          <time class="post-card-date" datetime="{{ post.date | date_to_xmlschema }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            {{ post.date | date: "%b %d, %Y" }}
+          </time>
+
+          <!-- Title -->
+          <h3 class="post-card-title">
+            <a href="{{ site.baseurl }}{{ post.url }}">{{ clean_title }}</a>
+          </h3>
+
+          <!-- Excerpt -->
+          <p class="post-card-excerpt">
+            {{ post.excerpt | strip_html | truncate: 100 }}
+          </p>
+
+          <!-- Read More Link -->
+          <a href="{{ site.baseurl }}{{ post.url }}" class="post-card-link">
+            អានបន្ថែម
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
           </a>
-        </h3>
-
-        <!-- Excerpt -->
-        <p class="post-card-excerpt">
-          {{ post.excerpt | strip_html | truncate: 150 }}
-        </p>
-
-        <!-- Read More Link -->
-        <a href="{{ site.baseurl }}{{ post.url }}" class="post-card-link">
-          អានបន្ថែម
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </a>
+        </div>
       </article>
     {% endfor %}
   </div>
 </section>
+
+<!-- Category Filter Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const categoryBtns = document.querySelectorAll('.category-btn');
+  const postCards = document.querySelectorAll('.post-card');
+
+  categoryBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      // Update active button
+      categoryBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+
+      const category = this.dataset.category;
+
+      // Filter posts
+      postCards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'flex';
+          card.style.animation = 'fadeIn 0.5s ease forwards';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+});
+</script>
