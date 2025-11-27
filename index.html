@@ -2,17 +2,60 @@
 layout: default
 ---
 
-<div class="posts">
-  {% for post in site.posts %}
-    <article class="post">
+<!-- Hero Section -->
+<section class="page-hero">
+  <h1 class="page-title">សូមស្វាគមន៍</h1>
+  <p class="page-subtitle">{{ site.description }}</p>
+</section>
 
-      <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
+<!-- Posts Section -->
+<section class="posts-section">
+  <header class="section-header">
+    <h2>អត្ថបទថ្មីៗ</h2>
+    <span class="post-count">{{ site.posts.size }} អត្ថបទ</span>
+  </header>
 
-      <div class="entry">
-        {{ post.excerpt }}
-      </div>
+  <div class="posts-grid">
+    {% for post in site.posts %}
+      <article class="post-card">
+        <!-- Meta: Category & Date -->
+        <div class="post-card-meta">
+          {% assign title_parts = post.title | split: ']' %}
+          {% if title_parts.size > 1 %}
+            {% assign category = title_parts[0] | remove: '[' | strip %}
+            <span class="post-card-category">{{ category }}</span>
+          {% endif %}
+          <time class="post-card-date" datetime="{{ post.date | date_to_xmlschema }}">
+            {{ post.date | date: "%b %d, %Y" }}
+          </time>
+        </div>
 
-      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">អានបន្ថែម</a>
-    </article>
-  {% endfor %}
-</div>
+        <!-- Title -->
+        <h3 class="post-card-title">
+          <a href="{{ site.baseurl }}{{ post.url }}">
+            {% assign title_parts = post.title | split: ']' %}
+            {% if title_parts.size > 1 %}
+              {{ title_parts[1] | strip }}
+            {% else %}
+              {{ post.title }}
+            {% endif %}
+          </a>
+        </h3>
+
+        <!-- Excerpt -->
+        <p class="post-card-excerpt">
+          {{ post.excerpt | strip_html | truncate: 150 }}
+        </p>
+
+        <!-- Read More Link -->
+        <a href="{{ site.baseurl }}{{ post.url }}" class="post-card-link">
+          អានបន្ថែម
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </article>
+    {% endfor %}
+  </div>
+</section>
