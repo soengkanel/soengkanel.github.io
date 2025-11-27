@@ -2,123 +2,150 @@
 layout: default
 ---
 
-<!-- Hero Section -->
-<section class="page-hero">
-  <h1 class="page-title">Welcome</h1>
-  <p class="page-subtitle">Exploring R&D, AI, Science, and Self-Improvement with practical, evidence-based insights.</p>
-</section>
+<div class="two-col-layout">
+  <!-- Left Sidebar - Categories -->
+  <aside class="sidebar">
+    <div class="sidebar-sticky">
+      <h3 class="sidebar-title">Categories</h3>
+      <nav class="category-nav">
+        <button class="category-nav-btn active" data-category="all">
+          <span class="category-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          </span>
+          <span class="category-name">All Articles</span>
+          <span class="category-count">{{ site.posts.size }}</span>
+        </button>
 
-<!-- Category Filter -->
-<section class="category-filter">
-  <div class="category-list">
-    <button class="category-btn active" data-category="all">All</button>
-    {% assign categories = "" | split: "" %}
-    {% for post in site.posts %}
-      {% assign title_parts = post.title | split: ']' %}
-      {% if title_parts.size > 1 %}
-        {% assign cat = title_parts[0] | remove: '[' | strip | downcase %}
-        {% unless categories contains cat %}
-          {% assign categories = categories | push: cat %}
-        {% endunless %}
-      {% endif %}
-    {% endfor %}
-    {% assign sorted_categories = categories | sort %}
-    {% for cat in sorted_categories %}
-      <button class="category-btn" data-category="{{ cat }}">{{ cat | capitalize }}</button>
-    {% endfor %}
-  </div>
-</section>
+        {% assign categories = "" | split: "" %}
+        {% assign category_counts = "" | split: "" %}
+        {% for post in site.posts %}
+          {% assign title_parts = post.title | split: ']' %}
+          {% if title_parts.size > 1 %}
+            {% assign cat = title_parts[0] | remove: '[' | strip %}
+            {% assign cat_lower = cat | downcase %}
+            {% unless categories contains cat_lower %}
+              {% assign categories = categories | push: cat_lower %}
+            {% endunless %}
+          {% endif %}
+        {% endfor %}
+        {% assign sorted_categories = categories | sort %}
 
-<!-- Posts Section -->
-<section class="posts-section">
-  <header class="section-header">
-    <h2>Latest Articles</h2>
-    <span class="post-count">{{ site.posts.size }} articles</span>
-  </header>
+        {% for cat in sorted_categories %}
+          {% assign count = 0 %}
+          {% for post in site.posts %}
+            {% assign title_parts = post.title | split: ']' %}
+            {% if title_parts.size > 1 %}
+              {% assign post_cat = title_parts[0] | remove: '[' | strip | downcase %}
+              {% if post_cat == cat %}
+                {% assign count = count | plus: 1 %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
 
-  <div class="posts-grid">
-    {% for post in site.posts %}
-      {% assign title_parts = post.title | split: ']' %}
-      {% if title_parts.size > 1 %}
-        {% assign category = title_parts[0] | remove: '[' | strip %}
-        {% assign category_lower = category | downcase %}
-        {% assign clean_title = title_parts[1] | strip %}
-      {% else %}
-        {% assign category = "article" %}
-        {% assign category_lower = "article" %}
-        {% assign clean_title = post.title %}
-      {% endif %}
+          <button class="category-nav-btn" data-category="{{ cat }}">
+            <span class="category-icon">
+              {% case cat %}
+                {% when 'r&d' %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"></path><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"></path></svg>
+                {% when 'ai' %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="8" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
+                {% when 'science' %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"></path><path d="M8.5 2h7"></path><path d="M7 16h10"></path></svg>
+                {% when 'self-improvement' %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                {% else %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              {% endcase %}
+            </span>
+            <span class="category-name">{{ cat | capitalize }}</span>
+            <span class="category-count">{{ count }}</span>
+          </button>
+        {% endfor %}
+      </nav>
+    </div>
+  </aside>
 
-      {% comment %} Generate unique image seed from post date {% endcomment %}
-      {% assign img_seed = post.date | date: '%s' %}
+  <!-- Right Content - Posts -->
+  <main class="main-content">
+    <header class="content-header">
+      <h1 class="content-title" id="category-title">All Articles</h1>
+      <span class="post-count" id="post-count">{{ site.posts.size }} articles</span>
+    </header>
 
-      <article class="post-card" data-category="{{ category_lower }}">
-        <!-- Post Image -->
-        <div class="post-card-image">
-          <img src="https://picsum.photos/seed/{{ img_seed }}/600/400" alt="{{ clean_title }}" loading="lazy">
-          <span class="post-card-category">{{ category }}</span>
-        </div>
+    <div class="posts-list">
+      {% for post in site.posts %}
+        {% assign title_parts = post.title | split: ']' %}
+        {% if title_parts.size > 1 %}
+          {% assign category = title_parts[0] | remove: '[' | strip %}
+          {% assign category_lower = category | downcase %}
+          {% assign clean_title = title_parts[1] | strip %}
+        {% else %}
+          {% assign category = "Article" %}
+          {% assign category_lower = "article" %}
+          {% assign clean_title = post.title %}
+        {% endif %}
 
-        <!-- Post Content -->
-        <div class="post-card-content">
-          <!-- Meta: Date -->
-          <time class="post-card-date" datetime="{{ post.date | date_to_xmlschema }}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            {{ post.date | date: "%b %d, %Y" }}
-          </time>
+        {% assign img_seed = post.date | date: '%s' %}
 
-          <!-- Title -->
-          <h3 class="post-card-title">
-            <a href="{{ site.baseurl }}{{ post.url }}">{{ clean_title }}</a>
-          </h3>
+        <article class="post-item" data-category="{{ category_lower }}">
+          <div class="post-item-image">
+            <img src="https://picsum.photos/seed/{{ img_seed }}/400/300" alt="{{ clean_title }}" loading="lazy">
+          </div>
+          <div class="post-item-content">
+            <div class="post-item-meta">
+              <span class="post-item-category">{{ category }}</span>
+              <time class="post-item-date" datetime="{{ post.date | date_to_xmlschema }}">
+                {{ post.date | date: "%B %d, %Y" }}
+              </time>
+            </div>
+            <h2 class="post-item-title">
+              <a href="{{ site.baseurl }}{{ post.url }}">{{ clean_title }}</a>
+            </h2>
+            <p class="post-item-excerpt">
+              {{ post.excerpt | strip_html | truncate: 160 }}
+            </p>
+            <a href="{{ site.baseurl }}{{ post.url }}" class="post-item-link">
+              Read article
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </main>
+</div>
 
-          <!-- Excerpt -->
-          <p class="post-card-excerpt">
-            {{ post.excerpt | strip_html | truncate: 100 }}
-          </p>
-
-          <!-- Read More Link -->
-          <a href="{{ site.baseurl }}{{ post.url }}" class="post-card-link">
-            Read more
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </a>
-        </div>
-      </article>
-    {% endfor %}
-  </div>
-</section>
-
-<!-- Category Filter Script -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const categoryBtns = document.querySelectorAll('.category-btn');
-  const postCards = document.querySelectorAll('.post-card');
+  const categoryBtns = document.querySelectorAll('.category-nav-btn');
+  const postItems = document.querySelectorAll('.post-item');
+  const categoryTitle = document.getElementById('category-title');
+  const postCount = document.getElementById('post-count');
 
   categoryBtns.forEach(btn => {
     btn.addEventListener('click', function() {
-      // Update active button
       categoryBtns.forEach(b => b.classList.remove('active'));
       this.classList.add('active');
 
       const category = this.dataset.category;
+      const categoryName = this.querySelector('.category-name').textContent;
+      let visibleCount = 0;
 
-      // Filter posts
-      postCards.forEach(card => {
-        if (category === 'all' || card.dataset.category === category) {
-          card.style.display = 'flex';
-          card.style.animation = 'fadeIn 0.5s ease forwards';
+      postItems.forEach(item => {
+        if (category === 'all' || item.dataset.category === category) {
+          item.style.display = 'flex';
+          item.style.animation = 'fadeIn 0.4s ease forwards';
+          visibleCount++;
         } else {
-          card.style.display = 'none';
+          item.style.display = 'none';
         }
       });
+
+      categoryTitle.textContent = categoryName;
+      postCount.textContent = visibleCount + ' article' + (visibleCount !== 1 ? 's' : '');
     });
   });
 });
