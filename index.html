@@ -4,14 +4,14 @@ layout: default
 
 <!-- Hero Section -->
 <section class="page-hero">
-  <h1 class="page-title">សូមស្វាគមន៍</h1>
-  <p class="page-subtitle">{{ site.description }}</p>
+  <h1 class="page-title">Welcome</h1>
+  <p class="page-subtitle">Exploring R&D, AI, Science, and Self-Improvement with practical, evidence-based insights.</p>
 </section>
 
 <!-- Category Filter -->
 <section class="category-filter">
   <div class="category-list">
-    <button class="category-btn active" data-category="all">ទាំងអស់</button>
+    <button class="category-btn active" data-category="all">All</button>
     {% assign categories = "" | split: "" %}
     {% for post in site.posts %}
       {% assign title_parts = post.title | split: ']' %}
@@ -32,8 +32,8 @@ layout: default
 <!-- Posts Section -->
 <section class="posts-section">
   <header class="section-header">
-    <h2>អត្ថបទថ្មីៗ</h2>
-    <span class="post-count">{{ site.posts.size }} អត្ថបទ</span>
+    <h2>Latest Articles</h2>
+    <span class="post-count">{{ site.posts.size }} articles</span>
   </header>
 
   <div class="posts-grid">
@@ -84,7 +84,7 @@ layout: default
 
           <!-- Read More Link -->
           <a href="{{ site.baseurl }}{{ post.url }}" class="post-card-link">
-            អានបន្ថែម
+            Read more
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
