@@ -49,52 +49,13 @@ layout: default
         {% assign clean_title = post.title %}
       {% endif %}
 
-      {% comment %} Map categories to image keywords {% endcomment %}
-      {% case category_lower %}
-        {% when 'rust' %}
-          {% assign img_keyword = 'rust,programming,code' %}
-        {% when 'python' %}
-          {% assign img_keyword = 'python,programming,code' %}
-        {% when 'blockchain' %}
-          {% assign img_keyword = 'blockchain,crypto,technology' %}
-        {% when 'algorithm' %}
-          {% assign img_keyword = 'algorithm,math,data' %}
-        {% when 'bigdata' %}
-          {% assign img_keyword = 'data,analytics,server' %}
-        {% when 'scala' %}
-          {% assign img_keyword = 'scala,functional,code' %}
-        {% when 'arduino' %}
-          {% assign img_keyword = 'arduino,electronics,circuit' %}
-        {% when 'book' %}
-          {% assign img_keyword = 'book,reading,education' %}
-        {% when 'life' %}
-          {% assign img_keyword = 'meditation,nature,peace' %}
-        {% when 'quote' %}
-          {% assign img_keyword = 'inspiration,motivation,success' %}
-        {% when 'softwares' %}
-          {% assign img_keyword = 'software,design,pattern' %}
-        {% when 'oop' %}
-          {% assign img_keyword = 'programming,object,code' %}
-        {% when 'politcal' or 'political' %}
-          {% assign img_keyword = 'politics,world,globe' %}
-        {% when 'rust_exercises' %}
-          {% assign img_keyword = 'coding,exercise,practice' %}
-        {% when 'inspiration' %}
-          {% assign img_keyword = 'inspiration,future,sky' %}
-        {% when 't24' %}
-          {% assign img_keyword = 'banking,finance,technology' %}
-        {% when 'skills' %}
-          {% assign img_keyword = 'skills,business,success' %}
-        {% when 'cp' %}
-          {% assign img_keyword = 'competitive,programming,trophy' %}
-        {% else %}
-          {% assign img_keyword = 'technology,code,computer' %}
-      {% endcase %}
+      {% comment %} Generate unique image seed from post date {% endcomment %}
+      {% assign img_seed = post.date | date: '%s' %}
 
       <article class="post-card" data-category="{{ category_lower }}">
         <!-- Post Image -->
         <div class="post-card-image">
-          <img src="https://source.unsplash.com/600x400/?{{ img_keyword }}&sig={{ post.date | date: '%s' }}" alt="{{ clean_title }}" loading="lazy">
+          <img src="https://picsum.photos/seed/{{ img_seed }}/600/400" alt="{{ clean_title }}" loading="lazy">
           <span class="post-card-category">{{ category }}</span>
         </div>
 
