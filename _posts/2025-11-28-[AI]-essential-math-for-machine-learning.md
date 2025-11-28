@@ -20,6 +20,8 @@ Think of a **Matrix** as a grid of numbers, often representing a collection of d
 
 How does a computer "see" an image? It sees a matrix of pixel values.
 
+![Linear Algebra: Image to Matrix](/images/linear_algebra_matrix_pixels.png)
+
 Imagine a tiny 3x3 black-and-white image of a handwritten digit.
 Each pixel has a brightness value from 0 (black) to 255 (white).
 
@@ -46,6 +48,8 @@ The **Gradient** is just a derivative for functions with multiple inputs.
 
 Imagine you are standing on top of a foggy mountain (the "Loss Landscape") and you want to get to the bottom (Zero Error/Perfect Accuracy). You can't see the bottom, but you can feel the slope of the ground under your feet.
 
+![Calculus: Gradient Descent](/images/calculus_gradient_descent.png)
+
 1.  **Calculate the Gradient:** You feel the slope. It's steep and goes *down* to your left.
 2.  **Gradient Descent:** You take a step in that direction.
 3.  **Repeat:** You check the slope again and take another step.
@@ -65,6 +69,8 @@ This is the probability of an event occurring *given* that another event has alr
 ### Real World Use Case: Spam Filtering
 
 When Gmail marks an email as "Spam", it isn't 100% sure. It is calculating a probability.
+
+![Probability: Spam Filter](/images/probability_spam_filter.png)
 
 It uses **Bayes' Theorem**:
 
