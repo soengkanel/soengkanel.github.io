@@ -2,7 +2,7 @@
 layout: post
 title: "[AI] Building Your First Neural Network from Scratch"
 tags: [AI, Neural Networks, Python, Deep Learning, Tutorial]
-thumbnail: /images/thumbnails/2025-11-29-[AI]-building-your-first-neural-network-from-scratch.png
+thumbnail: /images/thumbnails/2025-11-28-[AI]-building-your-first-neural-network-from-scratch.png
 ---
 
 Now that you understand the [essential mathematics behind machine learning](/essential-math-for-machine-learning/), let's put that knowledge into practice by building a neural network from scratch using only NumPy.
