@@ -1705,6 +1705,231 @@ $tag-colors: (
   }
 }
 
+/**************/
+/* QUOTE PAGE */
+/**************/
+
+.quote-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.quote-page .site-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-8;
+
+  @include mobile {
+    padding: $space-4;
+  }
+}
+
+.quote-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $space-10;
+}
+
+.quote-card {
+  position: relative;
+  padding: $space-12 $space-10;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: $radius-2xl;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  transition: all $transition-slow;
+
+  @include tablet {
+    padding: $space-10 $space-8;
+  }
+
+  @include mobile {
+    padding: $space-8 $space-6;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    border-color: var(--accent-light);
+  }
+}
+
+.quote-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $space-6;
+  color: var(--accent);
+  opacity: 0.4;
+
+  svg {
+    width: 48px;
+    height: 48px;
+
+    @include mobile {
+      width: 36px;
+      height: 36px;
+    }
+  }
+}
+
+.quote-text {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: $font-heading;
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 500;
+  font-style: normal;
+  line-height: 1.6;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+
+  p {
+    margin: 0;
+
+    &:not(:last-child) {
+      margin-bottom: $space-4;
+    }
+  }
+}
+
+.quote-footer {
+  margin-top: $space-8;
+  padding-top: $space-6;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.quote-author {
+  font-family: $font-body;
+  font-size: $text-lg;
+  font-weight: 600;
+  font-style: normal;
+  color: var(--text-primary);
+
+  &::before {
+    content: '\2014\00a0';
+    color: var(--text-muted);
+  }
+}
+
+.quote-source {
+  font-family: $font-body;
+  font-size: $text-sm;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+// Quote navigation
+.quote-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-4;
+}
+
+.quote-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: $radius-full;
+  color: var(--text-secondary);
+  transition: all $transition-base;
+
+  &:hover:not(.disabled) {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    transform: scale(1.1);
+  }
+
+  &.disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &.home {
+    background: var(--bg-tertiary);
+
+    &:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+  }
+
+  @include mobile {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+// Quote card on homepage (special styling)
+.post-item[data-category="quote"] {
+  .post-item-image {
+    display: none;
+  }
+
+  .post-item-content {
+    width: 100%;
+  }
+
+  .post-item-excerpt {
+    font-family: $font-heading;
+    font-size: $text-lg;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--text-primary);
+    -webkit-line-clamp: 3;
+
+    &::before {
+      content: '\201C';
+      color: var(--accent);
+      font-size: 1.5em;
+      margin-right: 2px;
+    }
+  }
+
+  .post-item-link {
+    &::before {
+      content: 'Read quote';
+    }
+
+    // Hide the default text
+    font-size: 0;
+
+    &::before {
+      font-size: $text-sm;
+    }
+  }
+}
+
+// Dark mode adjustments for quotes
+[data-theme="dark"] {
+  .quote-card {
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
+
+    &:hover {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+  }
+}
+
 // Import syntax highlighting
 @import "highlights";
 @import "svg-icons";
