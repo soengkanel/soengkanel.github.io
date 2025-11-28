@@ -497,6 +497,7 @@ table {
 .sidebar {
   @include tablet {
     order: -1;
+    margin-bottom: $space-6;
   }
 }
 
@@ -517,6 +518,11 @@ table {
   color: var(--text-muted);
   margin-bottom: $space-4;
   padding-left: $space-4;
+
+  @include tablet {
+    padding-left: 0;
+    margin-bottom: $space-3;
+  }
 }
 
 .category-nav {
@@ -526,8 +532,18 @@ table {
 
   @include tablet {
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: $space-2;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    padding-bottom: $space-2;
+
+    &::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
   }
 }
 
@@ -550,17 +566,35 @@ table {
 
   @include tablet {
     width: auto;
+    flex-shrink: 0;
     padding: $space-2 $space-4;
+    white-space: nowrap;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+  }
+
+  @include mobile {
+    padding: $space-2 $space-3;
+    font-size: $text-xs;
+    gap: $space-2;
   }
 
   &:hover {
     background: var(--bg-secondary);
     color: var(--text-primary);
+
+    @include tablet {
+      border-color: var(--accent);
+    }
   }
 
   &.active {
     background: var(--accent);
     color: white;
+
+    @include tablet {
+      border-color: var(--accent);
+    }
 
     .category-icon {
       color: white;
@@ -579,10 +613,21 @@ table {
   justify-content: center;
   color: var(--text-muted);
   flex-shrink: 0;
+
+  @include mobile {
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
 }
 
 .category-name {
   flex-grow: 1;
+
+  @include tablet {
+    flex-grow: 0;
+  }
 }
 
 .category-count {
@@ -594,6 +639,13 @@ table {
   border-radius: $radius-full;
   min-width: 24px;
   text-align: center;
+  flex-shrink: 0;
+
+  @include mobile {
+    font-size: 10px;
+    padding: 2px $space-1;
+    min-width: 20px;
+  }
 }
 
 /**************/
