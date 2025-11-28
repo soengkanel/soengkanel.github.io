@@ -2,6 +2,7 @@
 layout: post
 title: "[R&D] Literature Review: A Systematic Approach for Researchers"
 tags: [Literature Review, Methodology, Research, Writing]
+thumbnail: /images/science_research_thumbnail.png
 ---
 
 A thorough literature review distinguishes rigorous research from reinventing the wheel. This article presents a systematic methodology for conducting comprehensive literature reviews.

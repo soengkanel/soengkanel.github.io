@@ -2,6 +2,7 @@
 layout: post
 title: "[Science] Statistical Thinking for Scientists: Beyond P-Values"
 tags: [Statistics, P-Values, Research Methods, Analysis]
+thumbnail: /images/science_research_thumbnail.png
 ---
 
 Statistical literacy separates rigorous science from pseudoscience. This article presents essential statistical concepts that every researcher must internalize.

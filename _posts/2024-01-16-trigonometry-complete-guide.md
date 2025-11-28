@@ -2,6 +2,7 @@
 layout: post
 title: "[Math] Trigonometry - Functions, Identities, and Applications"
 tags: [Trigonometry, Functions, Geometry, Grade 12]
+thumbnail: /images/science_research_thumbnail.png
 ---
 
 Trigonometry studies relationships between angles and sides of triangles. It extends to circular functions essential for modeling periodic phenomena.

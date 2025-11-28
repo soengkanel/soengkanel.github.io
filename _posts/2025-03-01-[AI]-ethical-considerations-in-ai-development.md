@@ -2,6 +2,7 @@
 layout: post
 title: "[AI] Ethical Considerations in AI Development: A Practical Framework"
 tags: [Ethics, AI Safety, Responsible AI, Framework]
+thumbnail: /images/ai_cover_thumbnail.png
 ---
 
 AI ethics isn't abstract philosophy—it's engineering discipline. This article provides practical frameworks for identifying and mitigating ethical risks in AI systems.

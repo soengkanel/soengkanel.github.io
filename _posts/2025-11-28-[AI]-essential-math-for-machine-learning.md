@@ -2,6 +2,7 @@
 layout: post
 title: "[AI] Essential Math for Machine Learning: A Visual Guide"
 tags: [AI, Mathematics, Machine Learning, Education]
+thumbnail: /images/ai_cover_thumbnail.png
 ---
 
 Many aspiring AI engineers feel intimidated by the mathematics behind machine learning. However, you don't need a PhD in pure mathematics to build and understand AI systems. You just need to understand the core concepts that drive the algorithms.

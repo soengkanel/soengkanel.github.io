@@ -2,6 +2,7 @@
 layout: post
 title: "[Math] Understanding Limits and Continuity"
 tags: [Calculus, Limits, Continuity, Grade 12]
+thumbnail: /images/science_research_thumbnail.png
 ---
 
 Limits form the foundation of calculus. Before you can understand derivatives or integrals, you must master limits.

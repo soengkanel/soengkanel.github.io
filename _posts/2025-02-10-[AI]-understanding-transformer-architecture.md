@@ -2,6 +2,7 @@
 layout: post
 title: "[AI] Understanding Transformer Architecture: The Foundation of Modern AI"
 tags: [Deep Learning, Transformers, NLP, Architecture]
+thumbnail: /images/ai_cover_thumbnail.png
 ---
 
 The Transformer architecture, introduced in "Attention Is All You Need" (2017), revolutionized machine learning. This article dissects its core mechanisms and explains why it works.

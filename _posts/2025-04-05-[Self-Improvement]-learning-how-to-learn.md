@@ -2,6 +2,7 @@
 layout: post
 title: "[Self-Improvement] Learning How to Learn: Evidence-Based Techniques"
 tags: [Learning, Memory, Cognitive Science, Study Techniques]
+thumbnail: /images/productivity_growth_thumbnail.png
 ---
 
 Learning efficiency varies dramatically between individuals using different strategies. This article presents cognitive science findings on effective learning techniques.

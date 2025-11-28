@@ -93,7 +93,11 @@ layout: default
 
         <article class="post-item" data-category="{{ category_lower }}">
           <div class="post-item-image">
-            <img src="https://picsum.photos/seed/{{ img_seed }}/400/300" alt="{{ clean_title }}" loading="lazy">
+            {% if post.thumbnail %}
+              <img src="{{ site.baseurl }}{{ post.thumbnail }}" alt="{{ clean_title }}" loading="lazy">
+            {% else %}
+              <img src="https://picsum.photos/seed/{{ img_seed }}/400/300" alt="{{ clean_title }}" loading="lazy">
+            {% endif %}
           </div>
           <div class="post-item-content">
             <div class="post-item-meta">

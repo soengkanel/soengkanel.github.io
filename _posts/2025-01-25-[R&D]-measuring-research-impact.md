@@ -2,6 +2,7 @@
 layout: post
 title: "[R&D] Measuring Research Impact: Beyond Publication Counts"
 tags: [Metrics, Impact, Publications, Evaluation]
+thumbnail: /images/science_research_thumbnail.png
 ---
 
 Traditional metrics like publication counts and citation indices capture only a fraction of research value. This article presents a comprehensive framework for measuring R&D impact.
