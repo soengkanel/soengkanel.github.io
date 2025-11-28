@@ -2,7 +2,7 @@
 layout: post
 title: "[Science] Critical Thinking in Science: Evaluating Claims and Evidence"
 tags: [Critical Thinking, Evidence, Scientific Method, Evaluation]
-thumbnail: /images/science_research_thumbnail.png
+thumbnail: /images/thumbnails/2025-03-15-[Science]-critical-thinking-in-science.png
 ---
 
 Scientific literacy requires evaluating claims systematically. This article provides a framework for critical assessment of scientific evidence.

@@ -2,7 +2,7 @@
 layout: post
 title: "[Math] Graphing Functions - Visualization and Analysis"
 tags: [Calculus, Functions, Visualization, Plotly]
-thumbnail: /images/science_research_thumbnail.png
+thumbnail: /images/thumbnails/2024-01-21-graphing-functions.png
 ---
 
 Graphing transforms abstract equations into visual representations. Understanding how to sketch and interpret graphs is essential for analyzing function behavior.

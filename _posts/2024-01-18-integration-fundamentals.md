@@ -2,7 +2,7 @@
 layout: post
 title: "[Math] Integration and Antiderivatives"
 tags: [Calculus, Integration, Antiderivatives, Grade 12]
-thumbnail: /images/science_research_thumbnail.png
+thumbnail: /images/thumbnails/2024-01-18-integration-fundamentals.png
 ---
 
 Integration is the reverse of differentiation. Where derivatives find rates of change, integrals find accumulated quantities—areas, volumes, total distance.

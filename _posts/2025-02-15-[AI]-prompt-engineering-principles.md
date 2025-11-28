@@ -2,7 +2,7 @@
 layout: post
 title: "[AI] Prompt Engineering: Principles for Effective LLM Communication"
 tags: [LLM, Prompt Engineering, NLP, Best Practices]
-thumbnail: /images/ai_cover_thumbnail.png
+thumbnail: /images/thumbnails/2025-02-15-[AI]-prompt-engineering-principles.png
 ---
 
 Prompt engineering is the discipline of crafting inputs that elicit optimal outputs from language models. This article presents systematic principles based on empirical research.

@@ -2,7 +2,7 @@
 layout: post
 title: "[AI] Machine Learning Evaluation: Choosing the Right Metrics"
 tags: [Machine Learning, Metrics, Evaluation, Classification]
-thumbnail: /images/ai_cover_thumbnail.png
+thumbnail: /images/thumbnails/2025-02-20-[AI]-machine-learning-evaluation-metrics.png
 ---
 
 Model evaluation metrics determine what "good" means for your system. Choosing wrong metrics leads to optimizing the wrong objective. This article provides a framework for metric selection.

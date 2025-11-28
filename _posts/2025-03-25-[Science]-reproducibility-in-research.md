@@ -2,7 +2,7 @@
 layout: post
 title: "[Science] Reproducibility in Research: Practices for Reliable Science"
 tags: [Reproducibility, Open Science, Research Methods, Best Practices]
-thumbnail: /images/science_research_thumbnail.png
+thumbnail: /images/thumbnails/2025-03-25-[Science]-reproducibility-in-research.png
 ---
 
 Reproducibility is the cornerstone of scientific credibility. When studies fail to reproduce, trust erodes. This article provides practical strategies for conducting reproducible research.
