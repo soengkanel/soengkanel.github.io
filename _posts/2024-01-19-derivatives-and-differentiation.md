@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Math] Derivatives and Differentiation Rules"
+tags: [Calculus, Derivatives, Functions, Grade 12]
 ---
 
 The derivative measures how a function changes as its input changes. It's the instantaneous rate of change—the slope of the tangent line at any point.

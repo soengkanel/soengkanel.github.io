@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Science] Data Visualization: Principles for Clear Communication"
+tags: [Data Visualization, Communication, Graphics, Best Practices]
 ---
 
 Effective visualization transforms data into insight. Poor visualization obscures or misleads. This article presents principles for honest, clear scientific graphics.

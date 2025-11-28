@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[AI] Neural Network Debugging: A Systematic Approach"
+tags: [Neural Networks, Debugging, Deep Learning, Troubleshooting]
 ---
 
 Neural networks fail in opaque ways. Systematic debugging separates productive troubleshooting from random experimentation. This article presents a structured methodology.

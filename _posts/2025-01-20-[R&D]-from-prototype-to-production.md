@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[R&D] From Prototype to Production: Bridging the Valley of Death"
+tags: [Prototyping, Production, Innovation, Strategy]
 ---
 
 Most R&D projects fail not in the lab, but in the transition to production. This "valley of death" claims promising technologies due to preventable issues. Here's how to bridge it.

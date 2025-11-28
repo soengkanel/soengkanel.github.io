@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Self-Improvement] Decision Making Frameworks: Thinking Clearly Under Uncertainty"
+tags: [Decision Making, Critical Thinking, Mental Models, Strategy]
 ---
 
 Every day contains hundreds of decisions. Most are trivial, but a few have outsized impact. This article presents frameworks for making better decisions, especially under uncertainty.

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[R&D] The Scientific Method in Modern Research: A Practical Framework"
+tags: [Methodology, Research, Framework, Best Practices]
 ---
 
 The scientific method remains the backbone of rigorous research, yet many practitioners apply it superficially. This article presents a practical framework for implementing systematic inquiry in R&D environments.

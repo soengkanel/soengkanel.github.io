@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[R&D] Building Effective Research Teams: Structure, Culture, and Process"
+tags: [Teams, Leadership, Culture, Collaboration]
 ---
 
 Individual brilliance rarely produces breakthrough research. The most impactful R&D emerges from well-structured teams with complementary skills. This article examines the principles of effective research team design.

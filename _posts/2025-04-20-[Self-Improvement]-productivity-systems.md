@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Self-Improvement] Productivity Systems: From Theory to Practice"
+tags: [Productivity, Systems, Time Management, GTD]
 ---
 
 Productivity is not about doing more things—it's about doing the right things effectively. This article presents systematic approaches to personal productivity.

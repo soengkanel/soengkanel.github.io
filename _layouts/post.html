@@ -45,6 +45,14 @@ page_class: article-page
         {% endif %}
       </div>
 
+      {% if page.tags.size > 0 %}
+      <div class="article-tags">
+        {% for tag in page.tags %}
+        <span class="article-tag">{{ tag }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+
       <!-- Decorative Elements -->
       <div class="article-header-decor">
         <span></span>

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Math] Probability and Statistics Essentials"
+tags: [Probability, Statistics, Data Analysis, Grade 12]
 ---
 
 Probability quantifies uncertainty. Statistics uses data to draw conclusions. Together, they form the mathematical foundation for making decisions under uncertainty.

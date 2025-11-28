@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Self-Improvement] Deep Work: Maximizing Cognitive Output"
+tags: [Focus, Deep Work, Productivity, Concentration]
 ---
 
 Knowledge work demands sustained concentration. Yet modern environments systematically fragment attention. This article presents evidence-based strategies for achieving deep work states.

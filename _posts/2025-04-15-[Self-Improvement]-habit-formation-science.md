@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Self-Improvement] Habit Formation: The Science of Behavior Change"
+tags: [Habits, Behavior Change, Psychology, Routine]
 ---
 
 Habits automate behavior, freeing cognitive resources for complex tasks. Understanding habit mechanics enables deliberate behavior design. This article presents the science of habit formation.

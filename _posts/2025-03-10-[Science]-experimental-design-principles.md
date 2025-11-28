@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "[Science] Experimental Design: Principles for Valid Inference"
+tags: [Experimental Design, Causality, Research Methods, Inference]
 ---
 
 Poor experimental design produces uninterpretable results regardless of statistical sophistication. This article covers fundamental design principles for causal inference.
