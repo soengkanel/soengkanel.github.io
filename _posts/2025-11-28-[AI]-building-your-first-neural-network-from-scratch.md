@@ -5,7 +5,7 @@ tags: [AI, Neural Networks, Python, Deep Learning, Tutorial]
 thumbnail: /images/thumbnails/2025-11-28-[AI]-building-your-first-neural-network-from-scratch.png
 ---
 
-Now that you understand the [essential mathematics behind machine learning](/essential-math-for-machine-learning/), let's put that knowledge into practice by building a neural network from scratch using only NumPy.
+Now that you understand the [essential mathematics behind machine learning](https://soengkanel.github.io/AI-essential-math-for-machine-learning/), let's put that knowledge into practice by building a neural network from scratch using only NumPy.
 
 This hands-on guide will show you how Linear Algebra, Calculus, and Probability come together to create a working AI system.
 
