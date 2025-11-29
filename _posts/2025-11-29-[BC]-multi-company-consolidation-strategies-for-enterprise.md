@@ -77,8 +77,34 @@ In Cambodia's business environment, this rarely happens. Subsidiaries operate se
 
 **Architecture**:
 
-```
-Subsidiary A Posts → Event Publisher → Middleware Queue → Subsidiary B Auto-Creates Pending IC Document
+```mermaid
+sequenceDiagram
+    participant SubA as Subsidiary A
+    participant Event as Event Publisher
+    participant Queue as Middleware Queue
+    participant SubB as Subsidiary B
+    participant Dash as Exception Dashboard
+    
+    SubA->>Event: Post IC Transaction
+    Event->>Queue: Publish Event
+    Queue->>SubB: Create Pending IC Document
+    
+    alt Auto-Approval Threshold Met
+        SubB->>SubB: Auto-Post IC Document
+        SubB-->>Queue: Success Confirmation
+    else Manual Review Required
+        SubB->>Dash: Flag for Review
+        Dash-->>SubB: Approved by User
+        SubB->>SubB: Post IC Document
+    end
+    
+    alt Transaction Fails
+        SubB-->>Queue: Error (Retry)
+        Queue->>Queue: Wait & Retry
+        Queue->>SubB: Retry Posting
+    end
+    
+    Queue-->>SubA: Confirmation
 ```
 
 **Critical Configuration**:
@@ -137,6 +163,30 @@ Create a "Consolidation Status" table that tracks:
 - Real-time consolidation status dashboard
 - Variance analysis between progressive and final
 - Historical accuracy trending
+
+**Visual Timeline**:
+
+```mermaid
+gantt
+    title Progressive Consolidation Timeline
+    dateFormat  HH:mm
+    axisFormat %H:%M
+    
+    section Day 1 (Month-End)
+    Manufacturing Close (70%)    :done, mfg, 00:00, 8h
+    Partial Consolidation Run     :done, cons1, 08:00, 2h
+    Management Review (70% Accurate) :active, rev1, 10:00, 2h
+    
+    section Day 2
+    Retail Close (20%)           :done, retail, 12:00, 6h
+    Progressive Update            :done, cons2, 18:00, 1h
+    Management Review (90% Accurate) :active, rev2, 19:00, 1h
+    
+    section Day 3
+    Service Companies Close (10%) :done, service, 20:00, 4h
+    Final Consolidation          :crit, cons3, 00:00, 2h
+    100% Accurate Report         :milestone, final, 02:00, 0h
+```
 
 ## Strategy 4: Currency Complexity at Scale
 
