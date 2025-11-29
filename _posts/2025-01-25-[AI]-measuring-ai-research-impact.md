@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "[R&D] Measuring Research Impact: Beyond Publication Counts"
-tags: [Metrics, Impact, Publications, Evaluation]
+title: "[AI] Measuring AI Research Impact: Beyond Publication Counts"
+tags: [AI, Research, Metrics, Impact]
 thumbnail: /images/thumbnails/2025-01-25-[R&D]-measuring-research-impact.png
 ---
 

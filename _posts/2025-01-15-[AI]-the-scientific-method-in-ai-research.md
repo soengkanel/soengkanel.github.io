@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "[R&D] The Scientific Method in Modern Research: A Practical Framework"
-tags: [Methodology, Research, Framework, Best Practices]
+title: "[AI] The Scientific Method in AI Research: A Practical Framework"
+tags: [AI, Methodology, Research, Framework]
 thumbnail: /images/thumbnails/2025-01-15-[R&D]-the-scientific-method-in-modern-research.png
 ---
 

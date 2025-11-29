@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "[R&D] Literature Review: A Systematic Approach for Researchers"
-tags: [Literature Review, Methodology, Research, Writing]
+title: "[AI] Systematic Literature Review for AI: A Systematic Approach"
+tags: [AI, Research, Literature Review, Methodology]
 thumbnail: /images/thumbnails/2025-02-05-[R&D]-literature-review-systematic-approach.png
 ---
 

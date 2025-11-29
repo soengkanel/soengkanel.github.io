@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "[R&D] Building Effective Research Teams: Structure, Culture, and Process"
-tags: [Teams, Leadership, Culture, Collaboration]
+title: "[AI] Building Effective AI Research Teams: Structure, Culture, and Process"
+tags: [AI, Management, Teams, Culture]
 thumbnail: /images/thumbnails/2025-02-01-[R&D]-building-effective-research-teams.png
 ---
 

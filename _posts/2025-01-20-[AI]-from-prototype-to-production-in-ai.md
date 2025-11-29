@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "[R&D] From Prototype to Production: Bridging the Valley of Death"
-tags: [Prototyping, Production, Innovation, Strategy]
+title: "[AI] From Prototype to Production in AI: Bridging the Valley of Death"
+tags: [AI, Engineering, Production, Deployment]
 thumbnail: /images/thumbnails/2025-01-20-[R&D]-from-prototype-to-production.png
 ---
 
