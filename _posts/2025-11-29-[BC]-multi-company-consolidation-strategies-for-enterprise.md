@@ -215,6 +215,25 @@ Cambodia's unique business environment: transactions in USD, KHR, and THB within
 2. **Batch Currency Conversion**: Scheduled job post-close
 3. **Consolidation Integration**: Pre-converted balances
 
+```mermaid
+flowchart LR
+    A[Transaction Entry] -->|Native Currency| B[Post to G/L]
+    B --> C{Period Closed?}
+    C -->|No| B
+    C -->|Yes| D[Batch Currency Job]
+    D --> E[Retrieve Exchange Rates]
+    E --> F[National Bank of Cambodia API]
+    F --> E
+    E --> G[Convert to USD]
+    G --> H[Store Converted Balances]
+    H --> I[Consolidation Process]
+    I --> J[Consolidated Reports]
+    
+    style D fill:#e1f5ff
+    style G fill:#fff4e1
+    style I fill:#e8f5e9
+```
+
 **Exchange Rate Management**:
 - Automated daily rate imports from National Bank of Cambodia
 - Historical rate tables with full audit trail

@@ -47,12 +47,38 @@ Initial deployment specs:
 ### Our Solution: Hybrid Architecture
 
 **Final Architecture**:
-```
-[Primary BC On-Premise] ← 10ms latency → [Users in Phnom Penh HQ]
-         ↓
-    [Read Replicas in Provincial Offices]
-         ↓
-[BC Cloud - DR and Analytics Only]
+
+```mermaid
+graph TD
+    subgraph "Phnom Penh HQ"
+        BC[Primary BC Instance<br/>On-Premise]
+        SQL[(SQL Server Enterprise<br/>Always On)]
+        Users1[HQ Users<br/>7,000 users<br/>10ms latency]
+    end
+    
+    subgraph "Provincial Offices"
+        Prov1[Provincial Office 1<br/>Read Replica]
+        Prov2[Provincial Office 2<br/>Read Replica]
+        Users2[Provincial Users<br/>3,000 users]
+    end
+    
+    subgraph "Cloud DR"
+        Cloud[BC SaaS<br/>Singapore Region<br/>DR \u0026 Analytics]
+    end
+    
+    Users1 <-->|<10ms| BC
+    BC <--> SQL
+    BC -->|Async Replication<br/>Every 5 min| Prov1
+    BC -->|Async Replication<br/>Every 5 min| Prov2
+    Users2 <--> Prov1
+    Users2 <--> Prov2
+    BC -->|Daily Backup<br/>15min Incremental| Cloud
+    
+    style BC fill:#e3f2fd
+    style SQL fill:#fff3e0
+    style Cloud fill:#f3e5f5
+    style Prov1 fill:#e8f5e9
+    style Prov2 fill:#e8f5e9
 ```
 
 **Key Components**:
@@ -214,8 +240,22 @@ end;
 **Our Solution**: Custom Redis cache layer.
 
 **Architecture**:
-```
-BC Client → NST (Business Central Server) → Redis Cache → SQL Database
+
+```mermaid
+flowchart LR
+    Client[BC Client] --> NST[NST Server]
+    NST --> Cache{Redis Cache}
+    Cache -->|Cache Hit<br/>94.7%| NST
+    Cache -->|Cache Miss<br/>5.3%| SQL[(SQL Database)]
+    SQL --> Cache
+    Cache --> NST
+    NST --> Client
+    
+    Modify[Item Modified] -.->|Invalidate Cache| Cache
+    
+    style Cache fill:#ff6b6b,color:#fff
+    style SQL fill:#4ecdc4
+    style NST fill:#95e1d3
 ```
 
 **Implementation**:
@@ -298,10 +338,57 @@ Cambodia's internet infrastructure is inconsistent. Provincial offices deal with
 **12 Separate NST Instances** instead of one large instance
 
 **Distribution Strategy**:
-```
-Manufacturing Users (3,000) → NST-Mfg-01, NST-Mfg-02, NST-Mfg-03
-Retail Users (5,000)        → NST-Retail-01 through 05
-Admin Users (2,000)         → NST-Admin-01, NST-Admin-02
+
+```mermaid
+graph TB
+    LB[Load Balancer<br/>Smart Routing]
+    
+    subgraph "Manufacturing Workload"
+        M1[NST-Mfg-01]
+        M2[NST-Mfg-02]
+        M3[NST-Mfg-03]
+        MUsers[3,000 Users]
+    end
+    
+    subgraph "Retail Workload"
+        R1[NST-Retail-01]
+        R2[NST-Retail-02]
+        R3[NST-Retail-03]
+        R4[NST-Retail-04]
+        R5[NST-Retail-05]
+        RUsers[5,000 Users]
+    end
+    
+    subgraph "Admin Workload"
+        A1[NST-Admin-01]
+        A2[NST-Admin-02]
+        AUsers[2,000 Users]
+    end
+    
+    SQL[(Central SQL<br/>Database)]
+    
+    MUsers --> LB
+    RUsers --> LB
+    AUsers --> LB
+    
+    LB --> M1 & M2 & M3
+    LB --> R1 & R2 & R3 & R4 & R5
+    LB --> A1 & A2
+    
+    M1 & M2 & M3 --> SQL
+    R1 & R2 & R3 & R4 & R5 --> SQL
+    A1 & A2 --> SQL
+    
+    style LB fill:#667eea,color:#fff
+    style SQL fill:#ffd93d
+    style M1 fill:#6bcf7f
+    style M2 fill:#6bcf7f
+    style M3 fill:#6bcf7f
+    style R1 fill:#4ecdc4
+    style R2 fill:#4ecdc4
+    style R3 fill:#4ecdc4
+    style R4 fill:#4ecdc4
+    style R5 fill:#4ecdc4
 ```
 
 **Benefits**:
@@ -333,8 +420,33 @@ You can't optimize what you don't measure.
 ### Custom Telemetry Pipeline
 
 **Architecture**:
-```
-BC NST → Application Insights → Azure Log Analytics → Power BI Dashboard
+
+```mermaid
+flowchart LR
+    NST1[NST Instance 1] --> AI[Application Insights]
+    NST2[NST Instance 2] --> AI
+    NST3[NST Instance N] --> AI
+    SQL[(SQL Database)] --> AI
+    
+    AI --> Log[Azure Log Analytics]
+    
+    Log --> PBI[Power BI Dashboard]
+    Log --> Alert{Alert Rules}
+    
+    Alert -->|Critical| SMS[SMS/Email]
+    Alert -->|Warning| Slack[Slack Notification]
+    Alert -->|Auto-Fix| Auto[Automated Remediation]
+    
+    Auto --> Fix1[Index Rebuild]
+    Auto --> Fix2[TempDB Expansion]
+    Auto --> Fix3[Pool Expansion]
+    
+    PBI --> Mgmt[Management Review]
+    
+    style AI fill:#00d4ff
+    style Log fill:#ff6b35
+    style Alert fill:#f7931e
+    style Auto fill:#6bcf7f
 ```
 
 **Key Metrics Tracked**:
