@@ -31,7 +31,7 @@ Throughout this guide, we'll use this simple dataset of 10 students' test scores
 **How to Calculate:**
 Add all scores and divide by the number of students.
 
-```
+```python
 Mean = (75 + 82 + 78 + 95 + 68 + 72 + 88 + 76 + 81 + 85) ÷ 10
      = 800 ÷ 10
      = 80
@@ -51,15 +51,13 @@ Mean = (75 + 82 + 78 + 95 + 68 + 72 + 88 + 76 + 81 + 85) ÷ 10
 1. Sort the scores from lowest to highest
 2. Find the middle value
 
-**Sorted Scores:**
-```
+**Sorted Scores:**  
 68, 72, 75, 76, 78, 81, 82, 85, 88, 95
-```
 
 Since we have 10 students (even number), the median is between the 5th and 6th values:
-```
+
+**Calculation:**  
 Median = (78 + 81) ÷ 2 = 79.5
-```
 
 **Result:** The median score is **79.5**.
 
@@ -83,17 +81,15 @@ Now imagine David didn't study and scored **15** instead of 95.
 | Jack    | 85    |
 
 **New Mean:**
-```
+```python
 Mean = (75 + 82 + 78 + 15 + 68 + 72 + 88 + 76 + 81 + 85) ÷ 10
      = 720 ÷ 10
      = 72
 ```
 
-**New Median:**
-```
-Sorted: 15, 68, 72, 75, 76, 78, 81, 82, 85, 88
+**New Median:**  
+Sorted: 15, 68, 72, 75, 76, 78, 81, 82, 85, 88  
 Median = (76 + 78) ÷ 2 = 77
-```
 
 **Observation:**
 - Mean dropped from **80 to 72** (huge change!)
@@ -109,15 +105,11 @@ Median = (76 + 78) ÷ 2 = 77
 
 Let's compare two classes:
 
-**Class A (Our data):**
-```
+**Class A (Our data):**  
 68, 72, 75, 76, 78, 81, 82, 85, 88, 95
-```
 
-**Class B:**
-```
+**Class B:**  
 79, 79, 80, 80, 80, 80, 80, 81, 81, 81
-```
 
 Both classes have a mean of **80**, but they feel very different.
 
@@ -139,14 +131,14 @@ Both classes have a mean of **80**, but they feel very different.
 | 95    | 95 - 80 = 15      | 225              |
 
 **Step 2:** Average the squared distances
-```
+```python
 Variance = (144 + 64 + 25 + 16 + 4 + 1 + 4 + 25 + 64 + 225) ÷ 10
          = 572 ÷ 10
          = 57.2
 ```
 
 **Step 3:** Take the square root
-```
+```python
 Standard Deviation = √57.2 ≈ 7.6
 ```
 
@@ -162,15 +154,13 @@ Standard Deviation = √57.2 ≈ 7.6
 
 **Question:** If we pick a random student, what's the chance they scored above 80?
 
-**Our Data:**
-```
+**Our Data:**  
 68, 72, 75, 76, 78, 81, 82, 85, 88, 95
-```
 
 **Students above 80:** 81, 82, 85, 88, 95 = **5 students**
 
 **Probability:**
-```
+```python
 P(score > 80) = 5 ÷ 10 = 0.5 = 50%
 ```
 
@@ -186,7 +176,7 @@ You have 100 emails:
 
 **Question:** If an email contains "FREE", what's the probability it's spam?
 
-```
+```python
 P(Spam | "FREE") = Number of spam with "FREE" ÷ Total emails with "FREE"
                  = 40 ÷ 45
                  = 0.89 = 89%
@@ -216,7 +206,7 @@ P(Spam | "FREE") = Number of spam with "FREE" ÷ Total emails with "FREE"
 
 If the difference is **more than 2 × standard error**, it's probably real.
 
-```
+```python
 Standard Error ≈ √(0.05 × 0.95 ÷ 1000) ≈ 0.007 = 0.7%
 
 Difference = 5.7% - 5.0% = 0.7%
@@ -228,7 +218,7 @@ Since **0.7% is equal to 1 × standard error**, the improvement might just be lu
 - Blue: 500 clicks (5.0%)
 - Red: 570 clicks (5.7%)
 
-```
+```python
 Standard Error ≈ √(0.05 × 0.95 ÷ 10000) ≈ 0.002 = 0.2%
 
 Difference = 5.7% - 5.0% = 0.7%
