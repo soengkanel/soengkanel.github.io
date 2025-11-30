@@ -28,6 +28,15 @@ Throughout this guide, we'll use this simple dataset of 10 students' test scores
 
 **Question:** What's the typical score?
 
+**Mathematical Formula:**
+
+$$ \mu = \frac{1}{N} \sum_{i=1}^{N} x_i $$
+
+Where:
+- $\mu$ (mu) = mean
+- $N$ = number of data points
+- $x_i$ = each individual value
+
 **How to Calculate:**
 Add all scores and divide by the number of students.
 
@@ -103,6 +112,16 @@ Median = (76 + 78) ÷ 2 = 77
 
 **Question:** Are students' scores similar, or all over the place?
 
+**Mathematical Formula:**
+
+$$ \sigma = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2} $$
+
+Where:
+- $\sigma$ (sigma) = standard deviation
+- $\mu$ = mean
+- $x_i$ = each individual value
+- $N$ = number of data points
+
 Let's compare two classes:
 
 **Class A (Our data):**  
@@ -152,6 +171,10 @@ Standard Deviation = √57.2 ≈ 7.6
 
 ## 4. Probability: Making Predictions
 
+**Mathematical Formula:**
+
+$$ P(A) = \frac{\text{Number of favorable outcomes}}{\text{Total number of outcomes}} $$
+
 **Question:** If we pick a random student, what's the chance they scored above 80?
 
 **Our Data:**  
@@ -165,6 +188,12 @@ P(score > 80) = 5 ÷ 10 = 0.5 = 50%
 ```
 
 ### Real Example: Email Spam Filter
+
+**Mathematical Formula (Conditional Probability):**
+
+$$ P(A|B) = \frac{P(A \cap B)}{P(B)} $$
+
+Where $P(A|B)$ means "probability of A given B".
 
 You have 100 emails:
 
@@ -229,6 +258,15 @@ Now **0.7% is 3.5 × standard error**. This is statistically significant! Red bu
 ---
 
 ## 6. Correlation: Do Two Things Move Together?
+
+**Mathematical Formula (Pearson Correlation Coefficient):**
+
+$$ r = \frac{\sum_{i=1}^{N}(x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum_{i=1}^{N}(x_i - \bar{x})^2} \sqrt{\sum_{i=1}^{N}(y_i - \bar{y})^2}} $$
+
+Where:
+- $r$ = correlation coefficient (-1 to +1)
+- $x_i, y_i$ = individual data points
+- $\bar{x}, \bar{y}$ = means of x and y
 
 **Question:** Does study time affect test scores?
 
