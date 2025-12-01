@@ -3,17 +3,13 @@
 
 //
 // IMPORTS
-// Build test: 2025-12-01 v4 - Testing error detection
+// Build test: 2025-12-01 v5 - Back to debugging
 //
-
-// Test: adding deliberate error to check if file is reprocessed
-.test-error {
-  this-is-invalid:
 
 @import "variables";
 @import "reset";
 @import "highlights";
-// @import "svg-icons"; // Temporarily disabled for debugging
+@import "svg-icons";
 @import "responsive";
 
 :root {
