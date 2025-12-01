@@ -1,0 +1,59 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#333" />
+    </marker>
+  </defs>
+  
+  <rect width="800" height="450" fill="#f8fafc"/>
+  
+  <!-- Title -->
+  <text x="400" y="40" font-family="sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#1e293b">Xenobots: Biological Robots</text>
+  
+  <!-- Step 1: Frog Embryo -->
+  <g transform="translate(100, 100)">
+    <circle cx="50" cy="50" r="40" fill="#a7f3d0" stroke="#059669" stroke-width="2"/>
+    <text x="50" y="110" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#333">Frog Embryo</text>
+    <text x="50" y="130" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#666">(Source Cells)</text>
+  </g>
+  
+  <!-- Arrow -->
+  <line x1="180" y1="150" x2="230" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <!-- Step 2: AI Design -->
+  <g transform="translate(250, 80)">
+    <rect x="0" y="0" width="100" height="100" rx="5" fill="#1e293b" stroke="#333" stroke-width="2"/>
+    <text x="50" y="40" font-family="monospace" font-size="12" text-anchor="middle" fill="#00ff00">010101</text>
+    <text x="50" y="60" font-family="monospace" font-size="12" text-anchor="middle" fill="#00ff00">EVOLUTION</text>
+    <text x="50" y="80" font-family="monospace" font-size="12" text-anchor="middle" fill="#00ff00">ALGO</text>
+    <text x="50" y="120" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#333">AI Simulation</text>
+  </g>
+  
+  <!-- Arrow -->
+  <line x1="370" y1="150" x2="420" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <!-- Step 3: Assembly -->
+  <g transform="translate(450, 100)">
+    <path d="M20,20 Q40,0 60,20 L80,40 Q60,60 40,60 L20,40 Z" fill="#c4b5fd" stroke="#7c3aed" stroke-width="2"/>
+    <text x="50" y="90" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#333">Microsurgery</text>
+    <text x="50" y="110" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#666">(Hand-built)</text>
+  </g>
+  
+  <!-- Arrow -->
+  <line x1="530" y1="150" x2="580" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  
+  <!-- Step 4: Xenobot -->
+  <g transform="translate(600, 80)">
+    <path d="M10,30 Q30,10 50,30 T90,30 T70,70 T30,70 T10,30" fill="#8b5cf6" stroke="#5b21b6" stroke-width="2"/>
+    <circle cx="30" cy="40" r="2" fill="white"/>
+    <circle cx="70" cy="40" r="2" fill="white"/>
+    <text x="50" y="100" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#333">Living Xenobot</text>
+    <text x="50" y="120" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#666">Moves & Heals</text>
+  </g>
+  
+  <!-- Key Insight -->
+  <rect x="100" y="250" width="600" height="120" rx="10" fill="#f3e8ff" stroke="#a855f7" stroke-width="2"/>
+  <text x="400" y="290" font-family="sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#6b21a8">Key Insight: Plasticity</text>
+  <text x="400" y="320" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#581c87">These cells are NOT genetically modified.</text>
+  <text x="400" y="345" font-family="sans-serif" font-size="14" text-anchor="middle" fill="#581c87">They are standard frog cells put in a new configuration.</text>
+</svg>
