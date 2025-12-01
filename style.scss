@@ -3,9 +3,12 @@
 
 //
 // IMPORTS
-// Build test: 2025-12-01 v3 - Force rebuild
-// All imports at top for debugging
+// Build test: 2025-12-01 v4 - Testing error detection
 //
+
+// Test: adding deliberate error to check if file is reprocessed
+.test-error {
+  this-is-invalid:
 
 @import "variables";
 @import "reset";
