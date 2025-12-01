@@ -300,7 +300,6 @@ table {
   top: 0;
   z-index: 100;
   backdrop-filter: blur(10px);
-  background: rgba(var(--bg-primary), 0.9);
 
   @supports (backdrop-filter: blur(10px)) {
     background: transparent;
