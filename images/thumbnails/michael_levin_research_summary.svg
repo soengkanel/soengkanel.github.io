@@ -1,0 +1,46 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect width="800" height="450" fill="url(#bg-grad)"/>
+  
+  <!-- Bioelectric Network -->
+  <g stroke="#22d3ee" stroke-width="2" opacity="0.6">
+    <line x1="200" y1="225" x2="300" y2="150" />
+    <line x1="200" y1="225" x2="300" y2="300" />
+    <line x1="300" y1="150" x2="400" y2="225" />
+    <line x1="300" y1="300" x2="400" y2="225" />
+    <line x1="400" y1="225" x2="500" y2="150" />
+    <line x1="400" y1="225" x2="500" y2="300" />
+    <line x1="500" y1="150" x2="600" y2="225" />
+    <line x1="500" y1="300" x2="600" y2="225" />
+  </g>
+  
+  <!-- Cells/Nodes -->
+  <g fill="#4ade80" filter="url(#glow)">
+    <circle cx="200" cy="225" r="15" opacity="0.8"/>
+    <circle cx="300" cy="150" r="12" opacity="0.6"/>
+    <circle cx="300" cy="300" r="12" opacity="0.6"/>
+    <circle cx="400" cy="225" r="20" opacity="1.0"/>
+    <circle cx="500" cy="150" r="12" opacity="0.6"/>
+    <circle cx="500" cy="300" r="12" opacity="0.6"/>
+    <circle cx="600" cy="225" r="15" opacity="0.8"/>
+  </g>
+  
+  <!-- Xenobot Representation (Organic Blob) -->
+  <path d="M650 350 Q 680 320 710 350 T 770 350 T 750 400 T 690 410 T 650 350" fill="#a78bfa" opacity="0.8" filter="url(#glow)" transform="translate(-50, -50)"/>
+  
+  <!-- Title Text -->
+  <text x="400" y="80" font-family="sans-serif" font-size="24" fill="#e2e8f0" text-anchor="middle" letter-spacing="2" font-weight="bold">BIOELECTRICITY & MORPHOGENESIS</text>
+</svg>
