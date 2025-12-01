@@ -3,13 +3,14 @@
 
 //
 // IMPORTS
-// Build test: 2025-12-01 v2
+// Build test: 2025-12-01 v3 - Force rebuild
+// All imports at top for debugging
 //
 
 @import "variables";
 @import "reset";
 @import "highlights";
-@import "svg-icons";
+// @import "svg-icons"; // Temporarily disabled for debugging
 @import "responsive";
 
 :root {
