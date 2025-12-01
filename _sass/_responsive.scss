@@ -1,0 +1,269 @@
+// Responsive Enhancements for Tables and Mobile Layout
+
+// ========================================
+// HOME PAGE & ARTICLE LISTING RESPONSIVE
+// ========================================
+
+@include tablet {
+
+    // Two column layout becomes single column on tablet
+    .two-col-layout {
+        grid-template-columns: 1fr !important;
+    }
+
+    // Sidebar becomes horizontal scrollable on tablet
+    .sidebar {
+        order: -1;
+        margin-bottom: $space-6;
+    }
+
+    // Post items - better spacing on tablet
+    .post-item {
+        gap: $space-5;
+        padding: $space-5;
+    }
+
+    .post-item-image {
+        width: 180px;
+        height: 135px;
+    }
+
+    .post-item-title {
+        font-size: $text-lg;
+    }
+
+    table {
+        font-size: $text-sm;
+    }
+}
+
+@include mobile {
+    // ========================================
+    // HOME PAGE & ARTICLE LISTING
+    // ========================================
+
+    // Post items - stack vertically on mobile
+    .post-item {
+        flex-direction: column !important;
+        gap: $space-4;
+        padding: $space-4;
+        border-radius: $radius-lg;
+    }
+
+    // Post image - full width on mobile
+    .post-item-image {
+        width: 100% !important;
+        height: 200px !important;
+        border-radius: $radius-md;
+    }
+
+    // Ensure images scale properly
+    .post-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    // Post content adjustments
+    .post-item-content {
+        width: 100%;
+    }
+
+    // Meta information - wrap on small screens
+    .post-item-meta {
+        flex-wrap: wrap;
+        gap: $space-2;
+    }
+
+    // Category badge - smaller on mobile
+    .post-item-category {
+        font-size: 10px;
+        padding: $space-1 $space-2;
+    }
+
+    // Date - smaller text
+    .post-item-date {
+        font-size: $text-xs;
+    }
+
+    // Title - responsive sizing
+    .post-item-title {
+        font-size: $text-lg;
+        margin-bottom: $space-3;
+        line-height: 1.4;
+    }
+
+    // Excerpt - smaller on mobile
+    .post-item-excerpt {
+        font-size: $text-sm;
+        line-height: 1.5;
+        -webkit-line-clamp: 3; // Show 3 lines on mobile
+    }
+
+    // Read more link
+    .post-item-link {
+        font-size: $text-sm;
+    }
+
+    // Tags on mobile
+    .post-item-tags {
+        flex-wrap: wrap;
+        gap: $space-2;
+        margin-bottom: $space-3;
+    }
+
+    .post-tag {
+        font-size: 10px;
+        padding: $space-1 $space-2;
+    }
+
+    // Content header on mobile
+    .content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: $space-3;
+        margin-bottom: $space-6;
+    }
+
+    .content-title {
+        font-size: $text-xl;
+    }
+
+    .post-count {
+        font-size: $text-xs;
+        padding: $space-1 $space-3;
+    }
+
+    // Posts list spacing
+    .posts-list {
+        gap: $space-5;
+    }
+
+    // ========================================
+    // TABLES - RESPONSIVE SCROLL
+    // ========================================
+
+    table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        font-size: $text-sm;
+
+        th,
+        td {
+            padding: $space-2 $space-3;
+            white-space: nowrap;
+        }
+    }
+
+    // ========================================
+    // CODE BLOCKS
+    // ========================================
+
+    pre {
+        margin: $space-4 0;
+        padding: $space-4;
+        font-size: $text-sm;
+        border-radius: $radius-md;
+
+        code {
+            font-size: $text-xs;
+        }
+    }
+
+    // Inline code
+    code {
+        font-size: 0.85em;
+        padding: 2px $space-2;
+    }
+
+    // ========================================
+    // BLOCKQUOTES
+    // ========================================
+
+    blockquote {
+        margin: $space-4 0;
+        padding: $space-4;
+        border-left-width: 3px;
+        font-size: $text-sm;
+    }
+
+    // ========================================
+    // IMAGES
+    // ========================================
+
+    img {
+        max-width: 100%;
+        height: auto;
+        border-radius: $radius-md;
+    }
+
+    // Article images with captions
+    .post img,
+    .entry img,
+    article img {
+        width: 100%;
+        height: auto;
+        margin: $space-4 0;
+    }
+
+    // ========================================
+    // MATHEMATICAL FORMULAS
+    // ========================================
+
+    .MathJax,
+    .katex-display,
+    mjx-container {
+        overflow-x: auto;
+        overflow-y: hidden;
+        max-width: 100%;
+        font-size: 0.9em;
+    }
+
+    // Inline math
+    .katex,
+    mjx-container[jax="CHTML"][display="true"] {
+        font-size: 0.95em;
+    }
+}
+
+// ========================================
+// SMALL MOBILE (< 375px)
+// ========================================
+
+@media screen and (max-width: 375px) {
+    .post-item-image {
+        height: 160px !important;
+    }
+
+    .post-item-title {
+        font-size: $text-base;
+    }
+
+    .post-item-excerpt {
+        font-size: $text-xs;
+    }
+}
+
+// ========================================
+// GENERAL RESPONSIVE UTILITIES
+// ========================================
+
+// Prevent horizontal overflow
+body {
+    overflow-x: hidden;
+}
+
+// Ensure container doesn't cause horizontal scroll
+.container {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+// Make sure images never break layout
+img {
+    max-width: 100%;
+    height: auto;
+}
