@@ -1544,18 +1544,6 @@ table {
 /* TAGS */
 /**************/
 
-// Tag color palette - Blue, Emerald, Violet, Amber, Pink, Cyan, Red, Green
-$tag-colors: (
-  1: (bg: rgba(59, 130, 246, 0.12), border: rgba(59, 130, 246, 0.3), text: #3b82f6),
-  2: (bg: rgba(16, 185, 129, 0.12), border: rgba(16, 185, 129, 0.3), text: #10b981),
-  3: (bg: rgba(139, 92, 246, 0.12), border: rgba(139, 92, 246, 0.3), text: #8b5cf6),
-  4: (bg: rgba(245, 158, 11, 0.12), border: rgba(245, 158, 11, 0.3), text: #f59e0b),
-  5: (bg: rgba(236, 72, 153, 0.12), border: rgba(236, 72, 153, 0.3), text: #ec4899),
-  6: (bg: rgba(6, 182, 212, 0.12), border: rgba(6, 182, 212, 0.3), text: #06b6d4),
-  7: (bg: rgba(239, 68, 68, 0.12), border: rgba(239, 68, 68, 0.3), text: #ef4444),
-  8: (bg: rgba(34, 197, 94, 0.12), border: rgba(34, 197, 94, 0.3), text: #22c55e)
-);
-
 // Tags on post list (index page)
 .post-item-tags {
   display: flex;
@@ -1575,23 +1563,14 @@ $tag-colors: (
   transition: all $transition-base;
   letter-spacing: 0.02em;
 
-  // Apply different colors based on position
-  @for $i from 1 through 8 {
+  // Tag colors applied via simple classes instead of @for loop
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #3b82f6;
 
-    &:nth-child(#{$i}),
-    &:nth-child(#{$i + 8}) {
-      $color: map-get($tag-colors, $i);
-      background: map-get($color, bg);
-      border: 1px solid map-get($color, border);
-      color: map-get($color, text);
-
-      &:hover {
-        background: map-get($color, border);
-        border-color: map-get($color, text);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px map-get($color, bg);
-      }
-    }
+  &:hover {
+    background: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
   }
 }
 
@@ -1620,50 +1599,29 @@ $tag-colors: (
     opacity: 0.7;
     font-weight: 700;
     font-size: 10px;
+    color: #3b82f6;
   }
 
-  // Apply different colors based on position
-  @for $i from 1 through 8 {
+  // Simple tag colors
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: #3b82f6;
 
-    &:nth-child(#{$i}),
-    &:nth-child(#{$i + 8}) {
-      $color: map-get($tag-colors, $i);
-      background: map-get($color, bg);
-      border: 1px solid map-get($color, border);
-      color: map-get($color, text);
-
-      &::before {
-        color: map-get($color, text);
-      }
-
-      &:hover {
-        background: map-get($color, border);
-        border-color: map-get($color, text);
-        transform: translateY(-2px) scale(1.02);
-        box-shadow: 0 4px 15px map-get($color, bg);
-      }
-    }
+  &:hover {
+    background: rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px) scale(1.02);
   }
 }
 
 // Dark mode adjustments for tags
 [data-theme="dark"] {
-
   .post-tag,
   .article-tag {
-    @for $i from 1 through 8 {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
 
-      &:nth-child(#{$i}),
-      &:nth-child(#{$i + 8}) {
-        $color: map-get($tag-colors, $i);
-        background: rgba(map-get($color, text), 0.15);
-        border-color: rgba(map-get($color, text), 0.4);
-
-        &:hover {
-          background: rgba(map-get($color, text), 0.25);
-          box-shadow: 0 4px 20px rgba(map-get($color, text), 0.2);
-        }
-      }
+    &:hover {
+      background: rgba(59, 130, 246, 0.25);
     }
   }
 }
