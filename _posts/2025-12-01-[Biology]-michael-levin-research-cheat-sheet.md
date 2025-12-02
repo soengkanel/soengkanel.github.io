@@ -19,8 +19,19 @@ We often think of electricity in the body only in terms of neurons (brains and n
 </div>
 
 <script>
-(function() {
+document.addEventListener('DOMContentLoaded', function() {
+  // Ensure anime.js is loaded
+  if (typeof anime === 'undefined') {
+    console.error('Anime.js library not found');
+    return;
+  }
+
   const container = document.querySelector('#bio-network-anim .nodes-container');
+  if (!container) {
+    console.error('Animation container not found');
+    return;
+  }
+
   const width = container.clientWidth;
   const height = 300;
   const numNodes = 40;
@@ -38,6 +49,7 @@ We often think of electricity in the body only in terms of neurons (brains and n
     node.style.left = `${Math.random() * (width - 20) + 10}px`;
     node.style.top = `${Math.random() * (height - 20) + 10}px`;
     node.style.boxShadow = '0 0 5px rgba(0, 255, 204, 0.2)';
+    node.style.zIndex = '2'; // Ensure nodes are above background
     container.appendChild(node);
     nodes.push({ el: node, x: parseFloat(node.style.left), y: parseFloat(node.style.top) });
   }
@@ -57,6 +69,9 @@ We often think of electricity in the body only in terms of neurons (brains and n
 
   // Create connections (visualized as moving particles between nodes)
   function createSignal() {
+    // Safety check if nodes were removed
+    if (nodes.length === 0) return;
+
     const startNode = nodes[Math.floor(Math.random() * nodes.length)];
     let endNode = nodes[Math.floor(Math.random() * nodes.length)];
     
@@ -80,6 +95,7 @@ We often think of electricity in the body only in terms of neurons (brains and n
     signal.style.left = `${startNode.x}px`;
     signal.style.top = `${startNode.y}px`;
     signal.style.zIndex = '5';
+    signal.style.pointerEvents = 'none'; // Don't interfere with clicks
     container.appendChild(signal);
 
     anime({
@@ -89,7 +105,9 @@ We often think of electricity in the body only in terms of neurons (brains and n
       easing: 'easeOutExpo',
       duration: 1000 + Math.random() * 1000,
       complete: function(anim) {
-        signal.remove();
+        if (signal.parentNode) {
+          signal.remove();
+        }
         // Trigger "reception" effect
         anime({
           targets: endNode.el,
@@ -102,8 +120,12 @@ We often think of electricity in the body only in terms of neurons (brains and n
     });
   }
 
-  setInterval(createSignal, 200);
-})();
+  // Clear interval when leaving page (optional but good practice)
+  const intervalId = setInterval(createSignal, 200);
+  
+  // Cleanup on page unload (if SPA navigation is used, otherwise not strictly necessary)
+  window.addEventListener('unload', () => clearInterval(intervalId));
+});
 </script>
 
 ![Bioelectricity Diagram](/images/bioelectricity_diagram.svg)
