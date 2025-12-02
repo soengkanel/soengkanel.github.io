@@ -2,7 +2,7 @@
 layout: post
 title: "[ALGO] Understanding Binary Search: A Simple Guide"
 tags: [Algorithms, Computer Science, Binary Search, Visualization]
-thumbnail: 
+thumbnail: /images/binary_search_thumbnail.png
 ---
 
 Have you ever played the "Guess the Number" game?
