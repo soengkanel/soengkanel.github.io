@@ -1,7 +1,4 @@
----
----
-
-//
+--- --- //
 // IMPORTS
 //
 
@@ -530,6 +527,150 @@ table {
   }
 }
 
+.sidebar-sticky {
+  position: sticky;
+  top: calc($space-6 + 80px); // Account for header height
+
+  @include tablet {
+    position: static;
+  }
+}
+
+.sidebar-title {
+  font-size: $text-lg;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 $space-4;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.category-nav {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  @include tablet {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+.category-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  width: 100%;
+  padding: $space-3 $space-4;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: all $transition-base;
+  text-align: left;
+
+  @include tablet {
+    width: auto;
+    flex: 0 1 auto;
+  }
+
+  &:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent);
+    transform: translateX(4px);
+
+    @include tablet {
+      transform: translateY(-2px);
+    }
+  }
+
+  &.active {
+    background: var(--accent);
+    border-color: var(--accent);
+
+    .category-icon {
+      color: white;
+    }
+
+    .category-name {
+      color: white;
+      font-weight: 700;
+    }
+
+    .category-count {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+  }
+}
+
+.category-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  transition: color $transition-base;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.category-name {
+  flex-grow: 1;
+  font-size: $text-sm;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color $transition-base;
+}
+
+.category-count {
+  flex-shrink: 0;
+  font-size: $text-xs;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  padding: $space-1 $space-2;
+  border-radius: $radius-full;
+  min-width: 24px;
+  text-align: center;
+  transition: all $transition-base;
+}
+
+/**************/
+/* CONTENT HEADER */
+/**************/
+
+.content-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-8;
+  padding-bottom: $space-4;
+  border-bottom: 2px solid var(--border-color);
+
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $space-3;
+  }
+}
+
+.content-title {
+  font-size: $text-3xl;
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-primary);
+
+  @include mobile {
+    font-size: $text-2xl;
+  }
+}
+
 /**************/
 /* POSTS LIST */
 /**************/
@@ -618,6 +759,31 @@ table {
   font-size: $text-sm;
   color: var(--text-muted);
 }
+
+.post-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+  margin-bottom: $space-3;
+}
+
+.post-tag {
+  font-size: $text-xs;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  padding: $space-1 $space-3;
+  border-radius: $radius-full;
+  border: 1px solid var(--border-light);
+  transition: all $transition-base;
+
+  &:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
 
 .post-item-title {
   font-size: $text-xl;
@@ -1104,12 +1270,29 @@ table {
   opacity: 0;
 
   // Staggered animation delays
-  &:nth-child(1) { animation-delay: 0.1s; }
-  &:nth-child(2) { animation-delay: 0.2s; }
-  &:nth-child(3) { animation-delay: 0.3s; }
-  &:nth-child(4) { animation-delay: 0.4s; }
-  &:nth-child(5) { animation-delay: 0.5s; }
-  &:nth-child(6) { animation-delay: 0.6s; }
+  &:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+
+  &:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  &:nth-child(4) {
+    animation-delay: 0.4s;
+  }
+
+  &:nth-child(5) {
+    animation-delay: 0.5s;
+  }
+
+  &:nth-child(6) {
+    animation-delay: 0.6s;
+  }
 }
 
 /**************/
@@ -1619,6 +1802,7 @@ table {
 
 // Dark mode adjustments for tags
 [data-theme="dark"] {
+
   .post-tag,
   .article-tag {
     background: rgba(59, 130, 246, 0.15);
@@ -1856,4 +2040,3 @@ table {
 }
 
 // Imports moved to top of file
-
