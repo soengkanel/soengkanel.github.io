@@ -9,12 +9,13 @@ page_class: article-page
   <header class="article-header">
     {% assign title_parts = page.title | split: ']' %}
     {% if title_parts.size > 1 %}
-      {% assign category = title_parts[0] | remove: '[' | strip %}
+    {% assign category = title_parts[0] | remove: '[' | strip %}
     {% endif %}
 
     <div class="article-header-top">
       <a href="{{ site.baseurl }}/" class="back-link">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
         Back
@@ -29,9 +30,9 @@ page_class: article-page
 
     <h1 class="article-title">
       {% if title_parts.size > 1 %}
-        {{ title_parts[1] | strip }}
+      {{ title_parts[1] | strip }}
       {% else %}
-        {{ page.title }}
+      {{ page.title }}
       {% endif %}
     </h1>
 
@@ -52,7 +53,8 @@ page_class: article-page
     <nav class="article-nav">
       {% if page.previous.url %}
       <a href="{{ site.baseurl }}{{ page.previous.url }}" class="article-nav-link prev">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
         <div class="article-nav-text">
@@ -60,9 +62,9 @@ page_class: article-page
           <span class="article-nav-title">
             {% assign prev_title_parts = page.previous.title | split: ']' %}
             {% if prev_title_parts.size > 1 %}
-              {{ prev_title_parts[1] | strip | truncate: 35 }}
+            {{ prev_title_parts[1] | strip | truncate: 35 }}
             {% else %}
-              {{ page.previous.title | truncate: 35 }}
+            {{ page.previous.title | truncate: 35 }}
             {% endif %}
           </span>
         </div>
@@ -70,7 +72,8 @@ page_class: article-page
       {% endif %}
 
       <a href="{{ site.baseurl }}/" class="article-nav-home">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="7" height="7"></rect>
           <rect x="14" y="3" width="7" height="7"></rect>
           <rect x="14" y="14" width="7" height="7"></rect>
@@ -85,13 +88,14 @@ page_class: article-page
           <span class="article-nav-title">
             {% assign next_title_parts = page.next.title | split: ']' %}
             {% if next_title_parts.size > 1 %}
-              {{ next_title_parts[1] | strip | truncate: 35 }}
+            {{ next_title_parts[1] | strip | truncate: 35 }}
             {% else %}
-              {{ page.next.title | truncate: 35 }}
+            {{ page.next.title | truncate: 35 }}
             {% endif %}
           </span>
         </div>
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
       </a>
@@ -101,19 +105,16 @@ page_class: article-page
 </article>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const progressBar = document.getElementById('reading-progress');
-  const article = document.querySelector('.article');
-  function updateProgress() {
-    const scrollTop = window.scrollY;
-    const docHeight = article.offsetHeight - window.innerHeight;
-    const progress = Math.min((scrollTop / docHeight) * 100, 100);
-    progressBar.style.width = progress + '%';
-  }
-  window.addEventListener('scroll', updateProgress);
-  updateProgress();
-});
+  document.addEventListener('DOMContentLoaded', function () {
+    const progressBar = document.getElementById('reading-progress');
+    const article = document.querySelector('.article');
+    function updateProgress() {
+      const scrollTop = window.scrollY;
+      const docHeight = article.offsetHeight - window.innerHeight;
+      const progress = Math.min((scrollTop / docHeight) * 100, 100);
+      progressBar.style.width = progress + '%';
+    }
+    window.addEventListener('scroll', updateProgress);
+    updateProgress();
+  });
 </script>
-
-
-{% include article-animations.html %}
