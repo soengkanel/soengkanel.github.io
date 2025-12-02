@@ -4,66 +4,45 @@ title: About
 permalink: /about/
 ---
 
-## About This Blog
+## 🚀 Welcome to the Future
 
-This blog explores the intersection of **Research & Development**, **Artificial Intelligence**, **Science**, and **Self-Improvement**.
+This blog is where **algorithms meet intuition**, **AI meets practicality**, and **complex ideas become crystal clear**.
 
-Each article is written with a focus on:
-- **Practical application** - Concepts you can use immediately
-- **Rigorous thinking** - Evidence-based, PhD-level depth
-- **Clear communication** - Complex ideas made accessible
+I break down the tech that's shaping tomorrow—from neural networks to enterprise systems—into concepts you can actually use today.
 
-## Topics Covered
+## 🤖 What You'll Find Here
 
-**R&D** - Research methodology, innovation processes, and the path from idea to implementation.
+**AI & Algorithms** - Deep learning, machine learning, and the math that makes it all work (explained like a human, not a textbook)
 
-**AI** - Machine learning fundamentals, neural network architecture, and practical AI development.
+**Enterprise Tech** - Real-world insights from scaling Business Central to 10,000+ users and building big data pipelines
 
-**Science** - Scientific thinking, experimental design, statistical literacy, and research practices.
+**Science & Research** - From bioelectricity to experimental design, exploring the cutting edge
 
-**Self-Improvement** - Evidence-based strategies for learning, productivity, decision-making, and personal development.
+**Practical Wisdom** - No fluff. Just actionable knowledge you can apply immediately.
 
-## About the Author
+## 👨‍💻 About Me
 
-I'm **Kanel SOENG**, a technologist, researcher, and educator with over 15 years of experience spanning enterprise software development, big data engineering, and technical leadership.
+I'm **Kanel SOENG**—a technologist who's spent 15+ years building everything from banking systems in France to big data platforms in Cambodia.
 
-### Current Role
+**Current mission:** Technical Consultant driving Microsoft Dynamics 365 & Azure solutions at enterprise scale
 
-I currently serve as a **Technical Consultant at Next Generation Technology Co., Ltd** in Phnom Penh, where I drive technical strategy for Microsoft Dynamics 365 and Azure solutions. I architect enterprise-scale implementations, lead technical teams, and ensure solutions are optimized for performance and scalability.
+**Past adventures:**
+- 🎓 Math Professor teaching Computer Science (making calculus cool since 2020)
+- 📊 Big Data Engineer reducing processing times by 75% with Hadoop/Spark
+- 💻 Software Engineer at Cegid, crafting payment systems for banks
 
-### Professional Journey
+**Education:** Engineer's Degree in Computer Science (Government scholarship, Hanoi University)
 
-My career has taken me across diverse technical domains:
+**Languages:** Khmer, English, Vietnamese, French (because why not?)
 
-- **Big Data Engineering** at AMK Microfinance Institution, where I spearheaded Apache Hadoop/Spark implementations that reduced processing times by 75%
-- **Technical Project Management** at KhmerDev, delivering projects for international clients including UN Human Rights and VINCI Airports
-- **Software Engineering** at Cegid (France), developing payment and treasury solutions for the banking sector
+**Philosophy:** If you can't explain it simply, you don't understand it well enough. Every article here is written to make you go "Aha!" not "Huh?"
 
-### Teaching & Education
+## 🌐 Let's Connect
 
-I served as a **Mathematics Professor at DUC University** for 2 years, teaching Mathematics for Computer Science. This experience shaped my approach to making complex technical concepts accessible and practical—a philosophy that drives this blog.
+- 💼 [LinkedIn](https://www.linkedin.com/in/kanel-soeng/)
+- 🐙 [GitHub](https://github.com/skanel)
+- 🐦 [Twitter](https://twitter.com/soengkanel)
 
-**Academic Background:**
-- Engineer's Degree in Computer Science, Hanoi University of Science and Technology (Government scholarship recipient)
-- Studied at Institute of Technology of Cambodia
+---
 
-### Technical Expertise
-
-I specialize in:
-- **Enterprise Systems**: Microsoft Dynamics 365, Azure, Business Central
-- **Big Data**: Apache Hadoop, Spark, Scala, Python
-- **Software Development**: Full-stack development, system architecture, performance optimization
-- **Leadership**: Technical team management, Agile methodologies, project delivery
-
-### Languages
-
-- **Khmer** (Native)
-- **English** (Professional)
-- **Vietnamese** (Professional)
-- **French** (Working proficiency)
-
-## Connect
-
-- GitHub: [skanel](https://github.com/skanel)
-- Twitter: [@soengkanel](https://twitter.com/soengkanel)
-- LinkedIn: [kanel-soeng](https://www.linkedin.com/in/kanel-soeng/)
+*P.S. - If you're reading this, you're probably curious about how things work. Welcome home.* 🏠✨
