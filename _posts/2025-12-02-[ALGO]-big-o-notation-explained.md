@@ -2,7 +2,7 @@
 layout: post
 title: "[ALGO] Big O Notation: The Speed of Code"
 tags: [Algorithms, Computer Science, Big O, Optimization]
-thumbnail: 
+thumbnail: /images/big_o_notation_thumbnail.png
 ---
 
 Imagine you are a librarian.
