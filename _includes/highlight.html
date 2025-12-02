@@ -6,6 +6,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Initialize syntax highlighting
@@ -16,17 +17,26 @@
 <style>
     /* Custom styling for code blocks */
     pre {
-        border-radius: 8px;
-        padding: 1.5rem;
-        overflow-x: auto;
         margin: 1.5rem 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        /* Remove padding and background from pre to avoid double-box */
+        padding: 0;
+        background: transparent;
+        overflow-x: auto;
     }
 
-    pre code {
+    /* Target the Highlight.js code block directly */
+    pre code.hljs {
+        border-radius: 8px;
+        padding: 1.5rem;
+        /* Add padding inside the code block */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         font-family: 'JetBrains Mono', 'Courier New', monospace;
         font-size: 0.9rem;
         line-height: 1.6;
+        width: 100%;
+        /* Ensure it fills the container */
+        display: block;
+        /* Ensure it behaves like a block */
     }
 
     /* Inline code */
