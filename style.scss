@@ -1,7 +1,4 @@
----
----
-
-//
+--- --- //
 // IMPORTS
 //
 
@@ -504,8 +501,8 @@ table {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: $space-8;
-    padding-bottom: $space-4;
+    margin-bottom: $space-6;
+    padding-bottom: $space-3;
     border-bottom: 1px solid var(--border-color);
 
     @include mobile {
@@ -518,7 +515,7 @@ table {
 
 .sidebar-sticky {
   position: sticky;
-  top: calc($space-6 + 80px); // Account for header height
+  top: calc($space-6 + 80px);
 
   @include tablet {
     position: static;
@@ -526,18 +523,18 @@ table {
 }
 
 .sidebar-title {
-  font-size: $text-lg;
-  font-weight: 700;
+  font-size: $text-base;
+  font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 $space-4;
+  margin: 0 0 $space-3;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
 .category-nav {
   display: flex;
   flex-direction: column;
-  gap: $space-2;
+  gap: $space-1;
 
   @include tablet {
     flex-direction: row;
@@ -548,14 +545,13 @@ table {
 .category-nav-btn {
   display: flex;
   align-items: center;
-  gap: $space-3;
+  gap: $space-2;
   width: 100%;
-  padding: $space-3 $space-4;
-  background: var(--bg-secondary);
+  padding: $space-2 $space-3;
+  background: transparent;
   border: 1px solid var(--border-color);
-  border-radius: $radius-lg;
+  border-radius: $radius-md;
   cursor: pointer;
-  transition: all $transition-base;
   text-align: left;
 
   @include tablet {
@@ -564,13 +560,8 @@ table {
   }
 
   &:hover {
-    background: var(--bg-tertiary);
+    background: var(--bg-secondary);
     border-color: var(--accent);
-    transform: translateX(4px);
-
-    @include tablet {
-      transform: translateY(-2px);
-    }
   }
 
   &.active {
@@ -583,11 +574,11 @@ table {
 
     .category-name {
       color: white;
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .category-count {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.25);
       color: white;
     }
   }
@@ -599,35 +590,32 @@ table {
   align-items: center;
   justify-content: center;
   color: var(--accent);
-  transition: color $transition-base;
 
   svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
 }
 
 .category-name {
   flex-grow: 1;
-  font-size: $text-sm;
+  font-size: $text-xs;
   font-weight: 600;
   color: var(--text-primary);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: color $transition-base;
+  letter-spacing: 0.03em;
 }
 
 .category-count {
   flex-shrink: 0;
   font-size: $text-xs;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-muted);
-  background: var(--bg-tertiary);
-  padding: $space-1 $space-2;
+  background: var(--bg-secondary);
+  padding: 2px $space-2;
   border-radius: $radius-full;
-  min-width: 24px;
+  min-width: 20px;
   text-align: center;
-  transition: all $transition-base;
 }
 
 /**************/
