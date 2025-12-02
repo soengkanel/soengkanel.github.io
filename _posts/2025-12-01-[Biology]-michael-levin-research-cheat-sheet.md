@@ -2,7 +2,7 @@
 layout: post
 title: "[Biology] Michael Levin Research Cheat‑Sheet (Visual Summary)"
 tags: [Biology, Bioelectricity, Morphogenesis, Xenobots, AI]
-thumbnail: /images/thumbnails/michael_levin_research_summary.svg
+thumbnail: /images/xenobot_construction.png
 ---
 
 Michael Levin is a distinguished professor at Tufts University who is revolutionizing our understanding of biology. His research suggests that **DNA is not the only blueprint for life**. Instead, there is a layer of "bioelectric software" that directs how cells cooperate to build complex bodies.
@@ -12,6 +12,99 @@ This cheat-sheet summarizes the core pillars of his work: **Bioelectricity**, **
 ## 1. Bioelectricity: The Software of Life
 
 We often think of electricity in the body only in terms of neurons (brains and nerves). Levin's work shows that **all cells communicate electrically**.
+
+<div id="bio-network-anim" style="position: relative; height: 300px; background: #111; border-radius: 12px; overflow: hidden; margin: 2rem 0; border: 1px solid #333;">
+  <div style="position: absolute; top: 10px; left: 10px; color: #00ffcc; font-family: monospace; font-size: 12px; z-index: 10;">BIOELECTRIC_NETWORK_STATUS: ACTIVE</div>
+  <div class="nodes-container" style="position: absolute; inset: 0;"></div>
+</div>
+
+<script>
+(function() {
+  const container = document.querySelector('#bio-network-anim .nodes-container');
+  const width = container.clientWidth;
+  const height = 300;
+  const numNodes = 40;
+  const nodes = [];
+
+  // Create nodes
+  for (let i = 0; i < numNodes; i++) {
+    const node = document.createElement('div');
+    const size = 4 + Math.random() * 6;
+    node.style.width = `${size}px`;
+    node.style.height = `${size}px`;
+    node.style.background = '#333';
+    node.style.borderRadius = '50%';
+    node.style.position = 'absolute';
+    node.style.left = `${Math.random() * (width - 20) + 10}px`;
+    node.style.top = `${Math.random() * (height - 20) + 10}px`;
+    node.style.boxShadow = '0 0 5px rgba(0, 255, 204, 0.2)';
+    container.appendChild(node);
+    nodes.push({ el: node, x: parseFloat(node.style.left), y: parseFloat(node.style.top) });
+  }
+
+  // Animate nodes pulsing
+  anime({
+    targets: '#bio-network-anim .nodes-container div',
+    scale: [1, 1.5],
+    backgroundColor: ['#333', '#00ffcc'],
+    boxShadow: ['0 0 5px rgba(0, 255, 204, 0.2)', '0 0 15px rgba(0, 255, 204, 0.8)'],
+    delay: anime.stagger(200, {grid: [10, 4], from: 'center'}),
+    direction: 'alternate',
+    loop: true,
+    easing: 'easeInOutQuad',
+    duration: 1500
+  });
+
+  // Create connections (visualized as moving particles between nodes)
+  function createSignal() {
+    const startNode = nodes[Math.floor(Math.random() * nodes.length)];
+    let endNode = nodes[Math.floor(Math.random() * nodes.length)];
+    
+    // Find a somewhat close neighbor
+    let attempts = 0;
+    while (attempts < 10) {
+      const dx = startNode.x - endNode.x;
+      const dy = startNode.y - endNode.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 150 && dist > 20) break;
+      endNode = nodes[Math.floor(Math.random() * nodes.length)];
+      attempts++;
+    }
+
+    const signal = document.createElement('div');
+    signal.style.width = '4px';
+    signal.style.height = '4px';
+    signal.style.background = '#fff';
+    signal.style.borderRadius = '50%';
+    signal.style.position = 'absolute';
+    signal.style.left = `${startNode.x}px`;
+    signal.style.top = `${startNode.y}px`;
+    signal.style.zIndex = '5';
+    container.appendChild(signal);
+
+    anime({
+      targets: signal,
+      left: endNode.x,
+      top: endNode.y,
+      easing: 'easeOutExpo',
+      duration: 1000 + Math.random() * 1000,
+      complete: function(anim) {
+        signal.remove();
+        // Trigger "reception" effect
+        anime({
+          targets: endNode.el,
+          scale: [1.5, 2.0, 1.0],
+          backgroundColor: ['#00ffcc', '#fff', '#333'],
+          duration: 500,
+          easing: 'easeOutQuad'
+        });
+      }
+    });
+  }
+
+  setInterval(createSignal, 200);
+})();
+</script>
 
 ![Bioelectricity Diagram](/images/bioelectricity_diagram.svg)
 
