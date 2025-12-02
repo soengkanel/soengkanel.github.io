@@ -1,4 +1,7 @@
---- --- //
+---
+---
+
+//
 // IMPORTS
 //
 
@@ -500,6 +503,7 @@ table {
 
 .sidebar {
   @include tablet {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: $space-8;
@@ -511,19 +515,6 @@ table {
       align-items: flex-start;
       gap: $space-2;
     }
-  }
-
-  .content-title {
-    font-size: $text-2xl;
-    margin: 0;
-  }
-
-  .post-count {
-    font-size: $text-sm;
-    color: var(--text-muted);
-    background: var(--bg-secondary);
-    padding: $space-2 $space-4;
-    border-radius: $radius-full;
   }
 }
 
@@ -670,6 +661,16 @@ table {
     font-size: $text-2xl;
   }
 }
+
+.post-count {
+  font-size: $text-sm;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  padding: $space-2 $space-4;
+  border-radius: $radius-full;
+}
+
 
 /**************/
 /* POSTS LIST */
