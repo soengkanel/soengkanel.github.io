@@ -13,9 +13,9 @@ This cheat-sheet summarizes the core pillars of his work: **Bioelectricity**, **
 
 We often think of electricity in the body only in terms of neurons (brains and nerves). Levin's work shows that **all cells communicate electrically**.
 
-<div id="bio-network-anim" style="position: relative; height: 300px; background: #111; border-radius: 12px; overflow: hidden; margin: 2rem 0; border: 1px solid #333;">
-  <div style="position: absolute; top: 10px; left: 10px; color: #00ffcc; font-family: monospace; font-size: 12px; z-index: 10;">BIOELECTRIC_NETWORK_STATUS: ACTIVE</div>
-  <div class="nodes-container" style="position: absolute; inset: 0;"></div>
+<div id="bio-network-anim" style="position: relative; height: 300px; background: #0a0a0a; border-radius: 12px; overflow: hidden; margin: 2rem 0; border: 1px solid #333; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
+  <div style="position: absolute; top: 10px; left: 10px; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 12px; z-index: 10; text-shadow: 0 0 5px rgba(0, 255, 204, 0.5);">BIOELECTRIC_NETWORK_STATUS: ACTIVE</div>
+  <div class="nodes-container" style="position: absolute; inset: 0; z-index: 1;"></div>
 </div>
 
 <script>
@@ -37,7 +37,7 @@ We often think of electricity in the body only in terms of neurons (brains and n
     if (container.dataset.initialized) return;
     container.dataset.initialized = "true";
 
-    const width = container.clientWidth;
+    const width = container.clientWidth || container.parentElement.clientWidth;
     const height = 300;
     const numNodes = 40;
     const nodes = [];
@@ -45,16 +45,17 @@ We often think of electricity in the body only in terms of neurons (brains and n
     // Create nodes
     for (let i = 0; i < numNodes; i++) {
       const node = document.createElement('div');
-      const size = 4 + Math.random() * 6;
+      const size = 6 + Math.random() * 8; // Slightly larger
       node.style.width = `${size}px`;
       node.style.height = `${size}px`;
-      node.style.background = '#333';
+      node.style.background = '#444'; // Brighter initial color
       node.style.borderRadius = '50%';
       node.style.position = 'absolute';
       node.style.left = `${Math.random() * (width - 20) + 10}px`;
       node.style.top = `${Math.random() * (height - 20) + 10}px`;
-      node.style.boxShadow = '0 0 5px rgba(0, 255, 204, 0.2)';
+      node.style.boxShadow = '0 0 8px rgba(0, 255, 204, 0.3)'; // Stronger glow
       node.style.zIndex = '2';
+      node.style.border = '1px solid rgba(255,255,255,0.1)'; // Subtle border
       container.appendChild(node);
       nodes.push({ el: node, x: parseFloat(node.style.left), y: parseFloat(node.style.top) });
     }
@@ -62,9 +63,9 @@ We often think of electricity in the body only in terms of neurons (brains and n
     // Animate nodes pulsing
     anime({
       targets: '#bio-network-anim .nodes-container div',
-      scale: [1, 1.5],
-      backgroundColor: ['#333', '#00ffcc'],
-      boxShadow: ['0 0 5px rgba(0, 255, 204, 0.2)', '0 0 15px rgba(0, 255, 204, 0.8)'],
+      scale: [1, 1.4],
+      backgroundColor: ['#444', '#00ffcc'],
+      boxShadow: ['0 0 8px rgba(0, 255, 204, 0.3)', '0 0 20px rgba(0, 255, 204, 0.8)'],
       delay: anime.stagger(200, {grid: [10, 4], from: 'center'}),
       direction: 'alternate',
       loop: true,
