@@ -2,6 +2,7 @@
 layout: post
 title: "[BC] Multi-Company Consolidation Strategies for Enterprise: Lessons from Large-Scale Implementations"
 tags: [Business Central, ERP, Implementation, Enterprise, Cambodia]
+thumbnail: /images/bc_consolidation_thumbnail.png
 ---
 
 After implementing Microsoft Dynamics 365 Business Central for multiple large-scale enterprises in Cambodia, I've learned that multi-company consolidation is where most implementations struggle. The theoretical approach in documentation rarely matches the complexity of real-world scenarios.

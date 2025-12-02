@@ -2,6 +2,7 @@
 layout: post
 title: "[BC] Performance Tuning at Scale: Optimizing Business Central for 10,000+ Concurrent Users"
 tags: [Business Central, Performance, Enterprise, Optimization, Cambodia]
+thumbnail: /images/bc_performance_thumbnail.png
 ---
 
 Most Business Central implementations serve 50-200 concurrent users. When you're deploying BC for a Cambodian enterprise conglomerate with 10,000+ employees across manufacturing, retail, and distribution—the entire game changes.
