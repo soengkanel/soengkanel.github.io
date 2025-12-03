@@ -36,6 +36,9 @@ Where:
 
 ## 2. Calculus: The Engine of Learning
 
+![Car and Engine Analogy](/images/car_engine_analogy.png)
+*If Linear Algebra builds the car (the structure), Calculus is the engine that drives it forward (the optimization).*
+
 If Linear Algebra builds the car, Calculus is the engine that drives it forward. Specifically, we use **Differential Calculus** to optimize our models.
 
 The goal of training an AI is to minimize error. We define a "Loss Function" that measures how wrong the model is. To improve the model, we need to know how to change the weights ($W$) to reduce this error.
