@@ -5,7 +5,7 @@ date: 2025-12-03 14:30:00 +0700
 categories: [BC]
 tags: [Microsoft, Business Central, Cloud, AI, Partners]
 author: Soeng Kanel
-image: /assets/img/posts/microsoft_ecosystem_changes.png
+thumbnail: /images/bc.png
 description: "A comprehensive guide to the major changes in the Microsoft Business Central ecosystem for 2024-2025, covering price increases, the cloud-first strategy, and the impact of AI on partners and consultants."
 ---
 
