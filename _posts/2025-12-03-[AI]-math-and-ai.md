@@ -3,7 +3,7 @@ layout: post
 title: "Math & AI: The Invisible Engine"
 date: 2025-12-03
 categories: [AI]
-image: images/math_and_ai_thumbnail.png
+thumbnail: /images/math_and_ai_thumbnail.png
 description: "Explore the mathematical foundations that power Artificial Intelligence, from Linear Algebra to Calculus and Probability."
 ---
 
