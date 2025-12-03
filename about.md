@@ -4,43 +4,34 @@ title: About
 permalink: /about/
 ---
 
-## 🚀 Welcome to the Future
+## 👋 Hey! I'm Kanel
 
-This blog is where **algorithms meet intuition**, **AI meets practicality**, and **complex ideas become crystal clear**.
+I love building cool tech and explaining it in ways that actually make sense. 
 
-I break down the tech that's shaping tomorrow—from neural networks to enterprise systems—into concepts you can actually use today.
+**What I do:** Turn complex AI, algorithms, and enterprise systems into "aha!" moments.
 
-## 🤖 What You'll Find Here
+**Why I do it:** Because technology should be fun, not frustrating. 💡
 
-**AI & Algorithms** - Deep learning, machine learning, and the math that makes it all work (explained like a human, not a textbook)
+## 🎯 Quick Hits
 
-**Enterprise Tech** - Real-world insights from scaling Business Central to 10,000+ users and building big data pipelines
+- 🤖 **15+ years** building everything from French banking systems to Cambodian big data platforms
+- 📚 **Math Professor** by day, making calculus unexpectedly cool
+- ⚡ **Technical Consultant** scaling Dynamics 365 & Azure to 10K+ users
+- 🌍 Speaks 4 languages: Khmer, English, Vietnamese, French
 
-**Science & Research** - From bioelectricity to experimental design, exploring the cutting edge
+**My vibe:** If you can't explain it simply, you don't get it. Every post here = clarity + fun.
 
-**Practical Wisdom** - No fluff. Just actionable knowledge you can apply immediately.
+## 💬 What You'll Find
 
-## 👨‍💻 About Me
-
-I'm **Kanel SOENG**—a technologist who's spent 15+ years building everything from banking systems in France to big data platforms in Cambodia.
-
-**Current mission:** Technical Consultant driving Microsoft Dynamics 365 & Azure solutions at enterprise scale
-
-**Past adventures:**
-- 🎓 Math Professor teaching Computer Science (making calculus cool since 2020)
-- 📊 Big Data Engineer reducing processing times by 75% with Hadoop/Spark
-- 💻 Software Engineer at Cegid, crafting payment systems for banks
-
-**Education:** Engineer's Degree in Computer Science (Government scholarship, Hanoi University)
-
-**Languages:** Khmer, English, Vietnamese, French (because why not?)
-
-**Philosophy:** If you can't explain it simply, you don't understand it well enough. Every article here is written to make you go "Aha!" not "Huh?"
+✨ AI & deep learning (minus the jargon)  
+🏗️ Enterprise tech that actually works  
+🧪 Cool science & research  
+🚀 Stuff you can use *today*
 
 ## 🌐 Let's Connect
 
 - 💼 [LinkedIn](https://www.linkedin.com/in/kanel-soeng/)
-- 🐙 [GitHub](https://github.com/skanel)
+- 🐙 [GitHub](https://github.com/soengkanel)
 - 🐦 [Twitter](https://twitter.com/soengkanel)
 
 ---
