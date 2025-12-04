@@ -16,7 +16,7 @@ I love building cool tech and explaining it in ways that actually make sense.
 
 - 🤖 **15+ years** building everything from French banking systems to Cambodian big data platforms
 - 📚 **Math Professor** by day, making calculus unexpectedly cool
-- ⚡ **Technical Consultant** scaling Dynamics 365 & Azure to 10K+ users
+- ⚡ **Technical Consultant**  Dynamics 365 BC & Azure
 - 🌍 Speaks 4 languages: Khmer, English, Vietnamese, French
 
 **My vibe:** If you can't explain it simply, you don't get it. Every post here = clarity + fun.
