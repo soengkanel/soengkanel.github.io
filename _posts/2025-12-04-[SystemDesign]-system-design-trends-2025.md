@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "[System Design & Architecture] The 2025 Landscape"
-date: 2025-12-04 19:00:00 +0700
-categories: [System Design & Architecture]
+title: "[SDA] The 2025 Landscape"
+date: 2025-12-04 08:00:00 +0700
+categories: [SDA]
 tags: [System Design, Architecture, AI, Microservices, Cloud, Edge Computing]
 author: Soeng Kanel
 thumbnail: /images/system_design_2025.png
