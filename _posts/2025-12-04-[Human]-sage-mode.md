@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "[SDA] Sage Mode: Rewire Your Brain to Think Deeper and Work Smarter"
+title: "[Human] Sage Mode: Rewire Your Brain to Think Deeper and Work Smarter"
 date: 2025-12-04 10:00:00 +0700
-categories: [SDA]
+categories: [Human]
 tags: [Deep Work, Productivity, Focus, Mental Models, Learning]
 author: Soeng Kanel
 thumbnail: /images/sage_mode.png

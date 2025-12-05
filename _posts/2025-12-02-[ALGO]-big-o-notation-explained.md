@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[ALGO] Big O Notation: The Speed of Code"
+title: "[AI] Big O Notation: The Speed of Code"
 tags: [Algorithms, Computer Science, Big O, Optimization]
 thumbnail: /images/big_o_notation_thumbnail.png
 ---

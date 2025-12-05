@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[BC] Multi-Company Consolidation Strategies for Enterprise: Lessons from Large-Scale Implementations"
+title: "[AI] Multi-Company Consolidation Strategies for Enterprise: Lessons from Large-Scale Implementations"
 tags: [Business Central, ERP, Implementation, Enterprise, Cambodia]
 thumbnail: /images/bc_consolidation_thumbnail.png
 ---

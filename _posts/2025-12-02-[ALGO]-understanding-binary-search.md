@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[ALGO] Understanding Binary Search: A Simple Guide"
+title: "[AI] Understanding Binary Search: A Simple Guide"
 tags: [Algorithms, Computer Science, Binary Search, Visualization]
 thumbnail: /images/binary_search_thumbnail.png
 ---

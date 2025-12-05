@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "Microsoft Ecosystem Changes: What Vendors, Partners, and Consultants Need to Know"
+title: "[AI] Microsoft Ecosystem Changes: What Vendors, Partners, and Consultants Need to Know"
 date: 2025-12-03 14:30:00 +0700
-categories: [BC]
+categories: [AI]
 tags: [Microsoft, Business Central, Cloud, AI, Partners]
 author: Soeng Kanel
 thumbnail: /images/bc.png

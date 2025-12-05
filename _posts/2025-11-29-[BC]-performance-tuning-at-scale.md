@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[BC] Performance Tuning at Scale: Optimizing Business Central for 10,000+ Concurrent Users"
+title: "[AI] Performance Tuning at Scale: Optimizing Business Central for 10,000+ Concurrent Users"
 tags: [Business Central, Performance, Enterprise, Optimization, Cambodia]
 thumbnail: /images/bc_performance_thumbnail.png
 ---

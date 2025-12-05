@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Biology] Michael Levin Research Cheat‑Sheet (Visual Summary)"
+title: "[AI] Michael Levin Research Cheat‑Sheet (Visual Summary)"
 tags: [Biology, Bioelectricity, Morphogenesis, Xenobots, AI]
 thumbnail: /images/xenobot_construction.png
 ---
