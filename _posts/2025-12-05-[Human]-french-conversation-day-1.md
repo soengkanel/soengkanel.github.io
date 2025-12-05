@@ -356,7 +356,7 @@ Click on each card to see pronunciation tips!
   <div class="french-card">
     <div class="french-word">Je m'appelle...</div>
     <div class="french-pronunciation">
-      <button class="audio-btn" onclick="speakFrench('Je m\\'appelle')">🔊 Listen</button>
+      <button class="audio-btn" onclick="speakFrench('Je m&#39;appelle')">🔊 Listen</button>
       <span>zhuh mah-PEL</span>
     </div>
     <div class="french-meaning">My name is... (literally: "I call myself...")</div>
@@ -405,13 +405,28 @@ function speakFrench(text) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'fr-FR';
     utterance.rate = 0.8; // Slower for learning
-    utterance.pitch = 1;
+    utterance.pitch = 0.9; // Slightly lower pitch for male voice
     
-    // Try to find a French voice
+    // Try to find a male French voice
     const voices = window.speechSynthesis.getVoices();
-    const frenchVoice = voices.find(voice => voice.lang.startsWith('fr'));
-    if (frenchVoice) {
-      utterance.voice = frenchVoice;
+    const frenchVoices = voices.filter(voice => voice.lang.startsWith('fr'));
+    
+    // Prefer male voices (common male French voice names)
+    const maleVoiceNames = ['thomas', 'paul', 'jacques', 'pierre', 'google français', 'microsoft paul', 'microsoft claude'];
+    let selectedVoice = frenchVoices.find(voice => 
+      maleVoiceNames.some(name => voice.name.toLowerCase().includes(name))
+    );
+    
+    // If no male voice found, try to avoid female voice names
+    if (!selectedVoice && frenchVoices.length > 0) {
+      const femaleNames = ['amelie', 'marie', 'julie', 'céline', 'female', 'woman'];
+      selectedVoice = frenchVoices.find(voice => 
+        !femaleNames.some(name => voice.name.toLowerCase().includes(name))
+      ) || frenchVoices[0];
+    }
+    
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
     }
     
     window.speechSynthesis.speak(utterance);
