@@ -2,7 +2,7 @@
 layout: post
 title: "[Human] French Conversation Day 1: Greetings & Introductions 🇫🇷"
 tags: [French, Language, Khmer, Conversation, Beginner]
-thumbnail: /images/french_day_1.png
+thumbnail: /images/french_day_1.svg
 ---
 
 <style>

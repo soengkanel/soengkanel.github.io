@@ -2,7 +2,7 @@
 layout: post
 title: "[Human] French Conversation Day 2: Numbers & Café 🇫🇷☕"
 tags: [French, Language, Khmer, Conversation, Beginner]
-thumbnail: /images/french_day_2.png
+thumbnail: /images/french_day_2.svg
 ---
 
 <style>
