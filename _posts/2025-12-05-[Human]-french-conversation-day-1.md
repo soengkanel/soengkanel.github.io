@@ -378,18 +378,39 @@ Click on each card to see pronunciation tips!
 <div class="tip-box">
   <h4>🎯 Formal vs. Informal "You"</h4>
   
-  In French, there are **two ways** to say "you":
+  <p>In French, there are <strong>two ways</strong> to say "you":</p>
   
-  | French | Use When | Khmer Equivalent |
-  |--------|----------|------------------|
-  | **Tu** (informal) | Friends, family, children | អ្នក (ទូទៅ) |
-  | **Vous** (formal) | Strangers, elders, at work | អ្នក/លោក (ផ្លូវការ) |
+  <table style="width: 100%; border-collapse: collapse; margin: 1rem 0; background: rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden;">
+    <thead>
+      <tr style="background: rgba(237, 41, 57, 0.3);">
+        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #ed2939;">French</th>
+        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #ed2939;">Use When</th>
+        <th style="padding: 12px; text-align: left; border-bottom: 2px solid #ed2939;">Khmer Equivalent</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);"><strong style="color: #00d9ff;">Tu</strong> (informal)</td>
+        <td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);">Friends, family, children 👫</td>
+        <td style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #ffd700;">អ្នក (ទូទៅ)</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px;"><strong style="color: #ff6b9d;">Vous</strong> (formal)</td>
+        <td style="padding: 12px;">Strangers, elders, at work 👔</td>
+        <td style="padding: 12px; color: #ffd700;">អ្នក/លោក (ផ្លូវការ)</td>
+      </tr>
+    </tbody>
+  </table>
   
-  **Examples:**
-  - **Et toi ?** → And you? (to a friend) 👫
-  - **Et vous ?** → And you? (to your boss) 👔
+  <p><strong>Examples:</strong></p>
+  <ul style="list-style: none; padding-left: 0;">
+    <li style="margin: 0.5rem 0;">👫 <strong style="color: #00d9ff;">Et toi ?</strong> → And you? (to a friend)</li>
+    <li style="margin: 0.5rem 0;">👔 <strong style="color: #ff6b9d;">Et vous ?</strong> → And you? (to your boss)</li>
+  </ul>
   
-  💡 **Tip:** When in doubt, use **vous** to be polite!
+  <div style="background: rgba(0, 217, 255, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+    💡 <strong>Tip:</strong> When in doubt, use <strong style="color: #ff6b9d;">vous</strong> to be polite!
+  </div>
 </div>
 
 ---
