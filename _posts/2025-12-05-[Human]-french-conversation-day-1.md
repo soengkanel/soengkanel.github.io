@@ -313,63 +313,120 @@ Click on each card to see pronunciation tips!
 
 <div class="vocab-grid">
 
-  <div class="french-card" onclick="this.classList.toggle('expanded')">
+  <div class="french-card">
     <div class="french-word">Bonjour</div>
-    <div class="french-pronunciation">🔊 bohn-ZHOOR</div>
+    <div class="french-pronunciation">
+      <button class="audio-btn" onclick="speakFrench('Bonjour')">🔊 Listen</button>
+      <span>bohn-ZHOOR</span>
+    </div>
     <div class="french-meaning">Hello / Good day (used in morning & afternoon)</div>
     <div class="french-khmer">🇰🇭 សួស្តី (Suosdey)</div>
   </div>
 
-  <div class="french-card" onclick="this.classList.toggle('expanded')">
+  <div class="french-card">
     <div class="french-word">Comment ça va ?</div>
-    <div class="french-pronunciation">🔊 koh-MAHN sah VAH?</div>
+    <div class="french-pronunciation">
+      <button class="audio-btn" onclick="speakFrench('Comment ça va')">🔊 Listen</button>
+      <span>koh-MAHN sah VAH</span>
+    </div>
     <div class="french-meaning">How are you? (informal)</div>
     <div class="french-khmer">🇰🇭 តើអ្នកសុខទុក្ខយ៉ាងណា?</div>
   </div>
 
-  <div class="french-card" onclick="this.classList.toggle('expanded')">
+  <div class="french-card">
     <div class="french-word">Ça va bien</div>
-    <div class="french-pronunciation">🔊 sah vah BYEHN</div>
+    <div class="french-pronunciation">
+      <button class="audio-btn" onclick="speakFrench('Ça va bien')">🔊 Listen</button>
+      <span>sah vah BYEHN</span>
+    </div>
     <div class="french-meaning">I'm fine / It's going well</div>
     <div class="french-khmer">🇰🇭 សុខសប្បាយ</div>
   </div>
 
-  <div class="french-card" onclick="this.classList.toggle('expanded')">
+  <div class="french-card">
     <div class="french-word">Merci</div>
-    <div class="french-pronunciation">🔊 mehr-SEE</div>
+    <div class="french-pronunciation">
+      <button class="audio-btn" onclick="speakFrench('Merci')">🔊 Listen</button>
+      <span>mehr-SEE</span>
+    </div>
     <div class="french-meaning">Thank you</div>
     <div class="french-khmer">🇰🇭 អរគុណ (Arkoun)</div>
   </div>
 
-  <div class="french-card" onclick="this.classList.toggle('expanded')">
+  <div class="french-card">
     <div class="french-word">Je m'appelle...</div>
-    <div class="french-pronunciation">🔊 zhuh mah-PEL</div>
+    <div class="french-pronunciation">
+      <button class="audio-btn" onclick="speakFrench('Je m\\'appelle')">🔊 Listen</button>
+      <span>zhuh mah-PEL</span>
+    </div>
     <div class="french-meaning">My name is... (literally: "I call myself...")</div>
     <div class="french-khmer">🇰🇭 ខ្ញុំឈ្មោះ... (Knhom chhmous...)</div>
   </div>
 
-  <div class="french-card" onclick="this.classList.toggle('expanded')">
+  <div class="french-card">
     <div class="french-word">Enchanté(e)</div>
-    <div class="french-pronunciation">🔊 ahn-shahn-TAY</div>
+    <div class="french-pronunciation">
+      <button class="audio-btn" onclick="speakFrench('Enchanté')">🔊 Listen</button>
+      <span>ahn-shahn-TAY</span>
+    </div>
     <div class="french-meaning">Nice to meet you (add -e if you're female)</div>
     <div class="french-khmer">🇰🇭 រីករាយដែលបានជួបអ្នក</div>
   </div>
 
-  <div class="french-card" onclick="this.classList.toggle('expanded')">
+  <div class="french-card">
     <div class="french-word">Au revoir</div>
-    <div class="french-pronunciation">🔊 oh ruh-VWAHR</div>
+    <div class="french-pronunciation">
+      <button class="audio-btn" onclick="speakFrench('Au revoir')">🔊 Listen</button>
+      <span>oh ruh-VWAHR</span>
+    </div>
     <div class="french-meaning">Goodbye</div>
     <div class="french-khmer">🇰🇭 លាហើយ (Lea hay)</div>
   </div>
 
-  <div class="french-card" onclick="this.classList.toggle('expanded')">
+  <div class="french-card">
     <div class="french-word">Et toi ?</div>
-    <div class="french-pronunciation">🔊 ay TWAH?</div>
+    <div class="french-pronunciation">
+      <button class="audio-btn" onclick="speakFrench('Et toi')">🔊 Listen</button>
+      <span>ay TWAH</span>
+    </div>
     <div class="french-meaning">And you? (informal)</div>
     <div class="french-khmer">🇰🇭 ចុះអ្នកវិញ? (Choh neak vinh?)</div>
   </div>
 
 </div>
+
+<script>
+// Text-to-Speech for French pronunciation
+function speakFrench(text) {
+  if ('speechSynthesis' in window) {
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'fr-FR';
+    utterance.rate = 0.8; // Slower for learning
+    utterance.pitch = 1;
+    
+    // Try to find a French voice
+    const voices = window.speechSynthesis.getVoices();
+    const frenchVoice = voices.find(voice => voice.lang.startsWith('fr'));
+    if (frenchVoice) {
+      utterance.voice = frenchVoice;
+    }
+    
+    window.speechSynthesis.speak(utterance);
+  } else {
+    alert('Sorry, your browser does not support text-to-speech.');
+  }
+}
+
+// Load voices (needed for some browsers)
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = function() {
+    window.speechSynthesis.getVoices();
+  };
+}
+</script>
 
 ---
 
