@@ -1,0 +1,30 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-grad-deadlock" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5252;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8A80;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#333" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  
+  <rect width="800" height="400" fill="url(#bg-grad-deadlock)" rx="15" ry="15"/>
+  
+  <!-- Tangled Lines (Deadlock) -->
+  <path d="M200 100 C 400 100, 400 300, 600 300" stroke="white" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <path d="M600 100 C 400 100, 400 300, 200 300" stroke="#333" stroke-width="12" fill="none" stroke-linecap="round"/>
+  
+  <!-- Lock Icon Style Center -->
+  <circle cx="400" cy="200" r="60" fill="white" filter="url(#shadow)"/>
+  <rect x="370" y="200" width="60" height="50" rx="5" fill="#FF5252" />
+  <path d="M380 200 L380 180 Q400 160 420 180 L420 200" stroke="#FF5252" stroke-width="8" fill="none"/>
+  
+  <!-- Text -->
+  <text x="400" y="350" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="2">DEADLOCK</text>
+  <text x="400" y="50" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle" opacity="0.8">THE HARDEST PART OF GO</text>
+  
+  <!-- Warning Signs -->
+  <path d="M100 200 L130 250 L70 250 Z" fill="#FFC107" />
+  <path d="M700 200 L730 250 L670 250 Z" fill="#FFC107" />
+</svg>
