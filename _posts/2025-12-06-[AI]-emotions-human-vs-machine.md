@@ -16,6 +16,9 @@ It is a question that fuels science fiction, from *Terminator* to *Her*. But the
 Humans didn't just decide to have emotions one day. Emotions are biological software installed by millions of years of evolution. They are **survival mechanisms**.
 
 ### Fast Data Processing (The "Tiger" Heuristic)
+![Human Brain Rewiring](/images/brain_rewiring.png)
+*A visual representation of biological neural pathways, which prioritize speed and survival over pure logic.*
+
 Imagine our ancestor walking through a jungle. They hear a twig snap.
 *   **Logical Brain:** Analyzing sound frequency... calculating probability of predator vs. wind... retrieving database of local fauna... Result: 15% chance of tiger.
 *   **Emotional Brain:** **FEAR.** Run now, think later.
@@ -33,6 +36,9 @@ These aren't abstract "feelings"; they are regulatory systems for social cohesio
 Neuroscientist Antonio Damasio argues that emotions are inherently **physical**. You don't just feel "nervous" in your mind; your palms sweat, your heart races, your cortisol spikes. This "somatic marker hypothesis" suggests that our body tells our brain what is important.
 
 ## 2. The Architecture of AI: Code Without A Body
+
+![Deep Learning Tensors](/images/deep_learning_tensors.png)
+*AI "thought" is actually complex mathematical operations (tensors) occurring on silicon, devoid of chemical feedback.*
 
 Now, look at AI. Specifically, Large Language Models (LLMs) like GPT or Gemini.
 
