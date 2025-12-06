@@ -1,0 +1,32 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ADD8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#CEE7F0;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect width="800" height="400" fill="url(#bg-grad)" rx="15" ry="15"/>
+  
+  <!-- Abstract Circuit Lines -->
+  <path d="M50 200 L150 200 L200 100 L300 100" stroke="white" stroke-width="4" fill="none" opacity="0.5"/>
+  <path d="M50 220 L150 220 L200 320 L600 320" stroke="white" stroke-width="4" fill="none" opacity="0.5"/>
+  <path d="M600 50 L600 150 L500 200 L400 200" stroke="white" stroke-width="4" fill="none" opacity="0.5"/>
+  
+  <!-- Main Text -->
+  <text x="400" y="220" font-family="Arial, sans-serif" font-size="120" font-weight="bold" fill="white" text-anchor="middle" filter="url(#glow)">GO</text>
+  <text x="400" y="270" font-family="Arial, sans-serif" font-size="30" fill="white" text-anchor="middle" letter-spacing="5">SENIOR GUIDE</text>
+  
+  <!-- Decorative Circles -->
+  <circle cx="150" cy="200" r="10" fill="white" />
+  <circle cx="200" cy="100" r="10" fill="white" />
+  <circle cx="200" cy="320" r="10" fill="white" />
+  <circle cx="500" cy="200" r="10" fill="white" />
+</svg>
