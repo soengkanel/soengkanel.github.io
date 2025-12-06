@@ -2,7 +2,7 @@
 layout: post
 title: "[Golang] The Senior Engineer's Guide to Go"
 date: 2025-12-06 17:00:00 +0700
-categories: [Golang]
+categories: [AI]
 tags: [Go, Programming, Concurrency, Backend, Senior Developer]
 author: Soeng Kanel
 thumbnail: /images/golang_senior_badge.svg
