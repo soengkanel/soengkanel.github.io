@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[Golang] The Senior Engineer's Guide to Go"
+title: "[AI] The Senior Engineer's Guide to Go"
 date: 2025-12-06 17:00:00 +0700
 categories: [AI]
 tags: [Go, Programming, Concurrency, Backend, Senior Developer]
