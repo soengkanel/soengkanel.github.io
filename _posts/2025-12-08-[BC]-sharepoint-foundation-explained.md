@@ -32,13 +32,13 @@ Imagine your physical office building. It has specific structures that serve spe
 Or, visualized:
 
 ```mermaid
-graph TD
+flowchart TD
     Tenant[Your Company Tenant] --> SiteCol1[HR Site Collection]
     Tenant --> SiteCol2[Finance Site Collection]
     
-    SiteCol1 --> Page1[Home Page / Notice Board]
-    SiteCol1 --> Lib1[Policies Library (Files)]
-    SiteCol1 --> List1[Employee Requests (Data List)]
+    SiteCol1 --> Page1["Home Page / Notice Board"]
+    SiteCol1 --> Lib1["Policies Library (Files)"]
+    SiteCol1 --> List1["Employee Requests (Data List)"]
     
     style Tenant fill:#f9f,stroke:#333,stroke-width:2px
     style SiteCol1 fill:#ccf,stroke:#333,stroke-width:2px
@@ -93,15 +93,15 @@ SharePoint is the foundation of the Microsoft Power Platform.
 SharePoint rarely lives alone. It is the backend for almost everything in M365.
 
 ```mermaid
-graph LR
+flowchart LR
     User[User]
     
-    subgraph "The App Layer (Front End)"
+    subgraph AppLayer ["The App Layer (Front End)"]
     Teams[Microsoft Teams]
     OneDrive[OneDrive]
     end
     
-    subgraph "The Storage Layer (Back End)"
+    subgraph StorageLayer ["The Storage Layer (Back End)"]
     SP[SharePoint]
     end
     
