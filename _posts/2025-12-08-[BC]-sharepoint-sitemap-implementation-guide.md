@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[BC] SharePoint Implementation Mapping: From Sitemap to Technical Components"
-date: 2025-12-08 12:00:00 +0700
+date: 2025-12-08 10:30:00 +0700
 categories: [BC]
 tags: [SharePoint, Architecture, Technical Guide, Microsoft 365]
 author: Soeng Kanel
