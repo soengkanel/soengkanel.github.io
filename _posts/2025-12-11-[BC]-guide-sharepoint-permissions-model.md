@@ -22,10 +22,10 @@ Before designing, you must understand the engine. SharePoint permissions flow to
 Everything in SharePoint inherits permissions from its parent by default.
 
 ```mermaid
-graph TD
-    Site[Site Collection (Root)] --> |Inherits| Library[Document Library]
-    Library --> |Inherits| Folder[Folder]
-    Folder --> |Inherits| File[File.docx]
+flowchart TD
+    Site["Site Collection (Root)"] --> |Inherits| Library["Document Library"]
+    Library --> |Inherits| Folder["Folder"]
+    Folder --> |Inherits| File["File.docx"]
     
     style Site fill:#2965f1,color:#fff
     style Library fill:#e1ebfc,stroke:#2965f1
@@ -77,19 +77,19 @@ We will define 3 Tiers of security.
 In modern SharePoint, we don't create huge subsites. We create **separate Site Collections** and join them to a **Hub**. This keeps permissions clean.
 
 ```mermaid
-graph TD
-    Hub[Intranet Hub (Home)]
-    Hub --> |Public Read| HR[HR Site]
-    Hub --> |Public Read| Retail[Retail Banking Site]
-    Hub --> |Private| Board[Board of Directors Site]
+flowchart TD
+    Hub["Intranet Hub (Home)"]
+    Hub --> |Public Read| HR["HR Site"]
+    Hub --> |Public Read| Retail["Retail Banking Site"]
+    Hub --> |Private| Board["Board of Directors Site"]
 
-    group_All[AD Group: 'All Staff'] -.-> |Read Access| Hub
+    group_All["AD Group: 'All Staff'"] -.-> |Read Access| Hub
     group_All -.-> |Read Access| HR
     group_All -.-> |Read Access| Retail
     group_All -.-> |No Access| Board
 
-    group_HR[AD Group: 'HR Team'] -.-> |Edit Access| HR
-    group_Retail[AD Group: 'Retail Team'] -.-> |Edit Access| Retail
+    group_HR["AD Group: 'HR Team'"] -.-> |Edit Access| HR
+    group_Retail["AD Group: 'Retail Team'"] -.-> |Edit Access| Retail
     
     style Hub fill:#00c7b7,color:black
     style Board fill:#ff4d4f,color:white
