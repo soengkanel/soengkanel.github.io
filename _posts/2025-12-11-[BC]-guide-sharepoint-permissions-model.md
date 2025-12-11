@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[BC] Guide: Designing a Secure SharePoint Permission Model"
-date: 2025-12-11 08:30:00 +0700
+date: 2025-12-11 08:00:00 +0700
 categories: [BC]
 tags: [SharePoint, Security, Governance, Tutorial, Intranet]
 author: Soeng Kanel
