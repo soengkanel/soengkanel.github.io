@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "The 'Hardcore' Leadership Style of Elon Musk"
-date: 2025-12-11 08:45:00 +0700
+date: 2025-12-11 08:00:00 +0700
 categories: [Human]
 tags: [Leadership, Productivity, Management, Psychology, Elon Musk]
 author: Soeng Kanel
