@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Custom SP Page</title>
+
+  <script>
+
+	  document.addEventListener("DOMContentLoaded", () => {
+	  document.getElementById("tile").innerText =
+		"JS Loaded Successfully at " + new Date().toLocaleTimeString();
+	});
+
+  </script>
+  <style>
+    body { font-family: Arial; padding: 30px; }
+    .card {
+      background: #1976d2;
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 250px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Welcome to WeBred Dashboard</h1>
+
+<div class="card" id="tile">
+  Loading...
+</div>
+
+</body>
+</html>
