@@ -307,7 +307,59 @@ This solution aligns with BRED Bank's permission models, ensuring clear separati
 
 ---
 
-<div style="background: linear-gradient(135deg, #0ea5e9, #2563eb); border-radius: 12px; padding: 30px; text-align: center; margin-top: 50px; color: white;">
+## 6. Implementation Map: Where Does the Code Live?
+
+This diagram clarifies exactly which platform holds which part of the solution stack.
+
+```mermaid
+graph TB
+    subgraph SP["🏢 SHAREPOINT (Configuration Only)"]
+        direction TB
+        SP1["📋 Lists Setup<br/>(Products, Categories)"]
+        SP2["📄 Site Page Creation<br/>(For Admin View)"]
+        SP3["🔌 Embed Web Part<br/>(Standard O365 Component)"]
+        
+        SP1 --- SP2
+        SP2 --- SP3
+        
+        style SP fill:#e0f2fe,stroke:#0ea5e9
+    end
+
+    subgraph PA["⚡ POWER AUTOMATE (Low-Code Logic)"]
+        direction TB
+        PA1["🔔 Trigger Logic<br/>(On Create/Modify)"]
+        PA2["🔄 JSON Mapping<br/>(Data Transformation)"]
+        PA3["🌐 HTTP Connector<br/>(API Request Config)"]
+        
+        PA1 --> PA2
+        PA2 --> PA3
+        
+        style PA fill:#f3e8ff,stroke:#8b5cf6
+    end
+
+    subgraph WP["🌐 WORDPRESS (Custom Code)"]
+        direction TB
+        WP1["🔧 Plugin (PHP)<br/>(sp-product-catalog.php)"]
+        WP2["🎨 Styles (CSS)<br/>(style.css)"]
+        WP3["📦 Database (SQL)<br/>(wp_sp_products)"]
+        WP4["🛡️ Security (PHP)<br/>(CSP Headers / Auth)"]
+        
+        WP1 --- WP2
+        WP1 --- WP3
+        WP1 --- WP4
+        
+        style WP fill:#0f172a,stroke:#334155,color:#fff
+    end
+```
+
+### Responsibility Breakdown
+
+| Platform | Type | Responsibility | Est. Effort |
+|----------|------|----------------|-------------|
+| **SharePoint** | *No-Code* | Create Lists, Columns, and the Admin Page. | ~2 Hours |
+| **Power Automate** | *Low-Code* | Configure the Flow, Map Fields, Set API Keys. | ~4 Hours |
+| **WordPress** | *Pro-Code* | Install Plugin, Configure PHP Constants, CSS Styling. | ~8 Hours |
+
     <h3 style="margin-top: 0;">Ready for Deployment</h3>
     <p style="opacity: 0.9; margin-bottom: 20px;">
         This architecture delivers <strong>compliance by design</strong>. It grants Marketing autonomy for content updates while keeping IT in control of security perimeters.
