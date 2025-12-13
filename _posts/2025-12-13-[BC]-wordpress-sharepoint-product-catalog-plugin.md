@@ -80,44 +80,42 @@ description: "A regulatory-compliant architectural proposal for integrating WeBr
 This diagram illustrates the secure data flow and the isolation of the internal display.
 
 ```mermaid
-flowchart TD
-    subgraph WEBRED["🏢 WE BRED (demo081225) - SharePoint Site"]
-        A[("📋 Products & Services List")] 
-        B["👤 Site Owner<br/>(Full Control)"]
-        B2["🔧 Can Manage<br/>Power Automate Flow"]
-        Q["🔗 Embedded iframe<br/>(Visual Layer)"]
+flowchart LR
+    %% Areas
+    subgraph Office["🏢 Where You Work (Intranet)"]
+        direction TB
+        Staff["👤 Marketing Staff"]
+        List["� Product List<br/>(Excel-like Interface)"]
+        View["�️ Secure Catalog View<br/>(Visible only here)"]
     end
 
-    subgraph PowerAutomate["⚡ Power Automate (Secure Sync)"]
-        D["🔔 Trigger:<br/>Item Created/Modified"]
-        E["🔄 Transform Data:<br/>Map Fields"]
-        F{"Check Status"}
-        G["📤 HTTPS POST<br/>(Encrypted)"]
+    subgraph Automation["⚡ The Automation Engine"]
+        direction TB
+        Robot["🤖 Power Automate<br/>(Runs Automatically)"]
     end
 
-    subgraph BRED["🌐 bredcambodia.com.kh - WordPress"]
-        I["🛡️ Firewall & Auth:<br/>API Key + IP Whitelist"]
-        K["✅ Upsert to Safe DB"]
-        M[("💾 wp_sp_products<br/>(Hidden Table)")]
-        N["🔒 Internal View Engine<br/>(Rendered Only via CSP)"]
+    subgraph System["� The Secure Vault"]
+        direction TB
+        Safe["� Encrypted Database"]
+        Guard["�️ Security Guard<br/>(Checks Access)"]
     end
 
-    B --> A
-    A --> D
-    D --> E
-    E --> F
-    F -->|"Active"| G
-    G --> I
-    I --> K
-    K --> M
-    M --> N
-    N -.->|"Rendered via TLS"| Q
-    Q -.->|"Visible Only To"| B
+    %% Flow Connections
+    Staff -->|"1. Updates Product"| List
+    List -->|"2. Notifies"| Robot
+    Robot -->|"3. Securely Sends"| Guard
+    Guard -->|"4. Check: Is it safe?"| Safe
+    Safe -->|"5. Shows Data"| View
 
-    style WEBRED fill:#0078d4,stroke:#005a9e,color:#fff
-    style PowerAutomate fill:#8b5cf6,stroke:#6d28d9,color:#fff
-    style BRED fill:#0f172a,stroke:#334155,color:#fff
+    %% Styling
+    style Office fill:#e0f2fe,stroke:#0ea5e9,color:#0f172a
+    style Automation fill:#f3e8ff,stroke:#8b5cf6,color:#0f172a
+    style System fill:#ecfdf5,stroke:#10b981,color:#0f172a
+    style View fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#0f172a
 ```
+<div style="text-align: center; color: #94a3b8; font-style: italic; margin-top: 10px;">
+    Figure 1: Simplified Logic Flow - Marketing updates the list, automation handles the rest, and data stays internal.
+</div>
 
 ---
 
