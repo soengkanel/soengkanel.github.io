@@ -624,21 +624,35 @@ Condition: Status = 'Active' OR Status changed
 
 ## Part 5: Embedding in SharePoint iframe
 
-<div style="background: linear-gradient(135deg, rgba(46,204,113,0.15), rgba(39,174,96,0.05)); border: 1px solid rgba(46,204,113,0.3); border-radius: 12px; padding: 25px; margin: 25px 0;">
-<h4 style="color: #2ecc71; margin-top: 0;">🔐 Site Owner Permission Only</h4>
-<p style="color: #c0c0c0;">Configure iframe embedding with proper authentication and permissions.</p>
+<div style="background: linear-gradient(135deg, rgba(231,76,60,0.15), rgba(192,57,43,0.05)); border: 1px solid rgba(231,76,60,0.3); border-radius: 12px; padding: 25px; margin: 25px 0;">
+<h4 style="color: #e74c3c; margin-top: 0;">🚨 CRITICAL: Regulatory Compliance & Security</h4>
+<p style="color: #c0c0c0;">
+To comply with bank regulations, the Product Catalog is <strong>strictly blocked from public access</strong>. It employs a "Defense in Depth" strategy:
+</p>
+<ul style="color: #c0c0c0; margin-bottom: 0;">
+<li><strong>CSP Headers:</strong> Browser refuses to load iframe unless parent is <code>webred.sharepoint.com</code></li>
+<li><strong>Referrer Check:</strong> Server rejects requests not originating from the intranet</li>
+<li><strong>Token Validation:</strong> Access requires a valid, rotating security token</li>
+<li><strong>Direct Access Block:</strong> Public users visiting the URL directly get a 403 Forbidden error</li>
+</ul>
 </div>
 
-### Step 1: WordPress - Allow iframe Embedding
+### Step 1: WordPress - Strict CSP Headers
 
 ```php
-// Add to plugin: Allow SharePoint domain to embed
+// Add to plugin: Strict Security Headers for Bank Compliance
 add_action('send_headers', function() {
-    // Only allow your SharePoint tenant
-    $allowed_origin = 'https://webred.sharepoint.com';  // WE BRED SharePoint tenant
+    // 1. Define the ONLY allowed parent (WE BRED Intranet)
+    $allowed_origin = 'https://webred.sharepoint.com'; 
     
+    // 2. Send Content-Security-Policy forces browser to block if parent doesn't match
     header("Content-Security-Policy: frame-ancestors 'self' $allowed_origin");
+    
+    // 3. Legacy protection
     header("X-Frame-Options: ALLOW-FROM $allowed_origin");
+    
+    // 4. Prevent indexing
+    header("X-Robots-Tag: noindex, nofollow");
 });
 
 // Create dedicated iframe endpoint (no WP theme wrapper)
@@ -678,24 +692,27 @@ add_action('template_redirect', function() {
 </iframe>
 ```
 
-### Step 3: Site Owner Permission Check
+### Step 3: Server-Side Access Control (Block Public)
 
 ```php
-// Validate SharePoint user token in embed request
 add_action('template_redirect', function() {
+    // Only apply to our specific embed endpoint
     if (!get_query_var('sppc_embed')) return;
     
     $token = sanitize_text_field($_GET['token'] ?? '');
     $referer = $_SERVER['HTTP_REFERER'] ?? '';
     
-    // Validate token (generated per-session in SharePoint)
-    if (!SPPC_Security::validate_embed_token($token)) {
-        wp_die('Access Denied', 403);
+    // 1. STRICT REFERER CHECK: Must come from WE BRED SharePoint
+    // This blocks direct access (copy-paste URL in new tab)
+    if (empty($referer) || strpos($referer, 'webred.sharepoint.com') === false) {
+        // Log potential violation for audit trail
+        error_log("Security Violation: Attempted direct access from IP " . $_SERVER['REMOTE_ADDR']);
+        wp_die('<h1>403 Forbidden</h1><p>Access allowed only via WE BRED Intranet.</p>', 'Access Denied', ['response' => 403]);
     }
     
-    // Validate referer is from SharePoint
-    if (strpos($referer, 'sharepoint.com') === false) {
-        wp_die('Invalid source', 403);
+    // 2. VALIDATE TOKEN: Check encryption token from SharePoint
+    if (!SPPC_Security::validate_embed_token($token)) {
+        wp_die('<h1>401 Unauthorized</h1><p>Invalid or expired security token.</p>', 'Unauthorized', ['response' => 401]);
     }
 });
 ```
