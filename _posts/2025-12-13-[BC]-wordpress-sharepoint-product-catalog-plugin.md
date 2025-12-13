@@ -360,6 +360,8 @@ graph TB
 | **Power Automate** | *Low-Code* | Configure the Flow, Map Fields, Set API Keys. | ~4 Hours |
 | **WordPress** | *Pro-Code* | Install Plugin, Configure PHP Constants, CSS Styling. | ~8 Hours |
 
+
+<div style="background: linear-gradient(135deg, #0ea5e9, #2563eb); border-radius: 12px; padding: 30px; text-align: center; margin-top: 50px; color: white;">
     <h3 style="margin-top: 0;">Ready for Deployment</h3>
     <p style="opacity: 0.9; margin-bottom: 20px;">
         This architecture delivers <strong>compliance by design</strong>. It grants Marketing autonomy for content updates while keeping IT in control of security perimeters.
