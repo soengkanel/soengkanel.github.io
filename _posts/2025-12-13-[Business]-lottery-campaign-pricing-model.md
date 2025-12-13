@@ -5,7 +5,7 @@ date: 2025-12-13 21:00:00 +0700
 categories: [Business]
 tags: [Startup, Revenue, Marketing, Strategy, Pricing]
 author: Soeng Kanel
-thumbnail: /images/lottery_pricing_model.png
+thumbnail: /images/productivity_growth_thumbnail.png
 description: "A deep dive into the 'Campaign Pricing' business model—turning high-ticket items into accessible lotteries. Includes financial breakdown, marketing copy, and a legal reality check."
 ---
 
