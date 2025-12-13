@@ -51,7 +51,7 @@ A WordPress plugin that displays banking products/services from a SharePoint lis
 
 ```mermaid
 flowchart TD
-    subgraph WEBRED["🏢 WE BRED - SharePoint Site"]
+    subgraph WEBRED["🏢 WE BRED (demo081225) - SharePoint Site"]
         A[("📋 Products & Services List")] 
         B["👤 Site Owner<br/>(Full Control)"]
         B2["🔧 Can Manage<br/>Power Automate Flow"]
@@ -63,7 +63,7 @@ flowchart TD
     end
 
     subgraph PowerAutomate["⚡ Power Automate<br/>(Owned by Site Owner)"]
-        D["🔔 Trigger:<br/>When item is created<br/>or modified in WE BRED"]
+        D["🔔 Trigger:<br/>When item is created<br/>or modified in WeBred"]
         E["🔄 Transform Data:<br/>Map SP columns to<br/>WordPress format"]
         F{"Check Product<br/>Status"}
         G["📤 HTTP POST to<br/>bredcambodia.com.kh/wp-json/sppc/v1/products"]
@@ -566,7 +566,7 @@ new SPPC_API_Handler();
       "name": "Get_SharePoint_Products",
       "type": "SharePoint_GetItems",
       "inputs": {
-        "site": "https://webred.sharepoint.com/sites/WEBRED",
+        "site": "https://demo081225.sharepoint.com/sites/WeBred",
         "list": "Products and Services",
         "filter": "Status eq 'Active'"
       }
@@ -630,7 +630,7 @@ Condition: Status = 'Active' OR Status changed
 To comply with bank regulations, the Product Catalog is <strong>strictly blocked from public access</strong>. It employs a "Defense in Depth" strategy:
 </p>
 <ul style="color: #c0c0c0; margin-bottom: 0;">
-<li><strong>CSP Headers:</strong> Browser refuses to load iframe unless parent is <code>webred.sharepoint.com</code></li>
+<li><strong>CSP Headers:</strong> Browser refuses to load iframe unless parent is <code>demo081225.sharepoint.com</code></li>
 <li><strong>Referrer Check:</strong> Server rejects requests not originating from the intranet</li>
 <li><strong>Token Validation:</strong> Access requires a valid, rotating security token</li>
 <li><strong>Direct Access Block:</strong> Public users visiting the URL directly get a 403 Forbidden error</li>
@@ -642,8 +642,8 @@ To comply with bank regulations, the Product Catalog is <strong>strictly blocked
 ```php
 // Add to plugin: Strict Security Headers for Bank Compliance
 add_action('send_headers', function() {
-    // 1. Define the ONLY allowed parent (WE BRED Intranet)
-    $allowed_origin = 'https://webred.sharepoint.com'; 
+    // 1. Define the ONLY allowed parent (WeBred Site)
+    $allowed_origin = 'https://demo081225.sharepoint.com';  
     
     // 2. Send Content-Security-Policy forces browser to block if parent doesn't match
     header("Content-Security-Policy: frame-ancestors 'self' $allowed_origin");
@@ -702,12 +702,12 @@ add_action('template_redirect', function() {
     $token = sanitize_text_field($_GET['token'] ?? '');
     $referer = $_SERVER['HTTP_REFERER'] ?? '';
     
-    // 1. STRICT REFERER CHECK: Must come from WE BRED SharePoint
+    // 1. STRICT REFERER CHECK: Must come from WeBred SharePoint
     // This blocks direct access (copy-paste URL in new tab)
-    if (empty($referer) || strpos($referer, 'webred.sharepoint.com') === false) {
+    if (empty($referer) || strpos($referer, 'demo081225.sharepoint.com') === false) {
         // Log potential violation for audit trail
         error_log("Security Violation: Attempted direct access from IP " . $_SERVER['REMOTE_ADDR']);
-        wp_die('<h1>403 Forbidden</h1><p>Access allowed only via WE BRED Intranet.</p>', 'Access Denied', ['response' => 403]);
+        wp_die('<h1>403 Forbidden</h1><p>Access allowed only via WeBred Intranet.</p>', 'Access Denied', ['response' => 403]);
     }
     
     // 2. VALIDATE TOKEN: Check encryption token from SharePoint
