@@ -200,7 +200,37 @@ Legally, pure lotteries are gambling (heavily regulated).
 
 ---
 
-## 6. Business Proposal Setup
+## 6. Marketing Grooming: The "Drop" Strategy
+
+"Grooming" your marketing means refining your assets and strategy so they are ready to convert cold traffic into heated buyers instantly. We borrow this from **Streetwear Culture** (Supreme, Yeezy).
+
+### Phase 1: The Trust Assets (The "Real" Check)
+Before you run a single ad, you must kill the #1 objection: *"Is this a scam?"*
+*   **The "In-Hand" Video:** 4K video of you holding the sealed MacBook breakdown. No stock footage.
+*   **The Face Reveal:** Anonymous lotteries look suspicious. Put a face (or a very credible brand avatar) to the name.
+*   **The Escrow Policy:** "If we don't hit 1,000 tickets in 7 days, you get an automatic refund." (Feature this prominently).
+
+### Phase 2: The "Velvet Rope" (Pre-Launch)
+Never launch to an empty room.
+*   **Action:** Create a waitlist landing page.
+*   **Hook:** "Get notified 1 hour before the $10 MacBook drop goes live."
+*   **Goal:** Collect 500 emails before you spend $1 on ads.
+*   **Grooming Task:** Set up the email sequence (1. Welcome, 2. Hype (24h before), 3. GO LIVE).
+
+### Phase 3: The FOMO Engine (Execution)
+When the cart opens, it must feel urgent.
+*   **Live Ticket Counter:** "124 tickets sold in the last 10 minutes."
+*   **Scarcity Visuals:** A progress bar that fills up red.
+*   **Micro-Influencers:** Pay 5 tech TikTokers ($50-$100 each) to post at the *exact same time* the cart opens.
+
+### Phase 4: The "Winner's Loop" (Post-Campaign)
+The most important marketing asset for Campaign #2 is the winner of Campaign #1.
+*   **Requirement:** The winner *must* send a video of them unboxing the prize to claim it.
+*   **Usage:** This video becomes your best ad for the next round. "See? Real people win."
+
+---
+
+## 7. Business Proposal Setup
 
 <div style="border-left: 4px solid #f59e0b; padding-left: 20px; margin: 30px 0;">
     <h3 style="margin-top: 0; color: #f59e0b;">Executive Summary</h3>
