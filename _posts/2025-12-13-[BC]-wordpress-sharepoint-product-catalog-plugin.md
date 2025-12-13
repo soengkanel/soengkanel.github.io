@@ -45,30 +45,32 @@ A WordPress plugin that displays banking products/services from a SharePoint lis
 ## Integration Flow Diagram
 
 <div style="background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 12px; padding: 25px; margin: 25px 0; border-left: 4px solid #0ea5e9;">
-<h4 style="color: #0ea5e9; margin-top: 0;">📊 Complete Data Flow: SharePoint → WordPress</h4>
-<p style="color: #a0a0a0;">When a user adds or edits a product in SharePoint, this flow automatically syncs to WordPress.</p>
+<h4 style="color: #0ea5e9; margin-top: 0;">📊 Complete Data Flow: WE BRED (SharePoint) → bredcambodia.com.kh (WordPress)</h4>
+<p style="color: #a0a0a0;">When a Site Owner adds or edits a product in the WE BRED SharePoint site, the flow automatically syncs to bredcambodia.com.kh WordPress site.</p>
 </div>
 
 ```mermaid
 flowchart TD
-    subgraph SharePoint["🏢 SharePoint Online"]
+    subgraph WEBRED["🏢 WE BRED - SharePoint Site"]
         A[("📋 Products & Services List")] 
-        B["👤 Site Owner/Editor"]
+        B["👤 Site Owner<br/>(Full Control)"]
+        B2["🔧 Can Manage<br/>Power Automate Flow"]
     end
 
-    subgraph Actions["User Actions"]
+    subgraph Actions["Site Owner Actions"]
         C{"Add/Edit/Delete<br/>Product Item"}
+        C2{"Run Manual Sync<br/>(Optional)"}
     end
 
-    subgraph PowerAutomate["⚡ Power Automate"]
-        D["🔔 Trigger:<br/>When item is created<br/>or modified"]
+    subgraph PowerAutomate["⚡ Power Automate<br/>(Owned by Site Owner)"]
+        D["🔔 Trigger:<br/>When item is created<br/>or modified in WE BRED"]
         E["🔄 Transform Data:<br/>Map SP columns to<br/>WordPress format"]
-        F{"Check Status"}
-        G["📤 HTTP POST<br/>to WordPress API"]
-        H["🗑️ HTTP DELETE<br/>from WordPress API"]
+        F{"Check Product<br/>Status"}
+        G["📤 HTTP POST to<br/>bredcambodia.com.kh/wp-json/sppc/v1/products"]
+        H["🗑️ HTTP DELETE from<br/>bredcambodia.com.kh API"]
     end
 
-    subgraph WordPress["🌐 WordPress"]
+    subgraph BRED["🌐 bredcambodia.com.kh - WordPress"]
         I["🔐 Security Layer:<br/>Validate API Key<br/>Check IP Whitelist"]
         J{"Request<br/>Valid?"}
         K["✅ Upsert Product<br/>to Database"]
@@ -76,19 +78,22 @@ flowchart TD
         M[("💾 wp_sp_products<br/>Database Table")]
     end
 
-    subgraph Display["📱 Frontend Display"]
-        N["🖼️ Product Catalog<br/>Shortcode"]
-        O["📄 Product Detail<br/>Page"]
+    subgraph Display["📱 Public Website Display"]
+        N["🖼️ Product Catalog<br/>on bredcambodia.com.kh"]
+        O["📄 Product Detail<br/>Pages"]
         P["🔍 Search<br/>Results"]
     end
 
-    subgraph Embed["🔗 SharePoint Embed"]
-        Q["iframe with<br/>Token Auth"]
-        R["👁️ Site Owners<br/>Can View"]
+    subgraph Embed["🔗 WE BRED Intranet Embed"]
+        Q["iframe embedded in<br/>WE BRED SharePoint"]
+        R["👁️ Site Owners Only<br/>Can View & Manage"]
     end
 
+    B --> B2
     B --> C
+    B2 --> C2
     C --> A
+    C2 --> D
     A --> D
     D --> E
     E --> F
@@ -106,25 +111,39 @@ flowchart TD
     N --> Q
     Q --> R
 
-    style SharePoint fill:#0078d4,stroke:#005a9e,color:#fff
+    style WEBRED fill:#0078d4,stroke:#005a9e,color:#fff
     style PowerAutomate fill:#8b5cf6,stroke:#6d28d9,color:#fff
-    style WordPress fill:#21759b,stroke:#1e6091,color:#fff
+    style BRED fill:#21759b,stroke:#1e6091,color:#fff
     style Display fill:#10b981,stroke:#059669,color:#fff
     style Embed fill:#f59e0b,stroke:#d97706,color:#fff
 ```
+
+### Site Owner Permissions for Automation
+
+<div style="background: linear-gradient(135deg, rgba(46,204,113,0.15), rgba(39,174,96,0.05)); border: 1px solid rgba(46,204,113,0.3); border-radius: 12px; padding: 25px; margin: 25px 0;">
+<h4 style="color: #2ecc71; margin-top: 0;">✅ What Site Owners Can Do</h4>
+<ul style="color: #c0c0c0;">
+<li><strong>Create/Edit/Delete</strong> products in the WE BRED Products & Services list</li>
+<li><strong>Own and manage</strong> the Power Automate flow for sync</li>
+<li><strong>Run manual sync</strong> to push all products to WordPress</li>
+<li><strong>View the embedded catalog</strong> within SharePoint</li>
+<li><strong>Monitor sync status</strong> and troubleshoot errors</li>
+</ul>
+</div>
 
 ### Flow Steps Explained
 
 | Step | Component | Description |
 |------|-----------|-------------|
-| **1** | SharePoint | User (Site Owner/Editor) adds or modifies a product in the list |
-| **2** | Power Automate | Trigger detects the change automatically |
-| **3** | Power Automate | Data is transformed to match WordPress API format |
-| **4** | Power Automate | HTTP request sent to WordPress REST API |
-| **5** | WordPress | Security layer validates API key and IP |
-| **6** | WordPress | Product data is inserted/updated in database |
-| **7** | Frontend | Changes appear immediately in catalog display |
-| **8** | SharePoint | Site owners can view via embedded iframe |
+| **1** | WE BRED SharePoint | Site Owner adds or modifies a product in the Products & Services list |
+| **2** | Power Automate | Trigger detects the change automatically (owned by Site Owner) |
+| **3** | Power Automate | Data is transformed to match bredcambodia.com.kh API format |
+| **4** | Power Automate | HTTP request sent to bredcambodia.com.kh REST API |
+| **5** | bredcambodia.com.kh | Security layer validates API key and IP whitelist |
+| **6** | bredcambodia.com.kh | Product data is inserted/updated in WordPress database |
+| **7** | Public Website | Changes appear on bredcambodia.com.kh product catalog |
+| **8** | WE BRED Intranet | Site Owners can view catalog via embedded iframe |
+
 
 ## Part 1: WordPress Plugin Structure
 
@@ -544,7 +563,7 @@ new SPPC_API_Handler();
       "name": "Get_SharePoint_Products",
       "type": "SharePoint_GetItems",
       "inputs": {
-        "site": "https://yourcompany.sharepoint.com/sites/intranet",
+        "site": "https://webred.sharepoint.com/sites/WEBRED",
         "list": "Products and Services",
         "filter": "Status eq 'Active'"
       }
@@ -575,7 +594,7 @@ new SPPC_API_Handler();
       "type": "HTTP",
       "inputs": {
         "method": "POST",
-        "uri": "https://yourwordpress.com/wp-json/sppc/v1/products",
+        "uri": "https://bredcambodia.com.kh/wp-json/sppc/v1/products",
         "headers": {
           "Content-Type": "application/json",
           "X-SPPC-API-Key": "@parameters('WordPressAPIKey')"
@@ -590,12 +609,12 @@ new SPPC_API_Handler();
 ### Flow 2: Real-time Webhook (On Item Change)
 
 ```
-Trigger: When an item is created or modified (SharePoint)
+Trigger: When an item is created or modified (WE BRED SharePoint)
   ↓
 Condition: Status = 'Active' OR Status changed
   ↓
-  ├─ Yes → HTTP POST to WordPress API (single product)
-  └─ No  → HTTP DELETE to WordPress API (remove product)
+  ├─ Yes → HTTP POST to bredcambodia.com.kh API (single product)
+  └─ No  → HTTP DELETE from bredcambodia.com.kh API (remove product)
 ```
 
 ---
@@ -613,7 +632,7 @@ Condition: Status = 'Active' OR Status changed
 // Add to plugin: Allow SharePoint domain to embed
 add_action('send_headers', function() {
     // Only allow your SharePoint tenant
-    $allowed_origin = 'https://yourcompany.sharepoint.com';
+    $allowed_origin = 'https://webred.sharepoint.com';  // WE BRED SharePoint tenant
     
     header("Content-Security-Policy: frame-ancestors 'self' $allowed_origin");
     header("X-Frame-Options: ALLOW-FROM $allowed_origin");
@@ -646,7 +665,7 @@ add_action('template_redirect', function() {
 ```html
 <!-- SharePoint Modern Page - Embed Web Part -->
 <iframe 
-    src="https://yourwordpress.com/product-catalog-embed/?token=SECURE_TOKEN"
+    src="https://bredcambodia.com.kh/product-catalog-embed/?token=SECURE_TOKEN"
     width="100%" 
     height="800"
     frameborder="0"
@@ -678,27 +697,33 @@ add_action('template_redirect', function() {
 });
 ```
 
-### SharePoint Permission Model
+### WE BRED SharePoint Permission Model
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│              SHAREPOINT PERMISSION FLOW                 │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│   SharePoint Site                                       │
-│   └── Site Owners Group (Full Control)                  │
-│       ├── Can view iframe embed ✓                       │
-│       ├── Can access product catalog ✓                  │
-│       └── Can trigger Power Automate sync ✓             │
-│                                                         │
-│   └── Site Members Group (Edit)                         │
-│       ├── Cannot view iframe embed ✗                    │
-│       └── Redirect to "Contact Admin" page              │
-│                                                         │
-│   └── Site Visitors Group (Read)                        │
-│       └── No access to embed section ✗                  │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│           WE BRED SHAREPOINT PERMISSION FLOW                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   WE BRED SharePoint Site                                       │
+│   └── Site Owners Group (Full Control)                          │
+│       ├── ✓ Can ADD/EDIT/DELETE products in list                │
+│       ├── ✓ Can OWN & MANAGE Power Automate flows               │
+│       ├── ✓ Can RUN MANUAL SYNC to bredcambodia.com.kh          │
+│       ├── ✓ Can VIEW embedded product catalog                   │
+│       ├── ✓ Can MONITOR sync status and logs                    │
+│       └── ✓ Can CONFIGURE API keys and settings                 │
+│                                                                 │
+│   └── Site Members Group (Edit)                                 │
+│       ├── ✓ Can ADD/EDIT products in list                       │
+│       ├── ✗ Cannot manage Power Automate flows                  │
+│       ├── ✗ Cannot view embedded catalog (optional)             │
+│       └── → Products sync automatically via Site Owner's flow   │
+│                                                                 │
+│   └── Site Visitors Group (Read)                                │
+│       ├── ✗ Cannot edit products                                │
+│       └── ✗ No access to embed section                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
