@@ -14,20 +14,23 @@ description: "A regulatory-compliant architectural proposal for integrating WeBr
         🏢 Executive Summary
     </h2>
     <p style="color: #cbd5e1; font-size: 1.1em; line-height: 1.7; margin-bottom: 25px;">
-        This proposal outlines a secure, compliant architecture for the <strong>BRED Bank Cambodia</strong> team to manage product and service listings directly from the <strong>WeBred SharePoint (Intranet)</strong> while securely displaying them on the corporate WordPress platform.
+        <strong>Business Need:</strong> Marketing requires an autonomous way to manage the Product Catalog using familiar tools (SharePoint/Excel) without IT intervention for every update.
+    </p>
+    <p style="color: #cbd5e1; font-size: 1.1em; line-height: 1.7; margin-bottom: 25px;">
+        <strong>Regulatory Constraint:</strong> This data and the preview capability must remain strictly internal to the bank's secure network.
     </p>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
         <div style="background: rgba(56, 189, 248, 0.1); border-left: 4px solid #38bdf8; padding: 15px; border-radius: 4px;">
-            <strong style="color: #7dd3fc; display: block; margin-bottom: 5px;">Objective</strong>
-            <span style="color: #94a3b8; font-size: 0.9em;">Centralize product data in SharePoint Lists.</span>
+            <strong style="color: #7dd3fc; display: block; margin-bottom: 5px;">Efficiency</strong>
+            <span style="color: #94a3b8; font-size: 0.9em;">Updates live in < 60 mins. Zero IT tickets.</span>
         </div>
-        <div style="background: rgba(248, 113, 113, 0.1); border-left: 4px solid #f87171; padding: 15px; border-radius: 4px;">
-            <strong style="color: #fca5a5; display: block; margin-bottom: 5px;">Constraint</strong>
-            <span style="color: #94a3b8; font-size: 0.9em;">Data must remain <strong>Internal Only</strong> (No Public Access).</span>
+        <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid #34d399; padding: 15px; border-radius: 4px;">
+            <strong style="color: #6ee7b7; display: block; margin-bottom: 5px;">Security</strong>
+            <span style="color: #94a3b8; font-size: 0.9em;">100% Internal. Blocked from Public Internet.</span>
         </div>
-        <div style="background: rgba(52, 211, 153, 0.1); border-left: 4px solid #34d399; padding: 15px; border-radius: 4px;">
-            <strong style="color: #6ee7b7; display: block; margin-bottom: 5px;">Outcome</strong>
-            <span style="color: #94a3b8; font-size: 0.9em;">Automated sync with "Defense in Depth" security.</span>
+        <div style="background: rgba(139, 92, 246, 0.1); border-left: 4px solid #a78bfa; padding: 15px; border-radius: 4px;">
+            <strong style="color: #c4b5fd; display: block; margin-bottom: 5px;">Innovation</strong>
+            <span style="color: #94a3b8; font-size: 0.9em;">Leverages existing O365 & Power Automate license.</span>
         </div>
     </div>
 </div>
@@ -122,6 +125,50 @@ flowchart LR
 ## 3. Technical Implementation: The Compliance Plugin
 
 This custom WordPress plugin serves as the secure receiver and rendering engine.
+
+### System Architecture (Technical View)
+*For IT & Security Teams:* This diagram details the specific protocols and data flow.
+
+```mermaid
+flowchart TD
+    subgraph WEBRED["🏢 WE BRED (demo081225)"]
+        A[("Products List")] 
+        B["Site Owner"]
+        Q["Embed iframe"]
+    end
+
+    subgraph PowerAutomate["⚡ Power Automate"]
+        D["Trigger: Item Mod"]
+        E["JSON Transform"]
+        F{"Status Check"}
+        G["POST /wp-json/..."]
+    end
+
+    subgraph BRED["🌐 bredcambodia.com.kh"]
+        I["Firewall: IP Whitelist"]
+        J["Plugin: API Auth"]
+        K["DB Upsert"]
+        M[("wp_sp_products")]
+        N["PHP Render Engine"]
+    end
+
+    B --> A
+    A --> D
+    D --> E
+    E --> F
+    F -->|"Active"| G
+    G -- "HTTPS/TLS" --> I
+    I --> J
+    J --> K
+    K --> M
+    M --> N
+    N -- "CSP Protected" --> Q
+    Q -- "View Only" --> B
+
+    style WEBRED fill:#0078d4,stroke:#005a9e,color:#fff
+    style PowerAutomate fill:#8b5cf6,stroke:#6d28d9,color:#fff
+    style BRED fill:#0f172a,stroke:#334155,color:#fff
+```
 
 ### A. Strict Access Control Implementation
 *This code enforces the regulatory requirement that only WeBred intranet users can view the data.*
