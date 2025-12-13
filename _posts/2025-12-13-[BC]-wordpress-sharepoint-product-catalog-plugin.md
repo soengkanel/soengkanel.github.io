@@ -130,44 +130,43 @@ This custom WordPress plugin serves as the secure receiver and rendering engine.
 *For IT & Security Teams:* This diagram details the specific protocols and data flow.
 
 ```mermaid
-flowchart TD
-    subgraph WEBRED["🏢 WE BRED (demo081225)"]
-        A[("Products List")] 
-        B["Site Owner"]
-        Q["Embed iframe"]
-    end
+sequenceDiagram
+    autonumber
+    participant SP as 🏢 SharePoint List
+    participant PA as ⚡ Power Automate
+    participant FW as 🛡️ WAF / Firewall
+    participant WP as 🌐 WordPress API
+    participant DB as 📦 Secure DB
 
-    subgraph PowerAutomate["⚡ Power Automate"]
-        D["Trigger: Item Mod"]
-        E["JSON Transform"]
-        F{"Status Check"}
-        G["POST /wp-json/..."]
-    end
+    Note over SP, PA: Trigger Phase
+    SP->>PA: Item Created/Modified
+    activate PA
+    PA->>PA: Transform Data (JSON Mapped)
+    
+    Note over PA, WP: Sync Phase (Encrypted)
+    PA->>FW: POST /wp-json/sppc/v1/products
+    activate FW
+    FW->>FW: Check IP Whitelist
+    FW->>WP: Forward Request
+    deactivate FW
+    
+    activate WP
+    WP->>WP: Validate API Key (Header)
+    WP->>DB: UPSERT (Insert or Update)
+    activate DB
+    DB-->>WP: Success ID
+    deactivate DB
+    WP-->>PA: 200 OK Response
+    deactivate WP
+    deactivate PA
 
-    subgraph BRED["🌐 bredcambodia.com.kh"]
-        I["Firewall: IP Whitelist"]
-        J["Plugin: API Auth"]
-        K["DB Upsert"]
-        M[("wp_sp_products")]
-        N["PHP Render Engine"]
-    end
-
-    B --> A
-    A --> D
-    D --> E
-    E --> F
-    F -->|"Active"| G
-    G -- "HTTPS/TLS" --> I
-    I --> J
-    J --> K
-    K --> M
-    M --> N
-    N -- "CSP Protected" --> Q
-    Q -- "View Only" --> B
-
-    style WEBRED fill:#0078d4,stroke:#005a9e,color:#fff
-    style PowerAutomate fill:#8b5cf6,stroke:#6d28d9,color:#fff
-    style BRED fill:#0f172a,stroke:#334155,color:#fff
+    Note over SP, WP: View Phase (Internal)
+    participant User as 👤 Intranet User
+    User->>WP: Request Embed URL (via iframe)
+    activate WP
+    WP->>WP: Check Referrer (Must be WeBred)
+    WP-->>User: Render HTML (CSP Headers)
+    deactivate WP
 ```
 
 ### A. Strict Access Control Implementation
