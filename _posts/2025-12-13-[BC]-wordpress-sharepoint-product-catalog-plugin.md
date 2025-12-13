@@ -78,10 +78,10 @@ flowchart TD
         M[("💾 wp_sp_products<br/>Database Table")]
     end
 
-    subgraph Display["📱 Public Website Display"]
-        N["🖼️ Product Catalog<br/>on bredcambodia.com.kh"]
-        O["📄 Product Detail<br/>Pages"]
-        P["🔍 Search<br/>Results"]
+    subgraph Display["🔒 Internal Display (NOT PUBLIC)"]
+        N["🖼️ Product Catalog<br/>Hidden from Public"]
+        O["📄 Product Detail<br/>Internal Only"]
+        P["🔍 Search<br/>Restricted Access"]
     end
 
     subgraph Embed["🔗 WE BRED Intranet Embed"]
@@ -114,7 +114,7 @@ flowchart TD
     style WEBRED fill:#0078d4,stroke:#005a9e,color:#fff
     style PowerAutomate fill:#8b5cf6,stroke:#6d28d9,color:#fff
     style BRED fill:#21759b,stroke:#1e6091,color:#fff
-    style Display fill:#10b981,stroke:#059669,color:#fff
+    style Display fill:#e74c3c,stroke:#c0392b,color:#fff
     style Embed fill:#f59e0b,stroke:#d97706,color:#fff
 ```
 
@@ -141,8 +141,8 @@ flowchart TD
 | **4** | Power Automate | HTTP request sent to bredcambodia.com.kh REST API |
 | **5** | bredcambodia.com.kh | Security layer validates API key and IP whitelist |
 | **6** | bredcambodia.com.kh | Product data is inserted/updated in WordPress database |
-| **7** | Public Website | Changes appear on bredcambodia.com.kh product catalog |
-| **8** | WE BRED Intranet | Site Owners can view catalog via embedded iframe |
+| **7** | bredcambodia.com.kh | Data stored securely (NOT displayed publicly) |
+| **8** | WE BRED Intranet | **Only Site Owners** can view catalog via embedded iframe |
 
 
 ## Part 1: WordPress Plugin Structure
@@ -233,10 +233,12 @@ class SP_Product_Catalog {
                 'name' => 'SP Products',
                 'singular_name' => 'SP Product'
             ],
-            'public' => true,
-            'has_archive' => true,
+            'public' => false,  // HIDDEN from public frontend
+            'show_ui' => true,  // Visible in WP Admin
+            'exclude_from_search' => true,
+            'publicly_queryable' => false,
             'supports' => ['title', 'editor', 'custom-fields'],
-            'show_in_rest' => true,
+            'show_in_rest' => true, // Required for Power Automate API
             'menu_icon' => 'dashicons-products'
         ]);
     }
@@ -431,10 +433,11 @@ class SPPC_API_Handler {
         ]);
         
         // Public endpoint for frontend (read-only)
+        // NOTE: For internal-only catalogs, restrict this permission callback
         register_rest_route($namespace, '/catalog', [
             'methods' => 'GET',
             'callback' => [$this, 'get_catalog'],
-            'permission_callback' => '__return_true'
+            'permission_callback' => '__return_true' // Change to validate_token() if strict privacy needed
         ]);
     }
     
@@ -728,7 +731,12 @@ add_action('template_redirect', function() {
 
 ---
 
-## Part 6: Frontend Display (Shortcodes)
+## Part 6: Internal Catalog Display (For Embed Only)
+
+<div style="background: linear-gradient(135deg, rgba(231,76,60,0.15), rgba(192,57,43,0.05)); border: 1px solid rgba(231,76,60,0.3); border-radius: 12px; padding: 25px; margin: 25px 0;">
+<h4 style="color: #e74c3c; margin-top: 0;">🚫 Not for Public Pages</h4>
+<p style="color: #c0c0c0;">These shortcodes are designed to be used ONLY on the protected embed page. Do not use them on public-facing pages.</p>
+</div>
 
 ```php
 <?php
