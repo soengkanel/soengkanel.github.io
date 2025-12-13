@@ -1,0 +1,68 @@
+<!-- Highlight.js for syntax highlighting -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"
+    media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css"
+    media="(prefers-color-scheme: light)">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize syntax highlighting
+        hljs.highlightAll();
+    });
+</script>
+
+<style>
+    /* Custom styling for code blocks */
+    pre {
+        margin: 1.5rem 0;
+        /* Remove padding and background from pre to avoid double-box */
+        padding: 0;
+        background: transparent;
+        overflow-x: auto;
+    }
+
+    /* Target the Highlight.js code block directly */
+    pre code.hljs {
+        border-radius: 8px;
+        padding: 1.5rem;
+        /* Add padding inside the code block */
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        width: 100%;
+        /* Ensure it fills the container */
+        display: block;
+        /* Ensure it behaves like a block */
+    }
+
+    /* Inline code */
+    :not(pre)>code {
+        background: var(--code-bg, #f0f0f0);
+        color: var(--code-color, #e83e8c);
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
+        font-size: 0.9em;
+    }
+
+    /* Dark theme adjustments */
+    [data-theme="dark"] :not(pre)>code {
+        --code-bg: #2d2d2d;
+        --code-color: #ff79c6;
+    }
+
+    /* Light theme adjustments */
+    [data-theme="light"] :not(pre)>code {
+        --code-bg: #f5f5f5;
+        --code-color: #e83e8c;
+    }
+
+    /* Copy button styling (optional enhancement) */
+    pre {
+        position: relative;
+    }
+</style>

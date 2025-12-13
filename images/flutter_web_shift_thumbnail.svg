@@ -1,0 +1,56 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="flutter-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#42A5F5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0D47A1;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect width="800" height="400" fill="#121212" rx="15" ry="15"/>
+  
+  <!-- Grid Background -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#222" stroke-width="1"/>
+  </pattern>
+  <rect width="800" height="400" fill="url(#grid)" />
+
+  <!-- React/Web File (Discarded) -->
+  <g opacity="0.4" transform="translate(100, 150) rotate(-15)">
+    <rect width="80" height="100" fill="#333" rx="5" />
+    <text x="40" y="55" font-family="monospace" font-size="20" fill="#61DAFB" text-anchor="middle">&lt;div&gt;</text>
+    <text x="40" y="80" font-family="monospace" font-size="12" fill="#888" text-anchor="middle">DOM</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M 250 200 L 350 200" stroke="white" stroke-width="4" marker-end="url(#arrowhead)" opacity="0.5"/>
+  
+  <!-- Flutter "Widget" Tree -->
+  <g transform="translate(450, 100)">
+     <!-- Root -->
+     <circle cx="0" cy="0" r="30" fill="url(#flutter-grad)" filter="url(#glow)" />
+     
+     <!-- Branches -->
+     <line x1="0" y1="30" x2="-60" y2="100" stroke="#42A5F5" stroke-width="3" />
+     <line x1="0" y1="30" x2="60" y2="100" stroke="#42A5F5" stroke-width="3" />
+     
+     <!-- Children -->
+     <circle cx="-60" cy="100" r="25" fill="#2196F3" />
+     <circle cx="60" cy="100" r="25" fill="#2196F3" />
+     
+     <!-- Grandchildren -->
+     <line x1="-60" y1="125" x2="-60" y2="180" stroke="#42A5F5" stroke-width="2" />
+     <rect x="-85" y="180" width="50" height="30" rx="5" fill="#64B5F6" />
+     
+     <line x1="60" y1="125" x2="60" y2="180" stroke="#42A5F5" stroke-width="2" />
+     <rect x="35" y="180" width="50" height="30" rx="5" fill="#64B5F6" />
+  </g>
+
+  <text x="400" y="360" font-family="Arial, sans-serif" font-size="24" fill="white" text-anchor="middle" font-weight="bold" letter-spacing="2">NO DOM. JUST PIXELS.</text>
+</svg>

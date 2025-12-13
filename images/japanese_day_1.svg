@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="jpbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#bc002d"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <linearGradient id="jpcard" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#jpbg)"/>
+  
+  <!-- White circle (Japan flag inspired) -->
+  <circle cx="650" cy="100" r="60" fill="white" opacity="0.2"/>
+  
+  <!-- Card -->
+  <rect x="100" y="50" width="600" height="300" rx="20" fill="url(#jpcard)" opacity="0.95"/>
+  
+  <!-- Hiragana characters -->
+  <text x="180" y="150" font-family="Arial, sans-serif" font-size="48" fill="#ffd700">あ い う え お</text>
+  
+  <!-- Text -->
+  <text x="400" y="200" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="white" text-anchor="middle">Japanese Day 1</text>
+  <text x="400" y="250" font-family="Arial, sans-serif" font-size="24" fill="#87ceeb" text-anchor="middle">Your First Words</text>
+  <text x="400" y="300" font-family="Arial, sans-serif" font-size="50" text-anchor="middle">🇯🇵 👶 🌸</text>
+  <text x="400" y="340" font-family="Arial, sans-serif" font-size="18" fill="#ff9999" text-anchor="middle">こんにちは | សួស្តី</text>
+</svg>

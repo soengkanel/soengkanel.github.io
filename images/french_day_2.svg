@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3d2914"/>
+      <stop offset="100%" style="stop-color:#5c3d1e"/>
+    </linearGradient>
+    <linearGradient id="card2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#002654"/>
+      <stop offset="100%" style="stop-color:#1e3a5f"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background (Café brown) -->
+  <rect width="800" height="400" fill="url(#bg2)"/>
+  
+  <!-- Card -->
+  <rect x="100" y="50" width="600" height="300" rx="20" fill="url(#card2)" opacity="0.95"/>
+  
+  <!-- Coffee cup icon -->
+  <g transform="translate(180, 110)">
+    <ellipse cx="40" cy="10" rx="35" ry="10" fill="#8b6914"/>
+    <rect x="5" y="10" width="70" height="60" rx="5" fill="#8b6914"/>
+    <ellipse cx="40" cy="70" rx="35" ry="10" fill="#6b5210"/>
+    <path d="M75,25 Q100,35 75,55" stroke="#8b6914" stroke-width="8" fill="none"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="400" y="140" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white" text-anchor="middle">French Day 2</text>
+  <text x="400" y="200" font-family="Arial, sans-serif" font-size="28" fill="#87ceeb" text-anchor="middle">Numbers &amp; Café</text>
+  <text x="400" y="260" font-family="Arial, sans-serif" font-size="60" text-anchor="middle">🇫🇷 ☕ 🥐</text>
+  <text x="400" y="320" font-family="Arial, sans-serif" font-size="20" fill="#ffd700" text-anchor="middle">Un, Deux, Trois... | មួយ ពីរ បី...</text>
+</svg>

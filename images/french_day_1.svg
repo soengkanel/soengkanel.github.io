@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#002654"/>
+      <stop offset="50%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#ED2939"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#bg)"/>
+  
+  <!-- Card -->
+  <rect x="100" y="50" width="600" height="300" rx="20" fill="url(#card)" opacity="0.95"/>
+  
+  <!-- Eiffel Tower Icon -->
+  <g transform="translate(200, 100)">
+    <polygon points="50,0 60,150 100,150 70,50 80,150 20,150 30,50 40,150 0,150" fill="#ffd700" opacity="0.8"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="400" y="140" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white" text-anchor="middle">French Day 1</text>
+  <text x="400" y="200" font-family="Arial, sans-serif" font-size="28" fill="#87ceeb" text-anchor="middle">Greetings &amp; Introductions</text>
+  <text x="400" y="260" font-family="Arial, sans-serif" font-size="60" text-anchor="middle">🇫🇷 🗼 🥐</text>
+  <text x="400" y="320" font-family="Arial, sans-serif" font-size="20" fill="#ffd700" text-anchor="middle">Bonjour | សួស្តី</text>
+</svg>

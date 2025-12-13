@@ -6,7 +6,7 @@
 name: Kanel SOENG
 
 # Short bio or description (displayed in the header)
-description: គិតរបៀបជ្វីស-ធ្វើការរបៀបជប៉ុន-រស់នៅរបៀបខ្មែរ
+description: ❤️ Human heart × 🤖 AI speed = 🚀 Future
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 avatar: https://raw.githubusercontent.com/skanel/skanel.github.io/master/images/kanel.jpg
@@ -55,6 +55,9 @@ baseurl: ""
 
 permalink: /:title/
 
+# Allow posts with future dates to be published
+future: true
+
 # The release of Jekyll Now that you're using
 version: v1.2.0
 
@@ -63,7 +66,7 @@ kramdown:
   # Use GitHub flavored markdown, including triple backtick fenced code blocks
   input: GFM
   # Jekyll 3 and GitHub Pages now only support rouge for syntax highlighting
-  syntax_highlighter: rouge
+  syntax_highlighter: none
   syntax_highlighter_opts:
     # Use existing pygments syntax highlighting css
     css_class: 'highlight'
@@ -72,10 +75,10 @@ kramdown:
 sass:
   style: :expanded # You might prefer to minify using :compressed
 
-# Use the following plug-ins
-gems:
-  - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
-  - jekyll-feed # Create an Atom feed using the official Jekyll feed gem
+# Use the following plugins
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
 
 # Exclude these files from your production _site
 exclude:
