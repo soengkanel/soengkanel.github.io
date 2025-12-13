@@ -42,6 +42,90 @@ A WordPress plugin that displays banking products/services from a SharePoint lis
 
 ---
 
+## Integration Flow Diagram
+
+<div style="background: linear-gradient(145deg, #1a1a2e, #16213e); border-radius: 12px; padding: 25px; margin: 25px 0; border-left: 4px solid #0ea5e9;">
+<h4 style="color: #0ea5e9; margin-top: 0;">📊 Complete Data Flow: SharePoint → WordPress</h4>
+<p style="color: #a0a0a0;">When a user adds or edits a product in SharePoint, this flow automatically syncs to WordPress.</p>
+</div>
+
+```mermaid
+flowchart TD
+    subgraph SharePoint["🏢 SharePoint Online"]
+        A[("📋 Products & Services List")] 
+        B["👤 Site Owner/Editor"]
+    end
+
+    subgraph Actions["User Actions"]
+        C{"Add/Edit/Delete<br/>Product Item"}
+    end
+
+    subgraph PowerAutomate["⚡ Power Automate"]
+        D["🔔 Trigger:<br/>When item is created<br/>or modified"]
+        E["🔄 Transform Data:<br/>Map SP columns to<br/>WordPress format"]
+        F{"Check Status"}
+        G["📤 HTTP POST<br/>to WordPress API"]
+        H["🗑️ HTTP DELETE<br/>from WordPress API"]
+    end
+
+    subgraph WordPress["🌐 WordPress"]
+        I["🔐 Security Layer:<br/>Validate API Key<br/>Check IP Whitelist"]
+        J{"Request<br/>Valid?"}
+        K["✅ Upsert Product<br/>to Database"]
+        L["❌ Return 401/403<br/>Unauthorized"]
+        M[("💾 wp_sp_products<br/>Database Table")]
+    end
+
+    subgraph Display["📱 Frontend Display"]
+        N["🖼️ Product Catalog<br/>Shortcode"]
+        O["📄 Product Detail<br/>Page"]
+        P["🔍 Search<br/>Results"]
+    end
+
+    subgraph Embed["🔗 SharePoint Embed"]
+        Q["iframe with<br/>Token Auth"]
+        R["👁️ Site Owners<br/>Can View"]
+    end
+
+    B --> C
+    C --> A
+    A --> D
+    D --> E
+    E --> F
+    F -->|"Status = Active"| G
+    F -->|"Status = Inactive<br/>or Deleted"| H
+    G --> I
+    H --> I
+    I --> J
+    J -->|"✓ Valid"| K
+    J -->|"✗ Invalid"| L
+    K --> M
+    M --> N
+    M --> O
+    M --> P
+    N --> Q
+    Q --> R
+
+    style SharePoint fill:#0078d4,stroke:#005a9e,color:#fff
+    style PowerAutomate fill:#8b5cf6,stroke:#6d28d9,color:#fff
+    style WordPress fill:#21759b,stroke:#1e6091,color:#fff
+    style Display fill:#10b981,stroke:#059669,color:#fff
+    style Embed fill:#f59e0b,stroke:#d97706,color:#fff
+```
+
+### Flow Steps Explained
+
+| Step | Component | Description |
+|------|-----------|-------------|
+| **1** | SharePoint | User (Site Owner/Editor) adds or modifies a product in the list |
+| **2** | Power Automate | Trigger detects the change automatically |
+| **3** | Power Automate | Data is transformed to match WordPress API format |
+| **4** | Power Automate | HTTP request sent to WordPress REST API |
+| **5** | WordPress | Security layer validates API key and IP |
+| **6** | WordPress | Product data is inserted/updated in database |
+| **7** | Frontend | Changes appear immediately in catalog display |
+| **8** | SharePoint | Site owners can view via embedded iframe |
+
 ## Part 1: WordPress Plugin Structure
 
 ### File Structure
