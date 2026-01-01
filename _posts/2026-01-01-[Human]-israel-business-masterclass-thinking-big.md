@@ -13,9 +13,6 @@ description: "A deep dive into the practical and motivational frameworks of Isra
     :root {
         --israel-blue: #005eb8;
         --israel-gold: #c5a059;
-        --israel-bg: #0d1117;
-        --card-bg: #161b22;
-        --text-ghost: #8b949e;
     }
 
     .masterclass-hero {
@@ -28,6 +25,10 @@ description: "A deep dive into the practical and motivational frameworks of Isra
         position: relative;
         overflow: hidden;
         box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .masterclass-hero h1, .masterclass-hero p {
+        color: white !important;
     }
 
     .masterclass-hero::after {
@@ -54,8 +55,8 @@ description: "A deep dive into the practical and motivational frameworks of Isra
     }
 
     .pillar-card {
-        background: var(--card-bg);
-        border: 1px solid #30363d;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
         border-radius: 20px;
         padding: 35px;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -65,7 +66,15 @@ description: "A deep dive into the practical and motivational frameworks of Isra
     .pillar-card:hover {
         transform: translateY(-10px);
         border-color: var(--israel-gold);
-        box-shadow: 0 10px 30px rgba(197, 160, 89, 0.1);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .pillar-card h3 {
+        color: var(--text-primary);
+    }
+
+    .pillar-card p {
+        color: var(--text-secondary);
     }
 
     .pillar-icon {
@@ -83,18 +92,18 @@ description: "A deep dive into the practical and motivational frameworks of Isra
 
     .motivation-quote {
         border-left: 5px solid var(--israel-gold);
-        background: rgba(197, 160, 89, 0.05);
+        background: var(--bg-secondary);
         padding: 30px;
         border-radius: 0 16px 16px 0;
         margin: 50px 0;
         font-style: italic;
         font-size: 1.2em;
         line-height: 1.6;
-        color: #c9d1d9;
+        color: var(--text-primary);
     }
 
     .training-box {
-        background: #000;
+        background: var(--bg-tertiary);
         border: 2px solid var(--israel-blue);
         border-radius: 16px;
         padding: 40px;
@@ -121,21 +130,29 @@ description: "A deep dive into the practical and motivational frameworks of Isra
     }
 
     .logic-tag {
-        background: #21262d;
-        border: 1px solid #30363d;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
         padding: 10px 20px;
         border-radius: 8px;
         font-family: 'Courier New', Courier, monospace;
-        color: #58a6ff;
+        color: var(--accent);
         font-size: 0.9em;
     }
 
     .interactive-workshop {
-        background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
-        border: 1px solid #30363d;
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
         border-radius: 20px;
         padding: 40px;
         margin: 60px 0;
+    }
+
+    .interactive-workshop h3 {
+        color: var(--text-primary);
+    }
+
+    .interactive-workshop p {
+        color: var(--text-secondary);
     }
 
     .btn-action {
@@ -162,6 +179,15 @@ description: "A deep dive into the practical and motivational frameworks of Isra
         font-weight: bold;
         text-decoration: underline;
         text-decoration-color: rgba(197, 160, 89, 0.3);
+    }
+
+    /* Input placeholders for simulated pivot */
+    .pivot-input {
+        background: var(--bg-primary);
+        height: 40px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid var(--border-color);
     }
 </style>
 
@@ -244,11 +270,11 @@ The Israel model is famous for the **Pivot**. A company starts making a missile 
     <p>Think of your current project. Imagine your primary resource (funding, a key partner, or a specific technology) suddenly disappears tomorrow. <strong>What is the one thing you have left that still has value?</strong></p>
     
     <div style="margin-top: 30px;">
-        <p style="color: var(--text-ghost);">1. List your core asset (e.g., "Our Customer Data")</p>
-        <div style="background: #21262d; height: 40px; border-radius: 8px; margin-bottom: 20px;"></div>
+        <p style="color: var(--text-secondary);">1. List your core asset (e.g., "Our Customer Data")</p>
+        <div class="pivot-input"></div>
         
-        <p style="color: var(--text-ghost);">2. How can this asset serve a different market? (The Pivot)</p>
-        <div style="background: #21262d; height: 40px; border-radius: 8px;"></div>
+        <p style="color: var(--text-secondary);">2. How can this asset serve a different market? (The Pivot)</p>
+        <div class="pivot-input"></div>
     </div>
 </div>
 
