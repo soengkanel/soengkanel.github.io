@@ -6,671 +6,603 @@ thumbnail: /images/technical_analysis_mastery.png
 ---
 
 <style>
-:root {
-  --trading-primary: #00d2ff;
-  --trading-secondary: #3a7bd5;
-  --trading-accent: #ffd700;
-  --trading-bg: #0f172a;
-  --trading-card: #1e293b;
-  --bullish: #10b981;
-  --bearish: #ef4444;
-}
-
-.trading-container {
-  background: var(--trading-bg);
-  color: #f8fafc;
+/* Theme-Aware Mastery Layout */
+.mastery-wrapper {
+  --m-accent: #006aff;
+  --m-bull: #10b981;
+  --m-bear: #ef4444;
+  --m-khmer: #eab308;
+  max-width: 1000px;
+  margin: 0 auto;
   font-family: 'Source Sans 3', sans-serif;
-  border-radius: 20px;
-  padding: 2rem;
-  line-height: 1.6;
+  color: var(--text-primary);
 }
 
-.topic-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin: 2rem 0;
+/* Hero Section */
+.m-hero {
+  padding: 4rem 0;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 4rem;
 }
 
-.topic-card {
-  background: var(--trading-card);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
-  padding: 1.5rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
+.m-hero h1 {
+  font-size: clamp(2.5rem, 8vw, 4.5rem) !important;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.9 !important;
+  margin-bottom: 1.5rem !important;
+  color: var(--text-primary);
 }
 
-.topic-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--trading-primary);
-  box-shadow: 0 10px 30px -10px rgba(0, 210, 255, 0.3);
+.m-hero p {
+  font-size: 1.4rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  line-height: 1.4;
 }
 
-.topic-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100px;
-  height: 100px;
-  background: linear-gradient(135deg, transparent 50%, rgba(0, 210, 255, 0.05) 50%);
-  transition: all 0.3s ease;
-}
-
-.topic-card:hover::after {
-  background: linear-gradient(135deg, transparent 50%, rgba(0, 210, 255, 0.1) 50%);
-}
-
-.topic-id {
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: var(--trading-primary);
-  opacity: 0.8;
-  margin-bottom: 0.5rem;
-  display: block;
-}
-
-.topic-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
+/* Category Navigation */
+.m-nav-sticky {
+  position: sticky;
+  top: 80px;
+  background: var(--bg-primary);
+  z-index: 90;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 3rem;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.m-nav-sticky::-webkit-scrollbar { display: none; }
 
-.topic-desc {
-  font-size: 0.95rem;
-  color: #94a3b8;
-  margin-bottom: 1.25rem;
-}
-
-.khmer-desc {
-  font-family: 'Noto Sans Khmer', sans-serif;
-  color: var(--trading-accent);
+.m-nav-btn {
+  white-space: nowrap;
+  padding: 0.5rem 1.25rem;
+  border-radius: 99px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   font-size: 0.9rem;
-  margin-bottom: 1rem;
-  display: block;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s;
 }
 
-.visual-box {
-  background: rgba(15, 23, 42, 0.5);
-  border-radius: 8px;
-  height: 120px;
+.m-nav-btn:hover, .m-nav-btn.active {
+  background: var(--m-accent);
+  color: white;
+  border-color: var(--m-accent);
+}
+
+/* Section Styling */
+.m-section {
+  margin-bottom: 6rem;
+  scroll-margin-top: 160px;
+}
+
+.m-section-title {
+  font-size: 0.8rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--m-accent);
+  margin-bottom: 2rem !important;
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-  position: relative;
-  border: 1px dashed rgba(255,255,255,0.1);
+  gap: 1rem;
+}
+.m-section-title::after {
+  content: '';
+  flex-grow: 1;
+  height: 1px;
+  background: var(--border-color);
 }
 
-/* Animations for Visuals */
-.fibo-lines {
-  width: 80%;
+/* Topic Layout: Side-by-Side */
+.m-topic {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  padding: 3rem 0;
+  border-bottom: 1px solid var(--border-color);
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .m-topic {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2rem 0;
+  }
+}
+
+.m-topic-content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-.fibo-line {
-  height: 1px;
-  background: var(--trading-primary);
-  opacity: 0.5;
-  width: 100%;
-}
-.fibo-label {
-  font-size: 8px;
-  position: absolute;
-  right: 5px;
-  color: var(--trading-primary);
 }
 
-.breakout-path {
-  width: 100%;
-  height: 100%;
+.m-num {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.m-title {
+  font-size: 2rem !important;
+  font-weight: 700;
+  margin-bottom: 0.5rem !important;
+  color: var(--text-primary);
+}
+
+.m-khmer {
+  font-family: 'Noto Sans Khmer', sans-serif;
+  color: var(--m-khmer);
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.m-desc {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.m-example {
+  background: var(--bg-secondary);
+  padding: 1.5rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  border-left: 4px solid var(--m-accent);
+}
+
+.m-example strong { color: var(--text-primary); }
+
+/* Visual Components */
+.m-visual {
+  background: var(--bg-secondary);
+  border-radius: 24px;
+  height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.candle-container {
-  display: flex;
-  gap: 10px;
-  align-items: flex-end;
-}
-.candle {
-  width: 12px;
-  border-radius: 2px;
   position: relative;
-}
-.candle.bull { background: var(--bullish); height: 40px; }
-.candle.bear { background: var(--bearish); height: 60px; }
-.candle::before, .candle::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  background: inherit;
-}
-.candle::before { top: -10px; height: 10px; }
-.candle::after { bottom: -10px; height: 10px; }
-
-.section-header {
-  border-left: 4px solid var(--trading-primary);
-  padding-left: 1rem;
-  margin: 3rem 0 1.5rem 0;
-  background: linear-gradient(90deg, rgba(0, 210, 255, 0.1), transparent);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
 }
 
-.badge {
-  background: rgba(0, 210, 255, 0.1);
-  color: var(--trading-primary);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  font-weight: bold;
+/* Specific SVG stylings */
+.candle-bull { fill: var(--m-bull); }
+.candle-bear { fill: var(--m-bear); }
+.path-main { stroke: var(--text-primary); stroke-width: 3; fill: none; }
+.path-accent { stroke: var(--m-accent); stroke-width: 4; fill: none; }
+
+/* Custom Animations */
+@keyframes draw {
+  from { stroke-dashoffset: 200; }
+  to { stroke-dashoffset: 0; }
+}
+.animate-draw {
+  stroke-dasharray: 200;
+  animation: draw 2s ease-out forwards;
 }
 
-.use-case {
-  background: rgba(255, 215, 0, 0.05);
-  border-left: 2px solid var(--trading-accent);
-  padding: 1rem;
-  margin-top: 1rem;
-  border-radius: 0 8px 8px 0;
-  font-size: 0.9rem;
+/* Risk Card Special styling */
+.risk-card {
+  background: var(--m-bear);
+  color: white;
+  padding: 4rem;
+  border-radius: 32px;
+  text-align: center;
+  margin-top: 4rem;
 }
-
-.use-case-title {
-  color: var(--trading-accent);
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-@keyframes pulse {
-  0% { opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { opacity: 0.5; }
-}
-
-.animate-pulse {
-  animation: pulse 2s infinite;
-}
+.risk-card h2 { color: white !important; font-size: 3rem !important; }
+.risk-card p { color: rgba(255,255,255,0.8); font-size: 1.2rem; }
 
 </style>
 
-<div class="trading-container">
+<div class="mastery-wrapper">
 
-# Technical Analysis Roadmap 📈
-Mastering the markets requires a deep understanding of price action, patterns, and psychology. Below are 22 essential topics to master your trading journey.
+  <!-- Hero Section -->
+  <header class="m-hero">
+    <p class="m-num">CURRICULUM 2026</p>
+    <h1>Technical Analysis Mastery</h1>
+    <p>A comprehensive roadmap of 22 essential concepts for the modern algorithmic and discretionary trader.</p>
+  </header>
 
----
+  <!-- Sticky Navigation -->
+  <nav class="m-nav-sticky">
+    <a href="#foundations" class="m-nav-btn">Foundations</a>
+    <a href="#geometry" class="m-nav-btn">Geometry</a>
+    <a href="#liquidity" class="m-nav-btn">Liquidity</a>
+    <a href="#structure" class="m-nav-btn">Structure</a>
+    <a href="#indicators" class="m-nav-btn">Indicators</a>
+    <a href="#advanced" class="m-nav-btn">Advanced</a>
+    <a href="#risk" class="m-nav-btn">Risk</a>
+  </nav>
 
-<h2 class="section-header">1. Foundation & Charting</h2>
+  <!-- Section: Foundations -->
+  <section id="foundations" class="m-section">
+    <div class="m-section-title">01 / Foundation & Charting</div>
+    
+    <!-- Topic 1 -->
+    <article class="m-topic" id="candlesticks">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 01</span>
+        <h3 class="m-title">Candlestick Patterns</h3>
+        <p class="m-khmer">🇰🇭 ទម្រង់ក្រាហ្វិកទៀន</p>
+        <p class="m-desc">The visual language of the market. Candlesticks represent price action over time, showing the open, high, low, and close levels.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> Look for "Engulfing" patterns at key support levels to find high-probability reversal entries.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <rect x="60" y="40" width="20" height="60" class="candle-bull" />
+          <line x1="70" y1="20" x2="70" y2="120" stroke="var(--m-bull)" stroke-width="2" />
+          <rect x="100" y="30" width="20" height="90" class="candle-bull" />
+          <line x1="110" y1="10" x2="110" y2="140" stroke="var(--m-bull)" stroke-width="2" />
+        </svg>
+      </div>
+    </article>
 
-<div class="topic-grid">
+    <!-- Topic 2 -->
+    <article class="m-topic" id="heikin-ashi">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 02</span>
+        <h3 class="m-title">Heikin Ashi</h3>
+        <p class="m-khmer">🇰🇭 ទៀនសម្រួលនិន្នាការ</p>
+        <p class="m-desc">A averaging technique that filters out market noise, making it significantly easier to identify the core trend.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> Flat bottom candles in an uptrend indicate strong momentum. Stay in the trade until a wick appears.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <rect x="40" y="80" width="15" height="20" fill="var(--m-bull)" opacity="0.4" />
+          <rect x="60" y="70" width="15" height="30" fill="var(--m-bull)" opacity="0.6" />
+          <rect x="80" y="60" width="15" height="40" fill="var(--m-bull)" opacity="0.8" />
+          <rect x="100" y="50" width="15" height="50" fill="var(--m-bull)" />
+        </svg>
+      </div>
+    </article>
 
-  <!-- Topic 6: Candlesticks -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 01</span>
-    <h3 class="topic-title">🕯️ Candlesticks</h3>
-    <span class="khmer-desc">🇰🇭 បច្ចេកទេសទៀនជប៉ុន</span>
-    <p class="topic-desc">The visual representation of price movement. Each candle tells a story of the battle between bulls and bears.</p>
-    <div class="visual-box">
-      <div class="candle-container">
-        <div class="candle bear" style="height: 40px;"></div>
-        <div class="candle bull" style="height: 70px;"></div>
-        <div class="candle bull" style="height: 50px;"></div>
+    <!-- Topic 3 -->
+    <article class="m-topic" id="renko">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 03</span>
+        <h3 class="m-title">Renko Bricks</h3>
+        <p class="m-khmer">🇰🇭 ក្រាហ្វិកឥដ្ឋ (គ្មានពេលវេលា)</p>
+        <p class="m-desc">Charts based solely on price movement. Time is ignored, allowing traders to focus purely on structural shifts.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> Use Renko to avoid being "chopped out" during sideways consolidation periods.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <rect x="50" y="90" width="25" height="25" fill="var(--m-bull)" rx="4" />
+          <rect x="75" y="65" width="25" height="25" fill="var(--m-bull)" rx="4" />
+          <rect x="100" y="40" width="25" height="25" fill="var(--m-bull)" rx="4" />
+        </svg>
+      </div>
+    </article>
+  </section>
+
+  <!-- Section: Geometry -->
+  <section id="geometry" class="m-section">
+    <div class="m-section-title">02 / Market Geometry</div>
+
+    <!-- Topic 4 -->
+    <article class="m-topic" id="support-resistance">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 04</span>
+        <h3 class="m-title">Support & Resistance</h3>
+        <p class="m-khmer">🇰🇭 តំបន់គាំទ្រ និងតំបន់តស៊ូ</p>
+        <p class="m-desc">Foundational horizontal levels where supply meets demand. These act as psychological barriers for price.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> Look for "Role Reversal"—when old resistance becomes new support after a breakout.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <line x1="20" y1="50" x2="180" y2="50" stroke="var(--m-bear)" stroke-dasharray="5,5" />
+          <path d="M20,120 L50,50 L80,100 L110,50 L140,80 L170,30" class="path-main" />
+        </svg>
+      </div>
+    </article>
+
+    <!-- Topic 5 -->
+    <article class="m-topic" id="trend-lines">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 05</span>
+        <h3 class="m-title">Trend Lines</h3>
+        <p class="m-khmer">🇰🇭 ខ្សែបន្ទាត់និន្នាការ</p>
+        <p class="m-desc">Diagonal paths connecting price extremes. They define the slope and speed of the current market cycle.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> A trend line needs at least 3 touches to be considered valid by major market participants.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <line x1="20" y1="130" x2="180" y2="30" stroke="var(--m-accent)" stroke-width="2" />
+          <circle cx="40" cy="118.5" r="5" fill="var(--m-accent)" opacity="0.4" />
+          <circle cx="100" cy="84.5" r="5" fill="var(--m-accent)" opacity="0.4" />
+          <circle cx="150" cy="56" r="5" fill="var(--m-accent)" opacity="0.4" />
+        </svg>
+      </div>
+    </article>
+
+    <!-- Topic 6 -->
+    <article class="m-topic" id="channels">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 06</span>
+        <h3 class="m-title">Price Channels</h3>
+        <p class="m-khmer">🇰🇭 ប៉ុស្តិ៍តម្លៃ</p>
+        <p class="m-desc">Parallel trend lines that encapsulate price action, creating a visual corridor of movement.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> Trading the "mid-line" of a channel can offer high R:R setups in trending markets.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <line x1="20" y1="110" x2="180" y2="30" stroke="var(--m-accent)" />
+          <line x1="40" y1="130" x2="200" y2="50" stroke="var(--m-accent)" />
+          <path d="M30,120 L70,80 L110,100 L150,60 L190,80" class="path-main" opacity="0.5" />
+        </svg>
+      </div>
+    </article>
+  </section>
+
+  <!-- Section: Liquidity -->
+  <section id="liquidity" class="m-section">
+    <div class="m-section-title">03 / Liquidity & Efficiency</div>
+
+    <!-- Topic 7 -->
+    <article class="m-topic" id="fvg">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 07</span>
+        <h3 class="m-title">Fair Value Gap (FVG)</h3>
+        <p class="m-khmer">🇰🇭 ចន្លោះតម្លៃយុត្តិធម៌</p>
+        <p class="m-desc">Price inefficiencies where liquidity was unbalanced, creating a vacuum that price often returns to "fill".</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> FVGs represent institutional urgency. They are often used as high-confluence entry zones.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <rect x="50" y="20" width="10" height="30" class="candle-bear" />
+          <rect x="65" y="10" width="10" height="100" class="candle-bear" />
+          <rect x="80" y="80" width="10" height="30" class="candle-bear" />
+          <rect x="65" y="50" width="25" height="30" fill="var(--m-accent)" opacity="0.2" />
+        </svg>
+      </div>
+    </article>
+
+    <!-- Topic 8 -->
+    <article class="m-topic" id="breakouts">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 08</span>
+        <h3 class="m-title">Breakouts & Fakeouts</h3>
+        <p class="m-khmer">🇰🇭 ការទម្លុះចេញ និងការបោកបញ្ឆោត</p>
+        <p class="m-desc">The moment price escapes a range. Learn to distinguish between true momentum and liquidity traps.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> Always wait for a high-volume candle close above the range to confirm a valid breakout.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <line x1="20" y1="80" x2="180" y2="80" stroke="var(--border-color)" />
+          <polyline points="20,100 50,85 80,95 110,75 130,40 160,20" class="path-accent" />
+        </svg>
+      </div>
+    </article>
+  </section>
+
+  <!-- Section: Structure -->
+  <section id="structure" class="m-section">
+    <div class="m-section-title">04 / Market Structure (SMC)</div>
+
+    <!-- Topic 9 -->
+    <article class="m-topic" id="market-structure">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 09</span>
+        <h3 class="m-title">Market Structure</h3>
+        <p class="m-khmer">🇰🇭 រចនាសម្ព័ន្ធទីផ្សារ</p>
+        <p class="m-desc">The core hierarchy of price: Higher Highs (HH) and Higher Lows (HL). If you don't know structure, you don't know the trend.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> Only trade in the direction of the High Timeframe (HTF) structure for the best win rates.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <polyline points="20,130 50,80 80,110 110,60 140,90 170,40" class="path-main" />
+          <text x="50" y="70" fill="var(--m-bull)" font-size="10">HH</text>
+          <text x="80" y="125" fill="var(--m-bull)" font-size="10">HL</text>
+        </svg>
+      </div>
+    </article>
+
+    <!-- Topic 10 -->
+    <article class="m-topic" id="bos">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 10</span>
+        <h3 class="m-title">Break of Structure (BOS)</h3>
+        <p class="m-khmer">🇰🇭 ការបំបែករចនាសម្ព័ន្ធ</p>
+        <p class="m-desc">Confirmation that the trend is continuing. A BOS occurs when price closes beyond the previous structural high or low.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> A BOS on the monthly chart signals a multi-year shift in market regime.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <polyline points="20,100 60,40 90,70 150,10" class="path-main" />
+          <line x1="50" y1="40" x2="160" y2="40" stroke="var(--border-color)" stroke-dasharray="2" />
+          <circle cx="115" cy="40" r="5" fill="var(--m-bull)" />
+        </svg>
+      </div>
+    </article>
+
+    <!-- Topic 11 -->
+    <article class="m-topic" id="choch">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 11</span>
+        <h3 class="m-title">Change of Character (CHoCH)</h3>
+        <p class="m-khmer">🇰🇭 ការផ្លាស់ប្តូរលក្ខណៈ</p>
+        <p class="m-desc">The first aggressive sign of a trend reversal. CHoCH indicates early shifts in order flow before a BOS happens.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> Use CHoCH on lower timeframes for "Sniper" entries within HTF supply/demand zones.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <polyline points="20,40 60,100 90,70 130,130" class="path-main" />
+          <line x1="80" y1="70" x2="160" y2="70" stroke="var(--m-bear)" stroke-dasharray="2" />
+          <text x="110" y="65" fill="var(--m-bear)" font-size="10">CHoCH</text>
+        </svg>
+      </div>
+    </article>
+  </section>
+
+  <!-- Section: Indicators -->
+  <section id="indicators" class="m-section">
+    <div class="m-section-title">05 / The Quant Toolbox</div>
+
+    <article class="m-topic" id="volume">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 12</span>
+        <h3 class="m-title">Volume Profile</h3>
+        <p class="m-khmer">🇰🇭 កម្រងបរិមាណជួញដូរ</p>
+        <p class="m-desc">Visualizing where most trading activity happened at specific price levels, rather than just over time.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> The "Point of Control" (POC) is where the most volume was traded—it acts as a magnet for price.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <rect x="150" y="20" width="30" height="10" fill="var(--m-accent)" opacity="0.2" />
+          <rect x="130" y="30" width="50" height="10" fill="var(--m-accent)" opacity="0.4" />
+          <rect x="100" y="40" width="80" height="10" fill="var(--m-accent)" />
+          <rect x="140" y="50" width="40" height="10" fill="var(--m-accent)" opacity="0.3" />
+        </svg>
+      </div>
+    </article>
+
+    <article class="m-topic" id="rsi">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 13</span>
+        <h3 class="m-title">The RSI Divergence</h3>
+        <p class="m-khmer">🇰🇭 សន្ទស្សន៍បង្គែតរំញ័រ</p>
+        <p class="m-desc">Identifying when price and momentum are disagreeing. A bearish divergence often precedes a major drop.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> A "Hidden Bullish Divergence" is one of the strongest signals for trend continuation.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <path d="M20,60 L80,30 L160,20" class="path-main" />
+          <path d="M20,130 L80,110 L160,125" stroke="var(--m-accent)" stroke-width="2" fill="none" />
+          <text x="20" y="145" fill="var(--m-accent)" font-size="8">MOMENTUM DECLINING</text>
+        </svg>
+      </div>
+    </article>
+  </section>
+
+  <!-- Section: Advanced -->
+  <section id="advanced" class="m-section">
+    <div class="m-section-title">06 / Mathematical Models</div>
+
+    <article class="m-topic" id="fibonacci">
+      <div class="m-topic-content">
+        <span class="m-num">TOPIC 16</span>
+        <h3 class="m-title">The Golden Ratio (Fib)</h3>
+        <p class="m-khmer">🇰🇭 មធ្យោបាយហ្វីបូណាក់ឈី</p>
+        <p class="m-desc">Using 0.618 and 0.786 retracements to find the "Ote" (Optimal Trade Entry) in any market.</p>
+        <div class="m-example">
+          <strong>Pro Insight:</strong> Fibonacci works best when aligned with previous structure or high-volume zones.
+        </div>
+      </div>
+      <div class="m-visual">
+        <svg width="200" height="150" viewBox="0 0 200 150">
+          <line x1="20" y1="130" x2="180" y2="30" stroke="var(--border-color)" />
+          <line x1="20" y1="68" x2="180" y2="68" stroke="var(--m-accent)" stroke-width="2" />
+          <text x="185" y="72" fill="var(--m-accent)" font-size="10">0.618</text>
+        </svg>
+      </div>
+    </article>
+
+    <div style="padding: 4rem 0; border-top: 1px solid var(--border-color); display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
+      <div>
+        <h4 style="color: var(--m-accent)">17. Elliott Wave Theory</h4>
+        <p style="font-size: 0.9rem; color: var(--text-secondary)">Understanding the 5-wave impulse and 3-wave correction of human psychology.</p>
+      </div>
+      <div>
+        <h4 style="color: var(--m-accent)">18. Wyckoff Schematics</h4>
+        <p style="font-size: 0.9rem; color: var(--text-secondary)">Tracking Accumulation and Distribution phases by "The Composite Man".</p>
+      </div>
+      <div>
+        <h4 style="color: var(--m-accent)">19. Bollinger Bands</h4>
+        <p style="font-size: 0.9rem; color: var(--text-secondary)">Statistical volatility bands that indicate reversion to the mean.</p>
+      </div>
+      <div>
+        <h4 style="color: var(--m-accent)">20. Ichimoku Cloud</h4>
+        <p style="font-size: 0.9rem; color: var(--text-secondary)">Performance at a glance: Trend, support, and momentum in one indicator.</p>
+      </div>
+      <div>
+        <h4 style="color: var(--m-accent)">21. Order Blocks (OB)</h4>
+        <p style="font-size: 0.9rem; color: var(--text-secondary)">Specific candles where institutions placed massive buy/sell orders.</p>
+      </div>
+      <div>
+        <h4 style="color: var(--m-accent)">22. Time & Price (Killzones)</h4>
+        <p style="font-size: 0.9rem; color: var(--text-secondary)">Trading only during London/NY sessions when liquidity is highest.</p>
       </div>
     </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Look for "Hammer" at support or "Shooting Star" at resistance to spot potential reversals.
-    </div>
-  </div>
+  </section>
 
-  <!-- Topic 7: Heikin Ashi -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 02</span>
-    <h3 class="topic-title">📉 Heikin Ashi</h3>
-    <span class="khmer-desc">🇰🇭 ទៀនសម្រួលនិន្នាការ</span>
-    <p class="topic-desc">A modified candlestick technique that filters out market noise, making trends easier to identify.</p>
-    <div class="visual-box">
-       <div class="candle-container" style="gap: 2px;">
-         <div class="candle bull" style="height: 30px; width: 8px;"></div>
-         <div class="candle bull" style="height: 35px; width: 8px;"></div>
-         <div class="candle bull" style="height: 40px; width: 8px;"></div>
-         <div class="candle bull" style="height: 45px; width: 8px;"></div>
-       </div>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Stay in a trade as long as the Heikin Ashi candles remain the same color without lower/upper wicks.
-    </div>
-  </div>
-
-  <!-- Topic 9: Renko -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 03</span>
-    <h3 class="topic-title">🧱 Renko</h3>
-    <span class="khmer-desc">🇰🇭 ក្រាហ្វិកឥដ្ឋ (គ្មានពេលវេលា)</span>
-    <p class="topic-desc">Charts based solely on price movement rather than both price and time. Perfect for trend followers.</p>
-    <div class="visual-box">
-      <div style="display: flex; gap: 4px; align-items: flex-end;">
-        <div style="width: 15px; height: 15px; background: var(--bullish); margin-bottom: 0;"></div>
-        <div style="width: 15px; height: 15px; background: var(--bullish); margin-bottom: 15px;"></div>
-        <div style="width: 15px; height: 15px; background: var(--bearish); margin-bottom: 15px;"></div>
+  <!-- Section: Risk -->
+  <section id="risk" class="m-section">
+    <div class="risk-card">
+      <span class="m-num" style="color: rgba(255,255,255,0.6)">THE BOTTOM LINE</span>
+      <h2>Risk Management</h2>
+      <p>Technical analysis gives you the "Odds", but Risk Management gives you the "Career". Without a stop loss and proper position sizing, your analysis is worthless in the long run.</p>
+      <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 1rem;">
+        <span style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 8px;">1% Max Risk</span>
+        <span style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 8px;">2:1 Min R:R</span>
       </div>
     </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Used to remove "sideways" noise and focus only on significant price changes.
-    </div>
-  </div>
+  </section>
+
+  <!-- Final Footer -->
+  <footer style="margin-top: 6rem; padding: 4rem 0; border-top: 1px solid var(--border-color); text-align: center;">
+    <p style="color: var(--text-muted); font-style: italic;">"The goal of a successful trader is to make the best trades. Money is secondary." — Alexander Elder</p>
+    <div style="margin-top: 2rem; font-weight: 800; font-size: 1.2rem; color: var(--m-accent);">KEEP TRADING. KEEP LEARNING. 🚀</div>
+  </footer>
 
 </div>
 
-<h2 class="section-header">2. Market Geometry & Levels</h2>
+<script>
+// Simple Navigation Highlight Script
+document.addEventListener('DOMContentLoaded', () => {
+  const sections = document.querySelectorAll('.m-section');
+  const navBtns = document.querySelectorAll('.m-nav-btn');
 
-<div class="topic-grid">
+  window.addEventListener('scroll', () => {
+    let current = "";
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      if (pageYOffset >= sectionTop - 200) {
+        current = section.getAttribute('id');
+      }
+    });
 
-  <!-- Topic 11: Support and Resistance -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 04</span>
-    <h3 class="topic-title">🧱 Support & Resistance</h3>
-    <span class="khmer-desc">🇰🇭 តំបន់គាំទ្រ និងតំបន់តស៊ូ</span>
-    <p class="topic-desc">Horizontal levels where price has historically struggled to break through.</p>
-    <div class="visual-box">
-      <div style="width:80%; height:1px; background:var(--trading-accent); position:absolute; top:20%;"></div>
-      <div style="width:80%; height:1px; background:var(--trading-accent); position:absolute; bottom:20%;"></div>
-      <svg width="100" height="60" viewBox="0 0 100 60">
-        <path d="M10,40 L30,15 L50,45 L70,12 L90,48" fill="none" stroke="white" stroke-width="2"/>
-      </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Buy at Support (floor) and Sell at Resistance (ceiling).
-    </div>
-  </div>
-
-  <!-- Topic 12: Dynamic Support and Resistance -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 05</span>
-    <h3 class="topic-title">🌊 Dynamic S&R</h3>
-    <span class="khmer-desc">🇰🇭 តំបន់គាំទ្រចល័ត</span>
-    <p class="topic-desc">Using Moving Averages (EMA/SMA) as "invisible" support or resistance that moves with price.</p>
-    <div class="visual-box">
-      <svg width="140" height="80" viewBox="0 0 140 80">
-        <path d="M10,70 Q40,40 70,50 T130,20" fill="none" stroke="var(--trading-primary)" stroke-width="2" class="animate-pulse"/>
-        <path d="M5,75 Q35,45 65,55 T125,25" fill="none" stroke="white" stroke-width="1" stroke-dasharray="4"/>
-      </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      The 200 EMA often acts as a major dynamic floor in a bull market.
-    </div>
-  </div>
-
-  <!-- Topic 13: Trend lines -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 06</span>
-    <h3 class="topic-title">📈 Trend Lines</h3>
-    <span class="khmer-desc">🇰🇭 ខ្សែបន្ទាត់និន្នាការ</span>
-    <p class="topic-desc">Diagonal lines connecting troughs or peaks to define the direction of the trend.</p>
-    <div class="visual-box">
-       <svg width="100" height="60">
-         <line x1="0" y1="60" x2="100" y2="0" stroke="var(--bullish)" stroke-width="2" />
-         <circle cx="20" cy="48" r="3" fill="white" />
-         <circle cx="50" cy="30" r="3" fill="white" />
-         <circle cx="80" cy="12" r="3" fill="white" />
-       </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Wait for a 3rd touch on a trendline to confirm its validity before entering a trade.
-    </div>
-  </div>
-
-</div>
-
-<h2 class="section-header">3. Price Dynamics & Gaps</h2>
-
-<div class="topic-grid">
-
-  <!-- Topic 2: Breakouts -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 07</span>
-    <h3 class="topic-title">🚀 Breakouts</h3>
-    <span class="khmer-desc">🇰🇭 ការទម្លុះចេញ</span>
-    <p class="topic-desc">When price moves significantly through a defined level of support or resistance.</p>
-    <div class="visual-box">
-      <svg width="120" height="60">
-        <line x1="10" y1="30" x2="110" y2="30" stroke="var(--bearish)" stroke-width="1" stroke-dasharray="4"/>
-        <path d="M10,50 L30,45 L50,55 L70,30 L90,10" fill="none" stroke="var(--bullish)" stroke-width="3" />
-      </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      A breakout with high volume confirms the move is likely to continue.
-    </div>
-  </div>
-
-  <!-- Topic 5: Fair Value Gap -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 08</span>
-    <h3 class="topic-title">🕳️ Fair Value Gap (FVG)</h3>
-    <span class="khmer-desc">🇰🇭 ចន្លោះតម្លៃយុត្តិធម៌</span>
-    <p class="topic-desc">Imbalance in price movement where only one side (buyers or sellers) was dominant, leaving a "gap".</p>
-    <div class="visual-box">
-      <div style="display: flex; gap: 5px; align-items: flex-end;">
-        <div class="candle bear" style="height: 30px;"></div>
-        <div class="candle bear" style="height: 80px; border: 1px solid var(--trading-primary);"></div>
-        <div class="candle bear" style="height: 30px;"></div>
-      </div>
-      <div style="position: absolute; width: 40px; height: 10px; background: rgba(0,210,255,0.2); top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Market often returns to fill these gaps before continuing the original move.
-    </div>
-  </div>
-
-  <!-- Topic 3: Reversals -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 09</span>
-    <h3 class="topic-title">🔄 Reversals</h3>
-    <span class="khmer-desc">🇰🇭 ការបកត្រឡប់នៃនិន្នាការ</span>
-    <p class="topic-desc">The moment a trend changes from Bullish to Bearish, or vice versa.</p>
-    <div class="visual-box">
-      <svg width="100" height="60">
-        <path d="M0,50 L30,20 L50,10 L70,20 L100,60" fill="none" stroke="var(--bearish)" stroke-width="3" />
-      </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Identifying a "Double Top" is a classic sign of an upcoming bearish reversal.
-    </div>
-  </div>
-
-</div>
-
-<h2 class="section-header">4. Advanced Market Structure (SMC)</h2>
-
-<div class="topic-grid">
-
-  <!-- Topic 20: Market Structure -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 10</span>
-    <h3 class="topic-title">🏛️ Market Structure</h3>
-    <span class="khmer-desc">🇰🇭 រចនាសម្ព័ន្ធទីផ្សារ</span>
-    <p class="topic-desc">Understanding the hierarchy of Highs and Lows (HH, HL, LH, LL).</p>
-    <div class="visual-box">
-      <div style="font-size: 10px; position: absolute; top: 10px; left: 20px;">HH</div>
-      <div style="font-size: 10px; position: absolute; bottom: 10px; left: 40px;">HL</div>
-       <svg width="120" height="80">
-         <path d="M10,70 L30,20 L50,50 L80,10 L100,40" fill="none" stroke="white" stroke-width="2" />
-       </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      A break of a Higher Low (HL) is the first sign of structural weakness.
-    </div>
-  </div>
-
-  <!-- Topic 21: BOS -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 11</span>
-    <h3 class="topic-title">💥 BOS (Break of Structure)</h3>
-    <span class="khmer-desc">🇰🇭 ការបំបែករចនាសម្ព័ន្ធ</span>
-    <p class="topic-desc">When price continues the current trend by breaking the previous high (bullish) or low (bearish).</p>
-    <div class="visual-box">
-       <svg width="120" height="80">
-         <path d="M10,50 L40,20 L60,40 L90,10" fill="none" stroke="var(--bullish)" stroke-width="2" />
-         <line x1="30" y1="20" x2="110" y2="20" stroke="grey" stroke-dasharray="2" />
-         <text x="75" y="15" fill="var(--bullish)" font-size="10">BOS</text>
-       </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Consistent BOS confirms you are in a strong, healthy trend.
-    </div>
-  </div>
-
-  <!-- Topic 22: CHOCH -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 12</span>
-    <h3 class="topic-title">⚡ CHOCH</h3>
-    <span class="khmer-desc">🇰🇭 ការផ្លាស់ប្តូរលក្ខណៈ</span>
-    <p class="topic-desc">Change of Character: The first signal that the market sentiment has shifted from bull to bear or vice versa.</p>
-    <div class="visual-box">
-       <svg width="120" height="80">
-         <path d="M10,70 L30,40 L50,60 L80,30 L100,50 L110,80" fill="none" stroke="var(--bearish)" stroke-width="2" />
-         <text x="80" y="70" fill="var(--bearish)" font-size="10">CHOCH</text>
-       </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      CHOCH often happens at major Supply or Demand zones before a big reversal.
-    </div>
-  </div>
-
-  <!-- Topic 19: Supply & Demand -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 13</span>
-    <h3 class="topic-title">⚖️ Supply & Demand</h3>
-    <span class="khmer-desc">🇰🇭 ការផ្គត់ផ្គង់ និងតម្រូវការ</span>
-    <p class="topic-desc">Zones where big institutions are likely buying (Demand) or selling (Supply).</p>
-    <div class="visual-box">
-      <div style="width: 100px; height: 30px; border: 1px solid var(--bearish); background: rgba(239, 68, 68, 0.1); position: absolute; top: 10px;">Supply</div>
-      <div style="width: 100px; height: 30px; border: 1px solid var(--bullish); background: rgba(16, 185, 129, 0.1); position: absolute; bottom: 10px;">Demand</div>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Look for "Rally-Base-Rally" to identify strong institutional demand zones.
-    </div>
-  </div>
-
-</div>
-
-<h2 class="section-header">5. Indicators & Oscillators</h2>
-
-<div class="topic-grid">
-
-  <!-- Topic 18: Volume -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 14</span>
-    <h3 class="topic-title">📊 Volume</h3>
-    <span class="khmer-desc">🇰🇭 បរិមាណជួញដូរ</span>
-    <p class="topic-desc">The number of shares or contracts traded. It validates the strength of price moves.</p>
-    <div class="visual-box" style="align-items: flex-end; gap: 2px;">
-      <div style="width: 6px; background: var(--bearish); height: 20px;"></div>
-      <div style="width: 6px; background: var(--bullish); height: 50px;"></div>
-      <div style="width: 6px; background: var(--bullish); height: 80px;"></div>
-      <div style="width: 6px; background: var(--bearish); height: 30px;"></div>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Price rising on falling volume? Watch out—the trend might be exhausting.
-    </div>
-  </div>
-
-  <!-- Topic 15: Momentum Indicators -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 15</span>
-    <h3 class="topic-title">🚀 Momentum Indicators</h3>
-    <span class="khmer-desc">🇰🇭 សន្ទស្សន៍សន្ទុះតម្លៃ</span>
-    <p class="topic-desc">Indicators like MACD or ROC that measure the speed of price changes to confirm trend strength.</p>
-    <div class="visual-box">
-      <svg width="120" height="40">
-        <path d="M0,35 L20,30 L40,25 L60,15 L80,10 L100,2" fill="none" stroke="var(--bullish)" stroke-width="3" />
-      </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      When MACD crosses above the signal line, it shows increasing bullish momentum.
-    </div>
-  </div>
-
-  <!-- Topic 16: Oscillators -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 16</span>
-    <h3 class="topic-title">⏲️ Oscillators (RSI/Stoch)</h3>
-    <span class="khmer-desc">🇰🇭 សន្ទស្សន៍រំញ័រ</span>
-    <p class="topic-desc">Tools like RSI or Stochastic that track overbought (>70) and oversold (<30) conditions.</p>
-    <div class="visual-box">
-      <svg width="120" height="60">
-        <rect x="0" y="15" width="120" height="30" fill="rgba(255,255,255,0.05)" />
-        <path d="M0,45 Q20,10 40,30 T80,50 T120,5" fill="none" stroke="var(--trading-primary)" stroke-width="2" />
-      </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      RSI above 70 indicates the market might be due for a correction.
-    </div>
-  </div>
-
-  <!-- Topic 17: Divergence -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 17</span>
-    <h3 class="topic-title">🔀 Divergence</h3>
-    <span class="khmer-desc">🇰🇭 ការដើរចេញពីគ្នា</span>
-    <p class="topic-desc">When price and an indicator move in opposite directions. A powerful reversal signal.</p>
-    <div class="visual-box">
-       <div style="position: absolute; top: 30px;">Price: HH 📈</div>
-       <div style="position: absolute; bottom: 10px; color: var(--bearish);">RSI: LH 📉</div>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Bearish Divergence: Price makes a new high, but RSI makes a lower high.
-    </div>
-  </div>
-
-</div>
-
-<h2 class="section-header">6. Mathematical & Harmonic Patterns</h2>
-
-<div class="topic-grid">
-
-  <!-- Topic 18: Fibonacci Retracements -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 18</span>
-    <h3 class="topic-title">🔢 Fibonacci Retracements</h3>
-    <span class="khmer-desc">🇰🇭 កម្រិតហ្វីបូណាក់ឈី</span>
-    <p class="topic-desc">Mathematical ratios (0.618, 0.5) used to predict where price might pull back.</p>
-    <div class="visual-box">
-      <div class="fibo-lines">
-        <div class="fibo-line"><span class="fibo-label">0.0%</span></div>
-        <div class="fibo-line" style="background: var(--trading-accent); opacity: 1;"><span class="fibo-label">61.8%</span></div>
-        <div class="fibo-line"><span class="fibo-label">100.0%</span></div>
-      </div>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      The "Golden Pocket" (61.8%) is where professional traders look for entries.
-    </div>
-  </div>
-
-  <!-- Topic 19: Elliott Wave -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 19</span>
-    <h3 class="topic-title">🌊 Elliott Wave</h3>
-    <span class="khmer-desc">🇰🇭 ទ្រឹស្តីរលក Elliott</span>
-    <p class="topic-desc">Theoretical framework where markets move in repetitive cycles of 5 impulse and 3 corrective waves.</p>
-    <div class="visual-box">
-      <svg width="120" height="80">
-        <path d="M10,70 L30,40 L45,60 L75,20 L90,40 L115,5" fill="none" stroke="var(--trading-primary)" stroke-width="2" />
-      </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Wave 3 is usually the longest and strongest part of a trend.
-    </div>
-  </div>
-
-  <!-- Topic 20: Harmonic Patterns -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 20</span>
-    <h3 class="topic-title">🦋 Harmonic Patterns</h3>
-    <span class="khmer-desc">🇰🇭 បំណិនរាងធរណីមាត្រ</span>
-    <p class="topic-desc">Complex geometric patterns that use Fib ratios to predict turns.</p>
-    <div class="visual-box">
-      <svg width="100" height="60" viewBox="0 0 100 60">
-        <path d="M10,50 L30,10 L50,40 L70,10 L90,50 Z" fill="rgba(0,210,255,0.1)" stroke="var(--trading-primary)" stroke-width="2" />
-      </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Patterns like "Bat" or "Gartley" indicate high-probability reversal points.
-    </div>
-  </div>
-
-  <!-- Topic 21: Gann Angles -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 21</span>
-    <h3 class="topic-title">📐 Gann Angles</h3>
-    <span class="khmer-desc">🇰🇭 មុំ Gann</span>
-    <p class="topic-desc">Relationship between time and price. The 45-degree angle (1x1) is key.</p>
-    <div class="visual-box">
-      <svg width="100" height="80">
-        <line x1="10" y1="70" x2="90" y2="10" stroke="var(--trading-accent)" stroke-width="1" />
-        <line x1="10" y1="70" x2="90" y2="30" stroke="grey" stroke-width="0.5" />
-      </svg>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      If price stays above the 1x1 angle, it is extremely bullish.
-    </div>
-  </div>
-
-</div>
-
-<h2 class="section-header">7. Psychology & Final Steps</h2>
-
-<div class="topic-grid">
-
-  <!-- Topic 22: Moon Phases -->
-  <div class="topic-card">
-    <span class="topic-id">TOPIC 22</span>
-    <h3 class="topic-title">🌑 Moon Phases</h3>
-    <span class="khmer-desc">🇰🇭 វដ្តព្រះច័ន្ទ</span>
-    <p class="topic-desc">An unconventional theory that lunar cycles affect volatility and psychology.</p>
-    <div class="visual-box">
-      <div style="width: 40px; height: 40px; border-radius: 50%; background: #fff; box-shadow: 0 0 20px #fff;"></div>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">🔍 Example:</div>
-      Some traders use full/new moons as secondary confirmation for trend turns.
-    </div>
-  </div>
-
-  <!-- Final Wrap Up -->
-  <div class="topic-card" style="background: linear-gradient(135deg, #1e293b, #0f172a); border: 2px solid var(--trading-primary);">
-    <span class="topic-id">CRITICAL</span>
-    <h3 class="topic-title">🎯 Risk Management</h3>
-    <span class="khmer-desc">🇰🇭 ការគ្រប់គ្រងហានិភ័យ</span>
-    <p class="topic-desc">The most important "topic" of all. Without risk management, TA is just gambling.</p>
-    <div class="visual-box">
-       <div style="font-size: 2rem;">🛡️</div>
-    </div>
-    <div class="use-case">
-      <div class="use-case-title">💡 Pro Tip:</div>
-      Never risk more than 1% of your account on a single trade, no matter how good the TA looks.
-    </div>
-  </div>
-
-</div>
-
-<div style="text-align: center; padding: 2rem; background: rgba(0, 210, 255, 0.05); border-radius: 16px; margin-top: 3rem;">
-  <h3>🚀 Level Up Your Trading</h3>
-  <p>Technical analysis is a language. The more you practice, the more fluent you become. Start by mastering one category at a time.</p>
-  <p style="color: var(--trading-accent);">សូមសំណាងល្អក្នុងការជួញដូរ! (Good luck with your trading!)</p>
-</div>
-
-</div>
+    navBtns.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('href').includes(current)) {
+        btn.classList.add('active');
+      }
+    });
+  });
+});
+</script>
