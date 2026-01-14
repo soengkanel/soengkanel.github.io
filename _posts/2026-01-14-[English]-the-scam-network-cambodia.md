@@ -7,8 +7,8 @@ thumbnail: /images/cambodia_scam_systems_analysis.png
 
 <style>
 /* 
-   ENGLISH MASTERY DESIGN SYSTEM v2
-   Focus: Premium, Readable, Professional
+   ENGLISH MASTERY DESIGN SYSTEM v2.1
+   Focus: Premium, Readable, Professional with Marker Highlights
 */
 .lesson-container {
   --l-cyan: #0088cc;
@@ -19,6 +19,7 @@ thumbnail: /images/cambodia_scam_systems_analysis.png
   --l-text: #1e293b;
   --l-grad-blue: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   --l-glass: rgba(255, 255, 255, 0.8);
+  --l-marker: rgba(255, 204, 51, 0.3);
   
   max-width: 950px;
   margin: 0 auto;
@@ -36,6 +37,18 @@ thumbnail: /images/cambodia_scam_systems_analysis.png
   --l-text: #f1f5f9;
   --l-grad-blue: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%);
   --l-glass: rgba(15, 23, 42, 0.4);
+  --l-marker: rgba(255, 204, 51, 0.25);
+}
+
+/* Marker Highlight Style */
+.l-marker {
+  background: var(--l-marker);
+  padding: 0 4px;
+  border-radius: 4px;
+  font-weight: 600;
+  color: inherit;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border-bottom: 2px solid var(--l-gold);
 }
 
 /* 1. Teacher's Note Section */
@@ -230,7 +243,7 @@ function speak(text) {
     <div class="teacher-avatar">👨‍🏫</div>
     <div class="note-content">
       <h3>Teacher's Note 👋</h3>
-      <p>Hello, my student! Today we are studying an article about <strong>Global Institutional Trust</strong>. This text is quite formal and uses sophisticated vocabulary found in international policy reports. We will focus on how systems govern reputations—and learn some powerful English structures along the way.</p>
+      <p>Hello, my student! Today we are studying an article about <strong>Global Institutional Trust</strong>. I have <span class="l-marker">highlighted</span> the key professional terms in the original text below. These are the words we will analyze in our workshop!</p>
     </div>
   </div>
 
@@ -238,9 +251,9 @@ function speak(text) {
   <h2 style="color: var(--l-cyan); border-left: 4px solid var(--l-cyan); padding-left: 1rem; margin-bottom: 2rem;">The Original Analysis</h2>
   <div class="original-block">
     <div class="quote-text">
-      "This is not really a story about shame or accusation. It is about how the world quietly decides whether to trust a country, or slow it down. International reporting on scam networks in Cambodia is not asking whether scams exist. That question has passed. The real question is whether Cambodia can deal with the problem in a steady, repeatable way. <br><br>
-      In global systems, arrests get attention. Systems earn trust. Once a country is described as an “epicentre,” an invisible clock starts inside banks, insurers, and business risk committees. At first there is patience. Then risk scores change quietly. After that, deals slow down or stop. Nothing is announced.<br><br>
-      The real question is not who is scamming, but what makes scamming stable. The world is not grading Cambodia on speeches or intentions. It is grading whether cases hold up over time. Do convictions survive appeal. Do seized assets stay seized. Do courts rule consistently. Raids fade quickly. Judgments that endure change reputations."
+      "This is not really a story about shame or <span class="l-marker">accusation</span>. It is about <span class="l-marker">how</span> the world quietly decides <span class="l-marker">whether</span> to trust a country, or slow it down. International reporting on scam networks in Cambodia is not asking whether scams exist. That question has passed. The real question is whether Cambodia can deal with the problem in a steady, <span class="l-marker">repeatable way</span>. <br><br>
+      In global systems, arrests get attention. Systems earn trust. Once a country is described as an <span class="l-marker">“epicentre,”</span> an <span class="l-marker">invisible clock starts</span> inside banks, insurers, and business risk committees. At first there is patience. Then risk scores change quietly. After that, deals slow down or stop. Nothing is announced.<br><br>
+      The real question is not who is scamming, but what makes scamming stable. The world is not grading Cambodia on speeches or intentions. It is grading whether cases hold up over time. Do convictions survive appeal. Do seized assets stay seized. Do courts rule consistently. <span class="l-marker">Raids fade quickly</span>. Judgments that <span class="l-marker">endure</span> change reputations."
     </div>
   </div>
 
