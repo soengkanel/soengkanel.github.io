@@ -1,235 +1,226 @@
 ---
 layout: post
-title: "[Business Central] Master G/L Budgets: A Practical Guide for BAT 📊💰"
-tags: [Business-Central, ERP, Finance, Budgeting, BAT]
+title: "[Technical Analysis] G/L Budget Implementation in Microsoft Dynamics 365 Business Central 📊⚙️"
+tags: [Business-Central, ERP, Technical-Analysis, Finance, BAT]
 thumbnail: /images/bc_gl_budget_analysis.png
 ---
 
 <style>
 /* 
-   ENGLISH MASTERY DESIGN SYSTEM v2.1
-   Focus: Premium, Readable, Professional with Marker Highlights
+   TECHNICAL ANALYSIS DESIGN SYSTEM v1.0
+   Focus: Professional, Data-Driven, Premium Dashboard Aesthetic
 */
-.lesson-container {
-  --l-cyan: #0088cc;
-  --l-gold: #b28900;
-  --l-emerald: #065f46;
-  --l-bg-card: #ffffff;
-  --l-border: rgba(0, 0, 0, 0.1);
-  --l-text: #1e293b;
-  --l-grad-blue: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  --l-glass: rgba(255, 255, 255, 0.8);
-  --l-marker: rgba(255, 204, 51, 0.3);
+.tech-container {
+  --t-blue: #0088cc;
+  --t-gold: #b28900;
+  --t-red: #ef4444;
+  --t-bg: #ffffff;
+  --t-card: #f8fafc;
+  --t-border: rgba(0, 0, 0, 0.1);
+  --t-text: #1e293b;
   
-  max-width: 950px;
+  max-width: 1000px;
   margin: 0 auto;
   font-family: 'Inter', system-ui, sans-serif;
-  color: var(--l-text);
-  line-height: 1.7;
+  color: var(--t-text);
+  line-height: 1.6;
 }
 
-[data-theme="dark"] .lesson-container {
-  --l-cyan: #00d9ff;
-  --l-gold: #ffcc33;
-  --l-emerald: #10b981;
-  --l-bg-card: rgba(15, 23, 42, 0.6);
-  --l-border: rgba(255, 255, 255, 0.1);
-  --l-text: #f1f5f9;
-  --l-grad-blue: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%);
-  --l-glass: rgba(15, 23, 42, 0.4);
-  --l-marker: rgba(255, 204, 51, 0.25);
+[data-theme="dark"] .tech-container {
+  --t-blue: #00d9ff;
+  --t-gold: #ffcc33;
+  --t-bg: #0f172a;
+  --t-card: rgba(30, 41, 59, 0.5);
+  --t-border: rgba(255, 255, 255, 0.1);
+  --t-text: #f1f5f9;
 }
 
-/* Marker Highlight Style */
-.l-marker {
-  background: var(--l-marker);
-  padding: 0 4px;
-  border-radius: 4px;
-  font-weight: 600;
-  color: inherit;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  border-bottom: 2px solid var(--l-gold);
+.tech-header {
+  border-bottom: 2px solid var(--t-blue);
+  padding-bottom: 1rem;
+  margin-bottom: 3rem;
 }
 
-/* Sections */
-.teacher-note {
-  background: var(--l-grad-blue);
-  border: 1px solid var(--l-border);
-  border-radius: 24px;
-  padding: 2.5rem;
-  margin: 2rem 0 4rem 0;
-  display: flex; gap: 2rem; align-items: center;
-  backdrop-filter: blur(10px);
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2rem 0;
+  background: var(--t-card);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
-.original-block {
-  background: var(--l-bg-card);
-  border-radius: 32px;
-  padding: 3rem;
-  margin-bottom: 4rem;
-  border: 1px solid var(--l-border);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+.data-table th, .data-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--t-border);
 }
 
-.vocab-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 4rem;
+.data-table th {
+  background: var(--t-blue);
+  color: white;
+  font-weight: 700;
 }
 
-.vocab-card {
-  background: var(--l-grad-blue);
-  border: 1px solid var(--l-border);
-  border-radius: 20px;
+.spec-box {
+  background: var(--t-card);
+  border: 1px solid var(--t-border);
+  border-left: 6px solid var(--t-blue);
   padding: 2rem;
-  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin-bottom: 2rem;
 }
 
-.vocab-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--l-cyan);
+.warning-box {
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-left: 6px solid var(--t-red);
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
 }
 
-.grammar-item {
-  background: var(--l-glass);
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.feature-card {
+  background: var(--t-card);
+  border: 1px solid var(--t-border);
   padding: 1.5rem;
-  border-radius: 16px;
-  border: 1px solid var(--l-border);
-  margin-bottom: 1.5rem;
+  border-radius: 12px;
 }
 
-/* Audio Visual Feedback */
-@keyframes audio-pulse {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 217, 255, 0.4); }
-  50% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(0, 217, 255, 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 217, 255, 0); }
+.feature-card h4 {
+  color: var(--t-blue);
+  margin-top: 0;
 }
 
-.is-speaking {
-  animation: audio-pulse 1.2s infinite ease-in-out !important;
-  background: var(--l-gold) !important;
-}
-
-.mini-speaker {
-  cursor: pointer; font-size: 1.1rem; margin-left: 0.5rem; vertical-align: middle;
+code {
+  background: rgba(0, 136, 204, 0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9em;
 }
 </style>
 
-<script>
-function speak(text, element) {
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'en-US';
-  utterance.rate = 0.95;
-  if (element) {
-    element.classList.add('is-speaking');
-    utterance.onend = () => element.classList.remove('is-speaking');
-  }
-  window.speechSynthesis.speak(utterance);
-}
-</script>
+<div class="tech-container">
 
-<div class="lesson-container">
+  <div class="tech-header">
+    <h1>Technical Analysis: G/L Budget Controls</h1>
+    <p style="opacity: 0.7;">An Architecture Review of Financial Planning & Analysis (FP&A) in D365 Business Central.</p>
+  </div>
 
-  <!-- Teacher's Note -->
-  <div class="teacher-note">
-    <div style="font-size: 3rem;">👨‍💻</div>
-    <div class="note-content">
-      <h3>Hey Finance Pros! 👋</h3>
-      <p>Today we are mastering <strong>G/L Budgets</strong> in Business Central. Think of a budget as the "Financial North Star" for a giant like <strong>BAT (British American Tobacco)</strong>. It’s how they plan their future spending before a single dollar leaves the bank.</p>
+  <section>
+    <h2>1. The Architecture of Budget Entities</h2>
+    <p>In Business Central, the <strong>G/L Budget</strong> functions as a technical sub-ledger that resides in the <code>G/L Budget Entry</code> (Table 96). Unlike actual entries, these do not impact the <code>G/L Entry</code> (Table 17), allowing for non-destructive forecasting and "what-if" scenario testing.</p>
+
+    <div class="spec-box">
+      <h3>Strategic Case: British American Tobacco (BAT)</h3>
+      <p>For a multi-entity corporation like <strong>BAT</strong>, budgeting isn't just a single number. It is a multi-dimensional matrix. When BAT plans their 2026 Marketing spend, they require three key data points:</p>
+      <ul>
+        <li><strong>Financial Account:</strong> <code>60100</code> (Advertising Expenses)</li>
+        <li><strong>Global Dimension 1 (Department):</strong> <code>MARKETING</code></li>
+        <li><strong>Global Dimension 2 (Project):</strong> <code>TH-REL-2026</code> (Thailand Launch)</li>
+      </ul>
     </div>
-  </div>
+  </section>
 
-  <!-- The Concept -->
-  <h2 style="color: var(--l-cyan); border-left: 4px solid var(--l-cyan); padding-left: 1rem; margin-bottom: 2rem;">The Scenario: BAT Marketing 2026 🚬📈</h2>
-  <div class="original-block">
-    <p style="font-size: 1.1rem; opacity: 0.9;">
-      Imagine <strong>BAT</strong> is launching a new campaign in Cambodia. The Board of Directors approves a <strong>$1,000,000</strong> budget for <em>Global Marketing</em>. <br><br>
-      In Business Central, you don't just "remember" this number. You record it in the <span class="l-marker">G/L Budget</span>. This allows the system to compare your <strong>Actual spending</strong> (what you really spent) against your <strong>Budgeted amount</strong> (what you planned).
-    </p>
-  </div>
-
-  <!-- Vocabulary Workshop -->
-  <h2 style="color: var(--l-cyan); border-left: 4px solid var(--l-cyan); padding-left: 1rem; margin-bottom: 2rem;">Essential Budgeting Terms 📚</h2>
-  <div class="vocab-grid">
-    <div class="vocab-card">
-      <span style="font-size: 1.3rem; font-weight: 800; color: var(--l-gold);">Variance <span class="mini-speaker" onclick="speak('Variance', this)">🔊</span></span>
-      <div style="font-size: 0.85rem; opacity: 0.7; margin: 0.3rem 0;">/ˈveə.ri.əns/ • <em>n.</em></div>
-      <span style="font-family: 'Kantumruy Pro'; color: var(--l-emerald); display: block; margin: 0.5rem 0;">គម្លាត / ភាពខុសគ្នា (Komheat)</span>
-      <p style="font-size: 0.9rem; opacity: 0.8;">The difference between the <strong>Actual</strong> and <strong>Budget</strong>. (Actual - Budget).</p>
-      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
-        <strong>Example:</strong> "BAT has a 5% positive <strong>variance</strong> in its travel budget."
+  <section>
+    <h2>2. Data Ingestion & Transformation</h2>
+    <p>FP&A teams at BAT typically manage large datasets. BC supports three primary ingestion protocols:</p>
+    
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Native Matrix Entry</h4>
+        <p>Direct entry via the <strong>G/L Budget Matrix</strong> page. Best for small monthly adjustments or manual corrections.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Excel Inbound/Outbound</h4>
+        <p>The <code>Export to Excel</code> and <code>Import from Excel</code> functions use a pre-formatted XML schema. This is the industry standard for bulk data transformation.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Budget Synthesis</h4>
+        <p>Using the <code>Copy G/L Budget</code> batch job. Allows technical teams to clone <strong>Actuals from N-1</strong> into <strong>Budget N</strong> with a specified adjustment factor (e.g., +10%).</p>
       </div>
     </div>
+  </section>
 
-    <div class="vocab-card">
-      <span style="font-size: 1.3rem; font-weight: 800; color: var(--l-gold);">Commitments <span class="mini-speaker" onclick="speak('Commitments', this)">🔊</span></span>
-      <div style="font-size: 0.85rem; opacity: 0.7; margin: 0.3rem 0;">/kəˈmɪtmənts/ • <em>n.</em></div>
-      <span style="font-family: 'Kantumruy Pro'; color: var(--l-emerald); display: block; margin: 0.5rem 0;">ការសន្យាចំណាយ / ការតាំងចិត្ត</span>
-      <p style="font-size: 0.9rem; opacity: 0.8;">Purchases that are ordered but not yet received or paid for.</p>
+  <section>
+    <h2>3. Comparative Matrix: Actual vs. Budget</h2>
+    <p>The primary technical value of G/L Budgets is the real-time variance analysis. Below is a simulated data extract for BAT's Marketing department:</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Period</th>
+          <th>Budgeted (S)</th>
+          <th>Actuals (S)</th>
+          <th>Variance (%)</th>
+          <th>Technical Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2026-Q1</td>
+          <td>250,000.00</td>
+          <td>242,500.00</td>
+          <td>-3.0%</td>
+          <td style="color: #10b981;">Under Budget</td>
+        </tr>
+        <tr>
+          <td>2026-Q2</td>
+          <td>250,000.00</td>
+          <td>275,000.00</td>
+          <td>+10.0%</td>
+          <td style="color: #ef4444;">Over Budget</td>
+        </tr>
+        <tr>
+          <td>2026-Q3</td>
+          <td>250,000.00</td>
+          <td>255,000.00</td>
+          <td>+2.0%</td>
+          <td style="color: #ef4444;">Over Budget</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>4. Critical Technical Limitations</h2>
+    <p>Consultants must manage expectations regarding the out-of-the-box (OOTB) capabilities of Business Central G/L Budgets.</p>
+    
+    <div class="warning-box">
+      <h3>🚫 Absence of Hard Enforcement</h3>
+      <p>The most common misconception is that BC will "block" a Purchase Order if it exceeds the G/L Budget. <strong>This is false.</strong> G/L Budgets are <em>passive reporting tools</em>, not active stop-gates.</p>
+      <p><strong>Technical Solution:</strong> Implementing a hard stop requires a custom check in the <code>OnBeforePost</code> subscriber for the <code>Purchase Header</code> or <code>Gen. Jnl. Line</code>.</p>
     </div>
 
-    <div class="vocab-card">
-      <span style="font-size: 1.3rem; font-weight: 800; color: var(--l-gold);">Forecasting <span class="mini-speaker" onclick="speak('Forecasting', this)">🔊</span></span>
-      <div style="font-size: 0.85rem; opacity: 0.7; margin: 0.3rem 0;">/ˈfɔː.kɑː.stɪŋ/ • <em>v.</em></div>
-      <span style="font-family: 'Kantumruy Pro'; color: var(--l-emerald); display: block; margin: 0.5rem 0;">ការព្យាករណ៍ (Kar Pyakor)</span>
-      <p style="font-size: 0.9rem; opacity: 0.8;">Estimating future financial results based on current data.</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h4>Sub-ledger Blindness</h4>
+        <p>You cannot budget per <strong>Vendor</strong> or <strong>Customer</strong>. All entries are aggregated at the G/L Account level. If BAT needs Vendor-specific budgeting, they must use a combination of Dimensions or a 3rd party extension.</p>
+      </div>
+      <div class="feature-card">
+        <h4>Static Allocation</h4>
+        <p>BC lacks advanced allocation logic (e.g., spreading a total yearly budget based on seasonal revenue patterns). Allocations must be calculated in Excel before import.</p>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Business Central Logic -->
-  <h2 style="color: var(--l-cyan); border-left: 4px solid var(--l-cyan); padding-left: 1rem; margin-bottom: 2rem;">How it Works (The Mechanics) ⚙️</h2>
-  <div class="grammar-lab">
-    <div class="grammar-item">
-      <p>1. <strong>Create Budget Name:</strong> You define a name like "MARKETING_2026".</p>
-      <p>2. <strong>Budget Matrix:</strong> You enter amounts for each <strong>G/L Account</strong> (e.g., Account 60100 - Advertising) and each <strong>Period</strong> (e.g., January, February).</p>
-      <p>3. <strong>Dimensions:</strong> You can budget by <strong>Department</strong> (e.g., SALES) or <strong>Project</strong>.</p>
+  <section>
+    <h2>5. Advanced Reporting Strategy</h2>
+    <p>For high-level stakeholders at BAT, technical analysts should prioritize <strong>Financial Reports</strong> (formerly Account Schedules). By comparing <code>Actual Amount</code> vs. <code>Budget Amount</code> columns, you can generate dynamic Profit & Loss statements that adapt as dimensions are filtered.</p>
+    
+    <div class="spec-box" style="border-left-color: var(--t-gold);">
+      <h4>Pro Tip: Budget Locking</h4>
+      <p>Since BC allows anyone with permissions to edit a budget after it's approved, technical admins should use <strong>Permission Sets</strong> to restrict write-access to the <code>G/L Budget Entry</code> table once the board has finalized the numbers.</p>
     </div>
-  </div>
-
-  <!-- Critical Limitations -->
-  <h2 style="color: var(--l-cyan); border-left: 4px solid var(--l-cyan); padding-left: 1rem; margin-bottom: 2rem;">⚠️ The Brutal Limitations</h2>
-  <div class="analysis-box" style="background: var(--l-bg-card); padding: 2.5rem; border-radius: 24px; border-left: 6px solid #ef4444; border: 1px solid var(--l-border);">
-    <div style="margin-bottom: 1.5rem;">
-      <h4 style="color: #ef4444;">🛑 No Hard Block (Budget Control)</h4>
-      <p>By default, Business Central <strong>will NOT stop you</strong> from posting an invoice if you are over budget. It only shows you the difference in reports. To stop posting, you need a custom "Budget Control" extension.</p>
-    </div>
-    <div style="margin-bottom: 1.5rem;">
-      <h4 style="color: #ef4444;">Sub-ledger Blindness</h4>
-      <p>You cannot budget for a specific <strong>Customer</strong> or <strong>Vendor</strong> directly in the G/L Budget. You only budget for G/L Accounts (General Ledger).</p>
-    </div>
-    <div>
-      <h4 style="color: #ef4444;">No Automatic Spread</h4>
-      <p>Unlike advanced CPM tools, Business Central’s internal budget lacks complex logic for spreading costs (e.g., "increase by 5% every month"). You often have to export to Excel and re-import.</p>
-    </div>
-  </div>
-
-  <!-- Sound Lab -->
-  <h2 style="color: var(--l-cyan); border-left: 4px solid var(--l-cyan); padding-left: 1rem; margin-bottom: 2rem;">Listen & Practice 🔊</h2>
-  
-  <div class="sound-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2rem; background: var(--l-bg-card); border-radius: 16px; margin-bottom: 1rem; border: 1px solid var(--l-border);">
-    <div>
-      <div style="font-weight: 700;">"BAT exceeded its marketing budget in Q1."</div>
-      <div style="font-family: 'Kantumruy Pro'; color: var(--l-emerald); font-size: 0.9rem;">BAT បានចំណាយលើសកញ្ចប់ថវិកាម៉ាឃីតធីងរបស់ខ្លួនក្នុងត្រីមាសទីមួយ។</div>
-    </div>
-    <button class="listen-btn" style="background: var(--l-cyan); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 12px; cursor: pointer;" onclick="speak('BAT exceeded its marketing budget in Q1.', this)">🔊 LISTEN</button>
-  </div>
-
-  <div class="sound-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2rem; background: var(--l-bg-card); border-radius: 16px; margin-bottom: 1rem; border: 1px solid var(--l-border);">
-    <div>
-      <div style="font-weight: 700;">"G/L budgets do not prevent over-spending."</div>
-      <div style="font-family: 'Kantumruy Pro'; color: var(--l-emerald); font-size: 0.9rem;">G/L budget មិនបានរារាំងការចំណាយលើសនោះទេ។</div>
-    </div>
-    <button class="listen-btn" style="background: var(--l-cyan); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 12px; cursor: pointer;" onclick="speak('G L budgets do not prevent over-spending.', this)">🔊 LISTEN</button>
-  </div>
-
-  <!-- Master Conclusion -->
-  <div style="margin-top: 5rem; padding: 4rem; text-align: center; border-top: 2px solid var(--l-border); background: var(--l-grad-blue); border-radius: 40px;">
-    <h3 style="color: var(--l-cyan); margin-bottom: 1rem;">Homework Challenge 📝</h3>
-    <p style="opacity: 0.8; max-width: 600px; margin: 0 auto 2rem auto;">In your own words, explain why BAT should use <strong>Dimensions</strong> in their budgets. Post it in the comments!</p>
-    <div style="font-weight: 900; letter-spacing: 5px; color: var(--l-gold); font-size: 1.5rem;">PLAN THE WORK. WORK THE PLAN. 🚀</div>
-  </div>
+  </section>
 
 </div>
