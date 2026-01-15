@@ -285,10 +285,6 @@ class: text-center
   <div class="flex flex-col items-center"><div class="i-carbon:dashboard text-3xl" /></div>
 </div>
 
----
-layout: default
----
-
 <style>
 h1 {
   font-weight: 900;
