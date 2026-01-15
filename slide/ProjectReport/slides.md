@@ -29,7 +29,9 @@ mdc: true
 
     <div class="mt-10 space-y-4">
       <div class="flex items-center gap-4 animate-slide-in-left" style="animation-delay: 0.2s">
-        <div class="w-12 h-12 rounded-full bg-cyan-400 flex items-center justify-center text-2xl shadow-lg shadow-cyan-400/50">👨‍💻</div>
+        <div class="w-12 h-12 rounded-full bg-cyan-400 flex items-center justify-center text-2xl shadow-lg shadow-cyan-400/50">
+          <div class="i-carbon:user-speaker"></div>
+        </div>
         <div>
           <div class="text-[10px] uppercase font-black tracking-widest text-cyan-400">Chief Navigator</div>
           <div class="text-xl font-black italic">TC | Technical Lead</div>
@@ -182,7 +184,7 @@ clicks: 1
     <div class="text-xs uppercase font-black leading-tight">Team Adventure<br>Exp. Gained</div>
   </div>
   <div class="p-4 bg-white/5 border-4 border-dashed border-white/10 rounded-3xl flex items-center gap-4 flex-1">
-    <div class="w-4 h-4 rounded-full bg-emerald-400 animate-ping" />
+    <div class="w-4 h-4 rounded-full bg-emerald-400 animate-ping"></div>
     <span class="text-xs font-black uppercase tracking-widest text-emerald-400">Leveling Up Q1!</span>
   </div>
 </div>
@@ -295,9 +297,9 @@ class: text-center
   <p class="text-xl font-bold opacity-60 mt-4 tracking-[0.3em] uppercase">Ready for the Next Level?</p>
   
   <div class="mt-12 flex justify-center gap-10 opacity-40">
-    <div class="animate-float" style="animation-delay: 0.1s text-4xl">🕹️</div>
-    <div class="animate-float" style="animation-delay: 0.3s text-4xl">🚀</div>
-    <div class="animate-float" style="animation-delay: 0.5s text-4xl">✨</div>
+    <div class="animate-float text-4xl" style="animation-delay: 0.1s">🕹️</div>
+    <div class="animate-float text-4xl" style="animation-delay: 0.3s">🚀</div>
+    <div class="animate-float text-4xl" style="animation-delay: 0.5s">✨</div>
   </div>
 </div>
 
