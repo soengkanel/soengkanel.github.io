@@ -12,9 +12,7 @@ mdc: true
 ---
 
 <script setup>
-import { ref } from 'vue'
-
-const projects = ref([
+const projects = [
   {
     "id": 1,
     "name": "Container Capacity Management",
@@ -92,9 +90,9 @@ const projects = ref([
     "note": "On bid",
     "color": "#94a3b8"
   }
-])
+]
 
-const avgProgress = projects.value.reduce((acc, p) => acc + p.progress, 0) / projects.value.length
+const avgProgress = projects.reduce((acc, p) => acc + p.progress, 0) / projects.length
 </script>
 
 # <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Executive Portfolio Report</span>
@@ -126,7 +124,7 @@ layout: default
       </tr>
     </thead>
     <tbody>
-      <tr v-for="p in projects" :key="p.id" class="border-b border-white/5 hover:bg-white/5 transition-colors">
+      <tr v-for="p in projects" :key="p.id + p.name" class="border-b border-white/5 hover:bg-white/5 transition-colors">
         <td class="p-3">
           <div class="flex items-center gap-3">
              <div class="w-1.5 h-6 rounded-full" :style="{ backgroundColor: p.color }"></div>
@@ -185,7 +183,7 @@ layout: default
       </tr>
     </thead>
     <tbody>
-      <tr v-for="p in projects.filter(p => p.category === 'BC')" :key="p.id" class="border-b border-white/5 hover:bg-white/5 transition-colors">
+      <tr v-for="p in projects.filter(p => p.category === 'BC')" :key="p.id + p.name" class="border-b border-white/5 hover:bg-white/5 transition-colors">
         <td class="p-4 font-bold">{{ p.name }}</td>
         <td class="p-4 text-xs">{{ p.milestone }}</td>
         <td class="p-4">
@@ -220,7 +218,7 @@ layout: default
       </tr>
     </thead>
     <tbody>
-      <tr v-for="p in projects.filter(p => ['HRMS', 'CRM'].includes(p.category))" :key="p.id" class="border-b border-white/5 hover:bg-white/5 transition-colors">
+      <tr v-for="p in projects.filter(p => ['HRMS', 'CRM'].includes(p.category))" :key="p.id + p.name" class="border-b border-white/5 hover:bg-white/5 transition-colors">
         <td class="p-4 font-bold">{{ p.name }}</td>
         <td class="p-4"><span class="px-2 py-0.5 bg-white/5 rounded-full text-[10px] uppercase font-bold text-emerald-400/80">{{ p.status }}</span></td>
         <td class="p-4">
@@ -241,10 +239,6 @@ layout: default
 layout: default
 ---
 
-<script setup>
-const quantProj = projects.value.find(p => p.category === 'QuantConnect') || projects.value.find(p => p.category === 'Quant') || { progress: 0, status: 'N/A', milestone: 'N/A' }
-</script>
-
 # <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-yellow-600">05. CryptoTrading Project</span>
 
 <div class="mt-10 grid grid-cols-2 gap-10 text-left">
@@ -252,14 +246,14 @@ const quantProj = projects.value.find(p => p.category === 'QuantConnect') || pro
     <div class="flex items-start gap-4">
       <div class="p-2 bg-yellow-400/10 rounded-lg text-yellow-400 font-bold">Progress</div>
       <div>
-        <div class="text-4xl font-black">{{ quantProj.progress }}%</div>
-        <div class="text-[10px] opacity-50 uppercase">{{ quantProj.status }}</div>
+        <div class="text-4xl font-black">{{ projects.find(p => p.category === 'QuantConnect')?.progress || 0 }}%</div>
+        <div class="text-[10px] opacity-50 uppercase">{{ projects.find(p => p.category === 'QuantConnect')?.status || 'Todo' }}</div>
       </div>
     </div>
     <div class="flex items-start gap-4">
       <div class="p-2 bg-blue-400/10 rounded-lg text-blue-400 font-bold">MIL</div>
       <div>
-        <div class="text-xl font-bold">{{ quantProj.milestone }}</div>
+        <div class="text-xl font-bold">{{ projects.find(p => p.category === 'QuantConnect')?.milestone || 'R&D' }}</div>
         <div class="text-[10px] opacity-50 uppercase">Current Optimization Phase</div>
       </div>
     </div>
