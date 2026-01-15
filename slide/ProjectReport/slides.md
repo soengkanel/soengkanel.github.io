@@ -97,13 +97,24 @@ layout: default
         <td class="p-2 text-center text-[10px] font-bold text-purple-300">Kanel</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/50">Todo</span></td>
       </tr>
+      <!-- 8 -->
+      <tr class="border-b border-white/5">
+        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-sky-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">Retail</div><div class="font-bold leading-tight">NGPOS</div></div></div></td>
+        <td class="p-2 opacity-70">In Progress</td>
+        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-sky-400" style="width: 30%"></div></div><span class="text-[10px] font-mono opacity-50">30%</span></div></td>
+        <td class="p-2 text-center text-[10px] font-bold text-sky-300">Marchi</td>
+        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-emerald-400/20 text-emerald-400">InProgress</span></td>
+      </tr>
+      <tr class="border-b border-white/5">
+        <td colspan="5" class="p-1 opacity-0 text-[1px]">Buffer</td>
+      </tr>
     </tbody>
   </table>
 </div>
 
 <div class="mt-4 flex gap-4 text-left">
   <div class="p-3 bg-blue-600/20 border border-blue-400/30 rounded-xl flex items-center gap-4 flex-1">
-    <div class="text-3xl font-black italic opacity-40">25%</div>
+    <div class="text-3xl font-black italic opacity-40">25.5%</div>
     <div class="text-[10px] uppercase opacity-50 leading-tight font-bold">Average Portfolio<br>Completion</div>
   </div>
   <div class="p-3 bg-white/5 border border-white/10 rounded-xl flex items-center gap-3 flex-1">
@@ -116,68 +127,58 @@ layout: default
 layout: default
 ---
 
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Technical Deep Dive: BC</span>
-<p class="opacity-50">Business Central Modules Status</p>
+# <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Operational Mastery: In-Progress Tasks</span>
+<p class="opacity-50 text-xs">Granular tracking of all active implementation stages</p>
 
-<div class="mt-8 overflow-hidden bg-white/5 border border-white/10 rounded-2xl text-left">
-  <table class="w-full text-sm">
-    <thead class="bg-white/10 opacity-60 uppercase font-black text-xs">
-      <tr>
-        <th class="p-4">Module</th>
-        <th class="p-4">Milestone</th>
-        <th class="p-4 text-center">Progress Bar</th>
-        <th class="p-4 text-right">%</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="border-b border-white/5">
-        <td class="p-4 font-bold">Container Capacity Management</td>
-        <td class="p-4 text-xs opacity-70">Study Requirement</td>
-        <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-cyan-400" style="width: 10%"></div></div></td>
-        <td class="p-4 text-right text-xs">10%</td>
-      </tr>
-      <tr class="border-b border-white/5">
-        <td class="p-4 font-bold">Budget Control Extension</td>
-        <td class="p-4 text-xs opacity-70">Study Requirement</td>
-        <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-cyan-400" style="width: 20%"></div></div></td>
-        <td class="p-4 text-right text-xs">20%</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="mt-8">
-  <h3 class="text-xs uppercase font-black opacity-30 mb-2 tracking-widest">Current Active Tasks</h3>
-  <div class="overflow-hidden bg-white/5 border border-white/10 rounded-xl text-left">
-    <table class="w-full text-[10px]">
-      <thead class="bg-white/5 opacity-60 uppercase">
+<div class="mt-6">
+  <div class="overflow-hidden bg-white/5 border border-white/10 rounded-2xl text-left">
+    <table class="w-full text-[11px]">
+      <thead class="bg-white/10 opacity-70 uppercase font-bold">
         <tr>
-          <th class="p-2">Project</th>
-          <th class="p-2">Identified Task</th>
-          <th class="p-2 text-center">% Progress</th>
-          <th class="p-2 text-right">PIC</th>
+          <th class="p-3">Project</th>
+          <th class="p-3">Active Identifiable Task</th>
+          <th class="p-3 text-center">% Progress</th>
+          <th class="p-3 text-right">PIC</th>
         </tr>
       </thead>
       <tbody>
         <tr class="border-b border-white/5">
-          <td class="p-2 opacity-50 font-bold">Container Mgmt</td>
-          <td class="p-2 font-bold italic">Core Table Schema Refactoring</td>
-          <td class="p-2 text-center text-cyan-400 font-bold">15%</td>
-          <td class="p-2 text-right opacity-70">Kanel</td>
+          <td class="p-3 font-bold opacity-60">Container Mgmt</td>
+          <td class="p-3 italic">Core Table Schema Refactoring & Optimization</td>
+          <td class="p-3 text-center text-cyan-400 font-bold">15%</td>
+          <td class="p-3 text-right font-black opacity-80">Kanel</td>
         </tr>
         <tr class="border-b border-white/5">
-          <td class="p-2 opacity-50 font-bold">Budget Extension</td>
-          <td class="p-2 font-bold italic">Override Logic Gap Analysis</td>
-          <td class="p-2 text-center text-cyan-400 font-bold">30%</td>
-          <td class="p-2 text-right opacity-70">Panha</td>
+          <td class="p-3 font-bold opacity-60">Budget Extension</td>
+          <td class="p-3 italic">Override Logic Gap Analysis & Requirement Specs</td>
+          <td class="p-3 text-center text-cyan-400 font-bold">30%</td>
+          <td class="p-3 text-right font-black opacity-80">Panha</td>
+        </tr>
+        <tr class="border-b border-white/5">
+          <td class="p-3 font-bold opacity-60">HR Lab (Web)</td>
+          <td class="p-3 italic">Manpower Budgeting Workflow Integration</td>
+          <td class="p-3 text-center text-emerald-400 font-bold">85%</td>
+          <td class="p-3 text-right font-black opacity-80">Monika</td>
+        </tr>
+        <tr class="border-b border-white/5">
+          <td class="p-3 font-bold opacity-60">HR Mobile</td>
+          <td class="p-3 italic">Mobile API Authentication & Push Service</td>
+          <td class="p-3 text-center text-emerald-400 font-bold">50%</td>
+          <td class="p-3 text-right font-black opacity-80">Monika</td>
+        </tr>
+        <tr class="border-b border-white/5">
+          <td class="p-3 font-bold opacity-60">NGPOS</td>
+          <td class="p-3 italic">Legacy Integration Study & Payment Interface</td>
+          <td class="p-3 text-center text-sky-400 font-bold">30%</td>
+          <td class="p-3 text-right font-black opacity-80">Marchi</td>
         </tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<div class="mt-6 p-4 border border-white/10 rounded-xl bg-white/5 text-xs opacity-60">
-  Note: Focus on gap analysis and core table refactoring for container logic.
+<div class="mt-4 p-3 border border-blue-500/20 rounded-xl bg-blue-500/5 text-[10px] opacity-60 text-center uppercase tracking-tighter">
+  Cross-departmental resources are currently optimized for Q1 delivery cycle.
 </div>
 
 ---
