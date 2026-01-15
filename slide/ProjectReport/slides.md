@@ -11,90 +11,6 @@ title: Project Management Dashboard 2026
 mdc: true
 ---
 
-<script setup>
-const projects = [
-  {
-    "id": 1,
-    "name": "Container Capacity Management",
-    "category": "BC",
-    "progress": 10,
-    "status": "InProgress",
-    "milestone": "Study Requirement",
-    "owner": "TC",
-    "note": "Study requirement",
-    "color": "#22d3ee"
-  },
-  {
-    "id": 2,
-    "name": "Budget Control Extension",
-    "category": "BC",
-    "progress": 20,
-    "status": "InProgress",
-    "milestone": "Study Requirement",
-    "owner": "TC",
-    "note": "Study requirement  and gap analysis",
-    "color": "#22d3ee"
-  },
-  {
-    "id": 3,
-    "name": "HR Lab",
-    "category": "HRMS",
-    "progress": 85,
-    "status": "Coding",
-    "milestone": "Development",
-    "owner": "TC",
-    "note": "Working on the Manpower budgeting",
-    "color": "#34d399"
-  },
-  {
-    "id": 4,
-    "name": "HR Lab Mobile Apps",
-    "category": "HRMS",
-    "progress": 50,
-    "status": "Coding",
-    "milestone": "Development",
-    "owner": "TC",
-    "note": "",
-    "color": "#34d399"
-  },
-  {
-    "id": 4,
-    "name": "Bullseye",
-    "category": "CRM",
-    "progress": 5,
-    "status": "Todo",
-    "milestone": "Initialized",
-    "owner": "TC",
-    "note": "Study requirement",
-    "color": "#fb923c"
-  },
-  {
-    "id": 5,
-    "name": "CryptoTrading",
-    "category": "QuantConnect",
-    "progress": 0,
-    "status": "Todo",
-    "milestone": "R&D",
-    "owner": "TC",
-    "note": "Study QuantConnect",
-    "color": "#fbbf24"
-  },
-  {
-    "id": 6,
-    "name": "Car Parking&Dorminitory",
-    "category": "Custom",
-    "progress": 3,
-    "status": "Todo",
-    "milestone": "Prospect",
-    "owner": "TC",
-    "note": "On bid",
-    "color": "#94a3b8"
-  }
-]
-
-const avgProgress = projects.reduce((acc, p) => acc + p.progress, 0) / projects.length
-</script>
-
 # <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Executive Portfolio Report</span>
 ## PMO & Stakeholder Weekly Sync
 
@@ -103,7 +19,7 @@ const avgProgress = projects.reduce((acc, p) => acc + p.progress, 0) / projects.
 </div>
 
 <div class="abs-bl m-10 flex gap-2">
-  <div class="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded text-xs text-blue-400 font-bold uppercase tracking-widest">Data Source: projects.csv</div>
+  <div class="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded text-xs text-blue-400 font-bold uppercase tracking-widest">Hardcoded Reporting Mode</div>
 </div>
 
 ---
@@ -113,55 +29,86 @@ layout: default
 # <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Portfolio Execution Dashboard</span>
 <p class="opacity-50">Enterprise Project Tracking & Delivery Status</p>
 
-<div class="mt-6 overflow-hidden bg-white/5 border border-white/10 rounded-2xl text-left">
-  <table class="w-full text-sm border-collapse">
-    <thead class="bg-white/10">
+<div class="mt-4 overflow-hidden bg-white/5 border border-white/10 rounded-2xl text-left">
+  <table class="w-full text-[11px] border-collapse">
+    <thead class="bg-white/10 uppercase font-black opacity-60">
       <tr>
-        <th class="p-3 text-xs font-bold uppercase opacity-50">Project Category & Name</th>
-        <th class="p-3 text-xs font-bold uppercase opacity-50">Milestone</th>
-        <th class="p-3 text-xs font-bold uppercase opacity-50">Execution Progress</th>
-        <th class="p-3 text-xs font-bold uppercase opacity-50 text-right">Status</th>
+        <th class="p-2 text-left">Category & Project Name</th>
+        <th class="p-2 text-left">Milestone</th>
+        <th class="p-2 text-left">Progress</th>
+        <th class="p-2 text-center">Lead</th>
+        <th class="p-3 text-right">Status</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="p in projects" :key="p.id + p.name" class="border-b border-white/5 hover:bg-white/5 transition-colors">
-        <td class="p-3">
-          <div class="flex items-center gap-3">
-             <div class="w-1.5 h-6 rounded-full" :style="{ backgroundColor: p.color }"></div>
-             <div>
-               <div class="text-[10px] font-bold opacity-50 uppercase">{{ p.category }}</div>
-               <div class="font-bold">{{ p.name }}</div>
-             </div>
-          </div>
-        </td>
-        <td class="p-3 text-xs opacity-70">{{ p.milestone }}</td>
-        <td class="p-3 min-w-40">
-          <div class="flex items-center gap-3">
-            <div class="flex-grow bg-white/10 h-1.5 rounded-full overflow-hidden">
-              <div class="h-full transition-all duration-1000" :style="{ width: p.progress + '%', backgroundColor: p.color }"></div>
-            </div>
-            <span class="text-[10px] font-mono opacity-50">{{ p.progress }}%</span>
-          </div>
-        </td>
-        <td class="p-3 text-right">
-          <span class="px-2 py-0.5 text-[9px] font-black rounded-full uppercase" 
-                :class="p.status === 'Delay Risk' ? 'bg-red-500/20 text-red-500' : p.status === 'Todo' ? 'bg-white/10 text-white/50' : 'bg-emerald-400/20 text-emerald-400'">
-            {{ p.status }}
-          </span>
-        </td>
+      <!-- 1 -->
+      <tr class="border-b border-white/5">
+        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-cyan-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">BC</div><div class="font-bold leading-tight">Container Capacity Management</div></div></div></td>
+        <td class="p-2 opacity-70">Study Requirement</td>
+        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-cyan-400" style="width: 10%"></div></div><span class="text-[10px] font-mono opacity-50">10%</span></div></td>
+        <td class="p-2 text-center text-[10px] font-bold text-cyan-300">TC</td>
+        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-emerald-400/20 text-emerald-400">InProgress</span></td>
+      </tr>
+      <!-- 2 -->
+      <tr class="border-b border-white/5">
+        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-cyan-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">BC</div><div class="font-bold leading-tight">Budget Control Extension</div></div></div></td>
+        <td class="p-2 opacity-70">Study Requirement</td>
+        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-cyan-400" style="width: 20%"></div></div><span class="text-[10px] font-mono opacity-50">20%</span></div></td>
+        <td class="p-2 text-center text-[10px] font-bold text-cyan-300">TC</td>
+        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-emerald-400/20 text-emerald-400">InProgress</span></td>
+      </tr>
+      <!-- 3 -->
+      <tr class="border-b border-white/5">
+        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-emerald-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">HRMS</div><div class="font-bold leading-tight">HR Lab</div></div></div></td>
+        <td class="p-2 opacity-70">Development</td>
+        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-emerald-400" style="width: 85%"></div></div><span class="text-[10px] font-mono opacity-50">85%</span></div></td>
+        <td class="p-2 text-center text-[10px] font-bold text-emerald-300">TC</td>
+        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-blue-400/20 text-blue-400">Coding</span></td>
+      </tr>
+      <!-- 4 -->
+      <tr class="border-b border-white/5">
+        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-emerald-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">HRMS</div><div class="font-bold leading-tight">HR Lab Mobile Apps</div></div></div></td>
+        <td class="p-2 opacity-70">Development</td>
+        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-emerald-400" style="width: 50%"></div></div><span class="text-[10px] font-mono opacity-50">50%</span></div></td>
+        <td class="p-2 text-center text-[10px] font-bold text-emerald-300">TC</td>
+        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-blue-400/20 text-blue-400">Coding</span></td>
+      </tr>
+      <!-- 5 -->
+      <tr class="border-b border-white/5">
+        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-orange-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">CRM</div><div class="font-bold leading-tight">Bullseye</div></div></div></td>
+        <td class="p-2 opacity-70">Initialized</td>
+        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-orange-400" style="width: 5%"></div></div><span class="text-[10px] font-mono opacity-50">5%</span></div></td>
+        <td class="p-2 text-center text-[10px] font-bold text-orange-300">TC</td>
+        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/50">Todo</span></td>
+      </tr>
+      <!-- 6 -->
+      <tr class="border-b border-white/5">
+        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-yellow-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">QuantConnect</div><div class="font-bold leading-tight">CryptoTrading</div></div></div></td>
+        <td class="p-2 opacity-70">R&D</td>
+        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-yellow-400" style="width: 0%"></div></div><span class="text-[10px] font-mono opacity-50">0%</span></div></td>
+        <td class="p-2 text-center text-[10px] font-bold text-yellow-300">TC</td>
+        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/50">Todo</span></td>
+      </tr>
+      <!-- 7 -->
+      <tr class="border-b border-white/5">
+        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-purple-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">Custom</div><div class="font-bold leading-tight">Car Parking & Dormitory</div></div></div></td>
+        <td class="p-2 opacity-70">Prospect</td>
+        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-purple-400" style="width: 3%"></div></div><span class="text-[10px] font-mono opacity-50">3%</span></div></td>
+        <td class="p-2 text-center text-[10px] font-bold text-purple-300">TC</td>
+        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/50">Todo</span></td>
       </tr>
     </tbody>
   </table>
 </div>
 
-<div class="mt-6 flex gap-4 text-left">
+<div class="mt-4 flex gap-4 text-left">
   <div class="p-3 bg-blue-600/20 border border-blue-400/30 rounded-xl flex items-center gap-4 flex-1">
-    <div class="text-3xl font-black italic opacity-40">{{ Math.round(avgProgress) }}%</div>
-    <div class="text-[10px] uppercase opacity-50 leading-tight">Average Portfolio<br>Completion</div>
+    <div class="text-3xl font-black italic opacity-40">25%</div>
+    <div class="text-[10px] uppercase opacity-50 leading-tight font-bold">Average Portfolio<br>Completion</div>
   </div>
   <div class="p-3 bg-white/5 border border-white/10 rounded-xl flex items-center gap-3 flex-1">
     <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-    <span class="text-[10px] opacity-60">Source: <code>projects.csv</code> | Sync Active</span>
+    <span class="text-[10px] opacity-60 font-bold uppercase tracking-wider">Static Reporting Active</span>
   </div>
 </div>
 
@@ -169,103 +116,108 @@ layout: default
 layout: default
 ---
 
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Technical Deep Dive: Business Central</span>
-<p class="opacity-50">NGD & Budget Control Implementation Progress</p>
+# <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Technical Deep Dive: BC</span>
+<p class="opacity-50">Business Central Modules Status</p>
 
 <div class="mt-8 overflow-hidden bg-white/5 border border-white/10 rounded-2xl text-left">
   <table class="w-full text-sm">
-    <thead class="bg-white/10">
+    <thead class="bg-white/10 opacity-60 uppercase font-black text-xs">
       <tr>
-        <th class="p-4 text-xs font-bold uppercase opacity-50">Functional Module</th>
-        <th class="p-4 text-xs font-bold uppercase opacity-50">Technical Milestone</th>
-        <th class="p-4 text-xs font-bold uppercase opacity-50">Progress</th>
-        <th class="p-4 text-xs font-bold uppercase opacity-50">Note</th>
+        <th class="p-4">Module</th>
+        <th class="p-4">Milestone</th>
+        <th class="p-4 text-center">Progress Bar</th>
+        <th class="p-4 text-right">%</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="p in projects.filter(p => p.category === 'BC')" :key="p.id + p.name" class="border-b border-white/5 hover:bg-white/5 transition-colors">
-        <td class="p-4 font-bold">{{ p.name }}</td>
-        <td class="p-4 text-xs">{{ p.milestone }}</td>
-        <td class="p-4">
-          <div class="flex items-center gap-3">
-            <div class="flex-grow bg-white/10 h-1.5 rounded-full overflow-hidden">
-              <div class="h-full bg-cyan-400" :style="{ width: p.progress + '%' }"></div>
-            </div>
-            <span class="text-[10px] opacity-50">{{ p.progress }}%</span>
-          </div>
-        </td>
-        <td class="p-4 text-[10px] opacity-60 leading-tight">{{ p.note }}</td>
+      <tr class="border-b border-white/5">
+        <td class="p-4 font-bold">Container Capacity Management</td>
+        <td class="p-4 text-xs opacity-70">Study Requirement</td>
+        <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-cyan-400" style="width: 10%"></div></div></td>
+        <td class="p-4 text-right text-xs">10%</td>
+      </tr>
+      <tr class="border-b border-white/5">
+        <td class="p-4 font-bold">Budget Control Extension</td>
+        <td class="p-4 text-xs opacity-70">Study Requirement</td>
+        <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-cyan-400" style="width: 20%"></div></div></td>
+        <td class="p-4 text-right text-xs">20%</td>
       </tr>
     </tbody>
   </table>
+</div>
+
+<div class="mt-8">
+  <h3 class="text-xs uppercase font-black opacity-30 mb-2 tracking-widest">Current Active Tasks</h3>
+  <div class="overflow-hidden bg-white/5 border border-white/10 rounded-xl text-left">
+    <table class="w-full text-[10px]">
+      <thead class="bg-white/5 opacity-60 uppercase">
+        <tr>
+          <th class="p-2">Project</th>
+          <th class="p-2">Identified Task</th>
+          <th class="p-2 text-center">% Progress</th>
+          <th class="p-2 text-right">PIC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-white/5">
+          <td class="p-2 opacity-50 font-bold">Container Mgmt</td>
+          <td class="p-2 font-bold italic">Core Table Schema Refactoring</td>
+          <td class="p-2 text-center text-cyan-400 font-bold">15%</td>
+          <td class="p-2 text-right opacity-70">TC</td>
+        </tr>
+        <tr class="border-b border-white/5">
+          <td class="p-2 opacity-50 font-bold">Budget Extension</td>
+          <td class="p-2 font-bold italic">Override Logic Gap Analysis</td>
+          <td class="p-2 text-center text-cyan-400 font-bold">30%</td>
+          <td class="p-2 text-right opacity-70">TC</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="mt-6 p-4 border border-white/10 rounded-xl bg-white/5 text-xs opacity-60">
+  Note: Focus on gap analysis and core table refactoring for container logic.
 </div>
 
 ---
 layout: default
 ---
 
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Operations & CRM Execution</span>
+# <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Operations & CRM Tracking</span>
 <p class="opacity-50">HRMS & CRM Engagement Lifecycle</p>
 
 <div class="mt-8 overflow-hidden bg-white/5 border border-white/10 rounded-2xl text-left">
   <table class="w-full text-sm">
-    <thead class="bg-white/10 text-emerald-400">
+    <thead class="bg-white/10 opacity-60 uppercase font-black text-xs">
       <tr>
-        <th class="p-4 text-xs font-bold uppercase opacity-50">Project</th>
-        <th class="p-4 text-xs font-bold uppercase opacity-50">Status</th>
-        <th class="p-4 text-xs font-bold uppercase opacity-50">Progress</th>
-        <th class="p-4 text-xs font-bold uppercase opacity-50 text-right">Owner</th>
+        <th class="p-4">Project</th>
+        <th class="p-4">Status</th>
+        <th class="p-4 text-center">Progress Bar</th>
+        <th class="p-4 text-right">Owner</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="p in projects.filter(p => ['HRMS', 'CRM'].includes(p.category))" :key="p.id + p.name" class="border-b border-white/5 hover:bg-white/5 transition-colors">
-        <td class="p-4 font-bold">{{ p.name }}</td>
-        <td class="p-4"><span class="px-2 py-0.5 bg-white/5 rounded-full text-[10px] uppercase font-bold text-emerald-400/80">{{ p.status }}</span></td>
-        <td class="p-4">
-          <div class="flex items-center gap-3">
-            <div class="flex-grow bg-white/10 h-1.5 rounded-full overflow-hidden">
-              <div class="h-full bg-emerald-400" :style="{ width: p.progress + '%' }"></div>
-            </div>
-            <span class="text-[10px] opacity-50">{{ p.progress }}%</span>
-          </div>
-        </td>
-        <td class="p-4 text-right text-xs opacity-60 font-mono">{{ p.owner }}</td>
+      <tr class="border-b border-white/5">
+        <td class="p-4 font-bold">HR Lab</td>
+        <td class="p-4"><span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[9px] rounded-full font-black uppercase">Coding</span></td>
+        <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-emerald-400" style="width: 85%"></div></div></td>
+        <td class="p-4 text-right text-xs opacity-50">TC</td>
+      </tr>
+      <tr class="border-b border-white/5">
+        <td class="p-4 font-bold">HR Lab Mobile Apps</td>
+        <td class="p-4"><span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[9px] rounded-full font-black uppercase">Coding</span></td>
+        <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-emerald-400" style="width: 50%"></div></div></td>
+        <td class="p-4 text-right text-xs opacity-50">TC</td>
+      </tr>
+      <tr class="border-b border-white/5">
+        <td class="p-4 font-bold">Bullseye</td>
+        <td class="p-4"><span class="px-2 py-0.5 bg-white/10 text-white/50 text-[9px] rounded-full font-black uppercase">Todo</span></td>
+        <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-orange-400" style="width: 5%"></div></div></td>
+        <td class="p-4 text-right text-xs opacity-50">TC</td>
       </tr>
     </tbody>
   </table>
-</div>
-
----
-layout: default
----
-
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-yellow-600">05. CryptoTrading Project</span>
-
-<div class="mt-10 grid grid-cols-2 gap-10 text-left">
-  <div class="space-y-8">
-    <div class="flex items-start gap-4">
-      <div class="p-2 bg-yellow-400/10 rounded-lg text-yellow-400 font-bold">Progress</div>
-      <div>
-        <div class="text-4xl font-black">{{ projects.find(p => p.category === 'QuantConnect')?.progress || 0 }}%</div>
-        <div class="text-[10px] opacity-50 uppercase">{{ projects.find(p => p.category === 'QuantConnect')?.status || 'Todo' }}</div>
-      </div>
-    </div>
-    <div class="flex items-start gap-4">
-      <div class="p-2 bg-blue-400/10 rounded-lg text-blue-400 font-bold">MIL</div>
-      <div>
-        <div class="text-xl font-bold">{{ projects.find(p => p.category === 'QuantConnect')?.milestone || 'R&D' }}</div>
-        <div class="text-[10px] opacity-50 uppercase">Current Optimization Phase</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="p-6 bg-white/5 border-l-4 border-yellow-500 rounded-r-2xl">
-    <h3 class="text-sm font-bold mb-4">Business Value Analysis</h3>
-    <p class="text-xs opacity-70 leading-relaxed">
-      This model serves as a proof-of-concept for automated liquidity management. Success here will enable the architecture for the <strong>Institutional Trading Desk</strong> pilot in Q3.
-    </p>
-    <div class="mt-6 text-xl text-yellow-500 font-black tracking-tighter uppercase opacity-30">QuantConnect Engine</div>
-  </div>
 </div>
 
 ---
@@ -273,13 +225,13 @@ layout: center
 class: text-center
 ---
 
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Sync Complete</span>
-<p class="opacity-50 -mt-2">Reporting via Dynamic Data Source</p>
+# <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Strategic Performance Complete</span>
+<p class="opacity-50 -mt-2 tracking-widest uppercase text-xs">Awaiting Executive Guidance</p>
 
-<div class="mt-12 flex justify-center gap-10 opacity-30">
-  <div class="flex flex-col items-center"><div class="i-carbon:report text-2xl" /><span class="text-[8px] mt-1 uppercase">Reports</span></div>
-  <div class="flex flex-col items-center"><div class="i-carbon:milestone text-2xl" /><span class="text-[8px] mt-1 uppercase">Timeline</span></div>
-  <div class="flex flex-col items-center"><div class="i-carbon:data-set text-2xl" /><span class="text-[8px] mt-1 uppercase">CSV Synced</span></div>
+<div class="mt-12 flex justify-center gap-10 opacity-20">
+  <div class="flex flex-col items-center"><div class="i-carbon:report text-3xl" /></div>
+  <div class="flex flex-col items-center"><div class="i-carbon:milestone text-3xl" /></div>
+  <div class="flex flex-col items-center"><div class="i-carbon:dashboard text-3xl" /></div>
 </div>
 
 ---
@@ -294,4 +246,5 @@ h1 {
 .slidev-layout.default {
   padding: 3rem 4rem;
 }
+table th { font-weight: 900 !important; }
 </style>
