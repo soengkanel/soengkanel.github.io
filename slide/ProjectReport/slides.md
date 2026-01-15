@@ -1,26 +1,64 @@
 ---
 theme: default
-background: https://images.unsplash.com/photo-1551288049-bbda38a5f94a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80
+background: ./assets/title-bg.png
 class: text-center
 highlighter: shiki
 lineNumbers: true
 drawings:
   persist: false
 transition: slide-left
-title: Project Management Dashboard 2026
+title: TC Technical Portfolio 2026
 mdc: true
 ---
 
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Executive Portfolio Report</span>
-## PMO & Stakeholder Weekly Sync
+<div class="h-full flex flex-col justify-center items-center text-white">
+  <div class="relative group">
+    <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+    <div class="relative px-8 py-4 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl">
+      <h1 class="text-7xl font-black mb-2 tracking-tighter">
+        <span class="text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 animate-gradient-x">
+          Strategic Technical Dashboard
+        </span>
+      </h1>
+      <h2 class="text-2xl font-light opacity-80 tracking-[0.2em] uppercase">
+        Solutions Architecture & Execution
+      </h2>
+    </div>
+  </div>
 
-<div class="pt-20 opacity-60">
-  Soeng Kanel | Jan 15, 2026
+  <div class="mt-20 flex gap-8 items-center">
+    <div class="flex flex-col items-end border-r border-white/20 pr-8">
+      <div class="text-xs uppercase font-black tracking-widest text-cyan-400 mb-1">Consultant Identity</div>
+      <div class="text-2xl font-black italic">TC | Technical Lead</div>
+    </div>
+    <div class="flex flex-col items-start translate-y-1">
+      <div class="text-xs uppercase font-black tracking-widest opacity-40 mb-1">Portfolio Lifecycle</div>
+      <div class="text-lg font-bold opacity-80">Cycle Q1 / FY-2026</div>
+    </div>
+  </div>
+
+  <div class="mt-12 flex gap-4">
+    <div class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+      <div class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></div>
+      System Health: Optimized
+    </div>
+    <div class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 opacity-40 italic">
+      Confidential / Internal Use Only
+    </div>
+  </div>
 </div>
 
-<div class="abs-bl m-10 flex gap-2">
-  <div class="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded text-xs text-blue-400 font-bold uppercase tracking-widest">Hardcoded Reporting Mode</div>
-</div>
+<style>
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 15s ease infinite;
+}
+
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+</style>
 
 ---
 layout: default
@@ -153,7 +191,7 @@ layout: default
         </tr>
         <tr class="border-b border-white/5">
           <td class="p-3 font-bold opacity-60">Budget Extension</td>
-          <td class="p-3 italic">Gap Analysis & Requirement Specs</td>
+          <td class="p-3 italic">Gap Analysis & Requirement Specs, man days est.</td>
           <td class="p-3 text-center text-cyan-400 font-bold">30%</td>
           <td class="p-3 text-right font-black opacity-80">Panha</td>
         </tr>
@@ -221,7 +259,7 @@ layout: default
       </li>
       <li class="flex gap-2">
         <span class="text-blue-400 font-black">B.</span>
-        <span><b>Domain Squad:</b> Direct assignment of 2 Business Power Users for a 1-week intensive evaluation sprint.</span>
+        <span><b>Domain Squad:</b> Direct assignment of 2 Business Power Users for a 1-week intensive evaluation sprint or by module.</span>
       </li>
     </ul>
   </div>
