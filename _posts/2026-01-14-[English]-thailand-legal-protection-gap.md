@@ -223,16 +223,57 @@ thumbnail: /images/thailand_legal_protection_gap.png
   .teacher-note { flex-direction: column; text-align: center; }
   .sound-bar { flex-direction: column; gap: 1rem; text-align: center; }
 }
+
+/* Audio Visual Feedback */
+@keyframes audio-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 217, 255, 0.4); }
+  50% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(0, 217, 255, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 217, 255, 0); }
+}
+
+.is-speaking {
+  animation: audio-pulse 1.2s infinite ease-in-out !important;
+  background: var(--l-gold) !important;
+  border-color: var(--l-gold) !important;
+}
+
+.mini-speaker {
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+  transition: transform 0.2s;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.mini-speaker:hover {
+  transform: scale(1.2);
+}
 </style>
 
 <script>
-function speak(text) {
-  if ('speechSynthesis' in window) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.85;
-    window.speechSynthesis.speak(utterance);
+function speak(text, element) {
+  if (!('speechSynthesis' in window)) {
+    alert("Your browser does not support text-to-speech.");
+    return;
   }
+
+  // Stop any current speech
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.95; // Natural speed
+  utterance.pitch = 1.0;
+
+  // Visual feedback
+  if (element) {
+    element.classList.add('is-speaking');
+    utterance.onend = () => element.classList.remove('is-speaking');
+    utterance.onerror = () => element.classList.remove('is-speaking');
+  }
+
+  window.speechSynthesis.speak(utterance);
 }
 </script>
 
@@ -243,7 +284,7 @@ function speak(text) {
     <div class="teacher-avatar">👩‍🏫</div>
     <div class="note-content">
       <h3>Teacher's Note 👋</h3>
-      <p>Hello, my student! In this second lesson of our <strong>Global Institutional Trust</strong> series, we examine how legal systems in Thailand interact with international human rights standards. This text is very technical, focusing on the "mechanics" of law—how different rules <span class="l-marker">line up</span> or fail to protect people. Let's dive in!</p>
+      <p>Hello, my student! In this second lesson, we examine how legal systems in Thailand interact with international human rights. I have <span class="l-marker">highlighted</span> key <strong>Grammar Patterns</strong> and professional terms in the original text. Let's study the dictionary grammar together!</p>
     </div>
   </div>
 
@@ -264,39 +305,93 @@ function speak(text) {
   <h2 style="color: var(--l-cyan); border-left: 4px solid var(--l-cyan); padding-left: 1rem; margin-bottom: 2rem;">Vocabulary Workshop 📚</h2>
   <div class="vocab-grid">
     <div class="vocab-card">
-      <span class="term">Procedural</span>
+      <span class="term">Procedural <span class="mini-speaker" onclick="speak('Procedural', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/prəˈsiː.dʒər.əl/</span> • <em>adj.</em>
+      </div>
       <span class="khmer">តាមនីតិវីធី</span>
-      <p class="definition">Related to the actual steps or methods of an official process. A "procedural" problem means the rules are right, but the steps are broken.</p>
+      <p class="definition">Related to the actual steps or methods of an official process.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>procedure</u> (n.), <u>proceed</u> (v.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
+        <strong>Example:</strong> "The problem identified in recent reporting is <strong>procedural</strong>."
+      </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Mandate</span>
+      <span class="term">Mandate <span class="mini-speaker" onclick="speak('Mandate', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/ˈmæn.deɪt/</span> • <em>n.</em>
+      </div>
       <span class="khmer">អាណត្តិ / សមត្ថកិច្ច</span>
-      <p class="definition">The official power or authority to do something. If a court says it has "no mandate," it means it doesn't have the legal power to decide on that issue.</p>
+      <p class="definition">The official power or authority to do something.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>mandate</u> (v.), <u>mandatory</u> (adj.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
+        <strong>Example:</strong> "...responsibility is treated as outside the court’s <strong>mandate</strong>."
+      </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Obligation</span>
+      <span class="term">Obligation <span class="mini-speaker" onclick="speak('Obligation', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/ˌɒb.lɪˈɡeɪ.ʃən/</span> • <em>n.</em>
+      </div>
       <span class="khmer">កាតព្វកិច្ច</span>
-      <p class="definition">A legal or moral duty to do something. For example, a country has an "obligation" to protect people from torture if they signed a treaty.</p>
+      <p class="definition">A legal or moral duty to do something.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>oblige</u> (v.), <u>obligatory</u> (adj.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
+        <strong>Example:</strong> "The <strong>obligation</strong> exists, but no institution fully carries it..."
+      </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Indefinite</span>
+      <span class="term">Indefinite <span class="mini-speaker" onclick="speak('Indefinite', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/ɪnˈdef.ɪ.nət/</span> • <em>adj.</em>
+      </div>
       <span class="khmer">ដែលមិនកំណត់ពេល</span>
-      <p class="definition">Lasting for a period of time that has no fixed end date. "Indefinite detention" means you don't know when you will be released.</p>
+      <p class="definition">Lasting for a period of time that has no fixed end date.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>definite</u> (adj.), <u>infinity</u> (n.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
+        <strong>Example:</strong> "...becomes <strong>indefinite</strong> control."
+      </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Outcome</span>
+      <span class="term">Outcome <span class="mini-speaker" onclick="speak('Outcome', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/ˈaʊt.kʌm/</span> • <em>n.</em>
+      </div>
       <span class="khmer">លទ្ធផល</span>
-      <p class="definition">The final result of a process or a series of events. International law cares more about the "outcome" (what actually happens to the person).</p>
+      <p class="definition">The final result of a process or a series of events.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>out</u> (prep.), <u>come</u> (v.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
+        <strong>Example:</strong> "international review focuses on sequence and <strong>outcome</strong>..."
+      </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Irreversible</span>
+      <span class="term">Irreversible <span class="mini-speaker" onclick="speak('Irreversible', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/ˌɪr.ɪˈvɜː.sə.bəl/</span> • <em>adj.</em>
+      </div>
       <span class="khmer">ដែលមិនអាចកែប្រែបាន</span>
-      <p class="definition">Something that cannot be undone or changed back. Sending someone into danger is an "irreversible" decision if they get hurt.</p>
+      <p class="definition">Something that cannot be undone or changed back.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>reverse</u> (v.), <u>reversible</u> (adj.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
+        <strong>Example:</strong> "...when decisions have <strong>irreversible</strong> consequences."
+      </div>
     </div>
   </div>
 
@@ -305,7 +400,7 @@ function speak(text) {
   <div class="analysis-box">
     <div class="metaphor-item">
       <h4>📑 "Legal layers don't fully line up"</h4>
-      <p>Imagine law as a sandwich. The top layer (International Treaty) says "A", but the middle layer (Court Procedure) doesn't mention "A". This lack of <strong>alignment</strong> creates a hole where people can get hurt.</p>
+      <p>Imagine law as a sandwich. The top layer (International Treaty) says "A", but the middle layer (Court Procedure) doesn't mention "A". This <strong>lack of alignment</strong> creates a hole.</p>
     </div>
     
     <div class="metaphor-item">
@@ -315,7 +410,7 @@ function speak(text) {
 
     <div class="metaphor-item">
       <h4>👣 "Shadow reports"</h4>
-      <p>These are reports written by independent groups (like NGOs) that "shadow" (follow closely) the official government reports. They often show the "other side" of the story to international organizations like the UN.</p>
+      <p>These are reports by independent groups that "shadow" (follow) official government reports to show the "other side" of the story.</p>
     </div>
   </div>
 
@@ -324,16 +419,21 @@ function speak(text) {
   <div class="grammar-lab">
     <div class="grammar-focus">
       <div class="grammar-item">
-        <div class="structure">The Logic of "When" Clauses</div>
-        <p>In policy writing, we use <strong>"When"</strong> to describe a condition that triggers a specific system result. It helps explain cause and effect clearly.</p>
-        <p><em>Example: "<strong>When</strong> a real case reaches court, the risk... may not be assessed."</em></p>
-        <p><strong>Khmer Tip:</strong> ប្រើ "When" ដើម្បីបង្ហាញពីស្ថានភាពដែលនាំឱ្យមានលទ្ធផលជាក់លាក់ណាមួយ។</p>
+        <div class="structure">Sentence Logic: "When" Clauses <span class="mini-speaker" onclick="speak('When Clauses', this)">🔊</span></div>
+        <p>In policy writing, we use <strong>"When"</strong> to describe conditions that trigger specific results.</p>
+        <div style="background: var(--l-bg-card); padding: 1.2rem; border-radius: 12px; border-left: 4px solid var(--l-gold); margin: 1rem 0;">
+          <strong>Real Example:</strong> "<strong>When</strong> a real case reaches court, the risk... may not be assessed."
+          <span class="mini-speaker" onclick="speak('When a real case reaches court, the risk may not be assessed', this)">🔊</span>
+        </div>
       </div>
 
       <div class="grammar-item">
-        <div class="structure">Passive Voice (Formal Distance)</div>
-        <p>The author uses <strong>Passive Voice</strong> to focus on the <em>system</em> rather than specific people. It makes the tone sound more objective and professional.</p>
-        <p><em>Example: "...responsibility <strong>is treated</strong> as outside the court’s mandate."</em></p>
+        <div class="structure">Passive Voice mastery <span class="mini-speaker" onclick="speak('Passive Voice', this)">🔊</span></div>
+        <p>The author uses <strong>Passive Voice</strong> to focus on the <em>system</em> rather than specific people.</p>
+        <div style="background: var(--l-bg-card); padding: 1.2rem; border-radius: 12px; border-left: 4px solid var(--l-gold); margin: 1rem 0;">
+          <strong>Real Example:</strong> "...responsibility <strong>is treated</strong> as outside the court’s mandate."
+          <span class="mini-speaker" onclick="speak('Responsibility is treated as outside the courts mandate', this)">🔊</span>
+        </div>
       </div>
     </div>
   </div>
@@ -346,7 +446,7 @@ function speak(text) {
       <div style="font-weight: 700;">"Legal layers don’t fully line up."</div>
       <div style="font-family: 'Kantumruy Pro'; color: var(--l-emerald); font-size: 0.9rem;">ស្រទាប់ច្បាប់មិនត្រូវបានតម្រៀបឱ្យត្រូវគ្នាទាំងស្រុងនោះទេ។</div>
     </div>
-    <button class="listen-btn" onclick="speak('Legal layers don’t fully line up.')">🔊 LISTEN</button>
+    <button class="listen-btn" onclick="speak('Legal layers don’t fully line up.', this)">🔊 LISTEN</button>
   </div>
 
   <div class="sound-bar">
@@ -354,7 +454,7 @@ function speak(text) {
       <div style="font-weight: 700;">"Time itself becomes the issue."</div>
       <div style="font-family: 'Kantumruy Pro'; color: var(--l-emerald); font-size: 0.9rem;">ពេលវេលាខ្លួនឯងបានក្លាយជាបញ្ហា។</div>
     </div>
-    <button class="listen-btn" onclick="speak('Time itself becomes the issue.')">🔊 LISTEN</button>
+    <button class="listen-btn" onclick="speak('Time itself becomes the issue.', this)">🔊 LISTEN</button>
   </div>
 
   <div class="sound-bar">
@@ -362,7 +462,7 @@ function speak(text) {
       <div style="font-weight: 700;">"Decisions have irreversible consequences."</div>
       <div style="font-family: 'Kantumruy Pro'; color: var(--l-emerald); font-size: 0.9rem;">សេចក្តីសម្រេចចិត្តមានផលវិបាកដែលមិនអាចកែប្រែបាន។</div>
     </div>
-    <button class="listen-btn" onclick="speak('Decisions have irreversible consequences.')">🔊 LISTEN</button>
+    <button class="listen-btn" onclick="speak('Decisions have irreversible consequences.', this)">🔊 LISTEN</button>
   </div>
 
   <!-- Master Conclusion -->
