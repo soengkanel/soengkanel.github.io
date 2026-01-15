@@ -46,6 +46,37 @@ mdc: true
       Confidential / Internal Use Only
     </div>
   </div>
+
+  <div class="abs-br m-10 w-80 text-left">
+    <div class="px-4 py-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl">
+      <div class="text-[10px] font-black uppercase tracking-widest opacity-30 mb-3 flex justify-between">
+        <span>Priority Delivery Stack</span>
+        <span class="text-cyan-400">Q1-2026</span>
+      </div>
+      <div class="space-y-2">
+        <div class="flex items-center gap-3">
+          <div class="text-xs font-black opacity-20">01</div>
+          <div class="text-[11px] font-bold text-white border-l-2 border-cyan-400 pl-2 leading-tight">NGD Budget Control Extension</div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-xs font-black opacity-20">02</div>
+          <div class="text-[11px] font-bold opacity-80 border-l-2 border-white/20 pl-2 leading-tight">NGD Container Capacity Management</div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-xs font-black opacity-20">03</div>
+          <div class="text-[11px] font-bold opacity-60 border-l-2 border-white/20 pl-2 leading-tight">HR Lab</div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-xs font-black opacity-20">04</div>
+          <div class="text-[11px] font-bold opacity-40 border-l-2 border-white/20 pl-2 leading-tight">HR Lab Mobile Apps</div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-xs font-black opacity-20">05</div>
+          <div class="text-[11px] font-bold opacity-20 border-l-2 border-white/20 pl-2 leading-tight">NGPOS (F&B)</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <style>
