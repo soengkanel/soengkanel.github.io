@@ -223,16 +223,57 @@ thumbnail: /images/cambodia_scam_systems_analysis.png
   .teacher-note { flex-direction: column; text-align: center; }
   .sound-bar { flex-direction: column; gap: 1rem; text-align: center; }
 }
+
+/* Audio Visual Feedback */
+@keyframes audio-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 217, 255, 0.4); }
+  50% { transform: scale(1.05); box-shadow: 0 0 0 8px rgba(0, 217, 255, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 217, 255, 0); }
+}
+
+.is-speaking {
+  animation: audio-pulse 1.2s infinite ease-in-out !important;
+  background: var(--l-gold) !important;
+  border-color: var(--l-gold) !important;
+}
+
+.mini-speaker {
+  cursor: pointer;
+  font-size: 1.2rem;
+  margin-left: 0.5rem;
+  transition: transform 0.2s;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.mini-speaker:hover {
+  transform: scale(1.2);
+}
 </style>
 
 <script>
-function speak(text) {
-  if ('speechSynthesis' in window) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = 0.85;
-    window.speechSynthesis.speak(utterance);
+function speak(text, element) {
+  if (!('speechSynthesis' in window)) {
+    alert("Your browser does not support text-to-speech.");
+    return;
   }
+
+  // Stop any current speech
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.95; // Natural speed
+  utterance.pitch = 1.0;
+
+  // Visual feedback
+  if (element) {
+    element.classList.add('is-speaking');
+    utterance.onend = () => element.classList.remove('is-speaking');
+    utterance.onerror = () => element.classList.remove('is-speaking');
+  }
+
+  window.speechSynthesis.speak(utterance);
 }
 </script>
 
@@ -261,37 +302,37 @@ function speak(text) {
   <h2 style="color: var(--l-cyan); border-left: 4px solid var(--l-cyan); padding-left: 1rem; margin-bottom: 2rem;">Vocabulary Workshop 📚</h2>
   <div class="vocab-grid">
     <div class="vocab-card">
-      <span class="term">Accusation</span>
+      <span class="term">Accusation <span class="mini-speaker" onclick="speak('Accusation', this)">🔊</span></span>
       <span class="khmer">ការចោទប្រកាន់ (Kar Chort Prokan)</span>
       <p class="definition">A formal claim that someone has done something illegal. Professional writers use this word to separate "feelings" from "legal facts."</p>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Repeatable way</span>
+      <span class="term">Repeatable way <span class="mini-speaker" onclick="speak('Repeatable way', this)">🔊</span></span>
       <span class="khmer">តាមរបៀបដែលអាចធ្វើបានដដែលៗ</span>
       <p class="definition">Consistency. In governance, doing a task successfully every single time using a set process (a system).</p>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Epicentre</span>
+      <span class="term">Epicentre <span class="mini-speaker" onclick="speak('Epicenter', this)">🔊</span></span>
       <span class="khmer">ចំណុចផ្ទុះ / ចំណុចកណ្តាល</span>
       <p class="definition">The central point of something difficult or wide-reaching. Being called the "epicenter" of a crisis is a major risk to reputation.</p>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Procedural</span>
+      <span class="term">Procedural <span class="mini-speaker" onclick="speak('Procedural', this)">🔊</span></span>
       <span class="khmer">តាមនីតិវីធី (Tam Neiteveithey)</span>
       <p class="definition">Relating to an established official way of doing things. Moving from "drama" to "procedure" is a sign of building trust.</p>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Endure</span>
+      <span class="term">Endure <span class="mini-speaker" onclick="speak('Endure', this)">🔊</span></span>
       <span class="khmer">នៅក្នុងជាប់បានយូរ / ស៊ូ</span>
       <p class="definition">To last for a long time. A judgment that "endures" is a legal ruling that remains strong even after many years.</p>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Scrutiny</span>
+      <span class="term">Scrutiny <span class="mini-speaker" onclick="speak('Scrutiny', this)">🔊</span></span>
       <span class="khmer">ការពិនិត្យយ៉ាងហ្មត់ចត់</span>
       <p class="definition">Detailed and critical observation. International institutions apply high scrutiny to countries with high risk scores.</p>
     </div>
