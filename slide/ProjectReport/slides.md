@@ -24,6 +24,7 @@ mdc: true
 
 ---
 layout: default
+clicks: 1
 ---
 
 # <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Portfolio Execution Dashboard</span>
