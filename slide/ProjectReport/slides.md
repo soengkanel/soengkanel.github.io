@@ -46,7 +46,7 @@ layout: default
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-cyan-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">BC</div><div class="font-bold leading-tight">Container Capacity Management</div></div></div></td>
         <td class="p-2 opacity-70">Study Requirement</td>
         <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-cyan-400" style="width: 10%"></div></div><span class="text-[10px] font-mono opacity-50">10%</span></div></td>
-        <td class="p-2 text-center text-[10px] font-bold text-cyan-300">TC</td>
+        <td class="p-2 text-center text-[10px] font-bold text-cyan-300">Kanel</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-emerald-400/20 text-emerald-400">InProgress</span></td>
       </tr>
       <!-- 2 -->
@@ -54,7 +54,7 @@ layout: default
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-cyan-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">BC</div><div class="font-bold leading-tight">Budget Control Extension</div></div></div></td>
         <td class="p-2 opacity-70">Study Requirement</td>
         <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-cyan-400" style="width: 20%"></div></div><span class="text-[10px] font-mono opacity-50">20%</span></div></td>
-        <td class="p-2 text-center text-[10px] font-bold text-cyan-300">TC</td>
+        <td class="p-2 text-center text-[10px] font-bold text-cyan-300">Panha</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-emerald-400/20 text-emerald-400">InProgress</span></td>
       </tr>
       <!-- 3 -->
@@ -62,7 +62,7 @@ layout: default
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-emerald-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">HRMS</div><div class="font-bold leading-tight">HR Lab</div></div></div></td>
         <td class="p-2 opacity-70">Development</td>
         <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-emerald-400" style="width: 85%"></div></div><span class="text-[10px] font-mono opacity-50">85%</span></div></td>
-        <td class="p-2 text-center text-[10px] font-bold text-emerald-300">TC</td>
+        <td class="p-2 text-center text-[10px] font-bold text-emerald-300">Monika</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-blue-400/20 text-blue-400">Coding</span></td>
       </tr>
       <!-- 4 -->
@@ -70,7 +70,7 @@ layout: default
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-emerald-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">HRMS</div><div class="font-bold leading-tight">HR Lab Mobile Apps</div></div></div></td>
         <td class="p-2 opacity-70">Development</td>
         <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-emerald-400" style="width: 50%"></div></div><span class="text-[10px] font-mono opacity-50">50%</span></div></td>
-        <td class="p-2 text-center text-[10px] font-bold text-emerald-300">TC</td>
+        <td class="p-2 text-center text-[10px] font-bold text-emerald-300">Monika</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-blue-400/20 text-blue-400">Coding</span></td>
       </tr>
       <!-- 5 -->
@@ -78,7 +78,7 @@ layout: default
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-orange-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">CRM</div><div class="font-bold leading-tight">Bullseye</div></div></div></td>
         <td class="p-2 opacity-70">Initialized</td>
         <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-orange-400" style="width: 5%"></div></div><span class="text-[10px] font-mono opacity-50">5%</span></div></td>
-        <td class="p-2 text-center text-[10px] font-bold text-orange-300">TC</td>
+        <td class="p-2 text-center text-[10px] font-bold text-orange-300">Sreypich, Panha</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/50">Todo</span></td>
       </tr>
       <!-- 6 -->
@@ -86,7 +86,7 @@ layout: default
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-yellow-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">QuantConnect</div><div class="font-bold leading-tight">CryptoTrading</div></div></div></td>
         <td class="p-2 opacity-70">R&D</td>
         <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-yellow-400" style="width: 0%"></div></div><span class="text-[10px] font-mono opacity-50">0%</span></div></td>
-        <td class="p-2 text-center text-[10px] font-bold text-yellow-300">TC</td>
+        <td class="p-2 text-center text-[10px] font-bold text-yellow-300">Gordon</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/50">Todo</span></td>
       </tr>
       <!-- 7 -->
@@ -94,7 +94,7 @@ layout: default
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-purple-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">Custom</div><div class="font-bold leading-tight">Car Parking & Dormitory</div></div></div></td>
         <td class="p-2 opacity-70">Prospect</td>
         <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-purple-400" style="width: 3%"></div></div><span class="text-[10px] font-mono opacity-50">3%</span></div></td>
-        <td class="p-2 text-center text-[10px] font-bold text-purple-300">TC</td>
+        <td class="p-2 text-center text-[10px] font-bold text-purple-300">Kanel</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/50">Todo</span></td>
       </tr>
     </tbody>
@@ -163,13 +163,13 @@ layout: default
           <td class="p-2 opacity-50 font-bold">Container Mgmt</td>
           <td class="p-2 font-bold italic">Core Table Schema Refactoring</td>
           <td class="p-2 text-center text-cyan-400 font-bold">15%</td>
-          <td class="p-2 text-right opacity-70">TC</td>
+          <td class="p-2 text-right opacity-70">Kanel</td>
         </tr>
         <tr class="border-b border-white/5">
           <td class="p-2 opacity-50 font-bold">Budget Extension</td>
           <td class="p-2 font-bold italic">Override Logic Gap Analysis</td>
           <td class="p-2 text-center text-cyan-400 font-bold">30%</td>
-          <td class="p-2 text-right opacity-70">TC</td>
+          <td class="p-2 text-right opacity-70">Panha</td>
         </tr>
       </tbody>
     </table>
@@ -202,19 +202,19 @@ layout: default
         <td class="p-4 font-bold">HR Lab</td>
         <td class="p-4"><span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[9px] rounded-full font-black uppercase">Coding</span></td>
         <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-emerald-400" style="width: 85%"></div></div></td>
-        <td class="p-4 text-right text-xs opacity-50">TC</td>
+        <td class="p-4 text-right text-xs opacity-50">Monika</td>
       </tr>
       <tr class="border-b border-white/5">
         <td class="p-4 font-bold">HR Lab Mobile Apps</td>
         <td class="p-4"><span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[9px] rounded-full font-black uppercase">Coding</span></td>
         <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-emerald-400" style="width: 50%"></div></div></td>
-        <td class="p-4 text-right text-xs opacity-50">TC</td>
+        <td class="p-4 text-right text-xs opacity-50">Monika</td>
       </tr>
       <tr class="border-b border-white/5">
         <td class="p-4 font-bold">Bullseye</td>
         <td class="p-4"><span class="px-2 py-0.5 bg-white/10 text-white/50 text-[9px] rounded-full font-black uppercase">Todo</span></td>
         <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-orange-400" style="width: 5%"></div></div></td>
-        <td class="p-4 text-right text-xs opacity-50">TC</td>
+        <td class="p-4 text-right text-xs opacity-50">Sreypich, Panha</td>
       </tr>
     </tbody>
   </table>
