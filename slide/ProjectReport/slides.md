@@ -185,40 +185,57 @@ layout: default
 layout: default
 ---
 
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Operations & CRM Tracking</span>
-<p class="opacity-50">HRMS & CRM Engagement Lifecycle</p>
+# <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-500">Blockers & Strategic Support</span>
+<p class="opacity-50 text-xs">Critical challenges requiring executive intervention</p>
 
-<div class="mt-8 overflow-hidden bg-white/5 border border-white/10 rounded-2xl text-left">
-  <table class="w-full text-sm">
-    <thead class="bg-white/10 opacity-60 uppercase font-black text-xs">
-      <tr>
-        <th class="p-4">Project</th>
-        <th class="p-4">Status</th>
-        <th class="p-4 text-center">Progress Bar</th>
-        <th class="p-4 text-right">Owner</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="border-b border-white/5">
-        <td class="p-4 font-bold">HR Lab</td>
-        <td class="p-4"><span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[9px] rounded-full font-black uppercase">Coding</span></td>
-        <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-emerald-400" style="width: 85%"></div></div></td>
-        <td class="p-4 text-right text-xs opacity-50">Monika</td>
-      </tr>
-      <tr class="border-b border-white/5">
-        <td class="p-4 font-bold">HR Lab Mobile Apps</td>
-        <td class="p-4"><span class="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 text-[9px] rounded-full font-black uppercase">Coding</span></td>
-        <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-emerald-400" style="width: 50%"></div></div></td>
-        <td class="p-4 text-right text-xs opacity-50">Monika</td>
-      </tr>
-      <tr class="border-b border-white/5">
-        <td class="p-4 font-bold">Bullseye</td>
-        <td class="p-4"><span class="px-2 py-0.5 bg-white/10 text-white/50 text-[9px] rounded-full font-black uppercase">Todo</span></td>
-        <td class="p-4"><div class="bg-white/10 h-1.5 rounded-full overflow-hidden w-full"><div class="h-full bg-orange-400" style="width: 5%"></div></div></td>
-        <td class="p-4 text-right text-xs opacity-50">Sreypich, Panha</td>
-      </tr>
-    </tbody>
-  </table>
+<div class="grid grid-cols-2 gap-6 mt-8">
+  <div class="p-6 bg-red-500/5 border border-red-500/20 rounded-2xl">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="i-carbon:warning-filled text-red-400 text-2xl" />
+      <h3 class="text-lg font-black uppercase text-red-200">Facing Problems</h3>
+    </div>
+    <ul class="text-sm space-y-4 opacity-80">
+      <li class="flex gap-2">
+        <span class="text-red-400 font-black">01.</span>
+        <span><b>NGPOS Legacy Sync:</b> API documentation for the older merchant portal is incomplete, delaying the integration layer.</span>
+      </li>
+      <li class="flex gap-2">
+        <span class="text-red-400 font-black">02.</span>
+        <span><b>Resource Bandwidth:</b> Bullseye & HR Lab overlapping timelines are stretching the QA team thin for Q1 targets.</span>
+      </li>
+      <li class="flex gap-2">
+        <span class="text-red-400 font-black">03.</span>
+        <span><b>Infrastructure Lag:</b> Server provisioning for the CryptoTrading R&D environment is still pending IT approval.</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="p-6 bg-blue-500/5 border border-blue-500/20 rounded-2xl">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="i-carbon:user-activity text-blue-400 text-2xl" />
+      <h3 class="text-lg font-black uppercase text-blue-200">Support Action</h3>
+    </div>
+    <ul class="text-sm space-y-4 opacity-80">
+      <li class="flex gap-2">
+        <span class="text-blue-400 font-black">A.</span>
+        <span><b>Executive Mandate:</b> Require a formal request to the Retail Vendor to prioritize the NGPOS API technical specs.</span>
+      </li>
+      <li class="flex gap-2">
+        <span class="text-blue-400 font-black">B.</span>
+        <span><b>Outsourcing Approval:</b> Proposal to hire 1 temporary QA lead to unblock HR Lab & Bullseye testing phases.</span>
+      </li>
+      <li class="flex gap-2">
+        <span class="text-blue-400 font-black">C.</span>
+        <span><b>Budget Review:</b> Finalize hardware budget for the QuantConnect local instance deployment.</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="mt-8 flex justify-center">
+  <div class="px-6 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] uppercase font-bold tracking-widest opacity-40">
+    Urgent Decision Required for Q1 Delivery Schedule
+  </div>
 </div>
 
 ---
