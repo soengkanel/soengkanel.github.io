@@ -243,7 +243,7 @@ function speak(text) {
     <div class="teacher-avatar">👨‍🏫</div>
     <div class="note-content">
       <h3>Teacher's Note 👋</h3>
-      <p>Hello, my student! Today we are studying an article about <strong>Global Institutional Trust</strong>. I have <span class="l-marker">highlighted</span> the key professional terms in the original text below. These are the words we will analyze in our workshop!</p>
+      <p>Hello, my student! Today we are studying an article about <strong>Global Institutional Trust</strong>. I have <span class="l-marker">highlighted</span> professional terms and key <strong>Grammar Patterns</strong> (Nouns, Verbs, Pronouns) in the original text. Let's master these together!</p>
     </div>
   </div>
 
@@ -320,18 +320,45 @@ function speak(text) {
   <h2 style="color: var(--l-cyan); border-left: 4px solid var(--l-cyan); padding-left: 1rem; margin-bottom: 2rem;">Grammar Deep Dive 📖</h2>
   <div class="grammar-lab">
     <div class="grammar-focus">
+      
+      <!-- Noun Section -->
       <div class="grammar-item">
-        <div class="structure">The Mastery of "Whether"</div>
-        <p>In formal English, we use <strong>"Whether"</strong> to present a doubt or a choice between two possibilities. It is more professional than using "if."</p>
+        <div class="structure">1. The Noun (នាម) - Naming the System</div>
+        <p>A <strong>Noun</strong> is a person, place, thing, or idea. In professional writing, precise nouns are used to define the subject clearly.</p>
+        <div style="background: var(--l-bg-card); padding: 1.2rem; border-radius: 12px; border-left: 4px solid var(--l-gold); margin: 1rem 0;">
+          <strong>Real Example:</strong> "International <span class="l-marker">reporting</span> on <span class="l-marker">scam networks</span> in <span class="l-marker">Cambodia</span>..."
+        </div>
+        <p><strong>Professional Tip:</strong> Using nouns like <em>"reporting"</em> (an action turned into a noun) makes your English sound more analytical and high-level.</p>
+      </div>
+
+      <!-- Verb Section -->
+      <div class="grammar-item">
+        <div class="structure">2. The Verb (កិរិយាសព្ទ) - Defining Action</div>
+        <p>A <strong>Verb</strong> tells us what is happening or the state of something. In this article, verbs describe how systems behave.</p>
+        <div style="background: var(--l-bg-card); padding: 1.2rem; border-radius: 12px; border-left: 4px solid var(--l-gold); margin: 1rem 0;">
+          <strong>Real Example:</strong> "Systems <span class="l-marker">earn</span> trust."
+        </div>
+        <p><strong>Professional Tip:</strong> Strong verbs like <em>"earn," "endure,"</em> or <em>"grading"</em> show clear cause and effect. They are the "engines" of your sentences.</p>
+      </div>
+
+      <!-- Pronoun Section -->
+      <div class="grammar-item">
+        <div class="structure">3. The Pronoun (សព្វនាម) - Maintaining Flow</div>
+        <p>A <strong>Pronoun</strong> is a word that replaces a noun. We use them so we don't have to repeat the same names over and over.</p>
+        <div style="background: var(--l-bg-card); padding: 1.2rem; border-radius: 12px; border-left: 4px solid var(--l-gold); margin: 1rem 0;">
+          <strong>Real Example:</strong> "<span class="l-marker">It</span> is about how the world quietly decides..."
+        </div>
+        <p><strong>Usage:</strong> Here, <em>"It"</em> replaces the entire concept of the "story." This keeps the writing smooth (cohesion).</p>
+      </div>
+
+      <!-- Advanced logic -->
+      <div class="grammar-item">
+        <div class="structure">4. Advanced Mastery: "Whether" & "How"</div>
+        <p>In formal policy English, we use <strong>"Whether"</strong> to present options and <strong>"How"</strong> to describe processes.</p>
         <p><em>Example: "...decides <strong>whether</strong> to trust a country."</em></p>
         <p><strong>Khmer Tip:</strong> ប្រើពាក្យ "Whether" ជំនួស "If" សម្រាប់ការសរសេរផ្លូវការ (ថាតើ...)</p>
       </div>
 
-      <div class="grammar-item">
-        <div class="structure">The Mastery of "How"</div>
-        <p><strong>"How"</strong> describes the <em>method</em> or <em>process</em>. In policy writing, we focus on "how" things happen because it shows the system in action.</p>
-        <p><em>Example: "It is about <strong>how</strong> the world quietly decides..."</em></p>
-      </div>
     </div>
   </div>
 
