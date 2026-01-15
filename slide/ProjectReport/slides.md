@@ -200,15 +200,15 @@ layout: default
     <ul class="text-sm space-y-4 opacity-80">
       <li class="flex gap-2">
         <span class="text-red-400 font-black">01.</span>
-        <span><b>NGPOS Legacy Sync:</b> API documentation for the older merchant portal is incomplete, delaying the integration layer.</span>
+        <span><b>Mobile Production Risk:</b> Currently utilizing 2 Junior Devs with AI assistance. While coding is fast, there are deep architectural concerns for Production stability.</span>
       </li>
       <li class="flex gap-2">
         <span class="text-red-400 font-black">02.</span>
-        <span><b>Resource Bandwidth:</b> Bullseye & HR Lab overlapping timelines are stretching the QA team thin for Q1 targets.</span>
+        <span><b>Testing Gap:</b> Critical lack of <b>Domain Experts</b> for functional testing and product evaluation. Current testing is technical, not business-aligned.</span>
       </li>
       <li class="flex gap-2">
         <span class="text-red-400 font-black">03.</span>
-        <span><b>Infrastructure Lag:</b> Server provisioning for the CryptoTrading R&D environment is still pending IT approval.</span>
+        <span><b>NGPOS Docs:</b> Legacy API documentation for the older merchant portal remains incomplete, delaying the integration layer.</span>
       </li>
     </ul>
   </div>
@@ -221,15 +221,15 @@ layout: default
     <ul class="text-sm space-y-4 opacity-80">
       <li class="flex gap-2">
         <span class="text-blue-400 font-black">A.</span>
-        <span><b>Executive Mandate:</b> Require a formal request to the Retail Vendor to prioritize the NGPOS API technical specs.</span>
+        <span><b>Code Review Mandate:</b> Allocate Senior Arch time for a rigorous security & stability audit of AI-generated mobile code.</span>
       </li>
       <li class="flex gap-2">
         <span class="text-blue-400 font-black">B.</span>
-        <span><b>Outsourcing Approval:</b> Proposal to hire 1 temporary QA lead to unblock HR Lab & Bullseye testing phases.</span>
+        <span><b>Domain Squad:</b> Direct assignment of 2 Business Power Users for a 1-week intensive evaluation sprint.</span>
       </li>
       <li class="flex gap-2">
         <span class="text-blue-400 font-black">C.</span>
-        <span><b>Budget Review:</b> Finalize hardware budget for the QuantConnect local instance deployment.</span>
+        <span><b>Vendor Escalation:</b> Executive push to Retail Vendor for NGPOS technical specifications.</span>
       </li>
     </ul>
   </div>
