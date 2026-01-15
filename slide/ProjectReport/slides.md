@@ -130,7 +130,7 @@ clicks: 1
 layout: default
 ---
 
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Operational Mastery: In-Progress Tasks</span>
+# <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">In-Progress Tasks</span>
 <p class="opacity-50 text-xs">Granular tracking of all active implementation stages</p>
 
 <div class="mt-6">
@@ -147,13 +147,13 @@ layout: default
       <tbody>
         <tr class="border-b border-white/5">
           <td class="p-3 font-bold opacity-60">Container Mgmt</td>
-          <td class="p-3 italic">Core Table Schema Refactoring & Optimization</td>
+          <td class="p-3 italic">Understand the requirements</td>
           <td class="p-3 text-center text-cyan-400 font-bold">15%</td>
           <td class="p-3 text-right font-black opacity-80">Kanel</td>
         </tr>
         <tr class="border-b border-white/5">
           <td class="p-3 font-bold opacity-60">Budget Extension</td>
-          <td class="p-3 italic">Override Logic Gap Analysis & Requirement Specs</td>
+          <td class="p-3 italic">Gap Analysis & Requirement Specs</td>
           <td class="p-3 text-center text-cyan-400 font-bold">30%</td>
           <td class="p-3 text-right font-black opacity-80">Panha</td>
         </tr>
@@ -165,7 +165,7 @@ layout: default
         </tr>
         <tr class="border-b border-white/5">
           <td class="p-3 font-bold opacity-60">HR Mobile</td>
-          <td class="p-3 italic">Mobile API Authentication & Push Service</td>
+          <td class="p-3 italic">Login multitenant(NGD/T) & leave a half-day feature</td>
           <td class="p-3 text-center text-emerald-400 font-bold">50%</td>
           <td class="p-3 text-right font-black opacity-80">Monika</td>
         </tr>
@@ -206,10 +206,6 @@ layout: default
         <span class="text-red-400 font-black">02.</span>
         <span><b>Testing Gap:</b> Critical lack of <b>Domain Experts</b> for functional testing and product evaluation. Current testing is technical, not business-aligned.</span>
       </li>
-      <li class="flex gap-2">
-        <span class="text-red-400 font-black">03.</span>
-        <span><b>NGPOS Docs:</b> Legacy API documentation for the older merchant portal remains incomplete, delaying the integration layer.</span>
-      </li>
     </ul>
   </div>
 
@@ -221,15 +217,11 @@ layout: default
     <ul class="text-sm space-y-4 opacity-80">
       <li class="flex gap-2">
         <span class="text-blue-400 font-black">A.</span>
-        <span><b>Code Review Mandate:</b> Allocate Senior Arch time for a rigorous security & stability audit of AI-generated mobile code.</span>
+        <span><b>Project Prioritization:</b> Clearly define the delivery sequence to ensure resources are focused on high-impact projects.</span>
       </li>
       <li class="flex gap-2">
         <span class="text-blue-400 font-black">B.</span>
         <span><b>Domain Squad:</b> Direct assignment of 2 Business Power Users for a 1-week intensive evaluation sprint.</span>
-      </li>
-      <li class="flex gap-2">
-        <span class="text-blue-400 font-black">C.</span>
-        <span><b>Vendor Escalation:</b> Executive push to Retail Vendor for NGPOS technical specifications.</span>
       </li>
     </ul>
   </div>
