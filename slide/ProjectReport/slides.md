@@ -1,72 +1,48 @@
 ---
 theme: default
-background: ./assets/title-bg.png
+background: https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&q=80&w=2071&ixlib=rb-4.0.3
 class: text-center
 highlighter: shiki
 lineNumbers: true
 drawings:
   persist: false
-transition: fade-out
-title: "The Culture Orbital: Project Progress 2026"
+transition: slide-up
+title: "Project Adventure 2026: The Big Update!"
 mdc: true
 ---
 
-<div class="h-full flex flex-row justify-center items-center text-white gap-10">
-  <div class="flex-1 text-left animate-bounce-in">
-    <div class="relative group inline-block">
-      <div class="absolute -inset-2 bg-gradient-to-r from-indigo-400 via-cyan-500 to-silver-200 rounded-3xl blur opacity-30 group-hover:opacity-100 transition duration-1000"></div>
-      <div class="relative px-8 py-6 bg-black/60 backdrop-blur-2xl border-2 border-white/20 rounded-3xl shadow-[0_20px_50px_rgba(34,211,238,0.2)]">
-        <h1 class="text-7xl font-black mb-2 tracking-tighter leading-none">
-          <span class="text-transparent bg-clip-text bg-gradient-to-br from-white via-cyan-200 to-indigo-400 animate-pulse">
-            Hello, Team! 👋
-          </span>
-        </h1>
-        <h2 class="text-3xl font-black opacity-90 tracking-[0.1em] uppercase transform -rotate-1 font-serif italic text-cyan-100">
-          Project Progress Hub
-        </h2>
-      </div>
-    </div>
-    <div class="mt-10 space-y-4">
-      <div class="flex items-center gap-4 animate-slide-in-left" style="animation-delay: 0.2s">
-        <div class="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-2xl shadow-lg border-2 border-white/20">
-          <div class="i-carbon:chip"></div>
-        </div>
-        <div>
-          <div class="text-[10px] uppercase font-black tracking-widest text-cyan-300 px-1">Identity</div>
-          <div class="text-xl font-black italic">TC | Technical Lead</div>
-        </div>
-      </div>
-      <div class="flex items-center gap-4 animate-slide-in-left" style="animation-delay: 0.4s">
-        <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl backdrop-blur-md border border-white/20">
-          <div class="i-carbon:rocket"></div>
-        </div>
-        <div>
-          <div class="text-[10px] uppercase font-black tracking-widest text-indigo-300 px-1">Current Cycle</div>
-          <div class="text-xl font-black opacity-80 italic">Q1 / FY-2026</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="flex-none w-1/3 relative animate-float">
-    <img src="./assets/pm-character.png" class="w-full drop-shadow-[0_0_80px_rgba(255,255,255,0.3)] transform hover:scale-105 transition duration-500">
-    <div class="absolute -top-5 -right-5 bg-white text-black px-6 py-2 rounded-full font-black text-[10px] uppercase tracking-widest shadow-2xl border-4 border-indigo-500 animate-pulse">
-      Status: Active
-    </div>
-  </div>
+<div class="h-full flex flex-row justify-center items-center gap-6 p-10">
+<div class="flex-1 text-left">
+<div class="bg-yellow-400 border-8 border-black rounded-[3rem] p-10 shadow-[15px_15px_0px_0px_rgba(0,0,0,1)] transform -rotate-2 hover:rotate-0 transition-transform duration-500 animate-bounce-in">
+<h1 class="text-7xl font-black mb-4 tracking-tighter leading-none text-black font-draw">Hello, Team! <span class="inline-block animate-wiggle">🌈</span></h1>
+<h2 class="text-3xl font-bold text-black/70 font-draw uppercase">Our Epic Q1 Journey</h2>
 </div>
-
+<div class="mt-12 space-y-6">
+<div class="flex items-center gap-6 animate-slide-in-left" style="animation-delay: 0.2s">
+<div class="w-16 h-16 rounded-2xl bg-pink-500 border-4 border-black flex items-center justify-center text-4xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">🦸‍♂️</div>
+<div><div class="text-sm uppercase font-black tracking-widest text-white/60">Lead Hero</div><div class="text-2xl font-black text-white font-draw">TC | Master Navigator</div></div>
+</div>
+<div class="flex items-center gap-6 animate-slide-in-left" style="animation-delay: 0.4s">
+<div class="w-16 h-16 rounded-2xl bg-cyan-400 border-4 border-black flex items-center justify-center text-4xl shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">🚀</div>
+<div><div class="text-sm uppercase font-black tracking-widest text-white/60">Mission Hub</div><div class="text-2xl font-black text-white font-draw">Quarterly Quest Q1-26</div></div>
+</div>
+</div>
+</div>
+<div class="flex-none w-1/3 relative animate-float">
+<div class="absolute -inset-4 bg-white rounded-full blur-2xl opacity-20"></div>
+<img src="./assets/pm-character.png" class="w-full relative z-10 drop-shadow-2xl transform hover:scale-110 transition duration-500">
+<div class="absolute -top-10 -right-10 bg-yellow-400 text-black px-6 py-3 rounded-full font-black text-sm uppercase tracking-widest border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] animate-pulse rotate-12">Let's Go!</div>
+</div>
+</div>
 <div class="abs-br m-10 w-80 text-left animate-wiggle">
-  <div class="px-6 py-4 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden text-white">
-    <div class="text-xs font-black uppercase tracking-widest text-cyan-400 mb-4 flex justify-between items-center">
-      <span>Mission Priorities</span>
-      <div class="h-1.5 w-1.5 rounded-full bg-red-500 animate-ping"></div>
-    </div>
-    <div class="space-y-3">
-      <div class="text-[10px] font-bold text-white/70 border-l-2 border-red-500 pl-3 py-1 bg-red-500/10">01. Budget Control (P1)</div>
-      <div class="text-[10px] font-bold text-white/70 border-l-2 border-indigo-400 pl-3">02. Container Capacity (P1)</div>
-      <div class="text-[10px] font-bold text-white/70 border-l-2 border-emerald-500 pl-3">03. HR Lab Portal (P2)</div>
-    </div>
-  </div>
+<div class="p-6 bg-white border-4 border-black rounded-[2rem] shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
+<div class="text-xs font-black uppercase tracking-widest text-pink-600 mb-4 flex justify-between items-center"><span>TOP MISSIONS</span><div class="h-3 w-3 rounded-full bg-red-500 animate-ping border-2 border-black"></div></div>
+<div class="space-y-3">
+<div class="text-sm font-black text-black/80 flex items-center gap-2"><span class="bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">1</span>Budget Matrix</div>
+<div class="text-sm font-black text-black/80 flex items-center gap-2"><span class="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">2</span>Container Quest</div>
+<div class="text-sm font-black text-black/80 flex items-center gap-2"><span class="bg-emerald-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">3</span>HR Neural Lab</div>
+</div>
+</div>
 </div>
 
 ---
@@ -74,213 +50,148 @@ layout: default
 clicks: 1
 ---
 
-<div class="flex justify-between items-start">
-  <div class="flex items-center gap-4 mb-2">
-    <div class="text-5xl animate-bounce">📡</div>
-    <div>
-      <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-cyan-400">
-        Project Dashboard
-      </h1>
-      <p class="opacity-50 font-bold italic font-serif text-sm">Detailed execution roadmap for Q1.</p>
-    </div>
-  </div>
-  <div class="text-right">
-    <div class="text-[9px] font-black uppercase tracking-[0.3em] opacity-30">Status Update: Q1 2026</div>
-  </div>
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-6">
+<div class="text-7xl animate-bounce drop-shadow-lg">🗺️</div>
+<div><h1 class="text-5xl font-black text-white font-draw mb-1 stroke-black">Our Mission Map</h1><p class="text-white/60 font-bold italic text-lg">Tracking our progress across the kingdom!</p></div>
 </div>
-
-<div class="mt-4 overflow-hidden bg-white/5 border border-white/10 rounded-[2rem] text-left p-2 backdrop-blur-3xl shadow-inner">
-  <table class="w-full text-[11px] border-collapse">
-    <thead class="bg-white/10 uppercase font-black opacity-60 text-indigo-200">
-      <tr>
-        <th class="p-3 text-left">Project Name</th>
-        <th class="p-3 text-center w-8">Rank</th>
-        <th class="p-3 text-left">Current Milestone</th>
-        <th class="p-3 text-left">Progress</th>
-        <th class="p-3 text-center">Project Lead</th>
-        <th class="p-3 text-right">State</th>
-      </tr>
-    </thead>
-    <tbody v-if="$clicks === 0" class="animate-fade-in">
-      <tr class="border-b border-white/5 group hover:bg-white/5 transition px-2">
-        <td class="p-3"><div class="flex items-center gap-2">💠 <div><div class="text-[9px] font-bold opacity-40 italic">Business Central</div><div class="font-black text-white">Budget Control Extension</div></div></div></td>
-        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-red-500/80 text-white text-[8px] font-black rounded-lg shadow-lg">P1</span></td>
-        <td class="p-3 opacity-70 italic font-bold">Requirement Gathering</td>
-        <td class="p-3 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-2 rounded-full overflow-hidden border border-white/5"><div class="h-full bg-gradient-to-r from-indigo-400 to-cyan-300 rounded-full" style="width: 20%"></div></div><span class="text-[10px] font-black opacity-50">20%</span></div></td>
-        <td class="p-3 text-center font-black text-indigo-300">Panha</td>
-        <td class="p-3 text-right"><span class="px-3 py-1 text-[8px] font-black rounded-full uppercase bg-indigo-500 text-white shadow-xl">In Flight</span></td>
-      </tr>
-      <tr class="border-b border-white/5 group hover:bg-white/5 transition">
-        <td class="p-3"><div class="flex items-center gap-2">🧱 <div><div class="text-[9px] font-bold opacity-40 italic">Business Central</div><div class="font-black text-white">Container Capacity Management</div></div></div></td>
-        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-red-500/80 text-white text-[8px] font-black rounded-lg shadow-lg">P1</span></td>
-        <td class="p-3 opacity-70 italic font-bold">Gap Analysis</td>
-        <td class="p-3 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-2 rounded-full overflow-hidden border border-white/5"><div class="h-full bg-gradient-to-r from-indigo-400 to-cyan-300 rounded-full" style="width: 10%"></div></div><span class="text-[10px] font-black opacity-50">10%</span></div></td>
-        <td class="p-3 text-center font-black text-indigo-300">Kanel</td>
-        <td class="p-3 text-right"><span class="px-3 py-1 text-[8px] font-black rounded-full uppercase bg-indigo-500 text-white">In Flight</span></td>
-      </tr>
-      <tr class="border-b border-white/5 group hover:bg-white/5 transition">
-        <td class="p-3"><div class="flex items-center gap-2">🧬 <div><div class="text-[9px] font-bold opacity-40 italic">HRMS</div><div class="font-black text-white">HR Lab</div></div></div></td>
-        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-indigo-400 text-white text-[8px] font-black rounded-lg shadow-lg">P2</span></td>
-        <td class="p-3 opacity-70 italic font-bold">Frontend Dev</td>
-        <td class="p-3 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-2 rounded-full overflow-hidden border border-white/5"><div class="h-full bg-gradient-to-r from-indigo-200 to-silver-100 rounded-full" style="width: 85%"></div></div><span class="text-[10px] font-black opacity-50">85%</span></div></td>
-        <td class="p-3 text-center font-black text-indigo-300">Monika</td>
-        <td class="p-3 text-right"><span class="px-3 py-1 text-[8px] font-black rounded-full uppercase bg-cyan-500 text-white animate-pulse">Development</span></td>
-      </tr>
-      <tr class="group hover:bg-white/5 transition">
-        <td class="p-3"><div class="flex items-center gap-2">🗨️ <div><div class="text-[9px] font-bold opacity-40 italic">HRMS</div><div class="font-black text-white">HR Lab Mobile Apps</div></div></div></td>
-        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-indigo-400 text-white text-[8px] font-black rounded-lg shadow-lg">P2</span></td>
-        <td class="p-3 opacity-70 italic font-bold">API Integration</td>
-        <td class="p-3 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-2 rounded-full overflow-hidden border border-white/5"><div class="h-full bg-gradient-to-r from-indigo-200 to-silver-100 rounded-full" style="width: 50%"></div></div><span class="text-[10px] font-black opacity-50">50%</span></div></td>
-        <td class="p-3 text-center font-black text-indigo-300">Monika</td>
-        <td class="p-3 text-right"><span class="px-3 py-1 text-[8px] font-black rounded-full uppercase bg-cyan-500 text-white">Development</span></td>
-      </tr>
-    </tbody>
-    <tbody v-if="$clicks === 1" class="animate-fade-in">
-      <tr class="border-b border-white/5 group hover:bg-white/5 transition px-2">
-        <td class="p-3"><div class="flex items-center gap-2">🥪 <div><div class="text-[9px] font-bold opacity-40 italic">Retail</div><div class="font-black text-white">NGPOS (F&B)</div></div></div></td>
-        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-cyan-600 text-white text-[8px] font-black rounded-lg shadow-lg">P3</span></td>
-        <td class="p-3 opacity-70 italic font-bold">UI Mockups</td>
-        <td class="p-3 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-2 rounded-full overflow-hidden border border-white/5"><div class="h-full bg-cyan-400" style="width: 30%"></div></div><span class="text-[10px] font-black opacity-50">30%</span></div></td>
-        <td class="p-3 text-center font-black text-indigo-300">Marchi</td>
-        <td class="p-3 text-right"><span class="px-3 py-1 text-[8px] font-black rounded-full uppercase bg-indigo-500 text-white">In Flight</span></td>
-      </tr>
-       <tr class="border-b border-white/5 group hover:bg-white/5 transition px-2">
-        <td class="p-3"><div class="flex items-center gap-2">🏹 <div><div class="text-[9px] font-bold opacity-40 italic">CRM</div><div class="font-black text-white">Bullseye</div></div></div></td>
-        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-white/20 text-white text-[8px] font-black rounded-lg">P4</span></td>
-        <td class="p-3 opacity-70 italic font-bold">Planning Phase</td>
-        <td class="p-3 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-2 rounded-full overflow-hidden border border-white/5"><div class="h-full bg-white/20" style="width: 5%"></div></div><span class="text-[10px] font-black opacity-30">5%</span></div></td>
-        <td class="p-3 text-center font-black text-white/50">Team CRM</td>
-        <td class="p-3 text-right"><span class="px-3 py-1 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/30 italic">Planning</span></td>
-      </tr>
-      <tr class="border-b border-white/5 group hover:bg-white/5 transition">
-        <td class="p-3"><div class="flex items-center gap-2">💰 <div><div class="text-[9px] font-bold opacity-40 italic">Quick Cash</div><div class="font-black text-white">CryptoTrading</div></div></div></td>
-        <td class="p-3 text-center"><span class="px-2 py-0.5 bg-white/20 text-white text-[8px] font-black rounded-lg">P4</span></td>
-        <td class="p-3 opacity-70 italic font-bold">Requirement Analysis</td>
-        <td class="p-3 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-2 rounded-full overflow-hidden border border-white/5"><div class="h-full bg-white/20" style="width: 0%"></div></div><span class="text-[10px] font-black opacity-30">0%</span></div></td>
-        <td class="p-3 text-center font-black text-white/50 italic">Gordon</td>
-        <td class="p-3 text-right"><span class="px-3 py-1 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/30 italic">Planning</span></td>
-      </tr>
-    </tbody>
-  </table>
+<div class="bg-pink-500 border-4 border-black px-4 py-2 rounded-xl text-white font-black uppercase tracking-tighter shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-2">Q1 2026 Live</div>
 </div>
-
-<div class="mt-6 flex gap-6 text-left">
-  <div class="p-4 bg-white/5 border border-white/20 rounded-[2rem] flex items-center gap-6 flex-1 shadow-[0_0_30px_rgba(255,255,255,0.05)]">
-    <div class="text-5xl font-black italic text-cyan-300 drop-shadow-[0_0_10px_white]">25.5%</div>
-    <div class="text-xs uppercase font-black leading-tight tracking-[0.2em] opacity-80">Overall Team<br>Progress</div>
-  </div>
-  <div class="p-4 bg-indigo-500/10 border border-indigo-400/20 rounded-[2rem] flex items-center gap-4 flex-1">
-    <div class="w-4 h-4 rounded-full bg-cyan-400 animate-ping"></div>
-    <span class="text-xs font-black uppercase tracking-widest text-cyan-200">System Status: Optimal</span>
-  </div>
+<div class="mt-4 overflow-hidden bg-white border-4 border-black rounded-[2.5rem] text-left p-2 shadow-[12px_12px_0px_0px_rgba(0,0,0,0.3)]">
+<table class="w-full text-xs border-collapse">
+<thead class="bg-purple-100 uppercase font-black text-purple-900 border-b-4 border-black">
+<tr><th class="p-4 text-left">Level Name</th><th class="p-4 text-center">Pri</th><th class="p-4 text-left">The Goal</th><th class="p-4 text-left">XP Progress</th><th class="p-4 text-center">Hero</th><th class="p-4 text-right">Status</th></tr>
+</thead>
+<tbody v-if="$clicks === 0" class="animate-fade-in font-draw">
+<tr class="border-b-2 border-dashed border-gray-300 hover:bg-yellow-50 transition group">
+<td class="p-4"><div class="flex items-center gap-3">🎯 <div><div class="text-[10px] font-black opacity-30">BC</div><div class="font-black text-lg text-black">Budget Control</div></div></div></td>
+<td class="p-4 text-center"><span class="px-3 py-1 bg-red-500 text-white text-[10px] font-black rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">P1</span></td>
+<td class="p-4 text-black/60 font-bold italic">Gathering Scrolls</td>
+<td class="p-4"><div class="flex items-center gap-3"><div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden border-2 border-black p-0.5"><div class="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full border-r-2 border-black" style="width: 20%"></div></div><span class="text-sm font-black text-black">20%</span></div></td>
+<td class="p-4 text-center text-purple-600 font-black">Panha</td>
+<td class="p-4 text-right"><span class="px-4 py-2 text-[10px] font-black rounded-full uppercase bg-blue-500 text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Adventuring</span></td>
+</tr>
+<tr class="border-b-2 border-dashed border-gray-300 hover:bg-yellow-50 transition">
+<td class="p-4"><div class="flex items-center gap-3">📦 <div><div class="text-[10px] font-black opacity-30">BC</div><div class="font-black text-lg text-black">Container Capacity</div></div></div></td>
+<td class="p-4 text-center"><span class="px-3 py-1 bg-red-500 text-white text-[10px] font-black rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">P1</span></td>
+<td class="p-4 text-black/60 font-bold italic">Analyzing Gaps</td>
+<td class="p-4"><div class="flex items-center gap-3"><div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden border-2 border-black p-0.5"><div class="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full border-r-2 border-black" style="width: 10%"></div></div><span class="text-sm font-black text-black">10%</span></div></td>
+<td class="p-4 text-center text-purple-600 font-black">Kanel</td>
+<td class="p-4 text-right"><span class="px-4 py-2 text-[10px] font-black rounded-full uppercase bg-blue-500 text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Adventuring</span></td>
+</tr>
+<tr class="border-b-2 border-dashed border-gray-300 hover:bg-yellow-50 transition">
+<td class="p-4"><div class="flex items-center gap-3">🧪 <div><div class="text-[10px] font-black opacity-30">HR</div><div class="font-black text-lg text-black">HR Lab Web</div></div></div></td>
+<td class="p-4 text-center"><span class="px-3 py-1 bg-purple-500 text-white text-[10px] font-black rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">P2</span></td>
+<td class="p-4 text-black/60 font-bold italic">Building the Base</td>
+<td class="p-4"><div class="flex items-center gap-3"><div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden border-2 border-black p-0.5"><div class="h-full bg-gradient-to-r from-pink-400 to-purple-600 rounded-full border-r-2 border-black" style="width: 85%"></div></div><span class="text-sm font-black text-black">85%</span></div></td>
+<td class="p-4 text-center text-purple-600 font-black">Monika</td>
+<td class="p-4 text-right"><span class="px-4 py-2 text-[10px] font-black rounded-full uppercase bg-emerald-500 text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] animate-pulse">Boss Battle</span></td>
+</tr>
+<tr class="hover:bg-yellow-50 transition">
+<td class="p-4"><div class="flex items-center gap-3">📱 <div><div class="text-[10px] font-black opacity-30">HR</div><div class="font-black text-lg text-black">HR Lab Mobile</div></div></div></td>
+<td class="p-4 text-center"><span class="px-3 py-1 bg-purple-500 text-white text-[10px] font-black rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">P2</span></td>
+<td class="p-4 text-black/60 font-bold italic">Hooking up APIs</td>
+<td class="p-4"><div class="flex items-center gap-3"><div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden border-2 border-black p-0.5"><div class="h-full bg-gradient-to-r from-pink-400 to-purple-600 rounded-full border-r-2 border-black" style="width: 50%"></div></div><span class="text-sm font-black text-black">50%</span></div></td>
+<td class="p-4 text-center text-purple-600 font-black">Monika</td>
+<td class="p-4 text-right"><span class="px-4 py-2 text-[10px] font-black rounded-full uppercase bg-emerald-500 text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Battling</span></td>
+</tr>
+</tbody>
+<tbody v-if="$clicks === 1" class="animate-fade-in font-draw">
+<tr class="border-b-2 border-dashed border-gray-300 hover:bg-yellow-50 transition">
+<td class="p-4"><div class="flex items-center gap-3">🍔 <div><div class="text-[10px] font-black opacity-30">Retail</div><div class="font-black text-lg text-black">NGPOS (F&B)</div></div></div></td>
+<td class="p-4 text-center"><span class="px-3 py-1 bg-cyan-500 text-white text-[10px] font-black rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">P3</span></td>
+<td class="p-4 text-black/60 font-bold italic">Drawing the Screens</td>
+<td class="p-4"><div class="flex items-center gap-3"><div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden border-2 border-black p-0.5"><div class="h-full bg-cyan-400 rounded-full border-r-2 border-black" style="width: 30%"></div></div><span class="text-sm font-black text-black">30%</span></div></td>
+<td class="p-4 text-center text-purple-600 font-black">Marchi</td>
+<td class="p-4 text-right"><span class="px-4 py-2 text-[10px] font-black rounded-full uppercase bg-blue-500 text-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">Adventuring</span></td>
+</tr>
+<tr class="border-b-2 border-dashed border-gray-300 hover:bg-yellow-50 transition">
+<td class="p-4"><div class="flex items-center gap-3">🎯 <div><div class="text-[10px] font-black opacity-30">CRM</div><div class="font-black text-lg text-black">Bullseye</div></div></div></td>
+<td class="p-4 text-center"><span class="px-3 py-1 bg-gray-300 text-black text-[10px] font-black rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">P4</span></td>
+<td class="p-4 text-black/60 font-bold italic">Planning the Route</td>
+<td class="p-4"><div class="flex items-center gap-3"><div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden border-2 border-black p-0.5"><div class="h-full bg-gray-400 rounded-full border-r-2 border-black" style="width: 5%"></div></div><span class="text-sm font-black text-black">5%</span></div></td>
+<td class="p-4 text-center text-gray-500 font-black">CRM Team</td>
+<td class="p-4 text-right"><span class="px-4 py-2 text-[10px] font-black rounded-full uppercase bg-gray-200 text-gray-500 border-2 border-black dashed">Resting</span></td>
+</tr>
+<tr class="hover:bg-yellow-50 transition">
+<td class="p-4"><div class="flex items-center gap-3">💰 <div><div class="text-[10px] font-black opacity-30">Quick</div><div class="font-black text-lg text-black">CryptoTrading</div></div></div></td>
+<td class="p-4 text-center"><span class="px-3 py-1 bg-gray-300 text-black text-[10px] font-black rounded-lg border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">P4</span></td>
+<td class="p-4 text-black/60 font-bold italic">Studying the Map</td>
+<td class="p-4"><div class="flex items-center gap-3"><div class="flex-grow bg-gray-200 h-6 rounded-full overflow-hidden border-2 border-black p-0.5"><div class="h-full bg-gray-400 rounded-full border-r-2 border-black" style="width: 0%"></div></div><span class="text-sm font-black text-black">0%</span></div></td>
+<td class="p-4 text-center text-gray-500 font-black">Gordon</td>
+<td class="p-4 text-right"><span class="px-4 py-2 text-[10px] font-black rounded-full uppercase bg-gray-200 text-gray-500 border-2 border-black">Resting</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-8 flex gap-8 text-left">
+<div class="p-6 bg-pink-500 border-4 border-black rounded-[2.5rem] flex items-center gap-8 flex-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"><div class="text-6xl font-black italic text-white font-draw">25%</div><div class="text-sm uppercase font-black leading-tight tracking-[0.1em] text-white">Adventure XP<br>Collected</div></div>
+<div class="p-6 bg-yellow-400 border-4 border-black rounded-[2.5rem] flex items-center gap-4 flex-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"><div class="w-8 h-8 rounded-full bg-green-500 animate-ping border-2 border-black"></div><span class="text-lg font-black uppercase tracking-widest text-black/70 font-draw underline">All Systems GO!</span></div>
 </div>
 
 ---
 layout: default
 ---
 
-<div class="flex items-center gap-4 mb-2">
-  <div class="text-5xl animate-float">💠</div>
-  <div>
-    <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-300">
-      Active Tasks Detail
-    </h1>
-    <p class="opacity-50 font-bold italic font-serif">Breakdown of current development focus.</p>
-  </div>
+<div class="flex items-center gap-6 mb-8">
+<div class="text-7xl animate-float drop-shadow-lg">🕵️‍♂️</div>
+<div><h1 class="text-5xl font-black text-white font-draw stroke-black">The Quest Log</h1><p class="text-white/60 font-bold italic text-lg opacity-80">A closer look at our heroic deeds.</p></div>
 </div>
-
-<div class="mt-6 grid grid-cols-5 gap-4">
-  <div class="col-span-3 overflow-hidden bg-white/5 border border-white/10 rounded-[2.5rem] p-4 text-left shadow-2xl backdrop-blur-md">
-    <table class="w-full text-[11px]">
-      <thead class="bg-white/10 opacity-70 uppercase font-black text-white tracking-widest">
-        <tr>
-          <th class="p-3">Project</th>
-          <th class="p-3">Current Task</th>
-          <th class="p-3 text-center font-serif text-[9px] italic">Progress %</th>
-          <th class="p-3 text-right">Lead</th>
-        </tr>
-      </thead>
-      <tbody class="font-medium text-silver-100">
-        <tr class="border-b border-white/5 hover:bg-white/5 transition"><td class="p-3 font-black">Budget Ctrl</td><td class="p-3 italic opacity-60 font-serif">Gap Analysis & Requirements</td><td class="p-3 text-center font-black text-cyan-300">30%</td><td class="p-3 text-right">Panha</td></tr>
-        <tr class="border-b border-white/5 hover:bg-white/5 transition"><td class="p-3 font-black">Container</td><td class="p-3 italic opacity-60 font-serif">Requirement Specs</td><td class="p-3 text-center font-black text-cyan-300">15%</td><td class="p-3 text-right">Kanel</td></tr>
-        <tr class="border-b border-white/5 hover:bg-white/5 transition"><td class="p-3 font-black text-indigo-200">HR Lab (W)</td><td class="p-3 italic opacity-60 font-serif">Workflow Logic Dev</td><td class="p-3 text-center font-black text-indigo-200">85%</td><td class="p-3 text-right">Monika</td></tr>
-        <tr class="border-b border-white/5 hover:bg-white/5 transition"><td class="p-3 font-black text-indigo-200">HR Mobile</td><td class="p-3 italic opacity-60 font-serif">Mobile App Interface Dev</td><td class="p-3 text-center font-black text-indigo-200">50%</td><td class="p-3 text-right">Monika</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="col-span-2 flex flex-col gap-4">
-    <div class="relative group h-40 overflow-hidden rounded-3xl">
-      <img src="./assets/team-sketch.png" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition duration-500">
-      <div class="absolute inset-0 bg-gradient-to-t from-indigo-900/80 to-transparent flex items-end p-4">
-        <span class="text-[9px] font-black uppercase text-white tracking-tighter">Team Collaboration View</span>
-      </div>
-    </div>
-    <div class="bg-indigo-900/30 border border-white/10 rounded-2xl p-3 font-mono text-[8px] space-y-2">
-      <div class="flex gap-2">
-        <span class="text-cyan-400 font-bold">[Panha]:</span>
-        <span class="text-white/80">Requirements for Budget Control almost complete.</span>
-      </div>
-      <div class="flex gap-2">
-        <span class="text-indigo-300 font-bold">[Monika]:</span>
-        <span class="text-white/80">HR Lab frontend logic is at 85%. Starting testing soon.</span>
-      </div>
-      <div class="flex gap-2">
-        <span class="text-emerald-400 font-bold">[Lead]:</span>
-        <span class="text-emerald-400">Great progress. Keep it up!</span>
-      </div>
-    </div>
-  </div>
+<div class="mt-6 grid grid-cols-5 gap-8">
+<div class="col-span-3 overflow-hidden bg-white border-4 border-black rounded-[3rem] p-6 text-left shadow-[15px_15px_0px_0px_rgba(0,0,0,0.2)]">
+<table class="w-full text-xs">
+<thead class="bg-blue-100 opacity-80 uppercase font-black text-blue-900 border-b-4 border-black font-draw">
+<tr><th class="p-4">Level</th><th class="p-4">Current Task</th><th class="p-4 text-center">XP %</th><th class="p-4 text-right">Hero</th></tr>
+</thead>
+<tbody class="font-bold text-gray-800">
+<tr class="border-b-2 border-dashed border-gray-200 hover:bg-blue-50 transition"><td class="p-4 font-black">Budget Ctrl</td><td class="p-4 italic text-blue-600">Checking the Treasures</td><td class="p-4 text-center font-black text-pink-500 text-lg">30%</td><td class="p-4 text-right">Panha</td></tr>
+<tr class="border-b-2 border-dashed border-gray-200 hover:bg-blue-50 transition"><td class="p-4 font-black">Container</td><td class="p-4 italic text-blue-600">Measuring the Chests</td><td class="p-4 text-center font-black text-pink-500 text-lg">15%</td><td class="p-4 text-right">Kanel</td></tr>
+<tr class="border-b-2 border-dashed border-gray-200 hover:bg-blue-50 transition"><td class="p-4 font-black">HR Lab Web</td><td class="p-4 italic text-blue-600">Building the Lab</td><td class="p-4 text-center font-black text-pink-500 text-lg">85%</td><td class="p-4 text-right">Monika</td></tr>
+<tr class="hover:bg-blue-50 transition"><td class="p-4 font-black">HR Mobile</td><td class="p-4 italic text-blue-600">Making the App Magic</td><td class="p-4 text-center font-black text-pink-500 text-lg">50%</td><td class="p-4 text-right">Monika</td></tr>
+</tbody>
+</table>
+</div>
+<div class="col-span-2 flex flex-col gap-6">
+<div class="relative group rounded-[3rem] overflow-hidden border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,0.2)]">
+<img src="./assets/team-sketch.png" class="w-full h-48 object-cover transform scale-110 group-hover:scale-125 transition duration-700 opacity-90 group-hover:opacity-100">
+<div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6"><span class="text-sm font-black uppercase text-white tracking-widest italic font-draw">Our Brave Team!</span></div>
+</div>
+<div class="bg-white border-4 border-black rounded-[2rem] p-6 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative">
+<div class="absolute -top-4 -left-4 text-4xl transform -rotate-12 drop-shadow-md">💬</div>
+<div class="space-y-3 font-draw text-sm">
+<div class="flex gap-2"><span class="text-pink-600 font-black">Panha:</span><span class="text-black/80 font-bold">"Almost found the golden ratio!"</span></div>
+<div class="flex gap-2"><span class="text-blue-600 font-black">Monika:</span><span class="text-black/80 font-bold">"Lab is looking super cool!"</span></div>
+<div class="flex gap-2"><span class="text-emerald-600 font-black">TC:</span><span class="text-emerald-600 font-black italic">"Great job! Keep going!"</span></div>
+</div>
+</div>
+</div>
 </div>
 
 ---
 layout: default
 ---
 
-<div class="flex items-center gap-4 mb-2">
-  <div class="text-5xl animate-shake">🌀</div>
-  <div>
-    <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-200 via-orange-300 to-white">
-      Blockers & Challenges
-    </h1>
-    <p class="opacity-50 font-bold italic font-serif">Obstacles needing management attention.</p>
-  </div>
+<div class="flex items-center gap-6 mb-8">
+<div class="text-7xl animate-shake drop-shadow-lg">🐉</div>
+<div><h1 class="text-5xl font-black text-white font-draw stroke-black">Monster Watch</h1><p class="text-white/60 font-bold italic text-lg opacity-80">Beware of the tricky path ahead!</p></div>
 </div>
-
-<div class="grid grid-cols-2 gap-8 mt-8">
-  <div class="p-8 bg-black/40 border border-white/10 rounded-[3rem] relative animate-float shadow-[0_0_50px_rgba(239,68,68,0.1)]">
-    <div class="absolute -top-4 -right-4 text-6xl opacity-10 font-bold">HELP</div>
-    <div class="flex items-center gap-4 mb-6">
-      <div class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center shadow-xl shadow-red-500/50 text-2xl border-2 border-white/20 text-white">🔥</div>
-      <h3 class="text-2xl font-black uppercase text-red-100 italic tracking-tighter">Current Problems</h3>
-    </div>
-    <ul class="text-sm space-y-4 font-bold text-silver-200">
-      <li class="flex gap-4 p-4 bg-red-900/20 rounded-[2rem] border border-red-500/10">
-        <div class="text-3xl">📡</div>
-        <span><b>Supervision Needed:</b> Junior devs are fast but need senior review to ensure code stability.</span>
-      </li>
-      <li class="flex gap-4 p-4 bg-red-900/20 rounded-[2rem] border border-red-500/10">
-        <div class="text-3xl">⚖️</div>
-        <span><b>Expert Feedback:</b> We need domain experts to verify if the project features meet the business needs.</span>
-      </li>
-    </ul>
-  </div>
-  <div class="p-8 bg-black/40 border border-white/10 rounded-[3rem] relative animate-bounce-in shadow-[0_0_50px_rgba(79,70,229,0.1)]">
-    <div class="absolute -top-4 -left-4 text-6xl opacity-10 font-bold">REQ</div>
-    <div class="flex items-center gap-4 mb-6">
-      <div class="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center shadow-xl shadow-indigo-500/50 text-2xl border-2 border-white/20 text-white">🛡️</div>
-      <h3 class="text-2xl font-black uppercase text-indigo-400 italic tracking-tighter">Support Needed</h3>
-    </div>
-    <ul class="text-sm space-y-4 font-bold text-silver-200">
-      <li class="flex gap-4 p-4 bg-indigo-900/20 rounded-[2rem] border border-indigo-500/10">
-        <div class="text-3xl">📍</div>
-        <span><b>Project Priority:</b> Clearly define which project is the #1 priority for the Q1 deadline.</span>
-      </li>
-      <li class="flex gap-4 p-4 bg-indigo-900/20 rounded-[2rem] border border-indigo-500/10">
-        <div class="text-3xl">🤝</div>
-        <span><b>Testing Team:</b> Assign 2 power users for a 1-week intensive testing and review session.</span>
-      </li>
-    </ul>
-  </div>
+<div class="grid grid-cols-2 gap-10 mt-8">
+<div class="p-8 bg-black/60 border-8 border-red-500 rounded-[3rem] relative animate-float shadow-[20px_20px_0px_0px_rgba(239,68,68,0.3)]">
+<div class="absolute -top-10 -right-6 text-8xl opacity-10 font-bold -rotate-12">HELP!</div>
+<div class="flex items-center gap-6 mb-8"><div class="w-20 h-20 rounded-full bg-red-600 border-4 border-black flex items-center justify-center text-4xl shadow-xl">👿</div><h3 class="text-4xl font-black uppercase text-white font-draw italic tracking-tighter stroke-red-500">Big Monsters</h3></div>
+<ul class="text-lg space-y-6 font-bold text-white">
+<li class="flex gap-6 p-6 bg-red-500/10 rounded-[2.5rem] border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"><div class="text-4xl animate-bounce">🆘</div><span class="font-draw uppercase leading-tight">Need <b>SENIOR WISDOM</b> to review the apprentice spells!</span></li>
+<li class="flex gap-6 p-6 bg-red-500/10 rounded-[2.5rem] border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"><div class="text-4xl animate-wiggle">🧐</div><span class="font-draw uppercase leading-tight">Need <b>DOMAIN PROS</b> to test our magic potions!</span></li>
+</ul>
+</div>
+<div class="p-8 bg-black/60 border-8 border-cyan-400 rounded-[3rem] relative animate-bounce-in shadow-[20px_20px_0px_0px_rgba(34,211,238,0.3)]">
+<div class="absolute -top-10 -left-6 text-8xl opacity-10 font-bold rotate-12 text-cyan-400">BUFF!</div>
+<div class="flex items-center gap-6 mb-8"><div class="w-20 h-20 rounded-full bg-cyan-400 border-4 border-black flex items-center justify-center text-4xl shadow-xl text-black">🛡️</div><h3 class="text-4xl font-black uppercase text-white font-draw italic tracking-tighter stroke-cyan-400">Hero Buffs</h3></div>
+<ul class="text-lg space-y-6 font-bold text-white">
+<li class="flex gap-6 p-6 bg-cyan-400/10 rounded-[2.5rem] border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"><div class="text-4xl animate-float">🧭</div><span class="font-draw uppercase leading-tight">Pick the <b>MAIN QUEST</b> for the final battle!</span></li>
+<li class="flex gap-6 p-6 bg-cyan-400/10 rounded-[2.5rem] border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]"><div class="text-4xl animate-bounce">⚔️</div><span class="font-draw uppercase leading-tight">Summon <b>2 CHAMPIONS</b> for a 1-week testing raid!</span></li>
+</ul>
+</div>
 </div>
 
 ---
@@ -288,38 +199,36 @@ layout: center
 class: text-center
 ---
 
-<div class="animate-bounce-in">
-  <div class="text-8xl mb-8 animate-float">🛸</div>
-  <h1 class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-silver-100 via-white to-cyan-300 animate-pulse">
-    Mission Complete!
-  </h1>
-  <p class="text-xl font-bold opacity-60 mt-4 tracking-[0.5em] uppercase font-serif italic text-white underline decoration-cyan-500/30">Ready for the Next Level?</p>
-  <div class="mt-12 flex justify-center gap-10 opacity-30">
-    <div class="animate-float text-4xl" style="animation-delay: 0.1s">💠</div>
-    <div class="animate-float text-4xl" style="animation-delay: 0.3s">🌐</div>
-    <div class="animate-float text-4xl" style="animation-delay: 0.5s">✨</div>
-  </div>
-  <div class="mt-8 text-[9px] font-mono opacity-20">"Continuous progress is the key to collective success."</div>
+<div class="bg-white border-[10px] border-black p-20 rounded-[4rem] shadow-[25px_25px_0px_0px_rgba(236,72,153,1)] transform hover:scale-105 transition-transform duration-700 animate-bounce-in">
+<div class="text-[12rem] mb-12 animate-float filter drop-shadow-2xl">🏆</div>
+<h1 class="text-8xl font-black text-black font-draw tracking-tighter mb-4 animate-pulse">QUEST COMPLETE!</h1>
+<p class="text-3xl font-black text-pink-600 tracking-[0.2em] uppercase font-draw italic">Level Up Incoming!</p>
+<div class="mt-16 flex justify-center gap-16">
+<div class="animate-bounce text-7xl" style="animation-delay: 0.1s">🌟</div>
+<div class="animate-bounce text-7xl" style="animation-delay: 0.3s">🎉</div>
+<div class="animate-bounce text-7xl" style="animation-delay: 0.5s">🔥</div>
+</div>
 </div>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;700;900&family=DynaPuff:wght@400;700&family=Playfair+Display:ital,wght@1,900&display=swap');
-h1, .font-black { font-family: 'DynaPuff', cursive; letter-spacing: -0.04em; }
-h2, .font-serif { font-family: 'Playfair Display', serif; }
-body { font-family: 'Outfit', sans-serif; background: radial-gradient(circle at 50% 50%, #1e293b 0%, #080c14 100%); color: #f8fafc; }
-.animate-float { animation: float 8s ease-in-out infinite; }
-.animate-wiggle { animation: wiggle 4s ease-in-out infinite; }
-.animate-bounce-in { animation: bounce-in 1.2s cubic-bezier(0.23, 1, 0.32, 1); }
-.animate-shake { animation: shake 5s ease-in-out infinite; }
-@keyframes float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-30px) rotate(1deg); } }
-@keyframes wiggle { 0%, 100% { transform: rotate(-0.5deg); } 50% { transform: rotate(0.5deg); } }
-@keyframes bounce-in { 0% { transform: scale(0.9); opacity: 0; filter: blur(10px); } 100% { transform: scale(1); opacity: 1; filter: blur(0); } }
-@keyframes shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-2px, 1px); } 50% { transform: translate(2px, -1px); } 75% { transform: translate(-1px, -2px); } }
-.animate-slide-in-left { animation: slide-in-left 1s cubic-bezier(0.23, 1, 0.32, 1) forwards; opacity: 0; }
-@keyframes slide-in-left { 0% { transform: translateX(-100px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
-table th { font-family: 'DynaPuff', cursive; text-transform: uppercase; letter-spacing: 0.15em; background-color: rgba(255,255,255,0.03); }
-.backdrop-blur-3xl { backdrop-filter: blur(80px); }
-.text-silver-100 { color: #e2e8f0; }
-.text-silver-200 { color: #cbd5e1; }
-.text-silver-300 { color: #94a3b8; }
+@import url('https://fonts.googleapis.com/css2?family=DynaPuff:wght@400;700;900&family=Outfit:wght@300;700;900&display=swap');
+.font-draw { font-family: 'DynaPuff', cursive; }
+body { font-family: 'Outfit', sans-serif; background-color: #fce7f3; }
+.slidev-layout { background-size: cover; background-position: center; background-repeat: no-repeat; }
+.stroke-black { -webkit-text-stroke: 3px black; }
+.stroke-red-500 { -webkit-text-stroke: 1.5px #ef4444; }
+.stroke-cyan-400 { -webkit-text-stroke: 1.5px #22d3ee; }
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-wiggle { animation: wiggle 0.5s ease-in-out infinite; }
+.animate-shake { animation: shake 2s ease-in-out infinite; }
+.animate-bounce-in { animation: bounce-in 1s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+.animate-slide-in-left { animation: slide-in-left 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards; opacity: 0; }
+@keyframes float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-30px) rotate(2deg); } }
+@keyframes wiggle { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes shake { 0%, 100% { transform: translate(0, 0); } 10%, 30%, 50%, 70%, 90% { transform: translate(-5px, 0); } 20%, 40%, 60%, 80% { transform: translate(5px, 0); } }
+@keyframes bounce-in { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes slide-in-left { 0% { transform: translateX(-150px) rotate(-10deg); opacity: 0; } 100% { transform: translateX(0) rotate(0); opacity: 1; } }
+table th { font-family: 'DynaPuff', cursive; text-transform: uppercase; letter-spacing: 0.1em; }
+.bg-black\/60 { background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); }
+.border-black { border-color: #000000 !important; }
 </style>
