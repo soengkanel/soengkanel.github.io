@@ -11,19 +11,8 @@ title: Project Management Dashboard 2026
 mdc: true
 ---
 
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Executive Portfolio Report</span>
-## PMO & Stakeholder Weekly Sync
-
-<div class="pt-20 opacity-60">
-  Soeng Kanel | Jan 15, 2026
-</div>
-
-<div class="abs-bl m-10 flex gap-2">
-  <div class="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded text-xs text-blue-400 font-bold uppercase tracking-widest">Data Source: projects.csv</div>
-</div>
-
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
 const projects = ref([
   {
@@ -108,6 +97,17 @@ const projects = ref([
 const avgProgress = projects.value.reduce((acc, p) => acc + p.progress, 0) / projects.value.length
 </script>
 
+# <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Executive Portfolio Report</span>
+## PMO & Stakeholder Weekly Sync
+
+<div class="pt-20 opacity-60">
+  Soeng Kanel | Jan 15, 2026
+</div>
+
+<div class="abs-bl m-10 flex gap-2">
+  <div class="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded text-xs text-blue-400 font-bold uppercase tracking-widest">Data Source: projects.csv</div>
+</div>
+
 ---
 layout: default
 ---
@@ -166,6 +166,10 @@ layout: default
     <span class="text-[10px] opacity-60">Source: <code>projects.csv</code> | Sync Active</span>
   </div>
 </div>
+
+---
+layout: default
+---
 
 # <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Technical Deep Dive: Business Central</span>
 <p class="opacity-50">NGD & Budget Control Implementation Progress</p>
@@ -237,10 +241,11 @@ layout: default
 layout: default
 ---
 
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-yellow-600">05. CryptoTrading Project</span>
 <script setup>
-const quantProj = projects.value.find(p => p.category === 'Quant')
+const quantProj = projects.value.find(p => p.category === 'QuantConnect') || projects.value.find(p => p.category === 'Quant') || { progress: 0, status: 'N/A', milestone: 'N/A' }
 </script>
+
+# <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-yellow-600">05. CryptoTrading Project</span>
 
 <div class="mt-10 grid grid-cols-2 gap-10 text-left">
   <div class="space-y-8">

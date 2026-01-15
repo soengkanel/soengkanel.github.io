@@ -18,12 +18,12 @@ const projects = lines.slice(1).map(line => {
     const values = line.split(',');
     const p = {};
     headers.forEach((header, i) => {
-        p[header.toLowerCase().trim()] = values[i].trim();
+        p[header.toLowerCase().trim()] = values[i].trim() || "";
     });
 
     // Type conversion
-    p.id = parseInt(p.id);
-    p.progress = parseInt(p.progress);
+    p.id = parseInt(p.id) || 0;
+    p.progress = parseInt(p.progress) || 0;
 
     // Add UI colors
     const colors = {
@@ -50,8 +50,15 @@ const projectsJS = JSON.stringify(projects, null, 2);
 let slidesContent = fs.readFileSync(slidesPath, 'utf8');
 
 // Use regex to find and replace the projects array in the script setup
+// More robust regex for finding the ref block
 const startMarker = 'const projects = ref\\(';
 const endMarker = '\\)\n\nconst avgProgress';
+
+// Check if content exists
+if (slidesContent.indexOf('const projects = ref(') === -1) {
+    console.error('❌ Error: Could not find "const projects = ref(" placeholder in slides.md');
+    process.exit(1);
+}
 
 const regex = new RegExp(`${startMarker}[\\s\\S]*?${endMarker}`, 'g');
 const newContent = `const projects = ref(${projectsJS})\n\nconst avgProgress`;
