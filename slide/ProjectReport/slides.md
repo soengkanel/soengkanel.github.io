@@ -40,7 +40,7 @@ layout: default
         <th class="p-3 text-right">Status</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody v-if="$clicks === 0">
       <!-- 1 -->
       <tr class="border-b border-white/5">
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-cyan-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">BC</div><div class="font-bold leading-tight">Container Capacity Management</div></div></div></td>
@@ -81,6 +81,8 @@ layout: default
         <td class="p-2 text-center text-[10px] font-bold text-orange-300">Sreypich, Panha</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/50">Todo</span></td>
       </tr>
+    </tbody>
+    <tbody v-if="$clicks === 1">
       <!-- 6 -->
       <tr class="border-b border-white/5">
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-yellow-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">QuantConnect</div><div class="font-bold leading-tight">CryptoTrading</div></div></div></td>
@@ -168,7 +170,7 @@ layout: default
         </tr>
         <tr class="border-b border-white/5">
           <td class="p-3 font-bold opacity-60">NGPOS</td>
-          <td class="p-3 italic">Legacy Integration Study & Payment Interface</td>
+          <td class="p-3 italic">Design User Interface & Database Schema</td>
           <td class="p-3 text-center text-sky-400 font-bold">30%</td>
           <td class="p-3 text-right font-black opacity-80">Marchi</td>
         </tr>
