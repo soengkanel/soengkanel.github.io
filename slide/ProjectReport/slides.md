@@ -28,24 +28,24 @@ import { ref, onMounted } from 'vue'
 const projects = ref([
   {
     "id": 1,
-    "name": "NGD Container Capacity Management",
+    "name": "Container Capacity Management",
     "category": "BC",
-    "progress": 65,
-    "status": "In Progress",
-    "milestone": "Core Table Refactoring",
-    "owner": "Soeng Kanel",
-    "note": "Optimizing 48 core financial tables.",
+    "progress": 10,
+    "status": "InProgress",
+    "milestone": "Study Requirement",
+    "owner": "TC",
+    "note": "Study requirement",
     "color": "#22d3ee"
   },
   {
     "id": 2,
-    "name": "NGT Budget Control Extension",
+    "name": "Budget Control Extension",
     "category": "BC",
-    "progress": 45,
-    "status": "Development",
-    "milestone": "Purchase Header Logic",
-    "owner": "Soeng Kanel",
-    "note": "Implementing hard-blocks on over-budget lines.",
+    "progress": 20,
+    "status": "InProgress",
+    "milestone": "Study Requirement",
+    "owner": "TC",
+    "note": "Study requirement  and gap analysis",
     "color": "#22d3ee"
   },
   {
@@ -53,33 +53,55 @@ const projects = ref([
     "name": "HR Lab",
     "category": "HRMS",
     "progress": 85,
-    "status": "On Track",
-    "milestone": "Pilot Pre-launch",
-    "owner": "HR Dept",
-    "note": "Attendance API Sync completed.",
+    "status": "Coding",
+    "milestone": "Development",
+    "owner": "TC",
+    "note": "Working on the Manpower budgeting",
     "color": "#34d399"
   },
   {
     "id": 4,
-    "name": "Bullseye CRM",
+    "name": "HR Lab Mobile Apps",
+    "category": "HRMS",
+    "progress": 50,
+    "status": "Coding",
+    "milestone": "Development",
+    "owner": "TC",
+    "note": "",
+    "color": "#34d399"
+  },
+  {
+    "id": 4,
+    "name": "Bullseye",
     "category": "CRM",
-    "progress": 25,
-    "status": "Delay Risk",
-    "milestone": "Funnel Strategy Map",
-    "owner": "Sales Op",
-    "note": "Stakeholder feedback loop delay.",
+    "progress": 5,
+    "status": "Todo",
+    "milestone": "Initialized",
+    "owner": "TC",
+    "note": "Study requirement",
     "color": "#fb923c"
   },
   {
     "id": 5,
     "name": "CryptoTrading",
     "category": "QuantConnect",
-    "progress": 55,
-    "status": "Active Research",
-    "milestone": "Momentum Engine",
-    "owner": "Quant Team",
-    "note": "Simulating against 2024-2025 volatility.",
+    "progress": 0,
+    "status": "Todo",
+    "milestone": "R&D",
+    "owner": "TC",
+    "note": "Study QuantConnect",
     "color": "#fbbf24"
+  },
+  {
+    "id": 6,
+    "name": "Car Parking&Dorminitory",
+    "category": "Custom",
+    "progress": 3,
+    "status": "Todo",
+    "milestone": "Prospect",
+    "owner": "TC",
+    "note": "On bid",
+    "color": "#94a3b8"
   }
 ])
 
@@ -90,89 +112,125 @@ const avgProgress = projects.value.reduce((acc, p) => acc + p.progress, 0) / pro
 layout: default
 ---
 
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Portfolio Health Dashboard</span>
-<p class="opacity-50">High-level progress tracking for Product Owners & Business Stakeholders</p>
+# <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Portfolio Execution Dashboard</span>
+<p class="opacity-50">Enterprise Project Tracking & Delivery Status</p>
 
-<div class="grid grid-cols-3 gap-4 mt-8">
-  
-  <div v-for="p in projects" :key="p.id" class="p-4 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md">
-    <div class="flex justify-between items-start mb-2 text-left">
-      <div class="text-[10px] font-bold uppercase" :style="{ color: p.color }">{{ p.category }}: {{ p.name }}</div>
-      <div class="text-xl font-black italic opacity-20">{{ p.progress }}%</div>
-    </div>
-    <div class="h-1.5 w-full bg-white/10 rounded-full mb-3 overflow-hidden">
-      <div class="h-full transition-all duration-1000" :style="{ width: p.progress + '%', backgroundColor: p.color }"></div>
-    </div>
-    <div class="text-[10px] opacity-60 text-left">Milestone: {{ p.milestone }}</div>
-  </div>
-
-  <div class="p-4 bg-blue-600/20 border border-blue-400/30 rounded-2xl flex flex-col justify-center">
-    <div class="text-2xl font-bold flex items-center gap-2">
-      <div class="i-carbon:analytics text-blue-400" /> {{ Math.round(avgProgress) }}%
-    </div>
-    <div class="text-[10px] uppercase opacity-50 tracking-tighter">Avg Portfolio CompletionRatio</div>
-  </div>
-
+<div class="mt-6 overflow-hidden bg-white/5 border border-white/10 rounded-2xl text-left">
+  <table class="w-full text-sm border-collapse">
+    <thead class="bg-white/10">
+      <tr>
+        <th class="p-3 text-xs font-bold uppercase opacity-50">Project Category & Name</th>
+        <th class="p-3 text-xs font-bold uppercase opacity-50">Milestone</th>
+        <th class="p-3 text-xs font-bold uppercase opacity-50">Execution Progress</th>
+        <th class="p-3 text-xs font-bold uppercase opacity-50 text-right">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="p in projects" :key="p.id" class="border-b border-white/5 hover:bg-white/5 transition-colors">
+        <td class="p-3">
+          <div class="flex items-center gap-3">
+             <div class="w-1.5 h-6 rounded-full" :style="{ backgroundColor: p.color }"></div>
+             <div>
+               <div class="text-[10px] font-bold opacity-50 uppercase">{{ p.category }}</div>
+               <div class="font-bold">{{ p.name }}</div>
+             </div>
+          </div>
+        </td>
+        <td class="p-3 text-xs opacity-70">{{ p.milestone }}</td>
+        <td class="p-3 min-w-40">
+          <div class="flex items-center gap-3">
+            <div class="flex-grow bg-white/10 h-1.5 rounded-full overflow-hidden">
+              <div class="h-full transition-all duration-1000" :style="{ width: p.progress + '%', backgroundColor: p.color }"></div>
+            </div>
+            <span class="text-[10px] font-mono opacity-50">{{ p.progress }}%</span>
+          </div>
+        </td>
+        <td class="p-3 text-right">
+          <span class="px-2 py-0.5 text-[9px] font-black rounded-full uppercase" 
+                :class="p.status === 'Delay Risk' ? 'bg-red-500/20 text-red-500' : p.status === 'Todo' ? 'bg-white/10 text-white/50' : 'bg-emerald-400/20 text-emerald-400'">
+            {{ p.status }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
-<div class="mt-8 flex gap-4 text-left">
-  <div class="flex-1 p-3 bg-white/5 border border-white/10 rounded-xl text-[10px] flex items-center gap-3">
+<div class="mt-6 flex gap-4 text-left">
+  <div class="p-3 bg-blue-600/20 border border-blue-400/30 rounded-xl flex items-center gap-4 flex-1">
+    <div class="text-3xl font-black italic opacity-40">{{ Math.round(avgProgress) }}%</div>
+    <div class="text-[10px] uppercase opacity-50 leading-tight">Average Portfolio<br>Completion</div>
+  </div>
+  <div class="p-3 bg-white/5 border border-white/10 rounded-xl flex items-center gap-3 flex-1">
     <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-    <span>Resource Allocation: 92% Utilization</span>
+    <span class="text-[10px] opacity-60">Source: <code>projects.csv</code> | Sync Active</span>
   </div>
-  <div class="flex-1 p-3 bg-white/5 border border-white/10 rounded-xl text-[10px] flex items-center gap-3">
-    <div class="w-2 h-2 rounded-full bg-blue-400" />
-    <span>Data synced from <code>projects.csv</code></span>
-  </div>
+</div>
+
+# <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Technical Deep Dive: Business Central</span>
+<p class="opacity-50">NGD & Budget Control Implementation Progress</p>
+
+<div class="mt-8 overflow-hidden bg-white/5 border border-white/10 rounded-2xl text-left">
+  <table class="w-full text-sm">
+    <thead class="bg-white/10">
+      <tr>
+        <th class="p-4 text-xs font-bold uppercase opacity-50">Functional Module</th>
+        <th class="p-4 text-xs font-bold uppercase opacity-50">Technical Milestone</th>
+        <th class="p-4 text-xs font-bold uppercase opacity-50">Progress</th>
+        <th class="p-4 text-xs font-bold uppercase opacity-50">Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="p in projects.filter(p => p.category === 'BC')" :key="p.id" class="border-b border-white/5 hover:bg-white/5 transition-colors">
+        <td class="p-4 font-bold">{{ p.name }}</td>
+        <td class="p-4 text-xs">{{ p.milestone }}</td>
+        <td class="p-4">
+          <div class="flex items-center gap-3">
+            <div class="flex-grow bg-white/10 h-1.5 rounded-full overflow-hidden">
+              <div class="h-full bg-cyan-400" :style="{ width: p.progress + '%' }"></div>
+            </div>
+            <span class="text-[10px] opacity-50">{{ p.progress }}%</span>
+          </div>
+        </td>
+        <td class="p-4 text-[10px] opacity-60 leading-tight">{{ p.note }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 ---
 layout: default
 ---
 
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Deep Dive: Business Central</span>
-<p class="opacity-50">NGD & Budget Control Status</p>
+# <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Operations & CRM Execution</span>
+<p class="opacity-50">HRMS & CRM Engagement Lifecycle</p>
 
-<div class="grid grid-cols-2 gap-6 mt-10 text-left">
-  <div v-for="p in projects.filter(p => p.category === 'BC')" :key="p.id" class="p-6 bg-white/5 border border-white/10 rounded-2xl">
-    <h3 class="flex items-center gap-2 mb-4">
-      <div :class="p.id === 1 ? 'i-carbon:chart-relationship text-cyan-400' : 'i-carbon:security text-blue-400'" /> {{ p.name }}
-    </h3>
-    <p class="text-sm opacity-80 mb-6">Current Progress: {{ p.progress }}%. Target: Completion of {{ p.milestone }}.</p>
-    <div class="text-[10px] flex gap-2">
-      <span class="px-2 py-0.5 bg-white/10 rounded">{{ p.status }}</span>
-      <span v-if="p.progress < 50" class="px-2 py-0.5 bg-yellow-400/10 text-yellow-400 rounded">In Development</span>
-      <span v-else class="px-2 py-0.5 bg-emerald-400/10 text-emerald-400 rounded">Optimizing</span>
-    </div>
-  </div>
-</div>
-
----
-layout: default
----
-
-# <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Operations & CRM Tracking</span>
-<p class="opacity-50">HR Lab & Bullseye Engagement</p>
-
-<div class="mt-10 overflow-hidden bg-white/5 border border-white/10 rounded-3xl text-left">
-  <div class="grid grid-cols-4 border-b border-white/10 bg-white/5">
-    <div class="p-4 text-xs font-bold uppercase opacity-50">Product</div>
-    <div class="p-4 text-xs font-bold uppercase opacity-50">Milestone</div>
-    <div class="p-4 text-xs font-bold uppercase opacity-50">Progress</div>
-    <div class="p-4 text-xs font-bold uppercase opacity-50 text-right">Status</div>
-  </div>
-  <div v-for="p in projects.filter(p => ['HRMS', 'CRM'].includes(p.category))" :key="p.id" class="grid grid-cols-4 border-b border-white/5">
-    <div class="p-4 text-sm font-bold">{{ p.name }}</div>
-    <div class="p-4 text-sm opacity-70">{{ p.milestone }}</div>
-    <div class="p-4">
-       <div class="w-full bg-white/10 h-1 rounded-full mt-2 overflow-hidden"><div class="h-full bg-emerald-400" :style="{ width: p.progress + '%' }"></div></div>
-    </div>
-    <div class="p-4 flex items-center justify-end">
-      <div class="px-2 py-0.5 text-[10px] rounded-full font-bold" :class="p.status === 'Delay Risk' ? 'bg-red-500/20 text-red-500' : 'bg-emerald-400/20 text-emerald-400'">
-        {{ p.status.toUpperCase() }}
-      </div>
-    </div>
-  </div>
+<div class="mt-8 overflow-hidden bg-white/5 border border-white/10 rounded-2xl text-left">
+  <table class="w-full text-sm">
+    <thead class="bg-white/10 text-emerald-400">
+      <tr>
+        <th class="p-4 text-xs font-bold uppercase opacity-50">Project</th>
+        <th class="p-4 text-xs font-bold uppercase opacity-50">Status</th>
+        <th class="p-4 text-xs font-bold uppercase opacity-50">Progress</th>
+        <th class="p-4 text-xs font-bold uppercase opacity-50 text-right">Owner</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="p in projects.filter(p => ['HRMS', 'CRM'].includes(p.category))" :key="p.id" class="border-b border-white/5 hover:bg-white/5 transition-colors">
+        <td class="p-4 font-bold">{{ p.name }}</td>
+        <td class="p-4"><span class="px-2 py-0.5 bg-white/5 rounded-full text-[10px] uppercase font-bold text-emerald-400/80">{{ p.status }}</span></td>
+        <td class="p-4">
+          <div class="flex items-center gap-3">
+            <div class="flex-grow bg-white/10 h-1.5 rounded-full overflow-hidden">
+              <div class="h-full bg-emerald-400" :style="{ width: p.progress + '%' }"></div>
+            </div>
+            <span class="text-[10px] opacity-50">{{ p.progress }}%</span>
+          </div>
+        </td>
+        <td class="p-4 text-right text-xs opacity-60 font-mono">{{ p.owner }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 ---

@@ -32,9 +32,10 @@ const projects = lines.slice(1).map(line => {
         'HRMS': '#34d399',
         'CRM': '#fb923c',
         'QuantConnect': '#fbbf24',
-        'Quant': '#fbbf24'
+        'Quant': '#fbbf24',
+        'Custom': '#94a3b8'
     };
-    p.color = colors[p.category] || '#94a3b8';
+    p.color = colors[p.category] || '#a855f7';
 
     // Shorten category for UI
     if (p.category === 'Business Central') p.category = 'BC';
