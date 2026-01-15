@@ -1,0 +1,6 @@
+ID,Name,Category,Progress,Status,Milestone,Owner,Note
+1,NGD Container Capacity Management,Business Central,65,In Progress,Core Table Refactoring,Soeng Kanel,Optimizing 48 core financial tables.
+2,NGT Budget Control Extension,Business Central,45,Development,Purchase Header Logic,Soeng Kanel,Implementing hard-blocks on over-budget lines.
+3,HR Lab,HRMS,85,On Track,Pilot Pre-launch,HR Dept,Attendance API Sync completed.
+4,Bullseye CRM,CRM,25,Delay Risk,Funnel Strategy Map,Sales Op,Stakeholder feedback loop delay.
+5,CryptoTrading,QuantConnect,55,Active Research,Momentum Engine,Quant Team,Simulating against 2024-2025 volatility.
