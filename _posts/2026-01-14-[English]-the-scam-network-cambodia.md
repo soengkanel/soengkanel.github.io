@@ -302,56 +302,92 @@ function speak(text, element) {
   <h2 style="color: var(--l-cyan); border-left: 4px solid var(--l-cyan); padding-left: 1rem; margin-bottom: 2rem;">Vocabulary Workshop 📚</h2>
   <div class="vocab-grid">
     <div class="vocab-card">
-      <span class="term">Accusation <small style="color: var(--l-cyan); font-weight: 400;">[Noun]</small> <span class="mini-speaker" onclick="speak('Accusation', this)">🔊</span></span>
+      <span class="term">Accusation <span class="mini-speaker" onclick="speak('Accusation', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/ˌæk.jəˈzeɪ.ʃən/</span> • <em>n.</em>
+      </div>
       <span class="khmer">ការចោទប្រកាន់ (Kar Chort Prokan)</span>
       <p class="definition">A formal claim that someone has done something illegal.</p>
-      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>accuse</u> (v.), <u>accusing</u> (adj.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
         <strong>Example:</strong> "This is not really a story about shame or <strong>accusation</strong>."
       </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Endure <small style="color: var(--l-cyan); font-weight: 400;">[Verb]</small> <span class="mini-speaker" onclick="speak('Endure', this)">🔊</span></span>
+      <span class="term">Endure <span class="mini-speaker" onclick="speak('Endure', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/ɪnˈdjʊər/</span> • <em>v.</em>
+      </div>
       <span class="khmer">នៅក្នុងជាប់បានយូរ / ស៊ូ</span>
       <p class="definition">To continue to exist or last for a long time, especially through difficulty.</p>
-      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>endurance</u> (n.), <u>enduring</u> (adj.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
         <strong>Example:</strong> "Judgments that <strong>endure</strong> change reputations."
       </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Epicentre <small style="color: var(--l-cyan); font-weight: 400;">[Noun]</small> <span class="mini-speaker" onclick="speak('Epicenter', this)">🔊</span></span>
+      <span class="term">Epicentre <span class="mini-speaker" onclick="speak('Epicenter', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/ˈep.ɪ.sen.tər/</span> • <em>n.</em>
+      </div>
       <span class="khmer">ចំណុចផ្ទុះ / ចំណុចកណ្តាល</span>
       <p class="definition">The central point of something difficult or wide-reaching.</p>
-      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>epicentral</u> (adj.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
         <strong>Example:</strong> "Once a country is described as an <strong>epicentre</strong>, a clock starts."
       </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Grading <small style="color: var(--l-cyan); font-weight: 400;">[Verb]</small> <span class="mini-speaker" onclick="speak('Grading', this)">🔊</span></span>
+      <span class="term">Grading <span class="mini-speaker" onclick="speak('Grading', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/ˈɡreɪ.dɪŋ/</span> • <em>v./n.</em>
+      </div>
       <span class="khmer">ការដាក់ពិន្ទុ (Kar Dak Pintuy)</span>
       <p class="definition">To give a score or measure the quality of something.</p>
-      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>grade</u> (v./n.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
         <strong>Example:</strong> "The world is not <strong>grading</strong> Cambodia on speeches."
       </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Judgments <small style="color: var(--l-cyan); font-weight: 400;">[Noun]</small> <span class="mini-speaker" onclick="speak('Judgments', this)">🔊</span></span>
+      <span class="term">Judgments <span class="mini-speaker" onclick="speak('Judgments', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/ˈdʒʌdʒ.mənts/</span> • <em>n.</em>
+      </div>
       <span class="khmer">ការកាត់ក្តី / សាលក្រម</span>
       <p class="definition">Official decisions made by a court or a system of law.</p>
-      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>judge</u> (v./n.), <u>judgmental</u> (adj.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
         <strong>Example:</strong> "<strong>Judgments</strong> that endure change reputations."
       </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Repeatable way <small style="color: var(--l-cyan); font-weight: 400;">[Noun Phrase]</small> <span class="mini-speaker" onclick="speak('Repeatable way', this)">🔊</span></span>
-      <span class="khmer">តាមរបៀបដែលអាចធ្វើបានដដែលៗ</span>
+      <span class="term">Repeatable <span class="mini-speaker" onclick="speak('Repeatable', this)">🔊</span></span>
+      <div style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.5rem;">
+        <span style="color: var(--l-cyan); font-weight: 700;">/rɪˈpiː.tə.bəl/</span> • <em>adj.</em>
+      </div>
+      <span class="khmer">ដែលអាចធ្វើបានដដែលៗ</span>
       <p class="definition">Doing a task successfully every single time using a set process.</p>
-      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
-        <strong>Example:</strong> "...deal with the problem in a steady, <strong>repeatable way</strong>."
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid var(--l-gold); margin: 1rem 0;">
+        <strong>Word forms:</strong> <u>repeat</u> (v.), <u>repetition</u> (n.)
+      </div>
+      <div style="font-size: 0.85rem; opacity: 0.9;">
+        <strong>Example:</strong> "...deal with the problem in a steady, <strong>repeatable</strong> way."
       </div>
     </div>
   </div>
