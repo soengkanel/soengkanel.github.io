@@ -162,7 +162,7 @@ clicks: 1
       <!-- 6: Bullseye -->
       <tr class="border-b border-white/5">
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-orange-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">CRM</div><div class="font-bold leading-tight">Bullseye</div></div></div></td>
-        <td class="p-2 text-center"><span class="px-1.5 py-0.5 bg-white/10 text-white/40 text-[8px] font-black rounded border border-white/10">P4</span></td>
+        <td class="p-2 text-center text-[10px]"><span class="px-1.5 py-0.5 bg-white/20 text-slate-300 text-[8px] font-black rounded border border-white/10">P4</span></td>
         <td class="p-2 opacity-70">Initialized</td>
         <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-orange-400" style="width: 5%"></div></div><span class="text-[10px] font-mono opacity-50">5%</span></div></td>
         <td class="p-2 text-center text-[10px] font-bold text-orange-300">Sreypich, Panha</td>
@@ -171,7 +171,7 @@ clicks: 1
       <!-- 7: CryptoTrading -->
       <tr class="border-b border-white/5">
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-yellow-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">QuantConnect</div><div class="font-bold leading-tight">CryptoTrading</div></div></div></td>
-        <td class="p-2 text-center"><span class="px-1.5 py-0.5 bg-white/10 text-white/40 text-[8px] font-black rounded border border-white/10">P4</span></td>
+        <td class="p-2 text-center text-[10px]"><span class="px-1.5 py-0.5 bg-white/20 text-slate-300 text-[8px] font-black rounded border border-white/10">P4</span></td>
         <td class="p-2 opacity-70">R&D</td>
         <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-yellow-400" style="width: 0%"></div></div><span class="text-[10px] font-mono opacity-50">0%</span></div></td>
         <td class="p-2 text-center text-[10px] font-bold text-yellow-300">Gordon</td>
@@ -180,7 +180,7 @@ clicks: 1
       <!-- 8: Car Parking -->
       <tr class="border-b border-white/5">
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-purple-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">Custom</div><div class="font-bold leading-tight">Car Parking & Dormitory</div></div></div></td>
-        <td class="p-2 text-center"><span class="px-1.5 py-0.5 bg-white/10 text-white/40 text-[8px] font-black rounded border border-white/10">P5</span></td>
+        <td class="p-2 text-center text-[10px]"><span class="px-1.5 py-0.5 bg-white/20 text-slate-300 text-[8px] font-black rounded border border-white/10">P5</span></td>
         <td class="p-2 opacity-70">Prospect</td>
         <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-purple-400" style="width: 3%"></div></div><span class="text-[10px] font-mono opacity-50">3%</span></div></td>
         <td class="p-2 text-center text-[10px] font-bold text-purple-300">Kanel</td>
