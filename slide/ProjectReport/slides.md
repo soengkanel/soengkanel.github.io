@@ -7,7 +7,7 @@ lineNumbers: true
 drawings:
   persist: false
 transition: fade-out
-title: The Culture Orbital: Technical Synthesis 2026
+title: "The Culture Orbital: Technical Synthesis 2026"
 mdc: true
 ---
 
