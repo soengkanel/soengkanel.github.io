@@ -111,15 +111,7 @@ clicks: 1
       </tr>
     </thead>
     <tbody v-if="$clicks === 0">
-      <!-- 1 -->
-      <tr class="border-b border-white/5">
-        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-cyan-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">BC</div><div class="font-bold leading-tight">Container Capacity Management</div></div></div></td>
-        <td class="p-2 opacity-70">Study Requirement</td>
-        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-cyan-400" style="width: 10%"></div></div><span class="text-[10px] font-mono opacity-50">10%</span></div></td>
-        <td class="p-2 text-center text-[10px] font-bold text-cyan-300">Kanel</td>
-        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-emerald-400/20 text-emerald-400">InProgress</span></td>
-      </tr>
-      <!-- 2 -->
+      <!-- 1: Budget Control -->
       <tr class="border-b border-white/5">
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-cyan-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">BC</div><div class="font-bold leading-tight">Budget Control Extension</div></div></div></td>
         <td class="p-2 opacity-70">Study Requirement</td>
@@ -127,7 +119,15 @@ clicks: 1
         <td class="p-2 text-center text-[10px] font-bold text-cyan-300">Panha</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-emerald-400/20 text-emerald-400">InProgress</span></td>
       </tr>
-      <!-- 3 -->
+      <!-- 2: Container Mgmt -->
+      <tr class="border-b border-white/5">
+        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-cyan-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">BC</div><div class="font-bold leading-tight">Container Capacity Management</div></div></div></td>
+        <td class="p-2 opacity-70">Study Requirement</td>
+        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-cyan-400" style="width: 10%"></div></div><span class="text-[10px] font-mono opacity-50">10%</span></div></td>
+        <td class="p-2 text-center text-[10px] font-bold text-cyan-300">Kanel</td>
+        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-emerald-400/20 text-emerald-400">InProgress</span></td>
+      </tr>
+      <!-- 3: HR Lab -->
       <tr class="border-b border-white/5">
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-emerald-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">HRMS</div><div class="font-bold leading-tight">HR Lab</div></div></div></td>
         <td class="p-2 opacity-70">Development</td>
@@ -135,7 +135,7 @@ clicks: 1
         <td class="p-2 text-center text-[10px] font-bold text-emerald-300">Monika</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-blue-400/20 text-blue-400">Coding</span></td>
       </tr>
-      <!-- 4 -->
+      <!-- 4: HR Mobile -->
       <tr class="border-b border-white/5">
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-emerald-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">HRMS</div><div class="font-bold leading-tight">HR Lab Mobile Apps</div></div></div></td>
         <td class="p-2 opacity-70">Development</td>
@@ -143,7 +143,17 @@ clicks: 1
         <td class="p-2 text-center text-[10px] font-bold text-emerald-300">Monika</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-blue-400/20 text-blue-400">Coding</span></td>
       </tr>
-      <!-- 5 -->
+      <!-- 5: NGPOS -->
+      <tr class="border-b border-white/5">
+        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-sky-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">Retail</div><div class="font-bold leading-tight">NGPOS (F&B)</div></div></div></td>
+        <td class="p-2 opacity-70">In Progress</td>
+        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-sky-400" style="width: 30%"></div></div><span class="text-[10px] font-mono opacity-50">30%</span></div></td>
+        <td class="p-2 text-center text-[10px] font-bold text-sky-300">Marchi</td>
+        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-emerald-400/20 text-emerald-400">InProgress</span></td>
+      </tr>
+    </tbody>
+    <tbody v-if="$clicks === 1">
+      <!-- 6: Bullseye -->
       <tr class="border-b border-white/5">
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-orange-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">CRM</div><div class="font-bold leading-tight">Bullseye</div></div></div></td>
         <td class="p-2 opacity-70">Initialized</td>
@@ -151,9 +161,7 @@ clicks: 1
         <td class="p-2 text-center text-[10px] font-bold text-orange-300">Sreypich, Panha</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/50">Todo</span></td>
       </tr>
-    </tbody>
-    <tbody v-if="$clicks === 1">
-      <!-- 6 -->
+      <!-- 7: CryptoTrading -->
       <tr class="border-b border-white/5">
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-yellow-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">QuantConnect</div><div class="font-bold leading-tight">CryptoTrading</div></div></div></td>
         <td class="p-2 opacity-70">R&D</td>
@@ -161,21 +169,13 @@ clicks: 1
         <td class="p-2 text-center text-[10px] font-bold text-yellow-300">Gordon</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/50">Todo</span></td>
       </tr>
-      <!-- 7 -->
+      <!-- 8: Car Parking -->
       <tr class="border-b border-white/5">
         <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-purple-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">Custom</div><div class="font-bold leading-tight">Car Parking & Dormitory</div></div></div></td>
         <td class="p-2 opacity-70">Prospect</td>
         <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-purple-400" style="width: 3%"></div></div><span class="text-[10px] font-mono opacity-50">3%</span></div></td>
         <td class="p-2 text-center text-[10px] font-bold text-purple-300">Kanel</td>
         <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-white/10 text-white/50">Todo</span></td>
-      </tr>
-      <!-- 8 -->
-      <tr class="border-b border-white/5">
-        <td class="p-2"><div class="flex items-center gap-2"><div class="w-1 h-5 rounded-full bg-sky-400"></div><div><div class="text-[9px] font-bold opacity-40 leading-none">Retail</div><div class="font-bold leading-tight">NGPOS</div></div></div></td>
-        <td class="p-2 opacity-70">In Progress</td>
-        <td class="p-2 min-w-28"><div class="flex items-center gap-2"><div class="flex-grow bg-white/10 h-1 rounded-full overflow-hidden"><div class="h-full bg-sky-400" style="width: 30%"></div></div><span class="text-[10px] font-mono opacity-50">30%</span></div></td>
-        <td class="p-2 text-center text-[10px] font-bold text-sky-300">Marchi</td>
-        <td class="p-2 text-right"><span class="px-2 py-0.5 text-[8px] font-black rounded-full uppercase bg-emerald-400/20 text-emerald-400">InProgress</span></td>
       </tr>
       <tr class="border-b border-white/5">
         <td colspan="5" class="p-1 opacity-0 text-[1px]">Buffer</td>
