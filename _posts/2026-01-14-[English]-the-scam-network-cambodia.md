@@ -302,39 +302,57 @@ function speak(text, element) {
   <h2 style="color: var(--l-cyan); border-left: 4px solid var(--l-cyan); padding-left: 1rem; margin-bottom: 2rem;">Vocabulary Workshop 📚</h2>
   <div class="vocab-grid">
     <div class="vocab-card">
-      <span class="term">Accusation <span class="mini-speaker" onclick="speak('Accusation', this)">🔊</span></span>
+      <span class="term">Accusation <small style="color: var(--l-cyan); font-weight: 400;">[Noun]</small> <span class="mini-speaker" onclick="speak('Accusation', this)">🔊</span></span>
       <span class="khmer">ការចោទប្រកាន់ (Kar Chort Prokan)</span>
-      <p class="definition">A formal claim that someone has done something illegal. Professional writers use this word to separate "feelings" from "legal facts."</p>
+      <p class="definition">A formal claim that someone has done something illegal.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
+        <strong>Example:</strong> "This is not really a story about shame or <strong>accusation</strong>."
+      </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Repeatable way <span class="mini-speaker" onclick="speak('Repeatable way', this)">🔊</span></span>
-      <span class="khmer">តាមរបៀបដែលអាចធ្វើបានដដែលៗ</span>
-      <p class="definition">Consistency. In governance, doing a task successfully every single time using a set process (a system).</p>
-    </div>
-
-    <div class="vocab-card">
-      <span class="term">Epicentre <span class="mini-speaker" onclick="speak('Epicenter', this)">🔊</span></span>
-      <span class="khmer">ចំណុចផ្ទុះ / ចំណុចកណ្តាល</span>
-      <p class="definition">The central point of something difficult or wide-reaching. Being called the "epicenter" of a crisis is a major risk to reputation.</p>
-    </div>
-
-    <div class="vocab-card">
-      <span class="term">Procedural <span class="mini-speaker" onclick="speak('Procedural', this)">🔊</span></span>
-      <span class="khmer">តាមនីតិវីធី (Tam Neiteveithey)</span>
-      <p class="definition">Relating to an established official way of doing things. Moving from "drama" to "procedure" is a sign of building trust.</p>
-    </div>
-
-    <div class="vocab-card">
-      <span class="term">Endure <span class="mini-speaker" onclick="speak('Endure', this)">🔊</span></span>
+      <span class="term">Endure <small style="color: var(--l-cyan); font-weight: 400;">[Verb]</small> <span class="mini-speaker" onclick="speak('Endure', this)">🔊</span></span>
       <span class="khmer">នៅក្នុងជាប់បានយូរ / ស៊ូ</span>
-      <p class="definition">To last for a long time. A judgment that "endures" is a legal ruling that remains strong even after many years.</p>
+      <p class="definition">To continue to exist or last for a long time, especially through difficulty.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
+        <strong>Example:</strong> "Judgments that <strong>endure</strong> change reputations."
+      </div>
     </div>
 
     <div class="vocab-card">
-      <span class="term">Scrutiny <span class="mini-speaker" onclick="speak('Scrutiny', this)">🔊</span></span>
-      <span class="khmer">ការពិនិត្យយ៉ាងហ្មត់ចត់</span>
-      <p class="definition">Detailed and critical observation. International institutions apply high scrutiny to countries with high risk scores.</p>
+      <span class="term">Epicentre <small style="color: var(--l-cyan); font-weight: 400;">[Noun]</small> <span class="mini-speaker" onclick="speak('Epicenter', this)">🔊</span></span>
+      <span class="khmer">ចំណុចផ្ទុះ / ចំណុចកណ្តាល</span>
+      <p class="definition">The central point of something difficult or wide-reaching.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
+        <strong>Example:</strong> "Once a country is described as an <strong>epicentre</strong>, a clock starts."
+      </div>
+    </div>
+
+    <div class="vocab-card">
+      <span class="term">Grading <small style="color: var(--l-cyan); font-weight: 400;">[Verb]</small> <span class="mini-speaker" onclick="speak('Grading', this)">🔊</span></span>
+      <span class="khmer">ការដាក់ពិន្ទុ (Kar Dak Pintuy)</span>
+      <p class="definition">To give a score or measure the quality of something.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
+        <strong>Example:</strong> "The world is not <strong>grading</strong> Cambodia on speeches."
+      </div>
+    </div>
+
+    <div class="vocab-card">
+      <span class="term">Judgments <small style="color: var(--l-cyan); font-weight: 400;">[Noun]</small> <span class="mini-speaker" onclick="speak('Judgments', this)">🔊</span></span>
+      <span class="khmer">ការកាត់ក្តី / សាលក្រម</span>
+      <p class="definition">Official decisions made by a court or a system of law.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
+        <strong>Example:</strong> "<strong>Judgments</strong> that endure change reputations."
+      </div>
+    </div>
+
+    <div class="vocab-card">
+      <span class="term">Repeatable way <small style="color: var(--l-cyan); font-weight: 400;">[Noun Phrase]</small> <span class="mini-speaker" onclick="speak('Repeatable way', this)">🔊</span></span>
+      <span class="khmer">តាមរបៀបដែលអាចធ្វើបានដដែលៗ</span>
+      <p class="definition">Doing a task successfully every single time using a set process.</p>
+      <div style="background: var(--l-bg-card); padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; border-left: 3px solid var(--l-gold); margin-top: 1rem;">
+        <strong>Example:</strong> "...deal with the problem in a steady, <strong>repeatable way</strong>."
+      </div>
     </div>
   </div>
 
@@ -362,41 +380,20 @@ function speak(text, element) {
   <div class="grammar-lab">
     <div class="grammar-focus">
       
-      <!-- Noun Section -->
       <div class="grammar-item">
-        <div class="structure">1. The Noun (នាម) - Naming the System</div>
-        <p>A <strong>Noun</strong> is a person, place, thing, or idea. In professional writing, precise nouns are used to define the subject clearly.</p>
+        <div class="structure">Sentence Structure: Action vs. System</div>
+        <p>In the workshop above, notice how the author switches between <strong>Verbs</strong> (Action) and <strong>Nouns</strong> (System). Mastering this balance makes your writing sound professional.</p>
         <div style="background: var(--l-bg-card); padding: 1.2rem; border-radius: 12px; border-left: 4px solid var(--l-gold); margin: 1rem 0;">
-          <strong>Real Example:</strong> "International <span class="l-marker">reporting</span> on <span class="l-marker">scam networks</span> in <span class="l-marker">Cambodia</span>..."
+          <strong>Pattern:</strong> [Noun] + [Verb] + [Noun Phrase]<br>
+          <em>"Systems (N) earn (V) trust (N)."</em>
         </div>
-        <p><strong>Professional Tip:</strong> Using nouns like <em>"reporting"</em> (an action turned into a noun) makes your English sound more analytical and high-level.</p>
       </div>
 
-      <!-- Verb Section -->
       <div class="grammar-item">
-        <div class="structure">2. The Verb (កិរិយាសព្ទ) - Defining Action</div>
-        <p>A <strong>Verb</strong> tells us what is happening or the state of something. In this article, verbs describe how systems behave.</p>
-        <div style="background: var(--l-bg-card); padding: 1.2rem; border-radius: 12px; border-left: 4px solid var(--l-gold); margin: 1rem 0;">
-          <strong>Real Example:</strong> "Systems <span class="l-marker">earn</span> trust."
-        </div>
-        <p><strong>Professional Tip:</strong> Strong verbs like <em>"earn," "endure,"</em> or <em>"grading"</em> show clear cause and effect. They are the "engines" of your sentences.</p>
-      </div>
-
-      <!-- Pronoun Section -->
-      <div class="grammar-item">
-        <div class="structure">3. The Pronoun (សព្វនាម) - Maintaining Flow</div>
-        <p>A <strong>Pronoun</strong> is a word that replaces a noun. We use them so we don't have to repeat the same names over and over.</p>
-        <div style="background: var(--l-bg-card); padding: 1.2rem; border-radius: 12px; border-left: 4px solid var(--l-gold); margin: 1rem 0;">
-          <strong>Real Example:</strong> "<span class="l-marker">It</span> is about how the world quietly decides..."
-        </div>
-        <p><strong>Usage:</strong> Here, <em>"It"</em> replaces the entire concept of the "story." This keeps the writing smooth (cohesion).</p>
-      </div>
-
-      <!-- Advanced logic -->
-      <div class="grammar-item">
-        <div class="structure">4. Advanced Mastery: "Whether" & "How"</div>
+        <div class="structure">Advanced Mastery: "Whether" & "How" <span class="mini-speaker" onclick="speak('Whether and How', this)">🔊</span></div>
         <p>In formal policy English, we use <strong>"Whether"</strong> to present options and <strong>"How"</strong> to describe processes.</p>
-        <p><em>Example: "...decides <strong>whether</strong> to trust a country."</em></p>
+        <p><em>Example: "...decides <strong>whether</strong> to trust a country."</em>
+        <span class="mini-speaker" onclick="speak('Decides whether to trust a country', this)">🔊</span></p>
         <p><strong>Khmer Tip:</strong> ប្រើពាក្យ "Whether" ជំនួស "If" សម្រាប់ការសរសេរផ្លូវការ (ថាតើ...)</p>
       </div>
 
@@ -411,7 +408,7 @@ function speak(text, element) {
       <div style="font-weight: 700;">"Systems earn trust."</div>
       <div style="font-family: 'Kantumruy Pro'; color: var(--l-emerald); font-size: 0.9rem;">ប្រព័ន្ធនីតិវិធីទើបអាចទទួលបានការទុកចិត្ត។</div>
     </div>
-    <button class="listen-btn" onclick="speak('Systems earn trust.')">🔊 LISTEN</button>
+    <button class="listen-btn" onclick="speak('Systems earn trust.', this)">🔊 LISTEN</button>
   </div>
 
   <div class="sound-bar">
@@ -419,7 +416,7 @@ function speak(text, element) {
       <div style="font-weight: 700;">"Do convictions survive appeal?"</div>
       <div style="font-family: 'Kantumruy Pro'; color: var(--l-emerald); font-size: 0.9rem;">តើការផ្តន្ទាទោសទាំងនោះអាចនៅជាប់បានយូរក្នុងដំណាក់កាលប្តឹងឧទ្ធរណ៍ដែរឬទេ?</div>
     </div>
-    <button class="listen-btn" onclick="speak('Do convictions survive appeal?')">🔊 LISTEN</button>
+    <button class="listen-btn" onclick="speak('Do convictions survive appeal?', this)">🔊 LISTEN</button>
   </div>
 
   <div class="sound-bar">
@@ -427,7 +424,7 @@ function speak(text, element) {
       <div style="font-weight: 700;">"Judgments that endure change reputations."</div>
       <div style="font-family: 'Kantumruy Pro'; color: var(--l-emerald); font-size: 0.9rem;">សាលក្រមដែលរឹងមាំអាចផ្លាស់ប្តូរកេរ្តិ៍ឈ្មោះបាន។</div>
     </div>
-    <button class="listen-btn" onclick="speak('Judgments that endure change reputations.')">🔊 LISTEN</button>
+    <button class="listen-btn" onclick="speak('Judgments that endure change reputations.', this)">🔊 LISTEN</button>
   </div>
 
   <!-- Master Conclusion -->
