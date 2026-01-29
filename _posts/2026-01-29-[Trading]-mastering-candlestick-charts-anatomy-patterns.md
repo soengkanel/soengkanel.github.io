@@ -8,34 +8,41 @@ thumbnail: /images/candlestick_mastery_hero.png
 <style>
 /* 
    Premium Trading Education Design System 
-   Focus: Readability, Dark Mode Excellence, Professional HSL Palettes
+   Focus: Readability, Soft Dark Mode, High Contrast Accents
 */
 :root {
-  --c-bg: hsl(220, 20%, 5%);
-  --c-card: hsl(220, 20%, 8%);
-  --c-bull: hsl(150, 80%, 45%);
-  --c-bear: hsl(345, 80%, 55%);
-  --c-accent: hsl(45, 100%, 50%);
-  --c-text-main: hsl(0, 0%, 95%);
-  --c-text-muted: hsl(220, 10%, 65%);
-  --glass: hsla(0, 0%, 100%, 0.03);
-  --glass-border: hsla(0, 0%, 100%, 0.1);
+  --c-bg: hsl(222, 25%, 10%);       /* Softer, deeper background */
+  --c-card: hsl(222, 25%, 14%);     /* Distinct card surfaces */
+  --c-bull: hsl(155, 100%, 45%);    /* High-vibrancy bullish green */
+  --c-bear: hsl(355, 100%, 60%);    /* High-vibrancy bearish red */
+  --c-accent: hsl(45, 100%, 60%);   /* Brighter accent for highlights */
+  --c-text-main: hsl(210, 20%, 94%);/* Off-white for reduced eye strain */
+  --c-text-muted: hsl(215, 15%, 75%);/* Brighter muted text for readability */
+  --glass: hsla(0, 0%, 100%, 0.05);
+  --glass-border: hsla(0, 0%, 100%, 0.12);
   --font-khmer: 'Noto Sans Khmer', sans-serif;
 }
 
 .trading-container {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--c-bg);
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(222, 25%, 15%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(355, 100%, 60%, 0.02) 0, transparent 50%);
   color: var(--c-text-main);
-  line-height: 1.7;
-  max-width: 850px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+  line-height: 1.8;
+  max-width: 880px;
+  margin: 2rem auto;
+  padding: 4rem 2.5rem;
+  border-radius: 32px;
+  box-shadow: 0 50px 100px -20px rgba(0,0,0,0.8);
 }
 
 /* Typography Polish */
 h1, h2, h3 {
   letter-spacing: -0.02em;
-  color: var(--c-text-main);
+  color: hsl(0, 0%, 100%); /* High-contrast pure white for headers */
+  margin-top: 2.5rem;
 }
 
 .section-tag {
@@ -168,12 +175,13 @@ h1, h2, h3 {
 .khmer-highlight {
   font-family: var(--font-khmer);
   color: var(--c-accent);
-  background: hsla(45, 100%, 50%, 0.05);
-  padding: 1rem;
+  background: hsla(45, 100%, 60%, 0.12); /* More visible background */
+  padding: 1.25rem;
   border-right: 4px solid var(--c-accent);
   margin: 2rem 0;
   font-size: 0.95rem;
   text-align: right;
+  border-radius: 8px 0 0 8px;
 }
 
 /* Volume Bars Stylings */
@@ -243,7 +251,11 @@ h1, h2, h3 {
 }
 
 .pitfall-list li strong {
-  color: var(--c-bear);
+  color: hsl(0, 100%, 75%); /* Lighter red for visibility on dark */
+}
+
+.pro-tip-box strong {
+  color: var(--c-accent);
 }
 
 </style>
