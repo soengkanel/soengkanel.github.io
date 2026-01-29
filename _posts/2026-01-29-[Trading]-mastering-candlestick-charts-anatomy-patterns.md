@@ -6,55 +6,84 @@ thumbnail: /images/candlestick_mastery_hero.png
 ---
 
 <style>
-/* Premium Trading Layout */
+/* 
+   Premium Trading Education Design System 
+   Focus: Readability, Dark Mode Excellence, Professional HSL Palettes
+*/
 :root {
-  --chart-bg: #0b0e11;
-  --candle-bull: #00c076;
-  --candle-bear: #ff3b69;
-  --accent-gold: #eab308;
-  --glass: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --c-bg: hsl(220, 20%, 5%);
+  --c-card: hsl(220, 20%, 8%);
+  --c-bull: hsl(150, 80%, 45%);
+  --c-bear: hsl(345, 80%, 55%);
+  --c-accent: hsl(45, 100%, 50%);
+  --c-text-main: hsl(0, 0%, 95%);
+  --c-text-muted: hsl(220, 10%, 65%);
+  --glass: hsla(0, 0%, 100%, 0.03);
+  --glass-border: hsla(0, 0%, 100%, 0.1);
+  --font-khmer: 'Noto Sans Khmer', sans-serif;
 }
 
 .trading-container {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: var(--text-primary);
-  line-height: 1.6;
-  max-width: 900px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--c-text-main);
+  line-height: 1.7;
+  max-width: 850px;
   margin: 0 auto;
+  padding: 2rem 1rem;
 }
 
-/* Interactive Candle Anatomy */
+/* Typography Polish */
+h1, h2, h3 {
+  letter-spacing: -0.02em;
+  color: var(--c-text-main);
+}
+
+.section-tag {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--c-accent);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Improved Anatomy Model */
 .anatomy-box {
-  background: var(--chart-bg);
+  background: var(--c-card);
   border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  padding: 3rem;
-  margin: 3rem 0;
+  border-radius: 24px;
+  padding: 4rem 2rem;
+  margin: 3.5rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  overflow: hidden;
+  box-shadow: 0 40px 100px -20px hsla(0, 0%, 0%, 0.5);
 }
 
-.anatomy-box::before {
+.anatomy-box::after {
   content: '';
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 192, 118, 0.05), transparent);
+  bottom: 0; right: 0; width: 300px; height: 300px;
+  background: radial-gradient(circle at 70% 70%, hsla(150, 80%, 45%, 0.05), transparent);
+  pointer-events: none;
 }
 
 .candle-interactive {
   display: flex;
-  gap: 4rem;
+  gap: 6rem;
   align-items: center;
   z-index: 1;
 }
 
+@media (max-width: 640px) {
+  .candle-interactive { flex-direction: column; gap: 3rem; text-align: center; }
+  .label-text { right: auto !important; left: 80px !important; }
+}
+
 .candle-visual {
-  width: 60px;
-  height: 300px;
+  width: 50px;
+  height: 320px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -63,263 +92,359 @@ thumbnail: /images/candlestick_mastery_hero.png
 
 .wick {
   width: 2px;
-  background: #666;
+  background: hsl(220, 10%, 40%);
   position: absolute;
 }
 
-.body {
+.body-main {
   width: 100%;
-  border-radius: 2px;
+  border-radius: 4px;
   position: absolute;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 30px hsla(150, 80%, 45%, 0.2);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.label-line {
+.label-pointer {
   position: absolute;
   height: 1px;
   background: var(--glass-border);
-  width: 100px;
-  right: -110px;
+  width: 80px;
+  right: -90px;
 }
 
 .label-text {
   position: absolute;
-  right: -220px;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  white-space: nowrap;
+  right: -200px;
+  font-size: 0.8rem;
+  color: var(--c-text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
 }
 
-/* Case Study Cards */
-.case-grid {
+.label-text strong { color: var(--c-text-main); }
+
+/* Grid of Knowledge */
+.pattern-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin: 4rem 0;
-}
-
-@media (max-width: 768px) {
-  .case-grid { grid-template-columns: 1fr; }
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
 }
 
 .case-card {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
   padding: 2rem;
-  transition: transform 0.3s;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s;
 }
 
 .case-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent-gold);
+  background: hsla(0, 0%, 100%, 0.05);
+  border-color: var(--c-accent);
+  transform: translateY(-4px);
 }
 
-.case-badge {
-  font-size: 0.7rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 99px;
-  background: var(--candle-bull);
-  color: white;
-  margin-bottom: 1rem;
-  display: inline-block;
-}
-
-.case-badge.bear { background: var(--candle-bear); }
-
-.khmer-note {
-  font-family: 'Noto Sans Khmer', sans-serif;
-  color: var(--accent-gold);
-  font-size: 0.95rem;
-  border-left: 3px solid var(--accent-gold);
-  padding-left: 1rem;
-  margin: 1.5rem 0;
-}
-
-/* Animation explained */
-@keyframes flicker {
-  0% { opacity: 0.8; height: 120px; top: 100px; }
-  50% { opacity: 1; height: 150px; top: 80px; }
-  100% { opacity: 0.8; height: 120px; top: 100px; }
-}
-
-.live-indicator {
+.case-header {
   display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.badge-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  background: var(--c-bull);
+  color: white;
+}
+
+.badge-tag.bear { background: var(--c-bear); }
+
+.khmer-highlight {
+  font-family: var(--font-khmer);
+  color: var(--c-accent);
+  background: hsla(45, 100%, 50%, 0.05);
+  padding: 1rem;
+  border-right: 4px solid var(--c-accent);
+  margin: 2rem 0;
+  font-size: 0.95rem;
+  text-align: right;
+}
+
+/* Volume Bars Stylings */
+.volume-viz {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 60px;
+  margin-top: 1.5rem;
+}
+
+.vol-bar {
+  flex: 1;
+  background: var(--c-text-muted);
+  opacity: 0.2;
+  border-radius: 2px 2px 0 0;
+}
+
+.vol-bar.peak { opacity: 0.8; background: var(--c-bull); height: 100%; }
+
+/* Live Status */
+.status-pill {
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--candle-bull);
-  font-weight: 700;
-  font-size: 0.8rem;
+  padding: 0.4rem 1rem;
+  background: hsla(150, 80%, 45%, 0.1);
+  color: var(--c-bull);
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 800;
   margin-bottom: 2rem;
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  background: var(--candle-bull);
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--c-bull);
   border-radius: 50%;
-  animation: pulse 1.5s infinite;
+  box-shadow: 0 0 10px var(--c-bull);
+  animation: pulse-ring 2s infinite;
 }
 
-@keyframes pulse {
+@keyframes pulse-ring {
   0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(2.5); opacity: 0; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+.pro-tip-box {
+  background: linear-gradient(135deg, hsla(45, 100%, 50%, 0.1), transparent);
+  border: 1px solid hsla(45, 100%, 50%, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.pitfall-list {
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.pitfall-list li {
+  margin-bottom: 1rem;
+  color: var(--c-text-muted);
+}
+
+.pitfall-list li strong {
+  color: var(--c-bear);
 }
 
 </style>
 
 <div class="trading-container">
 
-# Introduction: The Language of Price
-Before indicators, algorithms, or news cycles, there was the **Candlestick**. Developed in 18th-century Japan by rice traders, candlesticks are the most descriptive way to visualize the eternal battle between buyers and sellers.
+<span class="section-tag">Introductory Series</span>
+# The Art of the Candlestick: Visualizing Market Psychology
+Before the era of high-frequency trading and neural networks, 18th-century Japanese rice traders discovered a fundamental truth: **Price movement is not random; it is the manifestation of human emotion.**
 
-<div class="khmer-note">
-🇰🇭 **ទៀនក្រាហ្វិក (Candlesticks)** គឺជាភាសាមូលដ្ឋាននៃទីផ្សារហិរញ្ញវត្ថុ។ វាបង្ហាញពីសកម្មភាពតម្លៃក្នុងរយៈពេលជាក់លាក់ណាមួយ និងផ្លូវចិត្តរបស់អ្នកវិនិយោគ។
+<div class="khmer-highlight">
+🇰🇭 ទៀនក្រាហ្វិក មិនមែនគ្រាន់តែជាបន្ទាត់តម្លៃនោះទេ។ វាគឺជាការឆ្លុះបញ្ចាំងពី ភាពភ័យខ្លាច (Fear) និង ភាពលោភលន់ (Greed) របស់មនុស្សនៅក្នុងទីផ្សារ។
 </div>
 
 ---
 
-## 🏗️ 1. The Anatomy of a Single Candle
-Every candle tells a story across four data points: **Open, High, Low, and Close (OHLC)**.
+## 🏗️ 1. The Anatomy of Price
+Every candlestick encapsulates a specific battle between buyers (Bulls) and sellers (Bears).
 
 <div class="anatomy-box">
-  <div class="live-indicator"><div class="dot"></div> LIVE FORMATION MODEL</div>
+  <div class="status-pill"><div class="pulse-dot"></div> INTERACTIVE ANATOMY MODEL</div>
   
   <div class="candle-interactive">
     <div class="candle-visual">
-      <!-- Upper Wick -->
-      <div id="upper-wick" class="wick" style="height: 40px; top: 20px;"></div>
+      <!-- Upper Shadow -->
+      <div class="wick" style="height: 50px; top: 20px;"></div>
       <!-- Body -->
-      <div id="candle-body" class="body" style="height: 140px; top: 60px; background: var(--candle-bull);"></div>
-      <!-- Lower Wick -->
-      <div id="lower-wick" class="wick" style="height: 60px; top: 200px;"></div>
+      <div id="demo-body" class="body-main" style="height: 160px; top: 70px; background: var(--c-bull);"></div>
+      <!-- Lower Shadow -->
+      <div class="wick" style="height: 60px; top: 230px;"></div>
       
       <!-- Labels -->
-      <div class="label-line" style="top: 20px;"></div><div class="label-text" style="top: 12px;"><strong>High</strong> (ខ្ពស់បំផុត)</div>
-      <div class="label-line" style="top: 60px;"></div><div class="label-text" style="top: 52px;"><strong>Close</strong> (តម្លៃបិទ)</div>
-      <div class="label-line" style="top: 200px;"></div><div class="label-text" style="top: 192px;"><strong>Open</strong> (តម្លៃបើក)</div>
-      <div class="label-line" style="top: 260px;"></div><div class="label-text" style="top: 252px;"><strong>Low</strong> (ទាបបំផុត)</div>
+      <div class="label-pointer" style="top: 20px;"></div><div class="label-text" style="top: 12px;"><strong>High</strong> (ខ្ពស់បំផុត)</div>
+      <div class="label-pointer" style="top: 70px;"></div><div class="label-text" style="top: 62px;"><strong>Close</strong> (តម្លៃបិទ)</div>
+      <div class="label-pointer" style="top: 230px;"></div><div class="label-text" style="top: 222px;"><strong>Open</strong> (តម្លៃបើក)</div>
+      <div class="label-pointer" style="top: 290px;"></div><div class="label-text" style="top: 282px;"><strong>Low</strong> (ទាបបំផុត)</div>
     </div>
     
-    <div style="max-width: 300px;">
-      <h3 style="margin-top:0">The "Real" Body</h3>
-      <p style="font-size: 0.9rem; color: var(--text-secondary);">The colored part. If the close is above the open, it's <strong>Bullish (Green)</strong>. If below, it's <strong>Bearish (Red)</strong>.</p>
+    <div style="max-width: 320px;">
+      <h4 style="color: var(--c-accent); text-transform: uppercase; font-size: 0.8rem; margin-bottom: 0.5rem;">The Real Body</h4>
+      <p style="font-size: 0.9rem; color: var(--c-text-muted); margin-bottom: 2rem;">The distance between Open and Close. A large body indicates high conviction, while a small body indicates indecision.</p>
       
-      <h3 style="margin-top:1.5rem">The Shadows (Wicks)</h3>
-      <p style="font-size: 0.9rem; color: var(--text-secondary);">The thin lines. These represent "Price Rejection". Long wicks mean the market tried to reach a price but was pushed back.</p>
+      <h4 style="color: var(--c-accent); text-transform: uppercase; font-size: 0.8rem; margin-bottom: 0.5rem;">The Shadows (Wicks)</h4>
+      <p style="font-size: 0.9rem; color: var(--c-text-muted);">These represent "Price Rejection". They show where the market tried to go but failed to sustain control.</p>
     </div>
   </div>
 </div>
 
 ---
 
-## 📈 2. Real Case Examples: From Chaos to Clarity
+## 📉 2. Strategic Case Studies: Real-World Impacts
 
-Understanding patterns is one thing; seeing them in a multi-billion dollar market is another. Here are two classic real-world scenarios.
+Theoretical patterns gain meaning only when applied to historical pivots. Let's analyze two legendary reversals.
 
-<div class="case-grid">
-  <!-- Case 1 -->
+<div class="pattern-grid">
+  <!-- NVIDIA Analysis -->
   <div class="case-card">
-    <div class="case-badge">BULLISH REVERSAL</div>
-    <h3 style="margin-top:0">The NVIDIA Hammer</h3>
-    <p style="font-size: 0.85rem; color: var(--text-muted);">Asset: NVDA | Date: Oct 13, 2022</p>
-    <p class="m-desc">After a massive 60% drop, NVIDIA formed a massive <strong>Hammer</strong> candle at $108. This signaled that sellers were exhausted and big institutions were starting to buy the dip.</p>
-    <div class="khmer-note">
-      🇰🇭 **Hammer (ញញួរ)** បង្ហាញពីការបដិសេធតម្លៃទាប។ នៅពេលវាលេចឡើងក្នុងតំបន់គាំទ្រ (Support) វាជាសញ្ញានៃការត្រលប់មកវិញ។
+    <div class="case-header">
+      <span class="badge-tag">REVERSAL PROTOCOL</span>
+      <span style="font-size: 0.7rem; color: var(--c-text-muted);">NVDA @ 2022</span>
     </div>
+    <h3>The $108 Hammer</h3>
+    <p style="font-size: 0.9rem; color: var(--c-text-muted);">In Oct 2022, NVIDIA completed a brutal 60% drawdown with a massive **Hammer Candle**. The long lower wick signaled that while bears pushed price down, the "Smart Money" bought in volume, creating a secular bottom.</p>
+    <div class="volume-viz">
+      <div class="vol-bar" style="height: 30%;"></div>
+      <div class="vol-bar" style="height: 45%;"></div>
+      <div class="vol-bar peak" style="height: 100%;"></div>
+      <div class="vol-bar" style="height: 60%;"></div>
+      <div class="vol-bar" style="height: 50%;"></div>
+    </div>
+    <p style="font-size: 0.75rem; margin-top: 1rem; color: var(--c-bull); font-weight: 600;">CONFIRMATION: High Volume Spike</p>
   </div>
 
-  <!-- Case 2 -->
+  <!-- Bitcoin Analysis -->
   <div class="case-card">
-    <div class="case-badge bear">BEARISH TRAP</div>
-    <h3 style="margin-top:0">The Bitcoin Engulfing</h3>
-    <p style="font-size: 0.85rem; color: var(--text-muted);">Asset: BTC/USD | Date: Nov 2021</p>
-    <p class="m-desc">At the $69,000 peak, BTC formed a <strong>Bearish Engulfing</strong> pattern. This occurs when a large red candle completely "swallows" the previous green candle, signaling a regime shift.</p>
-    <div class="khmer-note">
-      🇰🇭 **Bearish Engulfing** គឺជាពេលដែលអ្នកលក់គ្របដណ្តប់លើអ្នកទិញទាំងស្រុង ដែលនាំឱ្យមានការធ្លាក់ចុះខ្លាំង។
+    <div class="case-header">
+      <span class="badge-tag bear">EXIT SIGNAL</span>
+      <span style="font-size: 0.7rem; color: var(--c-text-muted);">BTC @ Nov 2021</span>
+    </div>
+    <h3>$69K Engulfing Trap</h3>
+    <p style="font-size: 0.9rem; color: var(--c-text-muted);">At the Bitcoin All-Time High, a **Bearish Engulfing** formed. A single red candle completely swallowed the previous 3 days of gains. This was the mathematical representation of "Liquidity Distribution" before the crash.</p>
+    <div class="khmer-highlight" style="margin: 1rem 0 0 0; padding: 0.5rem; text-align: left; border-right: 0; border-left: 3px solid var(--c-accent);">
+      🇰🇭 នៅពេលតម្លៃបិទក្រោមកម្រិតបើករបស់ទៀនមុន (Engulfing) វាគឺជាសញ្ញាគ្រោះថ្នាក់បំផុត។
     </div>
   </div>
 </div>
 
 ---
 
-## 🌀 3. The Psychology: Why do they work?
+## 🌀 3. Advanced Catalog: Reading the Silence
 
-Candlesticks aren't magic; they are **Human Emotion** visualized.
+Not all candles are explosive. Some tell a story of silence and waiting.
 
-1.  **Doji (Indecision):** When Open and Close are the same. It means the market is confused. A Doji at the top of a trend often means the trend is tired.
-2.  **Shooting Star (Greed Rejection):** A long upper wick at a peak. It shows buyers got too greedy, pushed price too high, and were immediately punished by sellers.
+1.  **The Doji (+):** Open and Close are identical. The market is in a state of perfect equilibrium. If found after an extended rally, it often signals that the "Trend is Tired."
+2.  **Marubozu (▉):** A candle with no wicks. Pure dominance. A Green Marubozu means buyers controlled the asset from the first second of the day until the last.
 
 ---
 
-## 🎥 4. Animated Explanation: The "Power Shift"
-Watch how a bullish candle transforms into a bearish rejection (Pin Bar) when sellers take control.
+## 🎥 4. Dynamic Animation: The Birth of a Pin Bar
+Watch the evolution of a session. See how a "winning" candle can become a "rejection" in seconds.
 
-<div class="anatomy-box" style="height: 400px; justify-content: flex-start;">
-  <div id="status-text" style="font-weight: 800; color: var(--accent-gold); margin-bottom: 2rem;">PHASE: BUYERS DOMINATING</div>
-  <div class="candle-visual" id="anim-candle">
-      <div id="anim-wick-t" class="wick" style="height: 0px; top: 100px;"></div>
-      <div id="anim-body" class="body" style="height: 100px; top: 100px; background: var(--candle-bull); width: 40px;"></div>
-      <div id="anim-wick-b" class="wick" style="height: 40px; top: 200px;"></div>
+<div class="anatomy-box" style="height: 420px; justify-content: flex-start;">
+  <div id="status-label" style="font-weight: 800; font-size: 1rem; margin-bottom: 2rem;">BUYERS IN TOTAL CONTROL</div>
+  <div class="candle-visual" id="live-candle">
+      <div id="live-wick-top" class="wick" style="height: 0px; top: 100px;"></div>
+      <div id="live-body" class="body-main" style="height: 120px; top: 100px; background: var(--c-bull); width: 44px; box-shadow: 0 0 20px hsla(150, 80%, 45%, 0.3);"></div>
+      <div id="live-wick-bottom" class="wick" style="height: 40px; top: 220px;"></div>
   </div>
-  <p style="margin-top: 3rem; text-align: center; color: var(--text-secondary); max-width: 500px;">
-    Notice how the body <strong>shrinks</strong> and the wick <strong>grows</strong> as the timeframe progresses. This is "Intra-period" price action.
+  <p style="margin-top: 3.5rem; text-align: center; color: var(--c-text-muted); font-size: 0.9rem; max-width: 550px; font-style: italic;">
+    Notice the **intra-period transition**. A candle is never "true" until the clock hits zero. This is why professional traders never enter before the close.
   </p>
 </div>
 
 ---
 
-## Summary for Strategic Traders
-*   **Context is King:** A Hammer in the middle of nowhere means nothing. A Hammer at a 200-day Moving Average means everything.
-*   **Wait for the Close:** Never trade a candle before it finishes forming. Many "Bullish" candles turn into "Shooting Stars" in the last 2 minutes of the hour.
+## 🚫 5. Common Pitfalls to Avoid
 
-<footer style="margin-top: 4rem; padding: 2rem; border-top: 1px solid var(--border-color); text-align: center;">
-  <p style="font-style: italic; color: var(--text-muted);">"Price has no memory, but traders do."</p>
-  <div style="font-weight: 800; color: var(--candle-bull);">STAY TREND-ALIGNED. 🚀</div>
+Even with the best analysis, traders often fail due to these psychological traps:
+
+<ul class="pitfall-list">
+  <li><strong>Trading the "Wick" too early:</strong> Many see a hammer forming and buy instantly, only for the candle to close as a full bearish Marubozu. <em>Rule: Always wait for the candle close.</em></li>
+  <li><strong>Ignoring the Trend:</strong> A bullish hammer during a violent downtrend is often just a "dead cat bounce." Always trade in the direction of the higher timeframe.</li>
+  <li><strong>Missing Volume:</strong> A breakout on low volume is almost always a "fakeout" designed to trap retail traders.</li>
+</ul>
+
+<div class="pro-tip-box">
+  <div style="font-size: 1.5rem;">💡</div>
+  <div>
+    <strong>Pro Strategy: The Confirmation Rule</strong><br/>
+    Never trade just one candle. Look for a "Morning Star" (3-candle sequence) or wait for the next candle to break the high of the reversal candle.
+  </div>
+</div>
+
+---
+
+## Strategic Checklist
+*   ✅ **Timeframe Alignment:** A hammer on a 1-minute chart is noise. A hammer on a Weekly chart is a regime change.
+*   ✅ **Volume Confirmation:** A reversal candle without a volume spike is likely a "bull trap."
+*   ✅ **Location, Location, Location:** Indicators are secondary. Resistance and Support zones are where candlesticks find their power.
+
+<footer style="margin-top: 5rem; padding: 3rem; background: var(--glass); border-radius: 32px; text-align: center; border: 1px solid var(--glass-border);">
+  <p style="color: var(--c-text-muted); font-size: 1.1rem; margin-bottom: 1.5rem;">"You don't need to know what happens next to make money. You only need to know what is happening NOW."</p>
+  <div style="font-weight: 900; font-size: 1.4rem; color: var(--c-accent); letter-spacing: 0.1em;">TRADE WITH PRECISION. 🛡️</div>
 </footer>
 
 </div>
 
 <script>
-// Logic for the animated candle
-const animBody = document.getElementById('anim-body');
-const animWickT = document.getElementById('anim-wick-t');
-const statusText = document.getElementById('status-text');
+/**
+ * Smooth Candlestick Transition Logic
+ * Simulates a session where buyers fail to hold the peak.
+ */
+const body = document.getElementById('live-body');
+const wickTop = document.getElementById('live-wick-top');
+const status = document.getElementById('status-label');
 
-let phase = 0;
+let cycle = 0;
 
-function runAnimation() {
-  setInterval(() => {
-    phase = (phase + 1) % 3;
-    
-    if (phase === 0) {
-      // Bullish Phase
-      animBody.style.height = '150px';
-      animBody.style.top = '50px';
-      animBody.style.background = 'var(--candle-bull)';
-      animWickT.style.height = '0px';
-      statusText.innerText = 'PHASE 1: AGGRESSIVE BUYING';
-      statusText.style.color = 'var(--candle-bull)';
-    } else if (phase === 1) {
-      // Heavy Rejection
-      animBody.style.height = '40px';
-      animBody.style.top = '160px';
-      animBody.style.background = 'var(--candle-bull)';
-      animWickT.style.height = '110px';
-      animWickT.style.top = '50px';
-      statusText.innerText = 'PHASE 2: SELLERS ENTERING (REJECTION)';
-      statusText.style.color = 'var(--accent-gold)';
-    } else {
-      // Bearish Flip
-      animBody.style.height = '60px';
-      animBody.style.top = '160px';
-      animBody.style.background = 'var(--candle-bear)';
-      animWickT.style.height = '110px';
-      statusText.innerText = 'PHASE 3: BEARISH REVERSAL CONFIRMED';
-      statusText.style.color = 'var(--candle-bear)';
-    }
-  }, 2500);
+function updateAnimation() {
+  cycle = (cycle + 1) % 3;
+  
+  // Reset transitions for instant feel where needed
+  body.style.transition = 'all 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
+  wickTop.style.transition = 'all 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
+
+  if (cycle === 0) {
+    // Phase: Bullish Breakout
+    body.style.height = '180px';
+    body.style.top = '40px';
+    body.style.background = 'hsl(150, 80%, 45%)';
+    body.style.boxShadow = '0 0 40px hsla(150, 80%, 45%, 0.4)';
+    wickTop.style.height = '0px';
+    status.innerText = 'PHASE 1: AGGRESSIVE ACCUMULATION';
+    status.style.color = 'var(--c-bull)';
+  } 
+  else if (cycle === 1) {
+    // Phase: The Rejection (Pin Bar formation)
+    body.style.height = '30px';
+    body.style.top = '190px';
+    body.style.background = 'hsl(45, 100%, 50%)'; // Warning Gold
+    body.style.boxShadow = '0 0 20px hsla(45, 100%, 50%, 0.2)';
+    wickTop.style.height = '150px';
+    wickTop.style.top = '40px';
+    status.innerText = 'PHASE 2: SUPPLY SHOCK (REJECTION)';
+    status.style.color = 'var(--c-accent)';
+  } 
+  else {
+    // Phase: Bearish Confirmation
+    body.style.height = '50px';
+    body.style.top = '190px';
+    body.style.background = 'hsl(345, 80%, 55%)';
+    body.style.boxShadow = '0 0 40px hsla(345, 80%, 55%, 0.4)';
+    wickTop.style.height = '150px';
+    status.innerText = 'PHASE 3: BEARISH REGIME SHIFT';
+    status.style.color = 'var(--c-bear)';
+  }
 }
 
-runAnimation();
+// Initial Call
+updateAnimation();
+// Loop Every 3 seconds
+setInterval(updateAnimation, 3500);
 </script>
+
