@@ -48,9 +48,23 @@ When prompted:
 
 ---
 
-## Step 2: Designing the Data Model
+## Step 2: Create the SharePoint Data Source
 
-For our Cambodia Bank example, we need to handle USD, KHR, and EUR. Create a file `src/webparts/exchangeRates/models/IExchangeRate.ts`:
+Before writing code, we need a place to store the rates. Create a SharePoint List named **"Exchange Rates"** with the following columns:
+
+1.  **Title** (Renamed to "Currency Code", e.g., USD/KHR)
+2.  **Symbol** (Single line of text)
+3.  **BuyingRate** (Number)
+4.  **SellingRate** (Number)
+5.  **Trend** (Choice: "up" or "down")
+
+Add some sample data so we have something to fetch.
+
+---
+
+## Step 3: Designing the Data Model
+
+Create a file `src/webparts/exchangeRates/models/IExchangeRate.ts`. We will add a mapping logic to handle SharePoint's internal field names.
 
 ```typescript
 export interface IExchangeRate {
@@ -60,55 +74,109 @@ export interface IExchangeRate {
   selling: number;
   trend: 'up' | 'down';
 }
+
+// Interface for SharePoint REST API response
+export interface ISPListExchangeRate {
+  Title: string;
+  Symbol: string;
+  BuyingRate: number;
+  SellingRate: number;
+  Trend: 'up' | 'down';
+}
 ```
 
 ---
 
-## Step 3: Building the React Component
+## Step 4: Building the React Component
 
-Open `src/webparts/exchangeRates/components/ExchangeRates.tsx`. We will create a clean, premium table structure.
+First, update `src/webparts/exchangeRates/components/IExchangeRatesProps.ts` to pass the SharePoint context:
+
+```typescript
+import { SPHttpClient } from '@microsoft/sp-http';
+
+export interface IExchangeRatesProps {
+  description: string;
+  isDarkTheme: boolean;
+  environmentMessage: string;
+  hasTeamsContext: boolean;
+  userDisplayName: string;
+  spHttpClient: SPHttpClient; // Added
+  siteUrl: string;           // Added
+}
+```
+
+Now, open `src/webparts/exchangeRates/components/ExchangeRates.tsx`. We will use `useEffect` to fetch data from our list.
 
 ```tsx
 import * as React from 'react';
 import styles from './ExchangeRates.module.scss';
 import { IExchangeRatesProps } from './IExchangeRatesProps';
-import { IExchangeRate } from '../models/IExchangeRate';
+import { IExchangeRate, ISPListExchangeRate } from '../models/IExchangeRate';
+import { SPHttpClient, SPHttpClientResponse } from '@microsoft/sp-http';
 
 const ExchangeRates: React.FC<IExchangeRatesProps> = (props) => {
-  const [rates, setRates] = React.useState<IExchangeRate[]>([
-    { currency: 'USD/KHR', symbol: '$', buying: 4095, selling: 4110, trend: 'up' },
-    { currency: 'EUR/KHR', symbol: '€', buying: 4350, selling: 4380, trend: 'up' },
-    { currency: 'USD/THB', symbol: '฿', buying: 34.50, selling: 35.20, trend: 'down' },
-  ]);
+  const [rates, setRates] = React.useState<IExchangeRate[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
+  const fetchRatesFromSharePoint = async (): Promise<void> => {
+    try {
+      const url = `${props.siteUrl}/_api/web/lists/getbytitle('Exchange Rates')/items`;
+      const response: SPHttpClientResponse = await props.spHttpClient.get(url, SPHttpClient.configurations.v1);
+      const data = await response.json();
+      
+      const mappedRates: IExchangeRate[] = data.value.map((item: ISPListExchangeRate) => ({
+        currency: item.Title,
+        symbol: item.Symbol,
+        buying: item.BuyingRate,
+        selling: item.SellingRate,
+        trend: item.Trend
+      }));
+
+      setRates(mappedRates);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching exchange rates", error);
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchRatesFromSharePoint();
+  }, []);
 
   return (
     <section className={styles.exchangeRates}>
       <div className={styles.container}>
         <div className={styles.header}>
           <span className={styles.title}>DAILY EXCHANGE RATES</span>
-          <img src="/sites/Intranet/SiteAssets/bank-logo.png" alt="Bank Logo" className={styles.logo} />
+          <img src={`${props.siteUrl}/SiteAssets/bank-logo.png`} alt="Bank Logo" className={styles.logo} />
         </div>
         
-        <table className={styles.rateTable}>
-          <thead>
-            <tr>
-              <th>Currency</th>
-              <th>Buying</th>
-              <th>Selling</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rates.map((rate, index) => (
-              <tr key={index}>
-                <td className={styles.currencyName}>{rate.currency}</td>
-                <td>{rate.buying.toLocaleString()}</td>
-                <td className={rate.trend === 'up' ? styles.up : styles.down}>
-                  {rate.selling.toLocaleString()} {rate.trend === 'up' ? '↑' : '↓'}
-                </td>
+        {loading ? (
+          <div className={styles.loading}>Updating rates...</div>
+        ) : (
+          <table className={styles.rateTable}>
+            <thead>
+              <tr>
+                <th>Currency</th>
+                <th>Buying</th>
+                <th>Selling</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rates.map((rate, index) => (
+                <tr key={index}>
+                  <td className={styles.currencyName}>{rate.currency}</td>
+                  <td>{rate.buying.toLocaleString()}</td>
+                  <td className={rate.trend === 'up' ? styles.up : styles.down}>
+                    {rate.selling.toLocaleString()} {rate.trend === 'up' ? '↑' : '↓'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        
         <div className={styles.footer}>
           Last updated: {new Date().toLocaleDateString()}
         </div>
@@ -122,7 +190,7 @@ export default ExchangeRates;
 
 ---
 
-## Step 4: Adding Premium Styling
+## Step 5: Adding Premium Styling
 
 Banking apps must look trustworthy and professional. Edit `src/webparts/exchangeRates/components/ExchangeRates.module.scss`:
 
@@ -133,7 +201,14 @@ Banking apps must look trustworthy and professional. Edit `src/webparts/exchange
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border-top: 5px solid #002e5d; // Dark Blue Banking Theme
+    border-top: 5px solid #002e5d;
+  }
+
+  .loading {
+    padding: 40px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
   }
 
   .header {
@@ -141,6 +216,8 @@ Banking apps must look trustworthy and professional. Edit `src/webparts/exchange
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    
+    .logo { height: 30px; } // Adjust based on your logo
     
     .title {
       font-weight: 700;
