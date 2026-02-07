@@ -1,6 +1,5 @@
---- --- // IMPORTS
-//
-
+---
+---
 @import "variables";
 @import "reset";
 @import "highlights";
@@ -790,6 +789,7 @@ table {
   flex-grow: 1;
 
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -917,6 +917,7 @@ table {
 
   // Limit to 2 lines
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -2107,6 +2108,7 @@ table {
 [data-theme="dark"] .elite-mini-banner {
   background: linear-gradient(135deg, #000000 0%, #0f172a 100%);
 }
+
 /* ELITE INTELLIGENCE ROADMAP */
 .roadmap-container {
   position: relative;
@@ -2175,8 +2177,13 @@ table {
   border-radius: 999px;
   background: var(--text-muted);
 
-  &.active { background: #fbbf24; }
-  &.done { background: #22c55e; }
+  &.active {
+    background: #fbbf24;
+  }
+
+  &.done {
+    background: #22c55e;
+  }
 }
 
 .master-goal {
