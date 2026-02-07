@@ -1,0 +1,177 @@
+---
+layout: default
+title: Elite Intelligence
+permalink: /elite-intelligence/
+---
+
+<div class="elite-hero">
+    <div class="elite-hero-content">
+        <h1 class="elite-title">ELITE INTELLIGENCE</h1>
+        <p class="elite-subtitle">Human wisdom meets Machine capability. The pinnacle of cognitive evolution.</p>
+        <div class="elite-badges">
+            <span class="elite-badge">Research</span>
+            <span class="elite-badge">Strategy</span>
+            <span class="elite-badge">Innovation</span>
+        </div>
+    </div>
+</div>
+
+<div class="elite-grid">
+    <div class="elite-card">
+        <div class="elite-card-icon">🧠</div>
+        <h3>Cognitive Synthesis</h3>
+        <p>Merging deep domain expertise with advanced neural architectures.</p>
+    </div>
+    <div class="elite-card">
+        <div class="elite-card-icon">🛡️</div>
+        <h3>Ethical Governance</h3>
+        <p>Building intelligence systems with human values at the core.</p>
+    </div>
+    <div class="elite-card">
+        <div class="elite-card-icon">⚡</div>
+        <h3>Hyper-Performance</h3>
+        <p>Optimizing for strategic outcomes and extreme efficiency.</p>
+    </div>
+</div>
+
+<section class="elite-posts-section">
+    <h2 class="section-title">Latest Intelligence</h2>
+    <div class="posts-list">
+        {% for post in site.posts %}
+        {% assign title_parts = post.title | split: ']' %}
+        {% if title_parts.size > 1 %}
+        {% assign category = title_parts[0] | remove: '[' | strip | downcase %}
+        {% if category == 'elite intelligence' %}
+        {% assign clean_title = title_parts[1] | strip %}
+        <article class="post-item">
+            <div class="post-item-image">
+                {% if post.thumbnail %}
+                <img src="{{ site.baseurl }}{{ post.thumbnail }}" alt="{{ clean_title }}">
+                {% else %}
+                <img src="https://picsum.photos/seed/{{ post.date | date: '%s' }}/400/300" alt="{{ clean_title }}">
+                {% endif %}
+            </div>
+            <div class="post-item-content">
+                <div class="post-item-meta">
+                    <span class="post-item-category">Elite Intelligence</span>
+                    <time class="post-item-date">{{ post.date | date: "%B %d, %Y" }}</time>
+                </div>
+                <h2 class="post-item-title"><a href="{{ site.baseurl }}{{ post.url }}">{{ clean_title }}</a></h2>
+                <p class="post-item-excerpt">{{ post.excerpt | strip_html | truncate: 160 }}</p>
+                <a href="{{ site.baseurl }}{{ post.url }}" class="post-item-link">Access Protocol →</a>
+            </div>
+        </article>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+    </div>
+</section>
+
+<style>
+    .elite-hero {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: white;
+        padding: 80px 40px;
+        border-radius: 24px;
+        margin-bottom: 40px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .elite-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+        opacity: 0.1;
+    }
+
+    .elite-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        letter-spacing: -0.05em;
+        margin-bottom: 16px;
+        background: linear-gradient(to right, #fbbf24, #f59e0b);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .elite-subtitle {
+        font-size: 1.25rem;
+        color: #94a3b8;
+        max-width: 600px;
+        margin: 0 auto 32px;
+    }
+
+    .elite-badges {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .elite-badge {
+        background: rgba(251, 191, 36, 0.1);
+        color: #fbbf24;
+        padding: 6px 16px;
+        border-radius: 99px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .elite-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+        margin-bottom: 60px;
+    }
+
+    .elite-card {
+        background: var(--bg-card);
+        padding: 32px;
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+    .elite-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent);
+        box-shadow: var(--shadow-hover);
+    }
+
+    .elite-card-icon {
+        font-size: 2rem;
+        margin-bottom: 16px;
+    }
+
+    .elite-card h3 {
+        margin-bottom: 12px;
+    }
+
+    .elite-posts-section {
+        margin-top: 80px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 32px;
+        text-align: center;
+    }
+
+    [data-theme="dark"] .elite-hero {
+        background: linear-gradient(135deg, #000000 0%, #0f172a 100%);
+    }
+
+    @media (max-width: 768px) {
+        .elite-title {
+            font-size: 2.5rem;
+        }
+    }
+</style>
