@@ -1,4 +1,6 @@
---- --- @import "variables";
+---
+---
+@import "variables";
 @import "reset";
 @import "highlights";
 @import "svg-icons";
@@ -1989,11 +1991,10 @@ table {
     font-style: italic;
     line-height: 1.5;
     color: var(--text-primary);
-    line-clamp: 3;
+    display: -webkit-box;
     -webkit-box-orient: vertical;
-    background-clip: text;
-    -webkit-background-clip: text;
     -webkit-line-clamp: 3;
+    overflow: hidden;
 
     &::before {
       content: '\201C';
