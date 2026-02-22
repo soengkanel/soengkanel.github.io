@@ -1,6 +1,4 @@
----
----
-@import "variables";
+--- --- @import "variables";
 @import "reset";
 @import "highlights";
 @import "svg-icons";
@@ -1992,8 +1990,9 @@ table {
     line-height: 1.5;
     color: var(--text-primary);
     display: -webkit-box;
-    -webkit-box-orient: vertical;
+    line-clamp: 3;
     -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
     overflow: hidden;
 
     &::before {
@@ -2026,6 +2025,63 @@ table {
     &:hover {
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     }
+  }
+}
+
+/**************/
+/* AI SPECIAL */
+/**************/
+
+.agent-visual {
+  position: relative;
+  transition: all $transition-slow;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: scan 4s linear infinite;
+    z-index: 2;
+    box-shadow: 0 0 15px var(--accent);
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+    border-color: var(--accent) !important;
+  }
+
+  img {
+    filter: saturate(1.2) contrast(1.1);
+    transition: filter $transition-slow;
+  }
+
+  &:hover img {
+    filter: saturate(1.4) contrast(1.2);
+  }
+}
+
+@keyframes scan {
+  0% {
+    top: 0;
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    top: 100%;
+    opacity: 0;
   }
 }
 
