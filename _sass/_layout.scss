@@ -1,0 +1,206 @@
+/**************/
+/* SITE LAYOUT */
+/**************/
+
+:root {
+    --bg-primary: #{$white};
+    --bg-secondary: #{$gray-50};
+    --bg-tertiary: #{$gray-100};
+    --bg-card: #{$white};
+
+    --text-primary: #{$gray-900};
+    --text-secondary: #{$gray-600};
+    --text-tertiary: #{$gray-500};
+    --text-muted: #{$gray-400};
+
+    --border-color: #{$gray-200};
+    --border-light: #{$gray-100};
+
+    --accent: #{$primary};
+    --accent-hover: #{$primary-dark};
+    --accent-light: #{$primary-light};
+
+    --shadow-card: #{$shadow-md};
+    --shadow-hover: #{$shadow-lg};
+
+    --code-bg: #{$gray-100};
+    --code-text: #{$gray-800};
+
+    --selection-bg: #{$primary};
+    --selection-text: #{$white};
+}
+
+[data-theme="dark"] {
+    --bg-primary: #{$gray-900};
+    --bg-secondary: #{$gray-800};
+    --bg-tertiary: #{$gray-700};
+    --bg-card: #{$gray-800};
+
+    --text-primary: #{$gray-50};
+    --text-secondary: #{$gray-300};
+    --text-tertiary: #{$gray-400};
+    --text-muted: #{$gray-500};
+
+    --border-color: #{$gray-700};
+    --border-light: #{$gray-800};
+
+    --accent: #{$primary-light};
+    --accent-hover: #{$primary};
+    --accent-light: #{$primary-dark};
+
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+
+    --code-bg: #{$gray-800};
+    --code-text: #{$gray-200};
+
+    --selection-bg: #{$primary-light};
+    --selection-text: #{$gray-900};
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+
+    @include mobile {
+        font-size: 15px;
+    }
+}
+
+body {
+    background: var(--bg-primary);
+    font-family: $font-body;
+    font-size: $text-base;
+    line-height: 1.7;
+    color: var(--text-primary);
+    transition: background-color $transition-slow, color $transition-slow;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: $container-max;
+    margin: 0 auto;
+    padding: 0 $space-6;
+    width: 100%;
+
+    @include mobile {
+        padding: 0 $space-4;
+    }
+}
+
+/* Header & Nav */
+.site-header {
+    padding: $space-6 0;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-6;
+
+    @include mobile {
+        flex-direction: column;
+        gap: $space-4;
+    }
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+
+    a {
+        padding: $space-2 $space-4;
+        color: var(--text-secondary);
+        font-size: $text-sm;
+        font-weight: 500;
+        border-radius: $radius-md;
+
+        &:hover {
+            color: var(--accent);
+            background: var(--bg-secondary);
+        }
+
+        &.active {
+            color: var(--accent);
+            background: var(--bg-tertiary);
+        }
+    }
+}
+
+/* Sidebar */
+.two-col-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: $space-10;
+
+    @include tablet {
+        grid-template-columns: 1fr;
+        gap: $space-6;
+    }
+}
+
+.sidebar-sticky {
+    position: sticky;
+    top: calc($space-6 + 80px);
+}
+
+/* About Page */
+.about-content {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: $space-12;
+
+    @include tablet {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+}
+
+.about-avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: $radius-2xl;
+    object-fit: cover;
+
+    @include tablet {
+        margin: 0 auto;
+    }
+}
+
+/* Footer */
+.site-footer {
+    padding: $space-12 0;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    margin-top: $space-12;
+}
+
+.footer-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $space-6;
+}
+
+/* Utilities */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}
