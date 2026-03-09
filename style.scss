@@ -1,4 +1,7 @@
---- --- @import "variables";
+---
+# Front matter comment to prevent Prettier formatting issue
+---
+@import "variables";
 @import "reset";
 @import "layout";
 @import "post";
