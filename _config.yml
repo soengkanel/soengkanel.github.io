@@ -87,3 +87,4 @@ exclude:
   - LICENSE
   - README.md
   - CNAME
+  - "slide/node_modules"

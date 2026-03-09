@@ -5,3 +5,57 @@ To use retry middleware with Faraday v2.0+, install `faraday-retry` gem
        Destination: C:/Coding/soengkanel.github.io/_site
  Incremental build: disabled. Enable with --incremental
       Generating... 
+       Jekyll Feed: Generating feed for posts
+     Build Warning: Layout 'cover' requested in slide/node_modules/@slidev/theme-seriph/example.md does not exist.
+     Build Warning: Layout 'cover' requested in slide/node_modules/@slidev/theme-default/example.md does not exist.
+    Liquid Warning: Liquid syntax error (line 15): Expected end_of_string but found colon in "{{long: boolean}}" in slide/node_modules/@types/ms/README.md
+    Liquid Warning: Liquid syntax error (line 309): Unexpected character = in "{{ default: () => <div>A</div>, bar: () => <span>B</span>, }}" in slide/node_modules/@vue/babel-plugin-jsx/README.md
+    Liquid Warning: Liquid syntax error (line 170): [:dotdot, ".."] is not a valid expression in "{{ ... }}" in slide/node_modules/dompurify/README.md
+    Liquid Warning: Liquid syntax error (line 170): [:dotdot, ".."] is not a valid expression in "{{ ... }}" in slide/node_modules/monaco-editor/node_modules/dompurify/README.md
+  Liquid Exception: Liquid syntax error (line 25): Tag '{%= name %}' was not properly terminated with regexp: /\%\}/ in slide/node_modules/section-matter/README.md
+bundler: failed to load command: jekyll (C:/Ruby32-x64/bin/jekyll)
+C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/liquid-4.0.4/lib/liquid/block_body.rb:132:in `raise_missing_tag_terminator': Liquid syntax error (line 25): Tag '{%= name %}' was not properly terminated with regexp: /\%\}/ (Liquid::SyntaxError)
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/liquid-4.0.4/lib/liquid/block_body.rb:24:in `parse'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/liquid-4.0.4/lib/liquid/document.rb:10:in `parse'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/liquid-4.0.4/lib/liquid/document.rb:5:in `parse'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/liquid-4.0.4/lib/liquid/template.rb:130:in `parse'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/liquid-4.0.4/lib/liquid/template.rb:114:in `parse'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/liquid_renderer/file.rb:13:in `block in parse'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/liquid_renderer/file.rb:49:in `measure_time'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/liquid_renderer/file.rb:12:in `parse'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/renderer.rb:121:in `render_liquid'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/renderer.rb:79:in `render_document'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/renderer.rb:62:in `run'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/site.rb:479:in `render_regenerated'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/site.rb:472:in `block in render_pages'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/site.rb:471:in `each'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/site.rb:471:in `render_pages'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/site.rb:192:in `render'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/site.rb:71:in `process'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/command.rb:28:in `process_site'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/commands/build.rb:65:in `build'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/commands/build.rb:36:in `process'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/lib/jekyll/commands/build.rb:18:in `block (2 levels) in init_with_program'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/mercenary-0.3.6/lib/mercenary/command.rb:220:in `block in execute'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/mercenary-0.3.6/lib/mercenary/command.rb:220:in `each'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/mercenary-0.3.6/lib/mercenary/command.rb:220:in `execute'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/mercenary-0.3.6/lib/mercenary/program.rb:42:in `go'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/mercenary-0.3.6/lib/mercenary.rb:19:in `program'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/jekyll-3.10.0/exe/jekyll:15:in `<top (required)>'
+	from C:/Ruby32-x64/bin/jekyll:25:in `load'
+	from C:/Ruby32-x64/bin/jekyll:25:in `<top (required)>'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/lib/bundler/cli/exec.rb:61:in `load'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/lib/bundler/cli/exec.rb:61:in `kernel_load'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/lib/bundler/cli/exec.rb:24:in `run'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/lib/bundler/cli.rb:500:in `exec'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/lib/bundler/vendor/thor/lib/thor/command.rb:28:in `run'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/lib/bundler/vendor/thor/lib/thor/invocation.rb:127:in `invoke_command'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/lib/bundler/vendor/thor/lib/thor.rb:538:in `dispatch'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/lib/bundler/cli.rb:35:in `dispatch'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/lib/bundler/vendor/thor/lib/thor/base.rb:584:in `start'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/lib/bundler/cli.rb:29:in `start'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/exe/bundle:28:in `block in <top (required)>'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/lib/bundler/friendly_errors.rb:118:in `with_friendly_errors'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/bundler-4.0.1/exe/bundle:20:in `<top (required)>'
+	from C:/Ruby32-x64/bin/bundle:32:in `load'
+	from C:/Ruby32-x64/bin/bundle:32:in `<main>'
