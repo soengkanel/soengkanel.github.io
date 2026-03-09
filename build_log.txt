@@ -1,2 +1,7 @@
 Configuration file: C:/Coding/soengkanel.github.io/_config.yml
 To use retry middleware with Faraday v2.0+, install `faraday-retry` gem
+   GitHub Metadata: site.name is set in _config.yml, but many plugins and themes expect site.title to be used instead. To avoid potential inconsistency, Jekyll GitHub Metadata will not set site.title to the repository's name.
+            Source: C:/Coding/soengkanel.github.io
+       Destination: C:/Coding/soengkanel.github.io/_site
+ Incremental build: disabled. Enable with --incremental
+      Generating... 
