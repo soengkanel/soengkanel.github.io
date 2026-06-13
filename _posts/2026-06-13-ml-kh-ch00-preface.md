@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[ML Khmer] ជំពូក 0: បុព្វកថា"
+title: "[ML Khmer] ជំពួក 0: បុព្វកថា"
 date: 2026-06-13 09:00:00 +0700
 categories: machine-learning
 tags: [ml-khmer, preface]
