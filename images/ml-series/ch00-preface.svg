@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg00" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bg00)"/>
+
+  <!-- Three nested rounded rectangles: AI > ML > DL -->
+  <rect x="120" y="60" width="360" height="280" rx="20" fill="#dbeafe" stroke="#1e40af" stroke-width="2"/>
+  <rect x="180" y="115" width="240" height="170" rx="16" fill="#93c5fd" stroke="#1e40af" stroke-width="2"/>
+  <rect x="230" y="160" width="140" height="80" rx="12" fill="#1e40af" stroke="#1e3a8a" stroke-width="2"/>
+
+  <!-- Labels -->
+  <text x="140" y="92" font-size="20" font-weight="700" fill="#1e3a8a">AI</text>
+  <text x="200" y="143" font-size="18" font-weight="700" fill="#1e3a8a">ML</text>
+  <text x="280" y="206" font-size="22" font-weight="800" fill="#ffffff">DL</text>
+
+  <!-- Chapter badge -->
+  <rect x="20" y="20" width="120" height="32" rx="16" fill="#1e40af"/>
+  <text x="80" y="42" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">ជំពូក 0</text>
+
+  <!-- Khmer subtitle -->
+  <text x="300" y="370" font-size="20" font-weight="600" fill="#1f2937" text-anchor="middle">បុព្វកថា · Preface</text>
+</svg>

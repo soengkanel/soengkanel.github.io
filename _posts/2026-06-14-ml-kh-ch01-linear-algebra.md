@@ -4,6 +4,7 @@ title: "[ML Khmer] ជំពូក 1: ពិជគណិតលីនេអ៊ែ
 date: 2026-06-14 09:00:00 +0700
 categories: machine-learning
 tags: [ml-khmer, math, linear-algebra]
+thumbnail: /images/ml-series/ch01-linear-algebra.svg
 ---
 
 មេរៀននេះស្វែងយល់អំពី **វ៉ិចទ័រ** (vector) និង **ម៉ាទ្រីស** (matrix) — ឧបករណ៍គណិតវិទ្យាដ៏សំខាន់បំផុតនៅពីក្រោយគ្រប់គំរូ ML។ យើងនឹងប្រើទិន្នន័យកសិករស្រូវនៅខេត្តបាត់ដំបង ដើម្បីយល់ពីគំនិតទាំងនេះឱ្យកាន់តែច្បាស់។

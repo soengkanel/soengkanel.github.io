@@ -4,6 +4,7 @@ title: "[ML Khmer] ជំពូក 2: កាល់គុលម៉ាទ្រី
 date: 2026-06-15 09:00:00 +0700
 categories: machine-learning
 tags: [ml-khmer, math, calculus, interactive]
+thumbnail: /images/ml-series/ch02-matrix-calculus.svg
 ---
 
 មេរៀននេះស្វែងយល់​អំពី **កាល់គុលម៉ាទ្រីស** (matrix calculus) — និស្សន្ទ និងក្រាដ្យង់សម្រាប់​អនុគមន៍​ដែលទទួលយក​វ៉ិចទ័រ និងម៉ាទ្រីសជាធាតុចូល។ នេះជា​ស្នូល​នៃ​ការ training គំរូ ML។ មេរៀននេះមាន **រូបភាព interactive ៣** ដើម្បីឱ្យអ្នកចូលរួមលេងផ្ទាល់នឹង​គំនិត។

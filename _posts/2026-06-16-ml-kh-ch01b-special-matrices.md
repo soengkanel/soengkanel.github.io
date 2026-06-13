@@ -4,6 +4,7 @@ title: "[ML Khmer] ជំពូក 1b: ម៉ាទ្រីសពិសេស, 
 date: 2026-06-16 09:00:00 +0700
 categories: machine-learning
 tags: [ml-khmer, math, linear-algebra]
+thumbnail: /images/ml-series/ch01b-special-matrices.svg
 ---
 
 មេរៀននេះបន្តពី​ពិជគណិត​លីនេអ៊ែរ​មូលដ្ឋាន។ យើង​ស្វែងយល់​អំពី **ម៉ាទ្រីស​ពិសេស** (special matrices), **ការច្រាស​ម៉ាទ្រីស** (matrix inverse), និង **ឌីទែរមីណង់** (determinant) — បី​ប្រធានបទ​ដែល​លេច​ឡើង​គ្រប់​ទីកន្លែង​ក្នុង ML។ យើង​នឹង​អនុវត្ត​វា​ដើម្បី​ព្យាករ​តម្លៃ​អាផាតមិន​នៅ BKK1 ភ្នំពេញ។

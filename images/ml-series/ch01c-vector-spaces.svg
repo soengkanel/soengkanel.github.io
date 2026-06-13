@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg1c" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#ddd6fe"/>
+    </linearGradient>
+    <marker id="arrow1c-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1e40af"/>
+    </marker>
+    <marker id="arrow1c-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#059669"/>
+    </marker>
+    <marker id="arrow1c-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect width="600" height="400" fill="url(#bg1c)"/>
+
+  <!-- Parallelogram showing span(v1, v2) -->
+  <polygon points="200,300 380,180 470,260 290,380" fill="#7c3aed" fill-opacity="0.12" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+  <!-- Axes -->
+  <line x1="80" y1="300" x2="540" y2="300" stroke="#9ca3af" stroke-width="1.2"/>
+  <line x1="200" y1="60" x2="200" y2="380" stroke="#9ca3af" stroke-width="1.2"/>
+
+  <!-- Vector v1 (independent) -->
+  <line x1="200" y1="300" x2="380" y2="180" stroke="#1e40af" stroke-width="4" marker-end="url(#arrow1c-blue)"/>
+  <text x="330" y="220" font-size="22" font-weight="800" fill="#1e40af">v₁</text>
+
+  <!-- Vector v2 (independent) -->
+  <line x1="200" y1="300" x2="290" y2="380" stroke="#059669" stroke-width="4" marker-end="url(#arrow1c-green)"/>
+  <text x="250" y="370" font-size="22" font-weight="800" fill="#059669">v₂</text>
+
+  <!-- Vector v3 = v1 + v2 (dependent) -->
+  <line x1="200" y1="300" x2="470" y2="260" stroke="#dc2626" stroke-width="3" stroke-dasharray="8,4" marker-end="url(#arrow1c-red)"/>
+  <text x="475" y="248" font-size="18" font-weight="700" fill="#dc2626">v₃ = v₁ + v₂</text>
+
+  <!-- Span label -->
+  <text x="330" y="330" font-size="15" font-weight="700" fill="#7c3aed" text-anchor="middle" font-style="italic">span(v₁, v₂)</text>
+
+  <!-- Chapter badge -->
+  <rect x="20" y="20" width="130" height="32" rx="16" fill="#1e40af"/>
+  <text x="85" y="42" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">ជំពូក 1c</text>
+
+  <!-- Subtitle -->
+  <text x="300" y="80" font-size="15" font-weight="600" fill="#1e3a8a" text-anchor="middle">v₃ មិនឯករាជ្យ → rank = 2 (មិនមែន 3)</text>
+
+  <!-- Title -->
+  <text x="300" y="370" font-size="15" font-weight="600" fill="#1f2937" text-anchor="middle" opacity="0">_</text>
+</svg>
