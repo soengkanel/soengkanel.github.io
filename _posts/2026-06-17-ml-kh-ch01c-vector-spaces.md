@@ -4,6 +4,7 @@ title: "[ML Khmer] ជំពូក 1c: លំហវ៉ិចទ័រ — ឯក
 date: 2026-06-17 09:00:00 +0700
 categories: machine-learning
 tags: [ml-khmer, math, linear-algebra]
+thumbnail: /images/ml-series/ch01c-vector-spaces.svg
 ---
 
 មេរៀននេះស្វែងយល់​អំពី​រចនាសម្ព័ន្ធ​ខាងក្នុង​នៃ​លំហ​វ៉ិចទ័រ៖ **លីនេអ៊ែរ​ឯករាជ្យ** (linear independence), **លំហ​សាង** (span), **មូលដ្ឋាន** (basis), **rank**, **null space**, និង **orthogonality**។ យើង​នឹង​ប្រើ​បញ្ហា​ "​លក្ខណៈ​ស្ទួន" ក្នុង​ទិន្នន័យ​មីក្រូហិរញ្ញវត្ថុ​នៅ​កម្ពុជា​ដើម្បី​យល់​ពី​គំនិត​ទាំងនេះ​ឱ្យ​កាន់​តែ​ច្បាស់។
