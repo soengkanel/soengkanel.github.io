@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg02b" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#fef3c7"/>
+    </linearGradient>
+    <marker id="arrow02b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0f766e"/>
+    </marker>
+  </defs>
+  <rect width="600" height="400" fill="url(#bg02b)"/>
+
+  <!-- Title and chapter badge -->
+  <rect x="20" y="20" width="130" height="32" rx="16" fill="#0f766e"/>
+  <text x="85" y="42" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">ជំពូក 2b</text>
+
+  <!-- Chain of functions visual: x -> g(x) -> f(g(x)) -->
+  <!-- Node 1: x -->
+  <circle cx="100" cy="170" r="34" fill="#ffffff" stroke="#1e40af" stroke-width="3"/>
+  <text x="100" y="178" font-size="22" font-weight="800" fill="#1e40af" text-anchor="middle">x</text>
+
+  <!-- Arrow 1 -->
+  <line x1="138" y1="170" x2="222" y2="170" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow02b)"/>
+  <text x="180" y="158" font-size="16" font-weight="700" fill="#0f766e" text-anchor="middle">g</text>
+  <text x="180" y="192" font-size="13" font-weight="600" fill="#0f766e" text-anchor="middle">g'(x)</text>
+
+  <!-- Node 2: u = g(x) -->
+  <circle cx="260" cy="170" r="40" fill="#ffffff" stroke="#7c3aed" stroke-width="3"/>
+  <text x="260" y="178" font-size="20" font-weight="800" fill="#7c3aed" text-anchor="middle">u</text>
+
+  <!-- Arrow 2 -->
+  <line x1="302" y1="170" x2="386" y2="170" stroke="#0f766e" stroke-width="4" marker-end="url(#arrow02b)"/>
+  <text x="344" y="158" font-size="16" font-weight="700" fill="#0f766e" text-anchor="middle">f</text>
+  <text x="344" y="192" font-size="13" font-weight="600" fill="#0f766e" text-anchor="middle">f'(u)</text>
+
+  <!-- Node 3: y = f(u) -->
+  <circle cx="426" cy="170" r="34" fill="#ffffff" stroke="#dc2626" stroke-width="3"/>
+  <text x="426" y="178" font-size="22" font-weight="800" fill="#dc2626" text-anchor="middle">y</text>
+
+  <!-- Chain rule formula box -->
+  <rect x="100" y="260" width="400" height="70" rx="12" fill="#ffffff" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="300" y="298" font-size="22" font-weight="800" fill="#0f172a" text-anchor="middle">
+    dy/dx = f'(u) · g'(x)
+  </text>
+  <text x="300" y="320" font-size="13" font-weight="500" fill="#475569" text-anchor="middle">
+    Chain rule = ផល​គុណ​នៃ​និស្សន្ទ​នីមួយៗ​លើ​ខ្សែ​សង្វាក់
+  </text>
+
+  <!-- Decorative gradient indicator at top right -->
+  <text x="540" y="50" font-size="32" font-weight="800" fill="#0f766e" text-anchor="middle">∂</text>
+  <text x="560" y="58" font-size="14" font-weight="700" fill="#0f766e" text-anchor="middle">∂x</text>
+
+  <!-- Footer title -->
+  <text x="300" y="370" font-size="16" font-weight="600" fill="#1f2937" text-anchor="middle">ច្បាប់​ខ្សែ​សង្វាក់ · ហេស្យ៉ាន់ · gradient checking</text>
+</svg>
