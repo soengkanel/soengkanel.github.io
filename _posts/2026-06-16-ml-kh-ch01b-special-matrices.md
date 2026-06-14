@@ -257,13 +257,13 @@ $$
 **លទ្ធផល៖**
 
 $$
-\text{price} = 40 + 3 \cdot \text{sqm} \quad (\text{ពាន់ USD})
+\text{price} = 40 + 3 \cdot \text{sqm} \quad (\text{k USD})
 $$
 
 **ការ​ព្យាករ​សម្រាប់​អាផាតមិន​ថ្មី​ទំហំ 60 sqm៖**
 
 $$
-\text{price} = 40 + 3(60) = 220 \text{ ពាន់ USD} \approx \$220{,}000
+\text{price} = 40 + 3(60) = 220 \text{ k USD} \approx \$220{,}000
 $$
 
 នេះ​ជា **closed-form solution** នៃ linear regression — បាន​មក​ដោយ​ការ​ច្រាស​ម៉ាទ្រីស​ដោយ​ផ្ទាល់។
