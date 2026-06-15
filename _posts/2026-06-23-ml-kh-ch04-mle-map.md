@@ -593,16 +593,169 @@ print('MAP w (lambda=10) :', Ridge(alpha=10).fit(X, y).coef_)   # shrunk
 
 # លំហាត់
 
-1. **Bernoulli MLE**: អ្នក​បោះ​កាក់ 20 ​ដង — បាន​ខ្នង 13 ដង។ គណនា $\hat p_{\text{MLE}}$ សម្រាប់​ប្រូបាប៊ីលីតេ​នៃ "ខ្នង" (ខ្នង = 1)។
-2. **MAP**: ​ដោយ​ប្រើ​​ទិន្នន័យ​ដូច​គ្នា​នឹង​លំហាត់ 1, គណនា $\hat p_{\text{MAP}}$ ជាមួយ Beta(3, 3) prior និង Beta(5, 1) prior។ ​ប្រៀប​ធៀប​លទ្ធផល​ទាំង​បី (MLE, MAP ជាមួយ​ prior ស្មើ​គ្នា, MAP ​ជាមួយ prior លំអៀង​ទៅ​មុខ)។
-3. **Gaussian MLE​ ដោយ​ដៃ**: កម្ពស់​សិស្ស 4 នាក់ = 165, 170, 168, 172 cm។ គណនា $\hat\mu_{\text{MLE}}$ និង $\hat\sigma^2_{\text{MLE}}$។ ​បន្ទាប់​មក​គណនា​ sample variance unbiased (បែង​ដោយ $n-1$)។ ​តើ​លទ្ធផល​ខុស​គ្នា​យ៉ាង​ម៉េច​ដែរ?
-4. **(ប្រឹង​ប្រែង)** ​ភ័ស្តុតាង​មើល​ការ​ភ្ជាប់ Ridge ↔ Gaussian MAP៖ ​ឧបមា $y_i = w^\top x_i + \varepsilon_i$ ដែល $\varepsilon \sim \mathcal{N}(0, \sigma^2)$ និង $w \sim \mathcal{N}(0, \tau^2 I)$។ បង្ហាញ​ថា $\hat w_{\text{MAP}} = \arg\min_w \sum_i (y_i - w^\top x_i)^2 + \lambda \|w\|^2$ ​ដោយ $\lambda = \sigma^2/\tau^2$។
+### លំហាត់ 1 — Bernoulli MLE
 
-> **ចម្លើយ៖**
-> (1) $\hat p_{\text{MLE}} = 13/20 = 0.65$
-> (2) MAP Beta(3,3): $(13+2)/(20+4) = 15/24 = 0.625$ — ​ស្ទើរ​តែ​ដូច MLE ដោយ prior បាន​​​សន្មត​​ជ្រើស​ស្មើ​គ្នា។ MAP Beta(5,1): $(13+4)/(20+4) = 17/24 \approx 0.708$ — ​prior លំអៀង​ទៅ "ខ្នង​ច្រើន" ​ទាញ MAP ​ឡើង​ខ្ពស់
-> (3) $\hat\mu = (165+170+168+172)/4 = 168.75$; $\hat\sigma^2_{\text{MLE}} = ((-3.75)^2 + 1.25^2 + (-0.75)^2 + 3.25^2)/4 = (14.0625+1.5625+0.5625+10.5625)/4 = 6.6875$ → $\sigma_{\text{MLE}} \approx 2.59$ cm។ Unbiased: ​បែង​ដោយ 3 ​វិញ ​ផ្ដល់ $6.6875 \times 4 / 3 \approx 8.917$ → $\sigma \approx 2.99$ cm — ធំ​ជាង​បន្តិច (MLE ​មាន​លំអៀង​ទាប)
-> (4) Log-posterior: $\log P(D \mid w) + \log P(w) = -\frac{1}{2\sigma^2}\sum (y_i - w^\top x_i)^2 - \frac{1}{2\tau^2}\|w\|^2 + \text{const}$។ ​គុណ​ដោយ $-2\sigma^2$ ​ប្តូរ argmax → argmin: $\sum (y_i - w^\top x_i)^2 + \frac{\sigma^2}{\tau^2}\|w\|^2$ — នេះ​គឺ Ridge ​ដោយ $\lambda = \sigma^2/\tau^2$ ∎
+អ្នក​បោះ​កាក់ 20 ​ដង — បាន​ខ្នង 13 ដង។ គណនា $\hat p_{\text{MLE}}$ សម្រាប់​ប្រូបាប៊ីលីតេ​នៃ "ខ្នង" (ខ្នង = 1)។
+
+<details>
+<summary><strong>បង្ហាញ​ចម្លើយ</strong></summary>
+
+ប្រើ​រូបមន្ត Bernoulli MLE ដោយ​ផ្ទាល់៖
+
+$$
+\hat p_{\text{MLE}} = \frac{k}{n} = \frac{13}{20} = \boxed{0.65}
+$$
+
+**សេចក្តី​សន្និដ្ឋាន៖** ភាគ​រយ​ដែល​ឃើញ​ក្នុង​ទិន្នន័យ​គឺ​ជា MLE ដោយ​ផ្ទាល់។
+
+</details>
+
+### លំហាត់ 2 — MAP ​ជាមួយ Beta prior
+
+​ដោយ​ប្រើ​ទិន្នន័យ​ដូច​គ្នា​នឹង​លំហាត់ 1 ($n=20, k=13$), គណនា $\hat p_{\text{MAP}}$ ​ជាមួយ៖
+
+- (a) Beta(3, 3) prior — ​ផ្ដោត​លើ 0.5 ​ខ្សោយ
+- (b) Beta(5, 1) prior — លំអៀង​ទៅ​ "ខ្នង​ច្រើន"
+
+ប្រៀប​ធៀប​លទ្ធផល​ទាំង​បី (MLE, MAP (a), MAP (b))។
+
+<details>
+<summary><strong>បង្ហាញ​ចម្លើយ</strong></summary>
+
+រូបមន្ត MAP សម្រាប់ Beta-Bernoulli៖
+
+$$
+\hat p_{\text{MAP}} = \frac{k + \alpha - 1}{n + \alpha + \beta - 2}
+$$
+
+**(a) Beta(3, 3):**
+
+$$
+\hat p_{\text{MAP}}^{(a)} = \frac{13 + 2}{20 + 4} = \frac{15}{24} = 0.625
+$$
+
+**(b) Beta(5, 1):**
+
+$$
+\hat p_{\text{MAP}}^{(b)} = \frac{13 + 4}{20 + 4} = \frac{17}{24} \approx 0.708
+$$
+
+**ប្រៀប​ធៀប៖**
+
+| Estimator | តម្លៃ | សេចក្តី​អត្ថាធិប្បាយ |
+|---|:-:|---|
+| MLE | 0.650 | ​មើល​តែ​ទិន្នន័យ |
+| MAP, Beta(3, 3) | 0.625 | prior ​ស្មើ → ​ទាញ​​ចុះ​ទៅ 0.5 ​បន្តិច |
+| MAP, Beta(5, 1) | 0.708 | prior លំអៀង​ទៅ​ខ្នង → ទាញ​​ឡើង​ខាង​លើ MLE |
+
+**សេចក្តី​សន្និដ្ឋាន៖** ​ការ​ជ្រើស prior ​ផ្លាស់​ប្ដូរ​ MAP — ​នេះ​ជា​មូលហេតុ​ដែល​ Bayesian estimation ត្រូវ​ការ​ការ​សម្រេច​ចិត្ត​ស្ថាបនិក​ច្បាស់​លាស់។
+
+</details>
+
+### លំហាត់ 3 — Gaussian MLE ដោយ​ដៃ
+
+កម្ពស់​សិស្ស 4 នាក់៖ 165, 170, 168, 172 cm។
+
+(a) គណនា $\hat\mu_{\text{MLE}}$ និង $\hat\sigma^2_{\text{MLE}}$<br>
+(b) ​គណនា​ unbiased sample variance (បែង​ដោយ $n-1$)<br>
+(c) ​តើ​លទ្ធផល​ខុស​គ្នា​យ៉ាង​ម៉េច?
+
+<details>
+<summary><strong>បង្ហាញ​ចម្លើយ</strong></summary>
+
+**(a) Sample mean:**
+
+$$
+\hat\mu_{\text{MLE}} = \frac{165 + 170 + 168 + 172}{4} = \frac{675}{4} = 168.75 \text{ cm}
+$$
+
+**Deviations ​ពី mean:**
+
+| $x_i$ | $x_i - \hat\mu$ | $(x_i - \hat\mu)^2$ |
+|:-:|:-:|:-:|
+| 165 | −3.75 | 14.0625 |
+| 170 | 1.25 | 1.5625 |
+| 168 | −0.75 | 0.5625 |
+| 172 | 3.25 | 10.5625 |
+| **sum** |  | **26.75** |
+
+**MLE variance** (បែង​ដោយ $n = 4$):
+
+$$
+\hat\sigma^2_{\text{MLE}} = \frac{26.75}{4} = 6.6875 \quad \Rightarrow \quad \hat\sigma_{\text{MLE}} \approx 2.59 \text{ cm}
+$$
+
+**(b) Unbiased variance** (បែង​ដោយ $n-1 = 3$):
+
+$$
+s^2 = \frac{26.75}{3} \approx 8.917 \quad \Rightarrow \quad s \approx 2.99 \text{ cm}
+$$
+
+**(c) ការ​ប្រៀប​ធៀប៖**
+
+| Estimator | $\sigma^2$ | $\sigma$ (cm) |
+|---|:-:|:-:|
+| MLE (បែង​ $n$) | 6.69 | 2.59 |
+| Unbiased (បែង $n-1$) | 8.92 | 2.99 |
+
+**សេចក្តី​សន្និដ្ឋាន៖** MLE variance **biased ទាប** (ប៉ាន់​ប្រមាណ​ខាង​ក្រោម​តម្លៃ​ពិត​ជា​មធ្យម)។ Unbiased estimator ​កែ​លំអៀង​នេះ​ដោយ​បែង​ដោយ $n-1$។ ​ពេល $n$ ធំ — ​ភាព​ខុស​គ្នា​បាត់​ទៅ​ៗ។
+
+</details>
+
+### លំហាត់ 4 — (ប្រឹង​ប្រែង) ភ័ស្តុតាង Ridge ↔ Gaussian MAP
+
+ឧបមា៖
+
+$$
+y_i = w^\top x_i + \varepsilon_i, \quad \varepsilon_i \sim \mathcal{N}(0, \sigma^2), \quad w \sim \mathcal{N}(0, \tau^2 I)
+$$
+
+បង្ហាញ​ថា៖
+
+$$
+\hat w_{\text{MAP}} = \arg\min_w \sum_i (y_i - w^\top x_i)^2 + \lambda \|w\|^2, \quad \lambda = \frac{\sigma^2}{\tau^2}
+$$
+
+<details>
+<summary><strong>បង្ហាញ​ចម្លើយ</strong></summary>
+
+**ជំហាន 1 — សរសេរ log-likelihood:**
+
+$$
+\log P(D \mid w) = -\frac{1}{2\sigma^2} \sum_i (y_i - w^\top x_i)^2 + C_1
+$$
+
+**ជំហាន 2 — ​សរសេរ log-prior:**
+
+$$
+\log P(w) = -\frac{1}{2\tau^2} \|w\|^2 + C_2
+$$
+
+**ជំហាន 3 — ផ្គុំ​ MAP objective:**
+
+$$
+\hat w_{\text{MAP}} = \arg\max_w \Big[\log P(D \mid w) + \log P(w)\Big]
+$$
+
+$$
+= \arg\max_w \left[-\frac{1}{2\sigma^2} \sum_i (y_i - w^\top x_i)^2 - \frac{1}{2\tau^2} \|w\|^2\right]
+$$
+
+**ជំហាន 4 — ​គុណ​ដោយ $-2\sigma^2$** (​ប្តូរ argmax ​ទៅ argmin)៖
+
+$$
+\hat w_{\text{MAP}} = \arg\min_w \left[\sum_i (y_i - w^\top x_i)^2 + \frac{\sigma^2}{\tau^2} \|w\|^2\right]
+$$
+
+​ដែល $\lambda = \sigma^2 / \tau^2$ ​ដូច​ស្នើ​ឱ្យ​បង្ហាញ។ $\blacksquare$
+
+**សេចក្តី​សន្និដ្ឋាន​ខាង​ឧស្សាហកម្ម៖**
+
+- $\tau$ ​ធំ → prior ​ខ្សោយ → $\lambda$ ​តូច → ​ស្ទើរ​តែ​ដូច MLE (linear regression)
+- $\tau$ ​តូច → prior ​ខ្លាំង → $\lambda$ ​ធំ → weights ​រួម​មក​ 0 ច្រើន (Ridge ​ច្បាស់)
+- ​ការ​ជ្រើស $\lambda$ ​ក្នុង Ridge ​មាន​ន័យ​ជា​ការ​ជ្រើស​ការ​ជឿ​ជាក់​មុន​លើ​ size នៃ weights
+
+</details>
 
 ---
 
