@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg07" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eff6ff"/>
+      <stop offset="100%" stop-color="#ecfccb"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bg07)"/>
+
+  <!-- Chapter badge -->
+  <rect x="20" y="20" width="120" height="32" rx="16" fill="#1e40af"/>
+  <text x="80" y="42" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">ជំពូក 7</text>
+
+  <!-- Axes -->
+  <line x1="70" y1="320" x2="540" y2="320" stroke="#475569" stroke-width="1.5"/>
+  <line x1="70" y1="80" x2="70" y2="320" stroke="#475569" stroke-width="1.5"/>
+
+  <!-- Data points (scatter approximating y = 0.5x + 1 with noise) -->
+  <g fill="#1e40af">
+    <circle cx="95"  cy="305" r="6"/>
+    <circle cx="130" cy="290" r="6"/>
+    <circle cx="165" cy="265" r="6"/>
+    <circle cx="200" cy="270" r="6"/>
+    <circle cx="235" cy="240" r="6"/>
+    <circle cx="270" cy="225" r="6"/>
+    <circle cx="305" cy="215" r="6"/>
+    <circle cx="340" cy="195" r="6"/>
+    <circle cx="375" cy="175" r="6"/>
+    <circle cx="410" cy="160" r="6"/>
+    <circle cx="445" cy="140" r="6"/>
+    <circle cx="480" cy="130" r="6"/>
+    <circle cx="515" cy="105" r="6"/>
+  </g>
+
+  <!-- Residual lines (vertical from points to fitted line) -->
+  <g stroke="#dc2626" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.55">
+    <line x1="95"  y1="305" x2="95"  y2="300"/>
+    <line x1="130" y1="290" x2="130" y2="285"/>
+    <line x1="165" y1="265" x2="165" y2="270"/>
+    <line x1="200" y1="270" x2="200" y2="255"/>
+    <line x1="235" y1="240" x2="235" y2="240"/>
+    <line x1="270" y1="225" x2="270" y2="225"/>
+    <line x1="305" y1="215" x2="305" y2="210"/>
+    <line x1="340" y1="195" x2="340" y2="195"/>
+    <line x1="375" y1="175" x2="375" y2="180"/>
+    <line x1="410" y1="160" x2="410" y2="165"/>
+    <line x1="445" y1="140" x2="445" y2="150"/>
+    <line x1="480" y1="130" x2="480" y2="135"/>
+    <line x1="515" y1="105" x2="515" y2="120"/>
+  </g>
+
+  <!-- Fitted line y = wx + b -->
+  <line x1="75" y1="305" x2="535" y2="100" stroke="#dc2626" stroke-width="3.5"/>
+
+  <!-- Axis labels -->
+  <text x="305" y="345" font-size="14" font-weight="700" fill="#475569" text-anchor="middle">x (feature)</text>
+  <text x="45" y="200" font-size="14" font-weight="700" fill="#475569" transform="rotate(-90 45 200)" text-anchor="middle">y (target)</text>
+
+  <!-- Equation -->
+  <rect x="370" y="245" width="170" height="60" rx="10" fill="#ffffff" stroke="#1e40af" stroke-width="2"/>
+  <text x="455" y="270" font-size="20" font-weight="800" fill="#1e40af" text-anchor="middle">ŷ = w·x + b</text>
+  <text x="455" y="294" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">minimize Σ(y - ŷ)²</text>
+
+  <!-- Footer title -->
+  <text x="300" y="380" font-size="14" font-weight="700" fill="#1f2937" text-anchor="middle">Linear Regression · MSE · normal equation · gradient descent</text>
+</svg>
