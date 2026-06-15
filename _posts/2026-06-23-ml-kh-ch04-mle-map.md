@@ -597,7 +597,7 @@ print('MAP w (lambda=10) :', Ridge(alpha=10).fit(X, y).coef_)   # shrunk
 
 អ្នក​បោះ​កាក់ 20 ​ដង — បាន​ខ្នង 13 ដង។ គណនា $\hat p_{\text{MLE}}$ សម្រាប់​ប្រូបាប៊ីលីតេ​នៃ "ខ្នង" (ខ្នង = 1)។
 
-<details>
+<details markdown="1">
 <summary><strong>បង្ហាញ​ចម្លើយ</strong></summary>
 
 ប្រើ​រូបមន្ត Bernoulli MLE ដោយ​ផ្ទាល់៖
@@ -619,7 +619,7 @@ $$
 
 ប្រៀប​ធៀប​លទ្ធផល​ទាំង​បី (MLE, MAP (a), MAP (b))។
 
-<details>
+<details markdown="1">
 <summary><strong>បង្ហាញ​ចម្លើយ</strong></summary>
 
 រូបមន្ត MAP សម្រាប់ Beta-Bernoulli៖
@@ -660,7 +660,7 @@ $$
 (b) ​គណនា​ unbiased sample variance (បែង​ដោយ $n-1$)<br>
 (c) ​តើ​លទ្ធផល​ខុស​គ្នា​យ៉ាង​ម៉េច?
 
-<details>
+<details markdown="1">
 <summary><strong>បង្ហាញ​ចម្លើយ</strong></summary>
 
 **(a) Sample mean:**
@@ -716,7 +716,7 @@ $$
 \hat w_{\text{MAP}} = \arg\min_w \sum_i (y_i - w^\top x_i)^2 + \lambda \|w\|^2, \quad \lambda = \frac{\sigma^2}{\tau^2}
 $$
 
-<details>
+<details markdown="1">
 <summary><strong>បង្ហាញ​ចម្លើយ</strong></summary>
 
 **ជំហាន 1 — សរសេរ log-likelihood:**
