@@ -1,6 +1,10 @@
 ---
 # Front matter comment to prevent Prettier formatting issue
 ---
+
+// IMPORTS
+//
+
 @import "variables";
 @import "reset";
 @import "highlights";
@@ -1118,6 +1122,103 @@ table {
     @include tablet {
       text-align: center;
     }
+  }
+}
+
+/**************/
+/* TIMELINE */
+/**************/
+
+.timeline {
+  list-style: none;
+  padding: 0;
+  margin: $space-8 0;
+
+  li {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: $space-5;
+    padding-bottom: $space-6;
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+
+    // Dot
+    &::before {
+      content: '';
+      position: absolute;
+      left: 64px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px var(--bg-primary), 0 0 0 5px var(--accent-light);
+      z-index: 2;
+    }
+
+    // Connecting line (skip last)
+    &:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 69px;
+      top: 22px;
+      bottom: 0;
+      width: 2px;
+      background: var(--border-color);
+      z-index: 1;
+    }
+
+    @include mobile {
+      gap: $space-4;
+
+      &::before {
+        left: 44px;
+      }
+
+      &:not(:last-child)::after {
+        left: 49px;
+      }
+    }
+  }
+}
+
+.timeline-date {
+  flex: 0 0 56px;
+  font-family: $font-mono;
+  font-weight: 600;
+  font-size: $text-sm;
+  color: var(--accent);
+  padding-top: 4px;
+  text-align: right;
+  letter-spacing: 0.02em;
+
+  @include mobile {
+    flex: 0 0 36px;
+    font-size: $text-xs;
+  }
+}
+
+.timeline-content {
+  flex: 1;
+  padding-left: $space-6;
+  min-width: 0;
+
+  h3 {
+    font-size: $text-base;
+    font-weight: 600;
+    margin: 0 0 $space-1;
+    line-height: 1.4;
+    color: var(--text-primary);
+  }
+
+  p {
+    font-size: $text-sm;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.5;
   }
 }
 
