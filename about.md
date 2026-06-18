@@ -4,36 +4,49 @@ title: About
 permalink: /about/
 ---
 
-## 👋 Hey! I'm Kanel
+## 👋 Hey, I'm Kanel
 
-I love building cool tech and explaining it in ways that actually make sense. 
+Technical consultant by day, educator at heart. I write about AI, algorithms, and enterprise systems — minus the jargon.
 
-**What I do:** Turn complex AI, algorithms, and enterprise systems into "aha!" moments.
+<ol class="timeline">
+  <li>
+    <span class="timeline-date">Now</span>
+    <div class="timeline-content">
+      <h3>Technical Consultant Manager</h3>
+      <p>NG Group</p>
+    </div>
+  </li>
+  <li>
+    <span class="timeline-date">—</span>
+    <div class="timeline-content">
+      <h3>Dean, Faculty of Digital Industry</h3>
+      <p>Digital University of Cambodia (DUC)</p>
+    </div>
+  </li>
+  <li>
+    <span class="timeline-date">—</span>
+    <div class="timeline-content">
+      <h3>Technical Advisor</h3>
+      <p>Institute of Digital Intelligence Cambodia (IDIC)</p>
+    </div>
+  </li>
+  <li>
+    <span class="timeline-date">—</span>
+    <div class="timeline-content">
+      <h3>Assistant Professor, Computing &amp; IT</h3>
+      <p>University of Technical Education (UTE)</p>
+    </div>
+  </li>
+</ol>
 
-**Why I do it:** Because technology should be fun, not frustrating. 💡
+## 🧰 Toolbelt
 
-## 🎯 Quick Hits
+AI &amp; deep learning · enterprise systems · Dynamics 365 BC · Azure · big data · applied math
 
-- 🤖 **15+ years** building everything from French banking systems to Cambodian big data platforms
-- 📚 **Math Professor** by day, making calculus unexpectedly cool
-- ⚡ **Technical Consultant**  Dynamics 365 BC & Azure
-- 🌍 Speaks 4 languages: Khmer, English, Vietnamese, French
+Languages: Khmer · English · French · Vietnamese
 
-**My vibe:** If you can't explain it simply, you don't get it. Every post here = clarity + fun.
+## 🌐 Elsewhere
 
-## 💬 What You'll Find
-
-✨ AI & deep learning (minus the jargon)  
-🏗️ Enterprise tech that actually works  
-🧪 Cool science & research  
-🚀 Stuff you can use *today*
-
-## 🌐 Let's Connect
-
-- 💼 [LinkedIn](https://www.linkedin.com/in/kanel-soeng/)
-- 🐙 [GitHub](https://github.com/soengkanel)
-- 🐦 [Twitter](https://twitter.com/soengkanel)
-
----
-
-*P.S. - If you're reading this, you're probably curious about how things work. Welcome home.* 🏠✨
+- [LinkedIn](https://www.linkedin.com/in/kanel-soeng/)
+- [GitHub](https://github.com/soengkanel)
+- [Twitter](https://twitter.com/soengkanel)
