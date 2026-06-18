@@ -1217,6 +1217,14 @@ table {
     margin: 0;
     line-height: 1.5;
   }
+
+  .timeline-blurb {
+    margin-top: $space-1;
+    font-size: $text-xs;
+    font-style: italic;
+    color: var(--text-tertiary);
+    line-height: 1.5;
+  }
 }
 
 /**************/
