@@ -19,13 +19,6 @@ Technical consultant by day, educator at heart. I write about AI, algorithms, an
   <li>
     <span class="timeline-date">—</span>
     <div class="timeline-content">
-      <h3>Dean, Faculty of Digital Industry</h3>
-      <p>Digital University of Cambodia (DUC)</p>
-    </div>
-  </li>
-  <li>
-    <span class="timeline-date">—</span>
-    <div class="timeline-content">
       <h3>Technical Advisor</h3>
       <p>Institute of Digital Intelligence Cambodia (IDIC)</p>
     </div>
@@ -35,6 +28,13 @@ Technical consultant by day, educator at heart. I write about AI, algorithms, an
     <div class="timeline-content">
       <h3>Assistant Professor, Computing &amp; IT</h3>
       <p>University of Technical Education (UTE)</p>
+    </div>
+  </li>
+  <li>
+    <span class="timeline-date">—</span>
+    <div class="timeline-content">
+      <h3>Dean, Faculty of Digital Industry</h3>
+      <p>Digital University of Cambodia (DUC)</p>
     </div>
   </li>
 </ol>
