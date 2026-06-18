@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg09" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ecfeff"/>
+      <stop offset="100%" stop-color="#fef3c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bg09)"/>
+
+  <!-- Chapter badge -->
+  <rect x="20" y="20" width="120" height="32" rx="16" fill="#0891b2"/>
+  <text x="80" y="42" font-size="14" font-weight="700" fill="#ffffff" text-anchor="middle">ជំពូក 9</text>
+
+  <!-- Axes -->
+  <line x1="70" y1="320" x2="540" y2="320" stroke="#475569" stroke-width="1.5"/>
+  <line x1="70" y1="80" x2="70" y2="320" stroke="#475569" stroke-width="1.5"/>
+
+  <!-- Class A points (blue) -->
+  <g fill="#1e40af">
+    <circle cx="120" cy="270" r="8"/>
+    <circle cx="160" cy="245" r="8"/>
+    <circle cx="195" cy="280" r="8"/>
+    <circle cx="140" cy="220" r="8"/>
+    <circle cx="180" cy="200" r="8"/>
+    <circle cx="210" cy="235" r="8"/>
+    <circle cx="155" cy="290" r="8"/>
+  </g>
+
+  <!-- Class B points (red) -->
+  <g fill="#dc2626">
+    <circle cx="380" cy="170" r="8"/>
+    <circle cx="420" cy="200" r="8"/>
+    <circle cx="445" cy="160" r="8"/>
+    <circle cx="395" cy="135" r="8"/>
+    <circle cx="465" cy="195" r="8"/>
+    <circle cx="425" cy="240" r="8"/>
+    <circle cx="475" cy="135" r="8"/>
+  </g>
+
+  <!-- Query point (yellow star) -->
+  <g>
+    <circle cx="310" cy="220" r="10" fill="#fbbf24" stroke="#1f2937" stroke-width="2"/>
+    <text x="310" y="225" font-size="14" font-weight="900" fill="#1f2937" text-anchor="middle">?</text>
+  </g>
+
+  <!-- k=5 circle around query -->
+  <circle cx="310" cy="220" r="85" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="5,4" opacity="0.7"/>
+
+  <!-- Lines from query to its 5 nearest neighbors (mix of A and B) -->
+  <g stroke="#7c3aed" stroke-width="1.5" opacity="0.5">
+    <line x1="310" y1="220" x2="210" y2="235"/>
+    <line x1="310" y1="220" x2="195" y2="280"/>
+    <line x1="310" y1="220" x2="380" y2="170"/>
+    <line x1="310" y1="220" x2="395" y2="135"/>
+    <line x1="310" y1="220" x2="425" y2="240"/>
+  </g>
+
+  <!-- Axis labels -->
+  <text x="305" y="345" font-size="14" font-weight="700" fill="#475569" text-anchor="middle">x₁</text>
+  <text x="45" y="200" font-size="14" font-weight="700" fill="#475569" transform="rotate(-90 45 200)" text-anchor="middle">x₂</text>
+
+  <!-- Equation box -->
+  <rect x="370" y="265" width="170" height="55" rx="10" fill="#ffffff" stroke="#0891b2" stroke-width="2"/>
+  <text x="455" y="290" font-size="16" font-weight="800" fill="#0891b2" text-anchor="middle">k = 5</text>
+  <text x="455" y="310" font-size="11" font-weight="600" fill="#475569" text-anchor="middle">vote / average neighbors</text>
+
+  <!-- Legend -->
+  <g font-size="12" font-weight="600">
+    <circle cx="160" cy="60" r="6" fill="#1e40af"/>
+    <text x="172" y="64" fill="#1e40af">class A</text>
+
+    <circle cx="245" cy="60" r="6" fill="#dc2626"/>
+    <text x="257" y="64" fill="#dc2626">class B</text>
+
+    <circle cx="330" cy="60" r="7" fill="#fbbf24" stroke="#1f2937" stroke-width="1.5"/>
+    <text x="343" y="64" fill="#1f2937">query</text>
+  </g>
+
+  <!-- Footer title -->
+  <text x="300" y="380" font-size="14" font-weight="700" fill="#1f2937" text-anchor="middle">K-Nearest Neighbors · distance metrics · lazy learner</text>
+</svg>
